@@ -1,0 +1,35 @@
+# Dependencies and package-manager caches
+node_modules/
+.pnpm-store/
+
+# Builds and generated document assets
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+apps/www/public/generated/
+apps/www/public/r/
+
+# Local checks and generated evidence
+.artifacts/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+.vercel/
+
+# Editor and operating-system files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "project": "docn-ui",
+  "planDate": "2026-08-28",
+  "phase": "implementation",
+  "implementationStarted": true,
+  "currentLot": "L00",
+  "git": {
+    "initialized": true,
+    "remote": null,
+    "mode": "local-only"
+  },
+  "externalDecisions": {
+    "repository": null,
+    "visibility": null,
+    "author": null,
+    "license": null,
+    "hosting": null,
+    "siteUrl": null,
+    "publicationAuthorized": false
+  },
+  "states": [
+    "planned",
+    "in_progress",
+    "verified_local",
+    "in_review",
+    "merged",
+    "released",
+    "blocked"
+  ],
+  "lots": [
+    {
+      "id": "L00",
+      "file": "lots/L00-governance.md",
+      "state": "in_progress",
+      "dependsOn": [],
+      "branch": "main",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L01",
+      "file": "lots/L01-bootstrap.md",
+      "state": "planned",
+      "dependsOn": [
+        "L00"
+      ],
+      "branch": "chore/bootstrap-workspace",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L02",
+      "file": "lots/L02-pdf-feasibility.md",
+      "state": "planned",
+      "dependsOn": [
+        "L01"
+      ],
+      "branch": "feat/pdf-rendering-spike",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L03",
+      "file": "lots/L03-site-shell.md",
+      "state": "planned",
+      "dependsOn": [
+        "L02"
+      ],
+      "branch": "feat/shadcn-site-shell",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L04",
+      "file": "lots/L04-document-foundations.md",
+      "state": "planned",
+      "dependsOn": [
+        "L03"
+      ],
+      "branch": "feat/document-foundations",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L05",
+      "file": "lots/L05-business-cards.md",
+      "state": "planned",
+      "dependsOn": [
+        "L04"
+      ],
+      "branch": "feat/business-card-templates",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L06",
+      "file": "lots/L06-catalog-playground.md",
+      "state": "planned",
+      "dependsOn": [
+        "L05"
+      ],
+      "branch": "feat/catalog-and-playground",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L07",
+      "file": "lots/L07-registry.md",
+      "state": "planned",
+      "dependsOn": [
+        "L06"
+      ],
+      "branch": "feat/shadcn-pdf-registry",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L08",
+      "file": "lots/L08-event-tickets.md",
+      "state": "planned",
+      "dependsOn": [
+        "L07"
+      ],
+      "branch": "feat/event-ticket-templates",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L09",
+      "file": "lots/L09-thermal-receipts.md",
+      "state": "planned",
+      "dependsOn": [
+        "L08"
+      ],
+      "branch": "feat/thermal-receipt-templates",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L10",
+      "file": "lots/L10-labels.md",
+      "state": "planned",
+      "dependsOn": [
+        "L09"
+      ],
+      "branch": "feat/label-templates",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L11",
+      "file": "lots/L11-invoices.md",
+      "state": "planned",
+      "dependsOn": [
+        "L10"
+      ],
+      "branch": "feat/invoice-templates",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L12",
+      "file": "lots/L12-documentation.md",
+      "state": "planned",
+      "dependsOn": [
+        "L11"
+      ],
+      "branch": "feat/documentation-catalog",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L13",
+      "file": "lots/L13-hardening.md",
+      "state": "planned",
+      "dependsOn": [
+        "L12"
+      ],
+      "branch": "chore/production-hardening",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L14",
+      "file": "lots/L14-qualification.md",
+      "state": "planned",
+      "dependsOn": [
+        "L13"
+      ],
+      "branch": "test/v1-qualification",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L15",
+      "file": "lots/L15-delivery.md",
+      "state": "planned",
+      "dependsOn": [
+        "L14"
+      ],
+      "branch": "ci/release-delivery",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    },
+    {
+      "id": "L16",
+      "file": "lots/L16-release.md",
+      "state": "planned",
+      "dependsOn": [
+        "L15"
+      ],
+      "branch": "release/v1.0.0",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
+      "blocker": null
+    }
+  ]
+}
