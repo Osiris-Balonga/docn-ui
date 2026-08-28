@@ -50,7 +50,9 @@
       "id": "L00G",
       "file": "lots/L00G-github-governance.md",
       "state": "merged",
-      "dependsOn": ["L00"],
+      "dependsOn": [
+        "L00"
+      ],
       "branch": "chore/github-governance",
       "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
       "actualCommits": [
@@ -69,12 +71,15 @@
       "id": "L01",
       "file": "lots/L01-bootstrap.md",
       "state": "in_progress",
-      "dependsOn": ["L00G"],
+      "dependsOn": [
+        "L00G"
+      ],
       "branch": "chore/bootstrap-workspace",
       "baseCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
       "actualCommits": [
         "897e9cce5c0add3fd1bc4fe757275ed0ec5f173b",
-        "a5ea60d0b03af4ab53e280a21e69324b15cfce1c"
+        "a5ea60d0b03af4ab53e280a21e69324b15cfce1c",
+        "cead66f0a47857afcdeb764a0123359472d7c8e7"
       ],
       "evidence": "../qa/L01.md",
       "blocker": null
@@ -83,7 +88,9 @@
       "id": "L02",
       "file": "lots/L02-pdf-feasibility.md",
       "state": "planned",
-      "dependsOn": ["L01"],
+      "dependsOn": [
+        "L01"
+      ],
       "branch": "feat/pdf-rendering-spike",
       "baseCommit": null,
       "actualCommits": [],
@@ -94,7 +101,9 @@
       "id": "L03",
       "file": "lots/L03-site-shell.md",
       "state": "planned",
-      "dependsOn": ["L02"],
+      "dependsOn": [
+        "L02"
+      ],
       "branch": "feat/shadcn-site-shell",
       "baseCommit": null,
       "actualCommits": [],
@@ -105,7 +114,9 @@
       "id": "L04",
       "file": "lots/L04-document-foundations.md",
       "state": "planned",
-      "dependsOn": ["L03"],
+      "dependsOn": [
+        "L03"
+      ],
       "branch": "feat/document-foundations",
       "baseCommit": null,
       "actualCommits": [],
@@ -116,7 +127,9 @@
       "id": "L05",
       "file": "lots/L05-business-cards.md",
       "state": "planned",
-      "dependsOn": ["L04"],
+      "dependsOn": [
+        "L04"
+      ],
       "branch": "feat/business-card-templates",
       "baseCommit": null,
       "actualCommits": [],
@@ -127,7 +140,9 @@
       "id": "L06",
       "file": "lots/L06-catalog-playground.md",
       "state": "planned",
-      "dependsOn": ["L05"],
+      "dependsOn": [
+        "L05"
+      ],
       "branch": "feat/catalog-and-playground",
       "baseCommit": null,
       "actualCommits": [],
@@ -138,7 +153,9 @@
       "id": "L07",
       "file": "lots/L07-registry.md",
       "state": "planned",
-      "dependsOn": ["L06"],
+      "dependsOn": [
+        "L06"
+      ],
       "branch": "feat/shadcn-pdf-registry",
       "baseCommit": null,
       "actualCommits": [],
@@ -149,7 +166,9 @@
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
       "state": "planned",
-      "dependsOn": ["L07"],
+      "dependsOn": [
+        "L07"
+      ],
       "branch": "feat/event-ticket-templates",
       "baseCommit": null,
       "actualCommits": [],
@@ -160,7 +179,9 @@
       "id": "L09",
       "file": "lots/L09-thermal-receipts.md",
       "state": "planned",
-      "dependsOn": ["L08"],
+      "dependsOn": [
+        "L08"
+      ],
       "branch": "feat/thermal-receipt-templates",
       "baseCommit": null,
       "actualCommits": [],
@@ -171,7 +192,9 @@
       "id": "L10",
       "file": "lots/L10-labels.md",
       "state": "planned",
-      "dependsOn": ["L09"],
+      "dependsOn": [
+        "L09"
+      ],
       "branch": "feat/label-templates",
       "baseCommit": null,
       "actualCommits": [],
@@ -182,7 +205,9 @@
       "id": "L11",
       "file": "lots/L11-invoices.md",
       "state": "planned",
-      "dependsOn": ["L10"],
+      "dependsOn": [
+        "L10"
+      ],
       "branch": "feat/invoice-templates",
       "baseCommit": null,
       "actualCommits": [],
@@ -193,7 +218,9 @@
       "id": "L12",
       "file": "lots/L12-documentation.md",
       "state": "planned",
-      "dependsOn": ["L11"],
+      "dependsOn": [
+        "L11"
+      ],
       "branch": "feat/documentation-catalog",
       "baseCommit": null,
       "actualCommits": [],
@@ -204,7 +231,9 @@
       "id": "L13",
       "file": "lots/L13-hardening.md",
       "state": "planned",
-      "dependsOn": ["L12"],
+      "dependsOn": [
+        "L12"
+      ],
       "branch": "chore/production-hardening",
       "baseCommit": null,
       "actualCommits": [],
@@ -215,7 +244,9 @@
       "id": "L14",
       "file": "lots/L14-qualification.md",
       "state": "planned",
-      "dependsOn": ["L13"],
+      "dependsOn": [
+        "L13"
+      ],
       "branch": "test/v1-qualification",
       "baseCommit": null,
       "actualCommits": [],
@@ -226,7 +257,9 @@
       "id": "L15",
       "file": "lots/L15-delivery.md",
       "state": "planned",
-      "dependsOn": ["L14"],
+      "dependsOn": [
+        "L14"
+      ],
       "branch": "ci/release-delivery",
       "baseCommit": null,
       "actualCommits": [],
@@ -237,7 +270,9 @@
       "id": "L16",
       "file": "lots/L16-release.md",
       "state": "planned",
-      "dependsOn": ["L15"],
+      "dependsOn": [
+        "L15"
+      ],
       "branch": "release/v1.0.0",
       "baseCommit": null,
       "actualCommits": [],
