@@ -2,7 +2,7 @@
 
 ## État actuel
 
-Démarrage local autorisé le 2026-08-28 ; L00 en cours. Le plan comprend 17 lots et 56 stories, avec leurs commits prévus. Aucun code applicatif, test de produit exécuté ou service publié. Consulter [status.json](status.json) avant de reprendre : les fichiers du plan sont déjà présents et ne doivent pas être régénérés.
+Démarrage local autorisé le 2026-08-28 ; L00 vérifié localement. `main` contient le commit documentaire initial `37d29f056bccb192edf30b889134d215b572968b` ; `dev` a été créée sur ce commit et reçoit la trace de validation. Aucun remote, code applicatif, test de produit exécuté ou service publié. Le plan comprend 17 lots et 56 stories, avec leurs commits prévus. Consulter [status.json](status.json) et le [rapport L00](../qa/L00.md) avant de reprendre ; le prochain lot est [L01](lots/L01-bootstrap.md), sur sa branche prévue à partir du HEAD vérifié de `dev`.
 
 ## Instruction à donner à un agent
 
@@ -10,7 +10,7 @@ Démarrage local autorisé le 2026-08-28 ; L00 en cours. Le plan comprend 17 lot
 
 Pour demander plusieurs lots locaux d'un coup, préciser les IDs et autoriser explicitement leur enchaînement local. L'agent doit garder une séparation des commits/branches et des preuves. Cette documentation n'est pas, à elle seule, cette autorisation.
 
-## Première reprise
+## Procédure initiale L00 (déjà exécutée)
 
 1. Vérifier que le dossier actif est `docn-ui` et inspecter les fichiers/Git.
 2. Lire les [règles](../../AGENTS.md) et le [plan](../../IMPLEMENTATION_PLAN.md).

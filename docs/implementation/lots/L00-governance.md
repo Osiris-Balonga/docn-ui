@@ -2,6 +2,8 @@
 
 Statut initial : **planned**. Branche : `main (bootstrap local), puis dev`.
 
+Exécution du 2026-08-28 : **verified_local**. Voir le [rapport L00](../../qa/L00.md) et l'[état](../status.json).
+
 Dépendances : aucune. Exigences : G0 ; gouvernance transversale.
 
 ## Lecture et entrée
@@ -18,10 +20,10 @@ Fichiers/responsabilités cibles : Racine, docs/, .gitignore, .gitattributes, .e
 
 ### L00-S01 — `docs(plan): establish docn-ui implementation baseline`
 
-- [ ] Relire le plan et l'état réel du dossier ; ne pas relancer de génération qui écrase cette documentation.
-- [ ] Après autorisation de commencer, initialiser Git local sur main si absent ; ne pas configurer une identité Git inventée. Ajouter ignore des builds, node_modules, secrets et .artifacts, attributs texte et configuration éditeur.
-- [ ] Vérifier les liens, IDs de lots et absence d'artefacts/données privées ; committer uniquement gouvernance et documentation.
-- [ ] Créer dev au commit initial pour les prochains lots ; noter le SHA réel dans le rapport suivant. Remote/visibilité/licence restent des décisions externes.
+- [x] Relire le plan et l'état réel du dossier ; ne pas relancer de génération qui écrase cette documentation.
+- [x] Après autorisation de commencer, initialiser Git local sur main si absent ; ne pas configurer une identité Git inventée. Ajouter ignore des builds, node_modules, secrets et .artifacts, attributs texte et configuration éditeur.
+- [x] Vérifier les liens, IDs de lots et absence d'artefacts/données privées ; committer uniquement gouvernance et documentation.
+- [x] Créer dev au commit initial pour les prochains lots ; noter le SHA réel dans le rapport suivant. Remote/visibilité/licence restent des décisions externes.
 
 **Acceptation :** Le premier commit ne contient aucun site simulé ni package applicatif. Le plan est navigable, l'état initial n'annonce aucun lot développé.
 

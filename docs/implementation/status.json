@@ -32,12 +32,14 @@
     {
       "id": "L00",
       "file": "lots/L00-governance.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": [],
       "branch": "main",
       "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "actualCommits": [
+        "37d29f056bccb192edf30b889134d215b572968b"
+      ],
+      "evidence": "../qa/L00.md",
       "blocker": null
     },
     {

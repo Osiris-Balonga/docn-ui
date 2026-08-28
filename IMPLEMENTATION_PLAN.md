@@ -1,6 +1,6 @@
 # docn-ui — plan d'implémentation et de livraison
 
-Date : 2026-08-28. Statut : **démarrage local autorisé ; exécution de L00 en cours**. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
+Date : 2026-08-28. Statut : **L00 vérifié localement ; L01 à démarrer**. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
 
 ## 1. Contrat d'exécution
 

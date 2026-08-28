@@ -2,7 +2,7 @@
 
 Un catalogue de composants et de templates PDF composables, avec une interface de documentation construite avec shadcn/ui.
 
-**État au 28 août 2026 : démarrage local autorisé, lot L00 en cours.** Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Les commandes et chemins applicatifs décrits dans ce dépôt sont des contrats à réaliser, pas des fonctionnalités disponibles. Consulter [l'état des lots](docs/implementation/status.json) et les [preuves](docs/qa/README.md) pour la progression vérifiée.
+**État au 28 août 2026 : L00 vérifié localement, L01 à démarrer.** Le dépôt Git et sa gouvernance sont initialisés. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Les commandes et chemins applicatifs décrits dans ce dépôt sont des contrats à réaliser, pas des fonctionnalités disponibles. Consulter [l'état des lots](docs/implementation/status.json) et le [rapport L00](docs/qa/L00.md) pour la progression vérifiée.
 
 ## Pour l'agent d'implémentation
 
