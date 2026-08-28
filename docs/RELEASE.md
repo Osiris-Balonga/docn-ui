@@ -1,6 +1,6 @@
 # Git, CI et livraison
 
-Plan de procédure ; aucun hébergement, remote ou workflow n'est encore configuré. Voir [ADR 0002](adr/0002-git-release.md).
+Procédure de livraison. L00G configure GitHub avant L01 ; l'état réel est dans [github.json](implementation/github.json). Aucun hébergement n'est implicite. Voir [ADR 0002](adr/0002-git-release.md) et [GITHUB](GITHUB.md).
 
 ## Commits et revue
 
@@ -10,7 +10,7 @@ Une branche par lot, moins de responsabilités possible par commit. Les lockfile
 
 ## CI progressive
 
-L01 : `quality`, `unit-tests`, `build`. Le job historique `unit-tests` peut garder ce nom, mais son contenu documenté couvre unit/components/integration une seule fois. L02 ajoute `pdf-tests`, L07 `consumer-tests`, L06 un premier `e2e-chromium`. Étendre la couverture de ces jobs sans multiplier des suites miroir.
+L00G : `branch-policy` obligatoire sur dev/main, aucune suite applicative. L01 : `quality`, `unit-tests`, `build`, rendus obligatoires après leur premier run réel. Le job historique `unit-tests` peut garder ce nom, mais couvre unit/components/integration une seule fois. L02 ajoute `pdf-tests`, L07 `consumer-tests`, L06 un premier `e2e-chromium`. Étendre sans multiplier les suites miroir et maintenir une synthèse stable pour les contrôles conditionnels.
 
 L15 rend les exigences finales explicites :
 
@@ -45,11 +45,11 @@ Proposer une licence permissive pour le code uniquement après confirmation de l
 1. Tous les lots précédents vérifiés et intégrés, preuve du SHA candidat.
 2. QA fonctionnelle/visuelle et limites documentées ; aucun résultat matériel inventé.
 3. Licence, identité, remote, URL et autorisation de publication confirmés.
-4. Branche release depuis `dev` ; version du catalogue/registre et changelog cohérents. Aucune publication npm nécessaire en V1.
+4. Branche release depuis `dev` ; version du catalogue/registre et changelog cohérents. PR de préparation vers `dev`, puis PR de promotion distincte `dev -> main` seulement. Aucune publication npm nécessaire en V1.
 5. Validation complète et preview du candidat exact ; régler les défauts avec commits séparés et relancer uniquement les preuves invalidées, plus la validation finale du SHA retenu.
 6. Promotion autorisée `dev -> main`, conservation du lien de filiation du candidat et déploiement de l'artefact qualifié.
 7. Vérifier le public : liens profonds, source, workers, polices, téléchargement, registre et une installation depuis l'URL publique.
-8. Tag annoté et release sur `main` uniquement après confirmation ; enregistrer tag/SHA/URL, contrôles et limitations.
+8. Tag annoté et release sur `main` uniquement après confirmation ; enregistrer tag/SHA/URL, contrôles et limitations. Fermer l'issue L16 et passer Done seulement après cette livraison vérifiée. Les mises à jour documentaires postérieures suivent docs/* -> dev -> main, jamais un push direct.
 
 ## Rollback
 

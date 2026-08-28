@@ -57,6 +57,7 @@ Filtres natifs : `pnpm test:unit geometry`, `pnpm test:pdf invoice`, `pnpm test:
 | Changement | Vérification suffisante pendant le lot |
 | --- | --- |
 | Documentation seule | liens, cohérence IDs/commandes ; aucune suite applicative sans raison |
+| Gouvernance GitHub | politique de branches ciblée, lectures API et PR/probes contrôlées ; aucune suite PDF/UI |
 | Fonction pure | unit ciblé + types/lint concernés |
 | Formulaire métier | components ciblé ; integration si coordination affectée |
 | Layout PDF | suite PDF de la famille ; revue du rendu modifié |
@@ -97,6 +98,8 @@ L'orchestrateur de validation prépare le build une fois, enregistre SHA/hash de
 En CI : un job Vitest léger, un job PDF, un job consumer, un job build et un job browser/visual selon coût ; ne pas relancer `validate:full` dans chacun. Les jobs dépendants réutilisent l'artefact de build. Les jobs conditionnels signalent explicitement `not-applicable`, jamais un résultat inventé ; la release exécute tous les périmètres.
 
 ## 8. Preuves et limites
+
+L00G précède pnpm : `node --test tooling/github/branch-policy.test.mjs` couvre une seule table de cas de gouvernance, avec le runner Node natif. Ce périmètre outillage reste explicite et distinct des sept périmètres applicatifs ; aucune collecte Vitest de `.test.mjs`, aucune matrice E2E ajoutée. `branch-policy` tourne sur chaque PR ; sa table de tests est exécutée lors des modifications de politique. Les lectures/probes GitHub de setup ne sont jamais relancées par `pnpm test` ou `validate:full`.
 
 Chaque `docs/qa/Lxx.md` mentionne commande réelle, SHA, environnement, résultat, fichiers examinés et limites. Distinguer test simulé, vrai PDF, vrai navigateur et impression physique. Les dimensions du fichier ne prouvent pas le réglage d'échelle d'une imprimante ; le scan automatisé QR ne remplace pas entièrement un essai matériel.
 

@@ -2,7 +2,7 @@
 
 Un catalogue de composants et de templates PDF composables, avec une interface de documentation construite avec shadcn/ui.
 
-**État au 28 août 2026 : L00 vérifié localement, L01 à démarrer.** Le dépôt Git et sa gouvernance sont initialisés. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Les commandes et chemins applicatifs décrits dans ce dépôt sont des contrats à réaliser, pas des fonctionnalités disponibles. Consulter [l'état des lots](docs/implementation/status.json) et le [rapport L00](docs/qa/L00.md) pour la progression vérifiée.
+**État au 28 août 2026 : L00 vérifié localement, setup GitHub L00G avant L01.** Le projet est destiné à être open source ; le dépôt public est confirmé, la licence reste à choisir. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Consulter [l'état des lots](docs/implementation/status.json) et [la gouvernance GitHub](docs/GITHUB.md).
 
 ## Pour l'agent d'implémentation
 
@@ -24,6 +24,7 @@ Un catalogue de composants et de templates PDF composables, avec une interface d
 | [Distribution](docs/specs/REGISTRY.md) | Code récupérable et registre compatible shadcn |
 | [Tests](docs/TESTING.md) | Commandes, matrices et preuves |
 | [Livraison](docs/RELEASE.md) | Git, CI, publication et rollback |
+| [GitHub](docs/GITHUB.md) | Protections, Project, milestones, issues et suivi par les agents |
 | [Risques](docs/RISKS.md) | Incertitudes, décisions et limites |
 | [Sources](docs/REFERENCES.md) | Inspiration et références techniques |
 

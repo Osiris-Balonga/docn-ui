@@ -2,11 +2,11 @@
 
 ## État actuel
 
-Démarrage local autorisé le 2026-08-28 ; L00 vérifié localement. `main` contient le commit documentaire initial `37d29f056bccb192edf30b889134d215b572968b` ; `dev` a été créée sur ce commit et reçoit la trace de validation. Aucun remote, code applicatif, test de produit exécuté ou service publié. Le plan comprend 17 lots et 56 stories, avec leurs commits prévus. Consulter [status.json](status.json) et le [rapport L00](../qa/L00.md) avant de reprendre ; le prochain lot est [L01](lots/L01-bootstrap.md), sur sa branche prévue à partir du HEAD vérifié de `dev`.
+L00 est vérifié localement. Le mainteneur demande désormais le setup public `Osiris-Balonga/docn-ui` avant le code applicatif : le prochain lot est [L00G](lots/L00G-github-governance.md), puis L01 après sa fusion autorisée. Le plan comprend 18 lots et 60 stories ; les IDs L01–L16 ne changent pas. Lire [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json) et la dernière preuve. Aucun hébergement ni choix de licence implicite.
 
 ## Instruction à donner à un agent
 
-> Lis AGENTS.md, IMPLEMENTATION_PLAN.md et docs/implementation/status.json. Implémente le prochain lot admissible en suivant sa fiche, ses stories et ses commits. Garde shadcn/ui pour le site et les composants PDF séparés. Ajoute uniquement les tests justifiés par un risque non couvert, avec les commandes de périmètre de docs/TESTING.md. Vérifie le résultat, mets à jour l'état et le rapport QA, puis indique les commits et le prochain lot. Ne touche pas à paint-3d et ne publie rien sans autorisation.
+> Lis AGENTS.md, IMPLEMENTATION_PLAN.md et docs/implementation/status.json. Implémente le prochain lot admissible en suivant sa fiche, ses stories et ses commits. Garde shadcn/ui pour le site et les composants PDF séparés. Ajoute uniquement les tests justifiés par un risque non couvert, avec les commandes de périmètre de docs/TESTING.md. Vérifie le résultat, mets à jour l'état, le rapport QA, l'issue et le Status du Project à chaque transition, puis indique les commits et le prochain lot. Ne touche pas à paint-3d et ne publie rien sans autorisation.
 
 Pour demander plusieurs lots locaux d'un coup, préciser les IDs et autoriser explicitement leur enchaînement local. L'agent doit garder une séparation des commits/branches et des preuves. Cette documentation n'est pas, à elle seule, cette autorisation.
 

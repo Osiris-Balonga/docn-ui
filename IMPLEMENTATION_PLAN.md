@@ -1,6 +1,6 @@
 # docn-ui — plan d'implémentation et de livraison
 
-Date : 2026-08-28. Statut : **L00 vérifié localement ; L01 à démarrer**. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
+Date : 2026-08-28. Statut : **L00 vérifié localement ; L00G ajouté avant L01**. Le plan compte désormais **18 lots et 60 stories/commits prévus**, hors commits documentaires de traçabilité. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
 
 ## 1. Contrat d'exécution
 
@@ -13,6 +13,8 @@ Le dossier était vide et sans `.git` lors de la préparation. Aucun commit, rem
 Le plan initial de `paint-3d`, commit `c2cbdd5`, fournit le modèle : gouvernance, architecture, lots, commits atomiques, tests et critères de livraison. Ici les fiches sont séparées pour faciliter les reprises. Le détail des divergences est dans [REFERENCES.md](docs/REFERENCES.md) ; aucune modification n'est autorisée dans le projet de référence.
 
 Organisation inspirée de BMAD, sans runtime BMAD : brief → PRD → architecture/ADR → epics/lots → stories/commits → preuves et état. Un lot correspond à un epic livrable ; chaque commit planifié porte une story `Lxx-Syy`.
+
+Révision demandée le 2026-08-28 : reprendre la gouvernance GitHub de Munganga, en durcissant le sens des PR et en conservant les commits. L00G est inséré sans renuméroter les IDs existants ; il utilise le préfixe `L00G-Syy`.
 
 ## 3. Lecture et sources de vérité
 
@@ -27,6 +29,7 @@ Organisation inspirée de BMAD, sans runtime BMAD : brief → PRD → architectu
 | Quelle preuve ? | [Tests](docs/TESTING.md) |
 | Quel statut réel ? | [status.json](docs/implementation/status.json) et rapports QA |
 | Quels commits maintenant ? | Fiche du lot ci-dessous |
+| Quelles règles GitHub et quel suivi ? | [GITHUB](docs/GITHUB.md) et [IDs réels](docs/implementation/github.json) |
 
 ## 4. Ordre des lots
 
@@ -35,7 +38,8 @@ Exécution séquentielle par défaut. `Dépend de` désigne le lot précédent r
 | Lot | Livrable | Dépend de | Fiche |
 | --- | --- | --- | --- |
 | L00 | Gouvernance et premier commit documentaire | — | [Gouvernance](docs/implementation/lots/L00-governance.md) |
-| L01 | Workspace, Next.js, shadcn, tests et CI minimale | L00 | [Bootstrap](docs/implementation/lots/L01-bootstrap.md) |
+| L00G | Dépôt public, protections, Project et issues | L00 | [GitHub](docs/implementation/lots/L00G-github-governance.md) |
+| L01 | Workspace, Next.js, shadcn, tests et CI minimale | L00G | [Bootstrap](docs/implementation/lots/L01-bootstrap.md) |
 | L02 | Faisabilité PDF prouvée dans le build réel | L01 | [Rendu PDF](docs/implementation/lots/L02-pdf-feasibility.md) |
 | L03 | Coque et navigation shadcn | L02 | [Interface](docs/implementation/lots/L03-site-shell.md) |
 | L04 | Contrats, formats, thèmes et primitives PDF | L03 | [Fondations](docs/implementation/lots/L04-document-foundations.md) |
@@ -54,7 +58,7 @@ Exécution séquentielle par défaut. `Dépend de` désigne le lot précédent r
 
 ## 5. Jalons de décision
 
-- **G0 / L00** : documentation cohérente et premier commit local ; permissions distantes séparées.
+- **G0 / L00 + L00G** : premier commit local, puis dépôt public protégé, Project et issues vérifiés ; L00G intégré avant le bootstrap applicatif.
 - **G1 / L02** : carte à dimensions exactes, police locale, recto verso, reçu long et rendu worker prouvés. Une difficulté de moteur se traite ici, pas après quinze templates.
 - **G2 / L05** : première chaîne utile, données → aperçu réel → téléchargement, validée visuellement.
 - **G3 / L07** : code installé dans un projet vierge, sans dépendance au monorepo ni au site docn-ui.
@@ -64,7 +68,7 @@ Exécution séquentielle par défaut. `Dépend de` désigne le lot précédent r
 
 ## 6. Git et commits
 
-Modèle retenu : `main` = version publique ; `dev` = intégration ; branches de lots vers `dev`. Bootstrap documentaire local sur `main`, puis création de `dev` au même commit. Conserver les commits atomiques lors de la fusion ; ne pas écraser les stories en un squash si l'objectif est de conserver ce journal.
+Modèle retenu : `main` = version publique ; `dev` = intégration et branche par défaut ; branches de lots vers `dev`. PR obligatoire sur les deux branches ; seule `dev` du même dépôt cible `main`. Merge commits uniquement. Le bootstrap distant unique de L00G est documenté dans [GITHUB](docs/GITHUB.md) ; ensuite aucun push direct, bypass, squash ou fusion automatique.
 
 Les messages exacts et le contenu de chaque commit sont dans les fiches. Tests du comportement dans le même commit que le code ; commits `test(...)` supplémentaires pour les parcours transverses. Une story peut être subdivisée si elle devient trop volumineuse, avec IDs suffixés et raison dans la fiche avant exécution.
 
@@ -74,11 +78,11 @@ Mode hors ligne : les lots suivants peuvent partir du dernier lot `verified_loca
 
 États : `planned` → `in_progress` → `verified_local` → `in_review` → `merged` ; `released` réservé à L16. `blocked` contient un motif concret et une condition de reprise. Pas de date, résultat ou SHA fictif.
 
-`status.json` est initialement entièrement `planned`, y compris L00 : les fichiers du plan existent, mais le lot de gouvernance n'a pas été committé. Chaque entrée pointe vers sa fiche ; la liste des commits attendus reste dans la fiche. `actualCommits` reçoit seulement des commits existants.
+L00 est désormais `verified_local`, avec ses deux commits existants ; les autres lots reflètent leur progression réelle. Chaque entrée pointe vers sa fiche ; les commits attendus restent dans la fiche. `actualCommits` ne contient que des SHAs existants. Le Project affiche le suivi partagé : une issue par lot, stories en checklist, preuves et PR liées ; [GITHUB](docs/GITHUB.md) fixe les transitions, sans assimiler validation locale et fusion.
 
 ## 8. Autorisations et décisions externes
 
-Le développement local peut avancer sans nom de domaine, compte hébergeur ou dépôt GitHub. Utiliser des URLs locales en tests. Avant publication, obtenir : destination Git, visibilité, licence, identité de l'auteur, hébergeur, domaine/URL publique et autorisation de publier. Ne pas inventer `@docn`, un package npm disponible ou un compte propriétaire.
+Le mainteneur demande maintenant GitHub avant L01 et confirme `Osiris-Balonga/docn-ui` public. Le setup de L00G est autorisé ; une fusion reste une décision distincte. Licence, hébergeur, domaine et publication du site ne sont pas décidés. Un accès GitHub indisponible bloque L00G, sans autoriser à l'omettre ni à commencer L01. Ne pas inventer `@docn`, un package npm ou une licence.
 
 ## 9. Fin du projet et extensions
 

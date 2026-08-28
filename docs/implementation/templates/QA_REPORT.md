@@ -2,6 +2,8 @@
 
 Statut : non exécuté. SHA/branche : à renseigner avec des valeurs réelles.
 
+Issue / Project item / PR : liens et IDs réels. Merge SHA : seulement après fusion observée. Dernière synchronisation du suivi : date réelle. Contrôles distants et locaux distingués.
+
 ## Périmètre
 
 Stories et exigences concernées ; comportement ajouté/modifié. Décrire les simulations éventuelles et ce qui fonctionne avec moteur/navigateur réels.

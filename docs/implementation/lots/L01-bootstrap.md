@@ -2,7 +2,7 @@
 
 Statut initial : **planned**. Branche : `chore/bootstrap-workspace`.
 
-Dépendances : L00. Exigences : NFR-02, NFR-03, NFR-06, NFR-08.
+Dépendances : L00G. Exigences : NFR-02, NFR-03, NFR-06, NFR-08.
 
 ## Lecture et entrée
 
@@ -50,10 +50,10 @@ Fichiers/responsabilités cibles : package.json, pnpm-workspace.yaml, pnpm-lock.
 ### L01-S04 — `ci: add focused quality and build checks`
 
 - [ ] Ajouter quality, unit-tests (trois projets légers en un passage) et build ; actions vérifiées, permissions en lecture et concurrence PR.
-- [ ] Template PR : comportement, risque, vérifications ciblées, preuves et autorisations. Pas de workflow qui pousse ou déploie.
-- [ ] Documenter les jobs non exécutés si aucun remote autorisé ; ne pas les marquer verts.
+- [ ] Étendre le template PR de L00G avec les commandes désormais disponibles ; conserver issue, risque et preuves. Ne pas recréer le Project ni la politique de branches.
+- [ ] Après un run CI réel, ajouter quality/unit-tests/build aux checks requis des deux branches en conservant branch-policy ; lire les règles actives et les reporter dans github.json. Pas de workflow qui pousse ou déploie.
 
-**Acceptation :** Workflow lisible et commandes locales correspondantes passent. CI distante, si absente, est signalée non exécutée.
+**Acceptation :** Workflow lisible, commandes locales et CI réelle passent ; nouveaux checks requis vérifiés sur la PR du lot. GitHub indisponible empêche de déclarer cette étape complète.
 
 **Vérification ciblée :** pnpm validate ; pnpm build. Réutiliser les résultats du même SHA au lieu de lancer chaque scope deux fois.
 

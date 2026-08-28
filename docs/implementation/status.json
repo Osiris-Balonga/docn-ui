@@ -4,20 +4,21 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L00",
+  "currentLot": "L00G",
   "git": {
     "initialized": true,
     "remote": null,
     "mode": "local-only"
   },
   "externalDecisions": {
-    "repository": null,
-    "visibility": null,
+    "repository": "Osiris-Balonga/docn-ui",
+    "visibility": "public",
     "author": null,
     "license": null,
     "hosting": null,
     "siteUrl": null,
-    "publicationAuthorized": false
+    "publicationAuthorized": false,
+    "githubSetupAuthorized": true
   },
   "states": [
     "planned",
@@ -37,9 +38,23 @@
       "branch": "main",
       "baseCommit": null,
       "actualCommits": [
-        "37d29f056bccb192edf30b889134d215b572968b"
+        "37d29f056bccb192edf30b889134d215b572968b",
+        "020ac6a355259b11a8fbfa9cc3842cf27ffef0f4"
       ],
       "evidence": "../qa/L00.md",
+      "blocker": null
+    },
+    {
+      "id": "L00G",
+      "file": "lots/L00G-github-governance.md",
+      "state": "planned",
+      "dependsOn": [
+        "L00"
+      ],
+      "branch": "chore/github-governance",
+      "baseCommit": null,
+      "actualCommits": [],
+      "evidence": null,
       "blocker": null
     },
     {
@@ -47,7 +62,7 @@
       "file": "lots/L01-bootstrap.md",
       "state": "planned",
       "dependsOn": [
-        "L00"
+        "L00G"
       ],
       "branch": "chore/bootstrap-workspace",
       "baseCommit": null,
@@ -250,5 +265,10 @@
       "evidence": null,
       "blocker": null
     }
-  ]
+  ],
+  "github": {
+    "setupLot": "L00G",
+    "trackingFile": "github.json",
+    "configured": false
+  }
 }

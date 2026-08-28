@@ -16,6 +16,23 @@ Repris : lots séquentiels, tests par responsabilité, commits atomiques, états
 
 Seules des lectures `git log/show/ls-tree/status` et de fichiers ont été effectuées ; pas de checkout, reset, installation ou écriture dans ce projet.
 
+## Munganga — GitHub en lecture seule
+
+Référence demandée par le mainteneur : [Osiris-Balonga/munganga](https://github.com/Osiris-Balonga/munganga), nom orthographié « mungaga » dans la demande. Consultation API le 2026-08-28, HEAD dev `ec51e245c90de3d11192338cd9477c146c38cafa`. Aucun fichier, issue, Project ou réglage de cette référence modifié.
+
+Consultés : `CONTRIBUTING.md`, template PR, `.github/workflows/branch-policy.yml`, rulesets protect-dev (`20957675`) et protect-main (`20957673`), [Project Munganga MVP](https://github.com/users/Osiris-Balonga/projects/1), champs, échantillon d'issues et sept milestones.
+
+Observations : dev par défaut, squash uniquement, PR/reviews obligatoires (1 sur dev, 2 sur main), aucun bypass. Le workflow autorise dev ou hotfix/* vers main, mais aucun required status check n'apparaît dans les deux rulesets lus. Le Project possède Status et Workflow séparés ; un item échantillonné affiche Done/Backlog. Ce constat n'est pas un audit exhaustif du projet.
+
+Adaptation docn-ui : même organisation par jalons/issues, mais dev seul vers main avec vérification du dépôt, check obligatoire issu d'une base fiable, merge commits conservés, politique solo sans reviewer inventé et un seul Status. Les IDs et membres de Munganga ne sont jamais copiés.
+
+## GitHub — sources primaires pour L00G
+
+- [Rulesets disponibles](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets) : PR, checks requis, app source, refus de force push et suppression.
+- [Événements Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request_target) : contexte de confiance et précautions pour pull_request_target.
+- [PR et fermeture d'issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue) : rôle de la branche par défaut.
+- [Automatisations natives](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/using-the-built-in-automations) et [droits Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects/automating-your-project/automating-projects-using-actions) : mécanismes et limites du token de dépôt.
+
 ## PDFx
 
 [Site](https://pdfx.akashpise.dev/) et [dépôt corrigé](https://github.com/akii09/pdfx). Le registre consulté expose 24 composants et 10 blocks, répartis entre six factures et quatre rapports. Il a inspiré le positionnement, sans copie de code.

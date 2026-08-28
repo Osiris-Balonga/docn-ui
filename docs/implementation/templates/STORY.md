@@ -2,6 +2,8 @@
 
 Statut : planned. Exigences : FR/NFR à identifier. Prérequis : lot/story.
 
+Issue du lot / sous-issue éventuelle : URL réelle. Project item : ID réel. PR : URL réelle à l'ouverture. Suivre [GITHUB](../../GITHUB.md), sans créer une issue par commit par défaut.
+
 ## Intention
 
 En tant que ..., je veux ... afin de ...

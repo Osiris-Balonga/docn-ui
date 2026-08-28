@@ -46,6 +46,15 @@ Une variation de couleur ne compte pas comme nouvelle composition. La matrice pr
 | NFR-09 | URL et version de registre explicites, pas de publication implicite | L07/L15/L16 |
 | NFR-10 | Aucun support d'impression ou de navigateur non testé annoncé comme garanti | QA et documentation, L12/L14/L16 |
 
+## Exigences de gouvernance ajoutées avant L01
+
+| ID | Exigence | Lot |
+| --- | --- | --- |
+| GOV-01 | Dépôt public confirmé, PR obligatoires sur dev/main, aucun bypass ni force push | L00G |
+| GOV-02 | Seule dev du même dépôt peut cibler main, check obligatoire vérifié | L00G |
+| GOV-03 | Project, milestones et une issue par lot ; stories/commits/preuves liés sans doublons | L00G puis chaque lot |
+| GOV-04 | État mis à jour à chaque transition ; Done distinct de validation locale, release vérifiée | Tous les lots |
+
 ## Critères des principaux parcours
 
 ### Trouver un template

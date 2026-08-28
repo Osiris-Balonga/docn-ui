@@ -31,7 +31,7 @@ Fichiers/responsabilités cibles : Version catalogue/registre, CHANGELOG.md, REA
 - [ ] Versionner catalogue/registre/metadata et chemins immuables de release ; dépendances d'items pointent sur même version.
 - [ ] Exécuter validation complète du SHA candidat ; vérifier comparaison preview/download et installation depuis registry candidat.
 - [ ] Traiter tout défaut via fix séparé référencé, puis invalider seulement les preuves concernées avant validation finale du candidat.
-- [ ] PR/promotion et déploiement seulement selon autorisations, conserver artefact exact et lien avec SHA.
+- [ ] PR release/v1.0.0 vers dev, puis promotion dev du même dépôt vers main seulement selon autorisations. Conserver artefact exact et lien avec SHA ; ne pas utiliser Closes sur l'issue L16 avant livraison publique.
 
 **Acceptation :** Le candidat v1.0.0 est vérifié ; aucun chemin dev ni placeholder dans les fichiers publics.
 
@@ -42,7 +42,7 @@ Fichiers/responsabilités cibles : Version catalogue/registre, CHANGELOG.md, REA
 - [ ] Après promotion/déploiement autorisés, vérifier origine publique, deep links, assets, téléchargement et un install public.
 - [ ] Créer tag/release uniquement si autorisés ; enregistrer SHAs/tag/URL exacts et rapport, pas de valeurs fictives.
 - [ ] Marquer L16 released seulement quand G6 est satisfait. Si autorisation manquante, rester verified_local ou blocked avec prochaine action claire.
-- [ ] Écrire guide de maintenance, prochaine famille dans backlog et procédure rollback/retour correctif via dev.
+- [ ] Écrire guide de maintenance, prochaine famille dans backlog et procédure rollback/retour correctif via dev. Fermer l'issue L16, mettre Project à Done et renseigner les liens réels seulement après G6 ; la trace post-release suit elle aussi une PR vers dev.
 
 **Acceptation :** G6 : produit public vérifié et mainteneur informé ; à défaut, livraison explicitement non accomplie.
 

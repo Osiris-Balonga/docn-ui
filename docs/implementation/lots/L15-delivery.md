@@ -21,7 +21,7 @@ Fichiers/responsabilités cibles : .github/workflows, tooling/build, configurati
 - [ ] Finaliser quality/unit-tests/pdf-tests/consumer-tests/build/e2e-chromium et release-policy ; vérifier les chemins de dépendances partagées.
 - [ ] Épingler actions, permissions et environnements ; un seul build consommé par E2E/deploy, SHA/manifest vérifiés.
 - [ ] Tests lourds séparés, pas de validate:full relancé dans chaque job, aucun secret exposé aux forks.
-- [ ] Documenter protections disponibles sans les prétendre actives si GitHub n'est pas configuré.
+- [ ] Auditer les protections réelles issues de L00G et mises à jour depuis L01 ; vérifier les checks requis et ajouter release-policy après preuve réelle. Aucun bootstrap GitHub reporté à ce lot.
 
 **Acceptation :** Le graphe CI explique quelle suite tourne et quel artefact sera déployé ; aucune preuve omise par filtre incorrect.
 
