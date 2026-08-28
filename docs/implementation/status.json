@@ -76,7 +76,9 @@
       ],
       "branch": "chore/bootstrap-workspace",
       "baseCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
-      "actualCommits": [],
+      "actualCommits": [
+        "897e9cce5c0add3fd1bc4fe757275ed0ec5f173b"
+      ],
       "evidence": "../qa/L01.md",
       "blocker": null
     },

@@ -28,9 +28,9 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S02 — `chore(ui): initialize shadcn with Base UI and Tailwind`
 
-- [ ] Inspect exact CLI version options; noninteractive init with Base UI, aliases, and CSS variables.
-- [ ] Install only Button and Tooltip needed for the screen smoke check; commit sources and components.json; do not rerun init with --force.
-- [ ] Verify compilation, base theme, and local site fonts; distinguish web and PDF fonts.
+- [x] Inspect exact CLI version options; noninteractive init with Base UI, aliases, and CSS variables.
+- [x] Install only Button and Tooltip needed for the screen smoke check; commit sources and components.json; do not rerun init with --force.
+- [x] Verify compilation, base theme, and local site fonts; distinguish web and PDF fonts.
 
 **Acceptance:** The visible button comes from shadcn sources and works in the static build.
 

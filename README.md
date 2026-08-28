@@ -6,8 +6,6 @@ A catalog of composable PDF components and templates, with a documentation inter
 
 [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [Setup PR #9](https://github.com/Osiris-Balonga/docn-ui/pull/9) · [L00G evidence](docs/qa/L00G.md)
 
-## For the implementation agent
-
 ## Local development
 
 Use Node `24.18.0` and pnpm `11.24.0` (the exact project pin). If the host pnpm differs, prefix commands with `npm exec --yes --package=pnpm@11.24.0 --` instead of changing a shared global installation.
