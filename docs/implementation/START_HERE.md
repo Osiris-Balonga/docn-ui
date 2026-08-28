@@ -6,6 +6,8 @@ L00 est vérifié localement. Le mainteneur demande désormais le setup public `
 
 ## Instruction à donner à un agent
 
+Reprise actuelle : dépôt public et Project configurés, PR [#9](https://github.com/Osiris-Balonga/docn-ui/pull/9) en revue. Lire [QA L00G](../qa/L00G.md) et l'[issue #2](https://github.com/Osiris-Balonga/docn-ui/issues/2). Attendre l'accord de fusion, vérifier celle-ci, enregistrer son SHA et passer le lot à merged avant L01. Ne pas refaire le bootstrap, recréer les issues ou pousser sur dev/main. Après fusion, mettre L01 Ready dans le Project et démarrer sa branche depuis origin/dev.
+
 > Lis AGENTS.md, IMPLEMENTATION_PLAN.md et docs/implementation/status.json. Implémente le prochain lot admissible en suivant sa fiche, ses stories et ses commits. Garde shadcn/ui pour le site et les composants PDF séparés. Ajoute uniquement les tests justifiés par un risque non couvert, avec les commandes de périmètre de docs/TESTING.md. Vérifie le résultat, mets à jour l'état, le rapport QA, l'issue et le Status du Project à chaque transition, puis indique les commits et le prochain lot. Ne touche pas à paint-3d et ne publie rien sans autorisation.
 
 Pour demander plusieurs lots locaux d'un coup, préciser les IDs et autoriser explicitement leur enchaînement local. L'agent doit garder une séparation des commits/branches et des preuves. Cette documentation n'est pas, à elle seule, cette autorisation.

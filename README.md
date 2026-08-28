@@ -2,7 +2,9 @@
 
 Un catalogue de composants et de templates PDF composables, avec une interface de documentation construite avec shadcn/ui.
 
-**État au 28 août 2026 : L00 vérifié localement, setup GitHub L00G avant L01.** Le projet est destiné à être open source ; le dépôt public est confirmé, la licence reste à choisir. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Consulter [l'état des lots](docs/implementation/status.json) et [la gouvernance GitHub](docs/GITHUB.md).
+**État au 28 août 2026 : GitHub configuré et vérifié ; L00G en revue avant L01.** Le projet est destiné à être open source ; la licence reste à choisir. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Consulter [l'état des lots](docs/implementation/status.json) et [la gouvernance GitHub](docs/GITHUB.md).
+
+[Project docn-ui V1](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [PR de configuration #9](https://github.com/Osiris-Balonga/docn-ui/pull/9) · [Preuves L00G](docs/qa/L00G.md)
 
 ## Pour l'agent d'implémentation
 

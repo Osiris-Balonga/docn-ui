@@ -47,7 +47,7 @@
     {
       "id": "L00G",
       "file": "lots/L00G-github-governance.md",
-      "state": "in_progress",
+      "state": "in_review",
       "dependsOn": [
         "L00"
       ],
@@ -55,7 +55,8 @@
       "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
       "actualCommits": [
         "fdfcc573eccd70f7cfa191c8fa40a278119310c1",
-        "88519ed3bfc85c54401222f65f3cbcdfa1e05ab7"
+        "88519ed3bfc85c54401222f65f3cbcdfa1e05ab7",
+        "4c09f8b978b6556b6e80816bb62b05c217e10f6c"
       ],
       "evidence": "../qa/L00G.md",
       "blocker": null
@@ -272,6 +273,6 @@
   "github": {
     "setupLot": "L00G",
     "trackingFile": "github.json",
-    "configured": false
+    "configured": true
   }
 }

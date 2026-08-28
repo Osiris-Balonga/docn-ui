@@ -1,6 +1,6 @@
 # docn-ui — plan d'implémentation et de livraison
 
-Date : 2026-08-28. Statut : **L00 vérifié localement ; L00G ajouté avant L01**. Le plan compte désormais **18 lots et 60 stories/commits prévus**, hors commits documentaires de traçabilité. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
+Date : 2026-08-28. Statut : **L00 vérifié ; GitHub L00G configuré, PR #9 en revue avant L01**. Le plan compte désormais **18 lots et 60 stories/commits prévus**, hors commits documentaires de traçabilité. L'[état des lots](docs/implementation/status.json) consigne la progression réelle.
 
 ## 1. Contrat d'exécution
 

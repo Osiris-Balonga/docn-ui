@@ -2,6 +2,8 @@
 
 Statut initial : **planned**. Branche : `chore/github-governance`.
 
+Exécution : configuration vérifiée, PR #9 `in_review`, aucune fusion. Voir [QA](../../qa/L00G.md).
+
 Dépendances : L00. Exigences : GOV-01 à GOV-04 ; G0 étendu. Lot inséré avant L01 sans renuméroter les stories existantes.
 
 ## Lecture et entrée
@@ -46,9 +48,9 @@ Lire [AGENTS](../../../AGENTS.md), [le plan](../../../IMPLEMENTATION_PLAN.md), [
 
 ### L00G-S04 — `docs(github): record policy checks and project handoff`
 
-- [ ] Vérifier un push direct refusé sur chaque branche avec un commit vide de probe, sans suppression/force ; vérifier une PR interdite vers main et une PR normale vers dev.
-- [ ] Relire les checks effectifs et l'état de fusion ; fermer la PR négative sans fusion. Conserver la PR de configuration vers dev, liée à l'issue.
-- [ ] Mettre à jour état, QA, suivi GitHub et guide de reprise avec preuves réelles. Ne pas marquer merged avant accord et fusion observée.
+- [x] Vérifier un push direct refusé sur chaque branche avec un commit vide de probe, sans suppression/force ; vérifier une PR interdite vers main et une PR normale vers dev.
+- [x] Relire les checks effectifs et l'état de fusion ; fermer la PR négative sans fusion. Conserver la PR de configuration vers dev, liée à l'issue.
+- [x] Mettre à jour état, QA, suivi GitHub et guide de reprise avec preuves réelles. Ne pas marquer merged avant accord et fusion observée.
 
 **Acceptation :** Les protections ont des preuves réelles et le Project reflète la PR ; L01 attend l'intégration de L00G. Les limites éventuelles sont explicites.
 
