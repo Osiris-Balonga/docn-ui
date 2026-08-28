@@ -1,58 +1,58 @@
-# L12 — Documentation, composants, formats et thèmes
+# L12 — Documentation, components, formats, and themes
 
-Statut initial : **planned**. Branche : `feat/documentation-catalog`.
+Initial status: **planned**. Branch: `feat/documentation-catalog`.
 
-Dépendances : L11. Exigences : FR-02, FR-13, FR-15, FR-16.
+Dependencies: L11. Requirements: FR-02, FR-13, FR-15, FR-16.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../../DESIGN.md), [référence 2](../../specs/REGISTRY.md), [référence 3](../../specs/DOCUMENT_MODEL.md), [référence 4](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../../DESIGN.md), [reference 2](../../specs/REGISTRY.md), [reference 3](../../specs/DOCUMENT_MODEL.md), [reference 4](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Rendre les capacités existantes compréhensibles et réutilisables. Les pages de composants ne sont pas de nouveaux composants métier.
+Make existing capabilities understandable and reusable. Component pages do not introduce new application components. Write all documentation in English.
 
-Fichiers/responsabilités cibles : apps/www/src/content/docs, features/docs, routes components/formats/themes, metadata et recherche.
+Target files/responsibilities: apps/www/src/content/docs, features/docs, components/formats/themes routes, metadata, and search.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L12-S01 — `feat(docs): document installation and independent PDF usage`
 
-- [ ] Guides installation, assets locaux, browser/Node, thème, format, données/locale et mise à jour du code possédé.
-- [ ] Exemples importés depuis fixtures consommateur vérifiées ; éviter une deuxième version manuelle du code d'exemple.
-- [ ] Pages de limites : fonts/scripts, impression, PDF accessible, QR non sécurisé, facture non certifiée.
-- [ ] MDX local de confiance uniquement ; aucun contenu utilisateur interprété comme MDX.
+- [ ] Guides for installation, local assets, browser/Node, themes, formats, data/locale, and updating owned source.
+- [ ] Import examples from verified consumer fixtures; avoid a second manually maintained example implementation.
+- [ ] Limitation pages: fonts/scripts, printing, accessible PDFs, unsecured QR, uncertified invoices.
+- [ ] Trusted local MDX only; never interpret user content as MDX.
 
-**Acceptation :** Un développeur peut suivre les prérequis sans connaissance du monorepo et comprendre les limites avant export.
+**Acceptance:** A developer can follow prerequisites without monorepo knowledge and understand limitations before exporting.
 
-**Vérification ciblée :** Build docs et contrôle des liens ; réutiliser preuves consumer plutôt que rejouer chaque snippet indépendamment.
+**Targeted verification:** Documentation build and link checks; reuse consumer evidence instead of independently rerunning every snippet.
 
 ### L12-S02 — `feat(docs): expose PDF primitives formats and theme examples`
 
-- [ ] Index/fiches des primitives réellement disponibles avec props, usage, exemple PDF et source/installation.
-- [ ] Pages formats avec dimensions et compatibilités réelles ; thèmes comparés sur le même document.
-- [ ] Produire exemples visuels avec le pipeline existant ; pas de tests par paragraphe ou carte de documentation.
+- [ ] Index/detail pages for actually available primitives with props, usage, PDF example, source/installation.
+- [ ] Format pages with actual dimensions/compatibility; compare themes on the same document.
+- [ ] Generate visuals through the existing pipeline; no test per paragraph or documentation card.
 
-**Acceptation :** Les routes components/formats/themes sont complètes, indexables et cohérentes avec les contrats du code.
+**Acceptance:** components/formats/themes routes are complete, indexable, and consistent with code contracts.
 
-**Vérification ciblée :** Vérification d'inventaire/liens et un smoke navigation docs ; revue visuelle ciblée.
+**Targeted verification:** Inventory/link checks and one documentation navigation smoke check; targeted visual review.
 
 ### L12-S03 — `docs(contributing): define template contribution and review workflow`
 
-- [ ] Guide ajouter un template : schéma/metadata/composition/fixture/registre/aperçu et test au bon périmètre.
-- [ ] Checklist de qualité visuelle et de données, licences, changements de format/API et versioning.
-- [ ] Intégrer toute la documentation dans la recherche, titres/description/canonical et sitemap ; URLs de preview non indexables.
+- [ ] Template contribution guide: schema/metadata/composition/fixture/registry/preview and a test in the appropriate scope.
+- [ ] Visual/data quality checklist, licenses, format/API changes, and versioning.
+- [ ] Include all documentation in search, titles/descriptions/canonical URLs, and sitemap; preview URLs must not be indexable.
 
-**Acceptation :** Un contributeur sait ajouter une composition sans modifier le cœur du playground ni copier toute une famille.
+**Acceptance:** Contributors can add a composition without changing playground core or copying an entire family.
 
-**Vérification ciblée :** pnpm validate ; pnpm build ; liens statiques. Pas de suite PDF complète pour une modification documentaire seule.
+**Targeted verification:** pnpm validate; pnpm build; static links. No full PDF suite for a documentation-only change.
 
-## Critère de sortie
+## Exit criteria
 
-Catalogue, primitives et guides exploitables ; aucun exemple trompeur ni source incomplète.
+Usable catalog, primitives, and guides; no misleading examples or incomplete source.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L12.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L12.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de moteur de blog, CMS, documentation multilingue intégrale ou forum.
+No blog engine, CMS, fully multilingual documentation, or forum.

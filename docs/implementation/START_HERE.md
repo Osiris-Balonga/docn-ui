@@ -1,30 +1,34 @@
-# Démarrer ou reprendre l'implémentation
+# Start or resume implementation
 
-## État actuel
+## Current state
 
-L00 est vérifié localement. Le mainteneur demande désormais le setup public `Osiris-Balonga/docn-ui` avant le code applicatif : le prochain lot est [L00G](lots/L00G-github-governance.md), puis L01 après sa fusion autorisée. Le plan comprend 18 lots et 60 stories ; les IDs L01–L16 ne changent pas. Lire [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json) et la dernière preuve. Aucun hébergement ni choix de licence implicite.
+L00 is locally verified. The maintainer requires public `Osiris-Balonga/docn-ui` setup before application code: [L00G](lots/L00G-github-governance.md), then L01 after its authorized merge. The plan contains 18 lots and 60 stories; L01–L16 IDs are unchanged. Read [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json), and the latest evidence. No implicit hosting or license choice.
 
-## Instruction à donner à un agent
+Write everything in English: documentation, plans, acceptance criteria, QA, UI copy, comments, and GitHub content. This confirmed requirement also applies to future agents. French/English document-data support remains part of the technical scope.
 
-> Lis AGENTS.md, IMPLEMENTATION_PLAN.md et docs/implementation/status.json. Implémente le prochain lot admissible en suivant sa fiche, ses stories et ses commits. Garde shadcn/ui pour le site et les composants PDF séparés. Ajoute uniquement les tests justifiés par un risque non couvert, avec les commandes de périmètre de docs/TESTING.md. Vérifie le résultat, mets à jour l'état, le rapport QA, l'issue et le Status du Project à chaque transition, puis indique les commits et le prochain lot. Ne touche pas à paint-3d et ne publie rien sans autorisation.
+## Instruction for an agent
 
-Pour demander plusieurs lots locaux d'un coup, préciser les IDs et autoriser explicitement leur enchaînement local. L'agent doit garder une séparation des commits/branches et des preuves. Cette documentation n'est pas, à elle seule, cette autorisation.
+Current handoff: public repository and Project configured, PR [#9](https://github.com/Osiris-Balonga/docn-ui/pull/9) in review. Read [L00G QA](../qa/L00G.md) and [issue #2](https://github.com/Osiris-Balonga/docn-ui/issues/2). Wait for merge approval, verify the merge, record its SHA, and set the lot to merged before L01. Do not repeat bootstrap, recreate issues, or push to dev/main. After merging, set L01 Ready in the Project and start its branch from origin/dev.
 
-## Procédure initiale L00 (déjà exécutée)
+> Read AGENTS.md, IMPLEMENTATION_PLAN.md, and docs/implementation/status.json. Implement the next eligible lot according to its specification, stories, and commits. Keep shadcn/ui for the site and PDF components separate. Add only tests justified by uncovered risks, using the scoped commands in docs/TESTING.md. Verify the result; update status, QA report, issue, and Project Status at each transition; then report commits and the next lot. Write all project content in English. Do not modify paint-3d or publish anything without authorization.
 
-1. Vérifier que le dossier actif est `docn-ui` et inspecter les fichiers/Git.
-2. Lire les [règles](../../AGENTS.md) et le [plan](../../IMPLEMENTATION_PLAN.md).
-3. Lire [status.json](status.json) : initialement tous les lots sont `planned`.
-4. Ouvrir [L00](lots/L00-governance.md), puis ses références seulement.
-5. Mettre L00 `in_progress` lorsque le travail est effectivement lancé ; créer ses commits sans inventer les résultats.
-6. Rédiger `docs/qa/L00.md` avec le [modèle](templates/QA_REPORT.md), puis enregistrer le statut réellement atteint.
+To request several local lots at once, specify IDs and explicitly authorize local continuation. Keep commits/branches and evidence separate. This documentation is not itself that authorization.
 
-## Reprise après interruption
+## Initial L00 procedure (already executed)
 
-Comparer l'état JSON à Git et au dernier rapport. Si une story est partiellement écrite, examiner les changements avant de l'exécuter à nouveau. Ne pas supposer qu'une case cochée prouve un test. Reprendre la première acceptation manquante, pas tout le lot depuis zéro.
+1. Verify the active directory is `docn-ui` and inspect files/Git.
+2. Read the [rules](../../AGENTS.md) and [plan](../../IMPLEMENTATION_PLAN.md).
+3. Read [status.json](status.json): initially all lots were `planned`.
+4. Open [L00](lots/L00-governance.md), then only its references.
+5. Set L00 `in_progress` when work actually starts; create its commits without inventing results.
+6. Write `docs/qa/L00.md` using the [template](templates/QA_REPORT.md), then record the actual state reached.
 
-## Guide rapide des vérifications
+## Resume after interruption
 
-Fonction pure → `test:unit`. Interaction UI → `test:components`. Coordination de modules → `test:integration`. Document réel → `test:pdf`. Code installé → `test:consumers`. Parcours navigateur → `test:e2e`. Régression visuelle choisie → `test:visual`.
+Compare JSON state with Git and the latest report. Inspect partially written stories before executing them again. Do not assume a checked box proves a test. Resume at the first missing acceptance criterion instead of restarting the entire lot.
 
-Ces commandes seront activées au fil des lots : les exécuter aujourd'hui n'est pas possible, car aucun package applicatif n'est encore créé. Le [contrat complet](../TESTING.md) indique comment éviter la double collecte et quand une validation complète est justifiée.
+## Quick verification guide
+
+Pure function → `test:unit`. UI interaction → `test:components`. Module coordination → `test:integration`. Actual document → `test:pdf`. Installed source → `test:consumers`. Browser journey → `test:e2e`. Selected visual regression → `test:visual`.
+
+These commands activate progressively: they cannot run today because no application package exists yet. The [full contract](../TESTING.md) explains how to avoid duplicate collection and when full validation is justified.

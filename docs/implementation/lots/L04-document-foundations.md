@@ -1,67 +1,67 @@
-# L04 — Contrats, formats, thèmes et primitives PDF
+# L04 — PDF contracts, formats, themes, and primitives
 
-Statut initial : **planned**. Branche : `feat/document-foundations`.
+Initial status: **planned**. Branch: `feat/document-foundations`.
 
-Dépendances : L03. Exigences : FR-03, FR-07, FR-16 ; NFR-03, NFR-05.
+Dependencies: L03. Requirements: FR-03, FR-07, FR-16; NFR-03, NFR-05.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/DOCUMENT_MODEL.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/DOCUMENT_MODEL.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Formaliser ce que le spike a prouvé. Garder le noyau petit ; ajouter tables monétaires et imposition seulement avec leurs familles.
+Formalize what the spike proved. Keep the core small; add monetary tables and imposition only with their families.
 
-Fichiers/responsabilités cibles : packages/documents/src/core, themes, primitives, catalog, render ; asset manifest.
+Target files/responsibilities: packages/documents/src/core, themes, primitives, catalog, render; asset manifest.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L04-S01 — `feat(documents): define validated formats and render contracts`
 
-- [ ] Types des requêtes/résultats, IDs/version, formats fixes/continus et helpers mm/pt ; séparer metadata et fonctions de rendu.
-- [ ] Valider dimensions, orientation, formats autorisés et profil print ; erreurs structurées avec chemin de champ.
-- [ ] Définir la normalisation des données et les bornes communes, sans effacer une donnée invalide.
+- [ ] Define request/result types, IDs/version, fixed/continuous formats, and mm/pt helpers; separate metadata from rendering functions.
+- [ ] Validate dimensions, orientation, allowed formats, and print profile; structured errors include field paths.
+- [ ] Define data normalization and shared limits without erasing invalid data.
 
-**Acceptation :** Les formats invalides ou incompatibles sont refusés avant le moteur ; orientation appliquée une seule fois.
+**Acceptance:** Invalid/incompatible formats are rejected before reaching the engine; orientation applies exactly once.
 
-**Vérification ciblée :** pnpm test:unit formats ; réutiliser tests de géométrie du spike au lieu de les recopier.
+**Targeted verification:** pnpm test:unit formats; reuse spike geometry tests instead of copying them.
 
 ### L04-S02 — `feat(documents): add local typography and portable theme tokens`
 
-- [ ] Créer trois thèmes PDF indépendants des tokens web, couleurs compatibles moteur et échelle typographique bornée.
-- [ ] Enregistrer explicitement les graisses statiques nécessaires ; manifest provenance/licences/hashes, exemples FR/EN.
-- [ ] Créer AssetResolver browser/Node avec IDs autorisés ; aucune URL ou chemin lu depuis des données utilisateur.
+- [ ] Create three PDF themes independent of web tokens, with engine-compatible colors and a bounded typographic scale.
+- [ ] Explicitly register required static weights; manifest provenance/licenses/hashes and French/English examples.
+- [ ] Create browser/Node AssetResolver with allowed IDs; never read URLs or paths from user data.
 
-**Acceptation :** Changer le thème du site ne change pas le PDF ; le thème documentaire charge uniquement les assets déclarés.
+**Acceptance:** Changing the site theme does not change the PDF; document themes load only declared assets.
 
-**Vérification ciblée :** Tests ciblés validation thème/assets ; étendre la fixture PDF accentuée de L02.
+**Targeted verification:** Targeted theme/asset validation tests; extend L02's accented PDF fixture.
 
 ### L04-S03 — `feat(documents): add composable PDF layout primitives`
 
-- [ ] Implémenter seulement PageFrame, texte/titre, Stack/Row, Separator, Image et FieldPair utilisés par la carte.
-- [ ] Prévoir garde de zone sûre et mesure de débordement des cadres fixes avec vraies polices ; erreurs plutôt que réduction illimitée.
-- [ ] Exporter des entrées explicites ; tests de frontière interdisant imports du site et CSS DOM dans la distribution.
+- [ ] Implement only PageFrame, text/heading, Stack/Row, Separator, Image, and FieldPair used by the card.
+- [ ] Provide safe-area guards and fixed-frame overflow measurement using actual fonts; errors instead of unlimited shrinking.
+- [ ] Export explicit entry points; boundary tests prohibit site imports and DOM CSS in distribution.
 
-**Acceptation :** Une page peut être composée sans dépendance Tailwind/shadcn/Next ; son texte ne sort pas silencieusement du cadre.
+**Acceptance:** Compose a page without Tailwind/shadcn/Next dependencies; text does not silently escape its frame.
 
-**Vérification ciblée :** Unit ciblé mesure/layout ; un PDF de primitives réutilisant la suite existante, pas un test par prop.
+**Targeted verification:** Targeted measurement/layout unit tests; one primitives PDF reusing the existing suite, not one test per prop.
 
 ### L04-S04 — `refactor(pdf): promote the rendering spike into shared adapters`
 
-- [ ] Remplacer les structures temporaires du spike par les contrats définitifs ; supprimer le code jetable non utilisé.
-- [ ] Garder les fixtures de faisabilité utiles et leur preuve ; migrer le viewer/protocole vers les emplacements de l'architecture.
-- [ ] Documenter exports, dépendances autorisées et stratégie d'assets pour le registre futur.
+- [ ] Replace temporary spike structures with final contracts; remove unused disposable code.
+- [ ] Retain useful feasibility fixtures and evidence; move viewer/protocol to architecture locations.
+- [ ] Document exports, permitted dependencies, and asset strategy for the future registry.
 
-**Acceptation :** Pas de deuxième moteur/fixture de référence concurrent ; build et qualification initiale restent valides.
+**Acceptance:** No competing second engine/reference fixture; build and initial qualification remain valid.
 
-**Vérification ciblée :** pnpm validate ; pnpm test:pdf feasibility ; build si imports/worker modifiés.
+**Targeted verification:** pnpm validate; pnpm test:pdf feasibility; build if imports/worker changed.
 
-## Critère de sortie
+## Exit criteria
 
-Fondations réutilisables et minimalistes ; tous les invariants initiaux conservés.
+Reusable, minimal foundations; all initial invariants preserved.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L04.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L04.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de factory de formulaire universelle, moteur multibackend, abstractions de tables/invoices sans usage.
+No universal form factory, multibackend engine, or unused table/invoice abstractions.
