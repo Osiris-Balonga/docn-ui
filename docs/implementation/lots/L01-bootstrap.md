@@ -49,8 +49,8 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S04 — `ci: add focused quality and build checks`
 
-- [ ] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
-- [ ] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
+- [x] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
+- [x] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
 - [ ] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
 
 **Acceptance:** Readable workflow, passing local commands and actual CI; new required checks verified on the lot PR. Unavailable GitHub prevents claiming completion.
