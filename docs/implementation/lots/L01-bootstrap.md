@@ -1,6 +1,6 @@
 # L01 — Reproducible bootstrap and quality scopes
 
-Initial status: **planned**. Branch: `chore/bootstrap-workspace`.
+Initial status: **planned**. Current status: **in review** through [PR #21](https://github.com/Osiris-Balonga/docn-ui/pull/21); see [QA](../../qa/L01.md). Branch: `chore/bootstrap-workspace`.
 
 Dependencies: L00G. Requirements: NFR-02, NFR-03, NFR-06, NFR-08.
 
@@ -51,7 +51,7 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 - [x] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
 - [x] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
-- [ ] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
+- [x] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
 
 **Acceptance:** Readable workflow, passing local commands and actual CI; new required checks verified on the lot PR. Unavailable GitHub prevents claiming completion.
 

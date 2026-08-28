@@ -1,6 +1,6 @@
 # Target architecture
 
-Status: architecture to implement. Detailed decisions are in the [ADRs](adr/0001-stack.md). None of the application modules listed below exists yet.
+Status: target architecture with the L01 bootstrap implemented and in review. The two workspaces, static root/404 routes, shadcn primitives, local site fonts, and scoped quality tooling exist. PDF, catalog, registry, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
 
 ## Stack selected for the plan
 
