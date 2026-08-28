@@ -1,0 +1,19 @@
+{
+  "name": "docn-ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "engines": { "node": ">=24.18.0 <25", "pnpm": "11.24.0" },
+  "scripts": {
+    "dev": "pnpm --filter @docn-ui/www dev",
+    "build": "pnpm --filter @docn-ui/www build",
+    "preview": "http-server apps/www/out -a 127.0.0.1 -p 4173 -c-1",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "http-server": "14.1.1",
+    "typescript": "5.9.3"
+  }
+}

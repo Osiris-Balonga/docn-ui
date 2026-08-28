@@ -2,13 +2,13 @@
 
 ## Current state
 
-L00 is locally verified. The maintainer requires public `Osiris-Balonga/docn-ui` setup before application code: [L00G](lots/L00G-github-governance.md), then L01 after its authorized merge. The plan contains 18 lots and 60 stories; L01–L16 IDs are unchanged. Read [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json), and the latest evidence. No implicit hosting or license choice.
+L00 is locally verified. [L00G](lots/L00G-github-governance.md) is merged through PR #9; L01 is in progress on `chore/bootstrap-workspace`, based on `07dd743db42c293ed59f99e6ff734eaef94ea86b`. The plan contains 18 lots and 60 stories; L01–L16 IDs are unchanged. Read [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json), and the latest evidence. No implicit hosting or license choice.
 
 Write everything in English: documentation, plans, acceptance criteria, QA, UI copy, comments, and GitHub content. This confirmed requirement also applies to future agents. French/English document-data support remains part of the technical scope.
 
 ## Instruction for an agent
 
-Current handoff: public repository and Project configured, PR [#9](https://github.com/Osiris-Balonga/docn-ui/pull/9) in review. Read [L00G QA](../qa/L00G.md) and [issue #2](https://github.com/Osiris-Balonga/docn-ui/issues/2). Wait for merge approval, verify the merge, record its SHA, and set the lot to merged before L01. Do not repeat bootstrap, recreate issues, or push to dev/main. After merging, set L01 Ready in the Project and start its branch from origin/dev.
+Current handoff: implement [L01](lots/L01-bootstrap.md) and update [issue #3](https://github.com/Osiris-Balonga/docn-ui/issues/3). The maintainer requested continuation on 2026-08-29; PR [#9](https://github.com/Osiris-Balonga/docn-ui/pull/9) was merged with passing checks. L00G is Done and L01 moved through Ready to In progress. Do not repeat bootstrap, recreate issues, or push to dev/main. L02 still requires an authorized merge of L01. Speak French to the maintainer; write project artifacts in English.
 
 > Read AGENTS.md, IMPLEMENTATION_PLAN.md, and docs/implementation/status.json. Implement the next eligible lot according to its specification, stories, and commits. Keep shadcn/ui for the site and PDF components separate. Add only tests justified by uncovered risks, using the scoped commands in docs/TESTING.md. Verify the result; update status, QA report, issue, and Project Status at each transition; then report commits and the next lot. Write all project content in English. Do not modify paint-3d or publish anything without authorization.
 

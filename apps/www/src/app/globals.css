@@ -1,0 +1,8 @@
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #171717; background: #fafafa; font-family: system-ui, sans-serif; }
+main { width: min(100% - 3rem, 48rem); margin: 15vh auto; }
+h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); line-height: 1.05; letter-spacing: -0.045em; }
+p { max-width: 38rem; line-height: 1.7; }
+a { color: inherit; text-underline-offset: 0.25em; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }

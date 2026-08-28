@@ -18,9 +18,9 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S01 — `chore(workspace): scaffold static Next.js and document sources`
 
-- [ ] Resolve compatible stable Node/pnpm/React/Next/TS versions and record the actual table in docs/DEPENDENCIES.md; set packageManager, engines, and exact versions.
-- [ ] Create apps/www with Next App Router/static export and private packages/documents; strict TS, clean aliases, cross-platform pnpm scripts, no Unix shell requirement on Windows.
-- [ ] Remove scaffold demos; provide an honest minimal page, 404, and title; generate an export served by a static server.
+- [x] Resolve compatible stable Node/pnpm/React/Next/TS versions and record the actual table in docs/DEPENDENCIES.md; set packageManager, engines, and exact versions.
+- [x] Create apps/www with Next App Router/static export and private packages/documents; strict TS, clean aliases, cross-platform pnpm scripts, no Unix shell requirement on Windows.
+- [x] Remove scaffold demos; provide an honest minimal page, 404, and title; generate an export served by a static server.
 
 **Acceptance:** Frozen-lockfile installation, typechecking, and reproducible build. No runtime server import required.
 

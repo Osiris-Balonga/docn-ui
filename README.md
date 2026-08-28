@@ -2,11 +2,27 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 29, 2026: GitHub configured and verified; L00G in review before L01.** The project is intended to be open source; the license still needs to be selected. No site, PDF engine, public registry, or package has been implemented yet. See the [lot status](docs/implementation/status.json) and [GitHub governance](docs/GITHUB.md).
+**Status on August 29, 2026: L00G merged; L01 bootstrap in progress.** A minimal static site is available locally. Templates, the PDF engine, and the public registry are not implemented yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [GitHub governance](docs/GITHUB.md).
 
 [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [Setup PR #9](https://github.com/Osiris-Balonga/docn-ui/pull/9) · [L00G evidence](docs/qa/L00G.md)
 
 ## For the implementation agent
+
+## Local development
+
+Use Node `24.18.0` and pnpm `11.24.0` (the exact project pin). If the host pnpm differs, prefix commands with `npm exec --yes --package=pnpm@11.24.0 --` instead of changing a shared global installation.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm typecheck
+pnpm build
+pnpm preview
+```
+
+`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. No deployment is configured.
+
+## Agent startup
 
 1. Read the [agent startup guide](docs/implementation/START_HERE.md), then [AGENTS.md](AGENTS.md).
 2. Read the [master plan](IMPLEMENTATION_PLAN.md).

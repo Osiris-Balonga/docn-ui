@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L00G",
+  "currentLot": "L01",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -19,7 +19,8 @@
     "siteUrl": null,
     "publicationAuthorized": false,
     "githubSetupAuthorized": true,
-    "projectLanguage": "en"
+    "projectLanguage": "en",
+    "conversationLanguage": "fr"
   },
   "states": [
     "planned",
@@ -48,7 +49,7 @@
     {
       "id": "L00G",
       "file": "lots/L00G-github-governance.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": [
         "L00"
       ],
@@ -58,22 +59,25 @@
         "fdfcc573eccd70f7cfa191c8fa40a278119310c1",
         "88519ed3bfc85c54401222f65f3cbcdfa1e05ab7",
         "4c09f8b978b6556b6e80816bb62b05c217e10f6c",
-        "db0bd636cf484c679fd85f2bb3d00fdb58e97ff4"
+        "db0bd636cf484c679fd85f2bb3d00fdb58e97ff4",
+        "b7596c9261c2029cc65a13304631caaf974aa0ae"
       ],
       "evidence": "../qa/L00G.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
+      "mergedAt": "2026-08-28T23:33:07Z"
     },
     {
       "id": "L01",
       "file": "lots/L01-bootstrap.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": [
         "L00G"
       ],
       "branch": "chore/bootstrap-workspace",
-      "baseCommit": null,
+      "baseCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L01.md",
       "blocker": null
     },
     {

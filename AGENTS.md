@@ -8,6 +8,8 @@ The maintainer authorized local implementation, then the public GitHub setup for
 
 ## Language
 
+Respond to the maintainer in French, as clarified on 2026-08-29. The English-only rule below applies to project artifacts, not conversation.
+
 The maintainer explicitly requires English throughout the project. Write all documentation, plans, lot specifications, acceptance criteria, QA reports, agent instructions, comments, UI copy, commit messages, and GitHub issues, PRs, milestones, and Project content in English. Apply this rule to every future addition or update. Preserve stable IDs, commands, paths, and historical commit hashes. Do not rewrite Git history to translate old commits.
 
 English project prose does not remove the planned ability to render user document data in French and English. Locale support and user-provided content are separate from the language of the project.
