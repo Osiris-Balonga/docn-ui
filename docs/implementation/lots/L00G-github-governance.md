@@ -16,9 +16,9 @@ Lire [AGENTS](../../../AGENTS.md), [le plan](../../../IMPLEMENTATION_PLAN.md), [
 
 ### L00G-S01 — `chore(github): add trusted branch policy and contribution templates`
 
-- [ ] Créer le contrôle de source/base avec code de confiance, aucune exécution de la PR proposée ; tester la table de cas utile avec Node sans dépendances.
-- [ ] Versionner les deux rulesets attendus, sans bypass, avec PR et branch-policy obligatoires ; fusion merge commit, historique conservé.
-- [ ] Ajouter templates issue/PR et CONTRIBUTING avec périmètres de tests, issue/lot, preuves et protocole de suivi.
+- [x] Créer le contrôle de source/base avec code de confiance, aucune exécution de la PR proposée ; tester la table de cas utile avec Node sans dépendances.
+- [x] Versionner les deux rulesets attendus, sans bypass, avec PR et branch-policy obligatoires ; fusion merge commit, historique conservé.
+- [x] Ajouter templates issue/PR et CONTRIBUTING avec périmètres de tests, issue/lot, preuves et protocole de suivi.
 
 **Acceptation :** Les fichiers de gouvernance sont prêts à être amorcés sur main/dev ; le contrôle refuse les sources non autorisées et les forks dev vers main.
 

@@ -1,0 +1,21 @@
+name: Bug report
+description: Report a reproducible problem in an implemented feature.
+labels: ['type:bug']
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Include version, browser and synthetic input. Do not share private documents.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Related lot, template and evidence

@@ -1,0 +1,17 @@
+name: Feature proposal
+description: Propose a use case or document format.
+labels: ['type:enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User need
+      description: Describe the document, physical format and current limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Expected outcome and limits
+    validations:
+      required: true

@@ -47,14 +47,14 @@
     {
       "id": "L00G",
       "file": "lots/L00G-github-governance.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": [
         "L00"
       ],
       "branch": "chore/github-governance",
-      "baseCommit": null,
+      "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L00G.md",
       "blocker": null
     },
     {

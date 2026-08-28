@@ -1,0 +1,28 @@
+name: Branch policy
+
+on:
+  pull_request_target:
+    branches: [dev, main]
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: branch-policy-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  branch-policy:
+    name: branch-policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read policy from the trusted base commit only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+          sparse-checkout: tooling/github
+      - name: Check target branch and source repository
+        run: node tooling/github/check-branch-policy.mjs
