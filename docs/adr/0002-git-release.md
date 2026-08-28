@@ -1,23 +1,23 @@
-# ADR 0002 — Lots, commits et publication
+# ADR 0002 — Lots, commits, and publication
 
-Date : 2026-08-28. Statut : décision révisée après demande de setup GitHub public ; détails et preuves dans [GITHUB](../GITHUB.md).
+Date: 2026-08-28. Status: revised decision following the public GitHub setup request; details and evidence in [GITHUB](../GITHUB.md).
 
-## Décision
+## Decision
 
-`main` est la branche stable ; `dev` l'intégration et la branche par défaut GitHub. Une branche par lot, PR vers `dev`, seule `dev` du même dépôt vers `main`. Pas d'exception hotfix. L00G initialise le dépôt public `Osiris-Balonga/docn-ui`, les protections, le Project et les issues avant L01.
+`main` is stable; `dev` is integration and the GitHub default branch. One branch per lot, PRs to `dev`, only same-repository `dev` to `main`. No hotfix exception. L00G initializes public `Osiris-Balonga/docn-ui`, protections, Project, and issues before L01.
 
-Merge commits uniquement, afin de préserver les SHAs et commits détaillés. Squash, rebase merge, historique linéaire imposé et auto-merge désactivés. Aucun bypass de ruleset ; PR et contrôles obligatoires. Zéro review tierce requise en mode solo, à renforcer lorsqu'un reviewer distinct est disponible.
+Merge commits only, preserving SHAs and detailed commits. Disable squash, rebase merge, required linear history, and auto-merge. No ruleset bypass; mandatory PRs and checks. Zero third-party reviews required in solo mode; strengthen this when a distinct reviewer is available.
 
-## Hors ligne
+## Offline mode
 
-Les validations locales sont distinctes de CI/merge. Une demande explicite de poursuivre localement permet des branches empilées sur le dernier lot vérifié. Documenter base/head. Quand un remote existe, traiter les PR dans l'ordre et retargeter après fusion ; ne pas forcer l'historique pour simplifier.
+Local validation differs from CI/merge. An explicit request to continue locally permits branches stacked on the last verified lot. Document base/head. With a remote, process PRs sequentially and retarget after merging; do not force history for convenience.
 
-## Autorisations
+## Authorizations
 
-La demande actuelle autorise dépôt public, protections, Project, issues et pushes des branches de configuration. La création initiale des refs avant activation des règles est une exception unique documentée par SHA ; les changements suivants passent par PR. Une fusion, licence, achat ou publication du site ne sont pas autorisés implicitement. Une PR prête reste un livrable intermédiaire.
+The current request authorizes the public repository, protections, Project, issues, and configuration-branch pushes. Initial ref creation before rule activation is a one-time exception documented by SHA; later changes require PRs. Merging, licensing, purchases, and site publication are not implicitly authorized. A ready PR remains an intermediate deliverable.
 
-## Différence avec la référence
+## Difference from the references
 
-Le premier plan DrawMotion utilisait `main/production`, puis son projet a évolué vers `dev/main`. docn-ui choisit une convention unique dès le départ et ne copie pas les instructions historiques contradictoires.
+DrawMotion's first plan used `main/production`, then evolved to `dev/main`. docn-ui chooses one convention from the start and does not copy conflicting historical instructions.
 
-Munganga apporte Project, milestones, templates et protections, mais ses squash merges, exception hotfix, double champ Status/Workflow et quotas de reviews ne sont pas repris. Le contrôle branch-policy est ici obligatoire dans les rulesets. La source est contrôlée par branche **et dépôt**, pas seulement par nom.
+Munganga informs the Project, milestones, templates, and protections, but its squash merges, hotfix exception, dual Status/Workflow fields, and review quotas are not adopted. Here, branch-policy is required in rulesets. Validate the source **branch and repository**, not the name alone.

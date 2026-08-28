@@ -1,56 +1,62 @@
-# Instructions aux agents — docn-ui
+# Agent instructions — docn-ui
 
-## Mission et autorité
+## Mission and authority
 
-Construire le produit décrit dans [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), un lot à la fois. Les demandes explicites du mainteneur priment sur le plan. Ne pas confondre une recommandation technique avec une autorisation de publier.
+Build the product described in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md), one lot at a time. Explicit maintainer requests take precedence over the plan. Do not confuse a technical recommendation with permission to publish.
 
-Le mainteneur a autorisé le démarrage local puis le setup GitHub public `Osiris-Balonga/docn-ui` le 2026-08-28 : dépôt, protections, Project, issues et suivi. Exécuter L00G avant L01 selon [GITHUB.md](docs/GITHUB.md). Cette autorisation couvre le bootstrap distant documenté et les pushes de branches de travail/PR de cette configuration ; ni fusion automatique, ni déploiement, publication npm, choix de licence ou achat de domaine.
+The maintainer authorized local implementation, then the public GitHub setup for `Osiris-Balonga/docn-ui` on 2026-08-28: repository, protections, Project, issues, and tracking. Execute L00G before L01 according to [GITHUB.md](docs/GITHUB.md). This authorization covers the documented remote bootstrap and work-branch pushes/PRs for this setup; it does not cover automatic merging, deployment, npm publication, license selection, or domain purchases.
 
-## Lecture obligatoire au début d'un lot
+## Language
 
-1. [État](docs/implementation/status.json) et plan maître.
-2. [Produit](PRODUCT.md), [design](DESIGN.md), [PRD](docs/PRD.md).
-3. [Architecture](docs/ARCHITECTURE.md), ADR et spécifications cités par la fiche.
-4. Fiche du lot, critères de sortie du précédent et preuves associées.
+The maintainer explicitly requires English throughout the project. Write all documentation, plans, lot specifications, acceptance criteria, QA reports, agent instructions, comments, UI copy, commit messages, and GitHub issues, PRs, milestones, and Project content in English. Apply this rule to every future addition or update. Preserve stable IDs, commands, paths, and historical commit hashes. Do not rewrite Git history to translate old commits.
 
-Ne pas relire tous les lots en détail à chaque reprise. Ne pas traiter les exemples d'API comme du code déjà présent.
+English project prose does not remove the planned ability to render user document data in French and English. Locale support and user-provided content are separate from the language of the project.
 
-## Protocole d'exécution
+## Required reading at the start of a lot
 
-- Inspecter Git et les modifications existantes avant d'écrire ; préserver le travail utilisateur.
-- Suivre les stories et messages de commits de la fiche. Une intention cohérente et testée par commit ; inclure les tests du comportement dans le commit concerné.
-- Ne pas créer de commits volontairement rouges. Un correctif imprévu reçoit un commit `fix(...)` distinct et une explication dans les preuves.
-- Ne pas accumuler tout un lot dans un commit final. Les commits détaillés font partie du livrable.
-- Ne jamais changer le statut en `verified_local` sans les tests et preuves exigés. Une commande lancée n'est pas une vérification réussie.
-- Mettre à jour `docs/implementation/status.json` et `docs/qa/Lxx.md` dans les commits du lot ; ne pas inscrire un faux SHA. Un SHA peut être enregistré au commit suivant, sans amendement artificiel.
-- Mode connecté : une branche par lot, PR vers `dev` (branche par défaut), attente de fusion autorisée avant le suivant. Pas de push direct sur `dev/main`, hors création initiale des refs de L00G. Seule `dev` du même dépôt peut cibler `main`, sans exception hotfix. Merge commits seulement, aucun bypass ni merge automatique.
-- Lire l'issue du lot et `docs/implementation/github.json` au démarrage. Mettre à jour checklist/SHAs/preuves après chaque story et le Status du Project à chaque transition. `verified_local` n'est pas Done ; fermer après fusion observée, sauf L00 historique et L16 après livraison. Ne pas créer de doublons ni écraser du contenu humain.
-- Sans remote : commits et validations locaux possibles si l'implémentation est autorisée. Garder les branches séquentielles à partir du dernier lot vérifié, noter `verified_local` ; ne pas prétendre à une PR ou une livraison. Documenter les bases de branches pour les PR ultérieures.
-- Une limite de temps, un test indisponible ou une dépendance externe manquante se signalent explicitement ; ne pas remplacer une preuve réelle par une capture fictive.
+1. [Status](docs/implementation/status.json) and the master plan.
+2. [Product](PRODUCT.md), [design](DESIGN.md), and [PRD](docs/PRD.md).
+3. [Architecture](docs/ARCHITECTURE.md), ADRs, and specifications referenced by the lot.
+4. The lot specification, the preceding lot's exit criteria, and associated evidence.
 
-## Frontières et qualité
+Do not reread every lot in detail on every resumption. Do not treat API examples as existing code.
 
-- shadcn/ui réel pour le site ; sources dans `apps/www/src/components/ui`. Base UI retenue par défaut dans l'ADR 0001, sans mélanger des composants de bases différentes.
-- Aucun composant DOM, Tailwind ou shadcn dans les documents PDF. Les documents utilisent `@react-pdf/renderer` et leurs propres tokens.
-- Un seul code source de chaque template ; catalogue, aperçu, export et registre en dérivent.
-- Rendu du contenu utilisateur local dans le navigateur ; ne pas ajouter de route serveur de génération, télémétrie ou stockage distant sans nouvelle décision.
-- Pas d'évaluation de JSX/JavaScript saisi par l'utilisateur. JSON et images autorisées seulement.
-- Pas d'abstraction générique de moteur multiformat, de CMS, de CLI propriétaire, d'authentification ni de facturation SaaS dans cette V1.
-- Pas de nouvelle dépendance sans raison, licence et impact sur le bundle. Versions exactes après L01, lockfile commité.
-- Tests proportionnés au comportement : chiffres et géométrie, contenu réel du PDF, vérification visuelle, parcours utilisateur et installation hors monorepo.
-- Instruction explicite du mainteneur : pas de multiplication de tests inutiles. Suivre [TESTING.md](docs/TESTING.md), choisir le périmètre le plus bas suffisant, réutiliser les fixtures et ne pas retester shadcn. Pas de produit cartésien des variantes, pas de suite complète à chaque commit.
-- Ne pas diluer les seuils, désactiver un contrôle ou régénérer des références visuelles uniquement pour faire passer CI.
-- Tester le site responsive, le clavier et la préférence de réduction des animations.
-- Ne pas revendiquer PDF/X, CMJN, PDF/UA, conformité fiscale ou validité d'un billet sécurisé.
+## Execution protocol
 
-## Sécurité de l'espace de travail
+- Inspect Git and existing changes before writing; preserve user work.
+- Follow the lot's stories and commit messages. Use one coherent, tested intention per commit; include behavior tests in the corresponding commit.
+- Do not create deliberately failing commits. An unplanned fix receives a separate `fix(...)` commit and an explanation in the evidence.
+- Do not accumulate an entire lot in a final commit. The detailed commits are part of the deliverable.
+- Never set `verified_local` without the required tests and evidence. Starting a command is not successful verification.
+- Update `docs/implementation/status.json` and `docs/qa/Lxx.md` in the lot's commits; never record a fake SHA. A SHA may be recorded in the next commit without artificial amendments.
+- Connected mode: one branch per lot, PR to `dev` (the default branch), and wait for an authorized merge before the next lot. No direct pushes to `dev/main`, except the initial L00G ref creation. Only `dev` from the same repository may target `main`, with no hotfix exception. Merge commits only; no bypass or automatic merge.
+- Read the lot issue and `docs/implementation/github.json` at the start. Update checklists/SHAs/evidence after each story and the Project Status at each transition. `verified_local` is not Done; close after an observed merge, except historical L00 and L16 after delivery. Do not create duplicates or overwrite human content.
+- Without a remote: local commits and verification are possible when implementation is authorized. Keep sequential branches based on the last verified lot and record `verified_local`; do not claim a PR or delivery. Document branch bases for later PRs.
+- Explicitly report time limits, unavailable tests, or missing external dependencies; never replace real evidence with a fabricated screenshot.
 
-`C:/Users/Dell/Documents/Dev Projects/paint-3d` est une référence en lecture seule. Ne jamais y écrire, changer de branche, créer de worktree, installer, committer ou lancer un nettoyage. Ne pas importer ses contraintes caméra/MediaPipe dans docn-ui.
+## Boundaries and quality
 
-`Osiris-Balonga/munganga` et son Project sont également des références en lecture seule. Aucun changement de règles, issue, label, champ ou permission dans ces ressources.
+- Use actual shadcn/ui for the site; sources belong in `apps/www/src/components/ui`. Base UI is the default in ADR 0001; do not mix components from different bases.
+- No DOM, Tailwind, or shadcn components in PDF documents. Documents use `@react-pdf/renderer` and their own tokens.
+- Keep one source for each template; the catalog, preview, export, and registry derive from it.
+- Render user content locally in the browser; do not add a server generation route, telemetry, or remote storage without a new decision.
+- Do not evaluate user-entered JSX/JavaScript. Accept only validated JSON and permitted images.
+- No generic multiformat engine abstraction, CMS, proprietary CLI, authentication, or SaaS billing in V1.
+- No new dependency without a reason, license review, and bundle impact assessment. Pin exact versions after L01 and commit the lockfile.
+- Test in proportion to behavior: calculations and geometry, actual PDF content, visual checks, user journeys, and installation outside the monorepo.
+- Explicit maintainer instruction: do not multiply unnecessary tests. Follow [TESTING.md](docs/TESTING.md), choose the lowest sufficient scope, reuse fixtures, and do not retest shadcn. No Cartesian product of variants and no full suite after every commit.
+- Do not weaken thresholds, disable checks, or regenerate visual references merely to make CI pass.
+- Test responsive behavior, keyboard access, and reduced motion.
+- Do not claim PDF/X, CMYK, PDF/UA, tax compliance, or secure ticket validity.
 
-Pas de `git reset --hard`, `git clean`, push forcé, suppression de fichiers utilisateur ni réécriture d'historique. Aucun secret, document personnel, build ou rapport volumineux dans Git.
+## Workspace safety
 
-## Rapport de fin de lot
+`C:/Users/Dell/Documents/Dev Projects/paint-3d` is a read-only reference. Never write there, switch branches, create a worktree, install, commit, or clean it. Do not import its camera/MediaPipe constraints into docn-ui.
 
-Indiquer : lot/stories réalisés, commits créés, tests exécutés et résultats, preuves, écarts au plan, limitations et prochaine étape admissible. Distinguer `verified_local`, `merged` et `released`.
+`Osiris-Balonga/munganga` and its Project are also read-only references. Do not change rules, issues, labels, fields, or permissions in those resources.
+
+No `git reset --hard`, `git clean`, force pushes, deletion of user files, or history rewriting. Never commit secrets, personal documents, builds, or large reports.
+
+## End-of-lot report
+
+Report completed lots/stories, created commits, executed tests and results, evidence, deviations, limitations, and the next permissible step. Distinguish `verified_local`, `merged`, and `released`.

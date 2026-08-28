@@ -1,57 +1,57 @@
-# L03 — Interface shadcn et navigation
+# L03 — shadcn interface and navigation
 
-Statut initial : **planned**. Branche : `feat/shadcn-site-shell`.
+Initial status: **planned**. Branch: `feat/shadcn-site-shell`.
 
-Dépendances : L02. Exigences : NFR-02 ; socle FR-01, FR-02, FR-15.
+Dependencies: L02. Requirements: NFR-02; foundation for FR-01, FR-02, FR-15.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../../DESIGN.md), [référence 2](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../../DESIGN.md), [reference 2](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Une coque crédible de documentation, responsive, avec identité docn-ui. Les pages de contenu arriveront dans leurs lots ; aucun bouton non fonctionnel présenté comme disponible.
+A credible, responsive documentation shell with docn-ui identity. Content pages arrive in their lots; never present nonfunctional buttons as available.
 
-Fichiers/responsabilités cibles : apps/www/src/app, components/ui, features/docs, styles, navigation.
+Target files/responsibilities: apps/www/src/app, components/ui, features/docs, styles, navigation.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L03-S01 — `feat(ui): establish docn-ui tokens and accessible navigation`
 
-- [ ] Fixer palette neutre, tailles, rayons, focus, polices locales et modes clair/sombre/system selon DESIGN.
-- [ ] Composer en-tête, navigation latérale et Sheet mobile avec primitives shadcn ; ajouter skip link et repères sémantiques.
-- [ ] N'ajouter que les routes prêtes ; homepage concise avec statut de développement si catalogue incomplet.
+- [ ] Set the neutral palette, sizes, radii, focus, local fonts, and light/dark/system modes according to DESIGN.
+- [ ] Compose the header, sidebar, and mobile Sheet with shadcn primitives; add a skip link and semantic landmarks.
+- [ ] Add only ready routes; a concise homepage shows development status if the catalog is incomplete.
 
-**Acceptation :** Navigation et thème fonctionnent au clavier, pas de saut de contenu ou de contraste illisible entre modes.
+**Acceptance:** Keyboard navigation and theme switching work without content jumps or unreadable contrast between modes.
 
-**Vérification ciblée :** Inspection responsive ciblée et un test de composition navigation/focus, pas de tests unitaires des primitives.
+**Targeted verification:** Targeted responsive inspection and one navigation/focus composition test; no primitive unit tests.
 
 ### L03-S02 — `feat(docs): add searchable navigation and content layouts`
 
-- [ ] Créer index léger de pages connues, palette Command/Dialog et raccourci Ctrl/Cmd+K.
-- [ ] Restaurer le focus à fermeture ; gérer aucune correspondance, éviter raccourci qui intercepte la saisie métier.
-- [ ] Ajouter layout de lecture/code et fil d'Ariane ; installer seulement les composants shadcn utilisés.
+- [ ] Create a lightweight known-page index, Command/Dialog palette, and Ctrl/Cmd+K shortcut.
+- [ ] Restore focus on close; handle no matches and avoid shortcuts interfering with application input.
+- [ ] Add reading/code layouts and breadcrumbs; install only used shadcn components.
 
-**Acceptation :** Rechercher une page connue puis ouvrir/fermer au clavier fonctionne ; index sans import du moteur PDF.
+**Acceptance:** Finding a known page, opening it, and closing search works with the keyboard; the index imports no PDF engine.
 
-**Vérification ciblée :** pnpm test:components navigation ; inspection du graphe de bundle sur route de docs.
+**Targeted verification:** pnpm test:components navigation; inspect the documentation route's bundle graph.
 
 ### L03-S03 — `test(ui): verify shell keyboard flow and responsive states`
 
-- [ ] Consolider les contrôles dans la suite navigation existante ; ajouter axe sur la coque et état Sheet ouvert si risque non couvert.
-- [ ] Capturer les quatre viewports du DESIGN en clair/sombre représentatifs ; vérifier zoom 200 % et réduction de mouvement manuellement.
-- [ ] Noter les défauts résolus et captures réelles ; ne pas créer un snapshot pour chaque composant.
+- [ ] Consolidate checks in the existing navigation suite; add axe checks for the shell and open Sheet if an uncovered risk justifies them.
+- [ ] Capture the four DESIGN viewports in representative light/dark states; manually check 200% zoom and reduced motion.
+- [ ] Record resolved defects and actual screenshots; do not create a snapshot for every component.
 
-**Acceptation :** Coque utilisable à 375 px, sans débordement global, focus visible et ordre logique.
+**Acceptance:** Usable shell at 375 px, no global overflow, visible focus, logical order.
 
-**Vérification ciblée :** pnpm test:components navigation ; contrôles visuels ciblés ; pnpm validate.
+**Targeted verification:** pnpm test:components navigation; targeted visual checks; pnpm validate.
 
-## Critère de sortie
+## Exit criteria
 
-La coque est prête à recevoir les fiches réelles. Les screenshots ne se substituent pas à la navigation fonctionnelle.
+The shell is ready for actual detail pages. Screenshots do not replace functional navigation.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L03.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L03.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de fausse grille de quinze templates, compte utilisateur ou tableaux de bord.
+No fake fifteen-template grid, user accounts, or dashboards.

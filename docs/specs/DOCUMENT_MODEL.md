@@ -1,97 +1,97 @@
-# Contrats des documents PDF
+# PDF document contracts
 
-Contrat normatif pour L02–L11. Les signatures sont des intentions à typer et tester, pas une API existante.
+Normative contract for L02–L11. Signatures express intentions to type and test, not an existing API.
 
-## 1. Identité, formats et thèmes
+## 1. Identity, formats, and themes
 
-`TemplateDefinition<T>` décrit : `id`, `version`, `schemaVersion`, `family`, metadata, `supportedFormatIds`, `supportedThemeIds`, `schema`, `defaultData`, fixtures et fonction de composition. Les metadata sérialisables sont dans un module distinct de la fonction React et de Zod.
+`TemplateDefinition<T>` describes `id`, `version`, `schemaVersion`, `family`, metadata, `supportedFormatIds`, `supportedThemeIds`, `schema`, `defaultData`, fixtures, and a composition function. Serializable metadata lives in a module separate from the React function and Zod.
 
-`RenderRequest` contient `protocolVersion: 1`, `revision`, `templateId`, `templateVersion`, `data`, `formatId`, options de format autorisées, `themeId`, overrides bornés, `locale`, `printProfile` et assets autorisés. Une incompatibilité donne une erreur structurée, jamais une conversion silencieuse.
+`RenderRequest` contains `protocolVersion: 1`, `revision`, `templateId`, `templateVersion`, `data`, `formatId`, permitted format options, `themeId`, bounded overrides, `locale`, `printProfile`, and permitted assets. Incompatibility produces a structured error, never silent conversion.
 
-`RenderResult` contient `revision`, `pdfBytes`, `pageCount`, dimensions finales, diagnostics et empreinte des entrées normalisées. L'empreinte ne quitte pas la mémoire ni n'est utilisée comme télémétrie.
+`RenderResult` contains `revision`, `pdfBytes`, `pageCount`, final dimensions, diagnostics, and a fingerprint of normalized inputs. The fingerprint never leaves memory and is not used as telemetry.
 
-Un format fixe déclare largeur/hauteur en mm ; un format continu déclare largeur et hauteur maximum. Orientation transforme les dimensions une seule fois. Conversion canonique `pt = mm * 72 / 25.4`, arrondi uniquement à l'affichage. Tolérance des assertions de taille : 0,1 pt.
+A fixed format declares width/height in mm; a continuous format declares width and maximum height. Orientation transforms dimensions exactly once. Canonical conversion: `pt = mm * 72 / 25.4`, rounding only for display. Size assertion tolerance: 0.1 pt.
 
-Un thème contient couleurs RGB/hex compatibles moteur, familles de polices autorisées, tailles en points, espacements, filets. Pas de CSS variables, OKLCH ou classes Tailwind envoyés au moteur. Les trois thèmes `neutral`, `editorial`, `bold` partagent les mêmes rôles ; les adaptations structurelles restent dans les templates.
+A theme contains engine-compatible RGB/hex colors, permitted font families, point sizes, spacing, and rules. Do not send CSS variables, OKLCH, or Tailwind classes to the engine. The three themes `neutral`, `editorial`, and `bold` share the same roles; structural adaptations stay in templates.
 
-## 2. Formats et profils d'impression
+## 2. Formats and print profiles
 
-- Taille de coupe : dimension finale du support, hors fond perdu.
-- Fond perdu : extension du fond autour de la coupe, paramétrable dans la liste autorisée.
-- Zone de sécurité : inset intérieur pour textes et QR ; aucune information indispensable dans le fond perdu.
-- Traits de coupe : option graphique située hors coupe, avec marge externe dédiée ; ils ne doivent pas traverser le contenu.
+- Trim size: final physical size, excluding bleed.
+- Bleed: background extension around the trim, configurable from the allowed list.
+- Safe area: inner inset for text and QR; no essential information in the bleed.
+- Crop marks: optional graphics outside the trim with a dedicated outer margin; they must not cross content.
 
-V1 fournit `screen` (taille de coupe, sans marques) et `print` (fond perdu/marges explicites). Exemple de test : coupe 85×55 mm + fond perdu de 3 mm donne 91×61 mm sans traits ; une marge externe de marques s'ajoute des deux côtés si activée. Définir toutes les boîtes en coordonnées PDF, avec conversion de l'origine haut/gauche du layout vers bas/gauche des boîtes PDF.
+V1 provides `screen` (trim size, no marks) and `print` (explicit bleed/margins). Test example: 85×55 mm trim + 3 mm bleed gives 91×61 mm without marks; enabling marks adds an outer margin on both sides. Define every box in PDF coordinates, converting the layout's top-left origin to the PDF boxes' bottom-left origin.
 
-L02 vérifie la possibilité de définir MediaBox/TrimBox/BleedBox. Si le moteur n'expose pas les boîtes requises, utiliser un post-traitement isolé qualifié, ou retirer l'option concernée jusqu'à une décision explicite. L'aperçu et le téléchargement utilisent toujours le résultat final post-traité. Aucun claim CMJN, profil ICC ou PDF/X.
+L02 verifies MediaBox/TrimBox/BleedBox support. If the engine does not expose required boxes, use isolated, qualified post-processing or remove the affected option until an explicit decision. Preview and download always use the final post-processed result. No CMYK, ICC profile, or PDF/X claim.
 
-Recto/verso = deux pages de même dimension dans l'ordre front/back, pas un montage d'imposition duplex universel. Les instructions de retournement dépendent de l'imprimante ; vérifier sur une feuille test, ne pas appliquer de miroir au texte. Les planches d'étiquettes sont des documents distincts du format individuel.
+Front/back means two equally sized pages in front/back order, not universal duplex imposition. Flip instructions depend on the printer; check a test sheet and never mirror text. Label sheets are separate documents from individual label formats.
 
-## 3. Schémas de données
+## 3. Data schemas
 
-Schémas stricts, sans clés inconnues ; erreurs par chemin de champ. Chaînes normalisées sans effacer les accents. Dates ISO en entrée, locale explicite, date de facture sans conversion de fuseau implicite. Événements : instant et fuseau IANA séparés. Exemples reproductibles avec dates fixes.
+Strict schemas without unknown keys; errors by field path. Normalize strings without removing accents. ISO date inputs, explicit locale, invoice dates without implicit time-zone conversion. Events use separate instants and IANA time zones. Reproducible examples use fixed dates.
 
-### Carte
+### Business card
 
-`name`, `role?`, `organization?`, `email?`, `phone?`, `website?`, `address?`, `logoAssetId?`, `qrPayload?`. Au moins une coordonnée. Nom long : retour à la ligne puis erreur si dépassement ; ne pas rapetisser sous le minimum du template.
+`name`, `role?`, `organization?`, `email?`, `phone?`, `website?`, `address?`, `logoAssetId?`, `qrPayload?`. At least one contact detail. Long names wrap, then error if overflowing; never shrink below the template minimum.
 
-### Billet
+### Ticket
 
-`eventName`, `startsAt`, `timeZone`, `venue`, `attendeeName?`, `ticketId`, `category?`, `seat?`, `qrPayload`. Le QR encode exactement la chaîne validée ; il n'assure ni signature cryptographique, ni unicité, ni contrôle d'accès. Zone détachable = repère graphique, pas une découpe physique.
+`eventName`, `startsAt`, `timeZone`, `venue`, `attendeeName?`, `ticketId`, `category?`, `seat?`, `qrPayload`. The QR encodes exactly the validated string; it provides no cryptographic signature, uniqueness, or access control. A detachable area is a graphic marker, not physical cutting.
 
-### Reçu et facture
+### Receipt and invoice
 
-Utiliser un noyau commun de lignes monétaires : identifiant, libellé, quantité entière V1, prix en unité mineure entière, taux de taxe en points de base. Devise unique par document, exposant connu (exemples XAF, EUR, USD), limite inférieure à `Number.MAX_SAFE_INTEGER` et contrôles d'overflow.
+Use a shared monetary line-item core: identifier, label, V1 integer quantity, integer minor-unit price, tax rate in basis points. One currency per document, with a known exponent (examples: XAF, EUR, USD), a bound below `Number.MAX_SAFE_INTEGER`, and overflow checks.
 
-Règle V1 : prix hors taxe ; sous-total ligne = quantité × prix ; taxe ligne arrondie à l'unité mineure selon une politique half-up explicite ; total = somme des lignes et taxes arrondies. Pas de décimales binaires pour les montants, de remises/taxes composées, d'avoirs ou de quantités fractionnaires V1. L'utilisateur est informé que cette politique peut nécessiter adaptation fiscale.
+V1 policy: prices exclude tax; line subtotal = quantity × price; line tax rounds to the minor unit with an explicit half-up policy; total = sum of lines and rounded taxes. No binary floating-point amounts, discounts/compound taxes, credit notes, or fractional quantities in V1. Inform users that this policy may require adaptation to tax rules.
 
-Facture : vendeur, client, numéro, dates, devise, lignes, notes, conditions et champs légaux textuels libres bornés. Reçu : commerçant, numéro, instant/fuseau, lignes, devise et mode de paiement textuel ; jamais de numéro de carte complet.
+Invoice: seller, customer, number, dates, currency, lines, notes, terms, and bounded free-text legal fields. Receipt: merchant, number, instant/time zone, lines, currency, and textual payment method; never a full card number.
 
-### Étiquette
+### Label
 
-`title`, `subtitle?`, `reference?`, `lines[]`, `qrPayload?`, `logoAssetId?`. Une liste d'étiquettes peut alimenter une planche. La géométrie de planche est indépendante des données.
+`title`, `subtitle?`, `reference?`, `lines[]`, `qrPayload?`, `logoAssetId?`. A list of labels may populate a sheet. Sheet geometry is independent of data.
 
-## 4. Limites initiales à coder
+## 4. Initial limits to implement
 
-| Entrée / ressource | Limite V1 |
+| Input / resource | V1 limit |
 | --- | --- |
-| JSON de données | 256 KiB UTF-8 ; profondeur maximum 8 |
-| Chaîne générale | 2 000 caractères, limites plus strictes par champ |
-| Nom/titre court | 120 caractères, capacité visuelle vérifiée séparément |
-| QR payload | 512 octets UTF-8, rejet si densité incompatible avec taille |
-| Images utilisateur | PNG/JPEG seulement ; 2 images, 5 MiB chacune, 16 Mpx chacune |
-| Lignes facture/reçu | 200 ; reçu borné aussi par hauteur finale |
-| Étiquettes par export | 100 |
-| Taille coupe personnalisée | 20–420 mm par côté fixe, dans les limites du template |
-| Reçu continu | largeur 58/80 mm, hauteur maximum 2 000 mm |
-| Pages | 50 maximum |
-| PDF final | 20 MiB maximum |
-| Génération | timeout 15 s, worker arrêté puis reprise explicite |
+| Data JSON | 256 KiB UTF-8; maximum depth 8 |
+| General string | 2,000 characters, stricter per-field limits |
+| Short name/title | 120 characters, visual capacity checked separately |
+| QR payload | 512 UTF-8 bytes; reject density incompatible with size |
+| User images | PNG/JPEG only; 2 images, 5 MiB each, 16 Mpx each |
+| Invoice/receipt lines | 200; receipts also bounded by final height |
+| Labels per export | 100 |
+| Custom trim size | 20–420 mm per fixed side, within template limits |
+| Continuous receipt | 58/80 mm width, maximum height 2,000 mm |
+| Pages | Maximum 50 |
+| Final PDF | Maximum 20 MiB |
+| Generation | 15 s timeout; terminate worker, then explicit recovery |
 
-Ces valeurs sont des budgets produit initiaux. Les modifier exige justification et tests ; aucune coupure automatique du contenu pour respecter une limite.
+These are initial product budgets. Changes require justification and tests; never automatically cut content to satisfy a limit.
 
-Valider l'en-tête, le décodage et les dimensions des images ; extension/MIME déclaré seuls insuffisants. Normaliser orientation EXIF, retirer les métadonnées lors d'un réencodage local. Refuser SVG/HTML/PDF importés et URL utilisateur (SSRF distant exclu par absence de serveur, mais exfiltration côté client toujours à prévenir). Les liens textuels HTTP(S)/mailto/tel ne sont pas des sources d'images et sont validés séparément.
+Validate image headers, decoding, and dimensions; extensions/declared MIME types alone are insufficient. Normalize EXIF orientation and strip metadata during local re-encoding. Reject imported SVG/HTML/PDF and user URLs (no server means no remote SSRF, but client-side exfiltration must still be prevented). Textual HTTP(S)/mailto/tel links are not image sources and are validated separately.
 
-## 5. Layout et débordement
+## 5. Layout and overflow
 
-Primitives nécessaires : DocumentFrame, PageFrame, Text/Heading, Stack/Row, Separator, Image, QRCode, FieldPair, Table/Row/Cell, KeepTogether, PageNumber. Éviter les composants universels avec dizaines de flags.
+Required primitives: DocumentFrame, PageFrame, Text/Heading, Stack/Row, Separator, Image, QRCode, FieldPair, Table/Row/Cell, KeepTogether, PageNumber. Avoid universal components with dozens of flags.
 
-Les cadres fixes refusent le dépassement non résolu ; les documents en flux paginent. Ne pas entourer toute une facture de `wrap={false}`. Les en-têtes répétés ne recouvrent pas le contenu, les totaux/signatures restent ensemble quand possible, les pages vides finales sont détectées. Une ligne de tableau plus haute que la zone disponible doit être subdivisée de façon définie ou rejetée avec explication.
+Fixed frames reject unresolved overflow; flow documents paginate. Do not wrap an entire invoice in `wrap={false}`. Repeated headers must not overlap content; keep totals/signatures together where possible and detect trailing blank pages. A table row taller than the available area must be split by a defined rule or rejected with an explanation.
 
-Pour les cadres fixes, les limites de caractères ne prouvent pas l'absence de débordement. Tester avec la vraie police et prévoir un préflight géométrique fondé sur la mesure de texte et l'inspection du résultat. Les fixtures adverses incluent caractères larges, URL sans espaces et lignes multiples.
+Character limits do not prove that fixed frames cannot overflow. Test with the actual font and provide geometric preflight based on text measurement and output inspection. Adversarial fixtures include wide characters, URLs without spaces, and multiple lines.
 
-L02 qualifie la hauteur automatique du reçu. Si elle échoue dans la version choisie, une mesure préalable déterministe avec la même police/layout est requise ; interdiction d'estimer la hauteur par nombre de caractères. Le dépassement de 2 000 mm retourne une erreur, pas un reçu tronqué.
+L02 qualifies automatic receipt height. If it fails in the selected version, deterministic premeasurement using the same font/layout is required; never estimate height from character count. Exceeding 2,000 mm returns an error, not a truncated receipt.
 
-## 6. Polices, QR et assets
+## 6. Fonts, QR, and assets
 
-Polices PDF statiques TTF/WOFF compatibles, graisses explicitement enregistrées, accents FR/EN vérifiés. Ne pas réutiliser aveuglément les WOFF2/variables du site. Base envisagée : Noto Sans et Noto Serif statiques sous licence vérifiée, limitée aux graisses utilisées. Aucun téléchargement de police depuis un CDN au rendu.
+Compatible static TTF/WOFF PDF fonts, explicitly registered weights, verified French/English accents. Do not blindly reuse the site's WOFF2/variable fonts. Proposed base: static Noto Sans and Noto Serif with verified licenses, limited to used weights. No font downloads from a CDN during rendering.
 
-QR vectoriel, fond clair, modules foncés, zone calme au moins quatre modules ; vérifier par décodage d'une rasterisation du PDF final. Ne pas promettre qu'un QR arbitrairement long tient sur une petite carte ; rejeter avec message actionnable.
+Vector QR, light background, dark modules, quiet zone of at least four modules; verify by decoding a rasterization of the final PDF. Do not promise that an arbitrarily long QR fits a small card; reject with an actionable message.
 
-`AssetResolver` résout des IDs de manifest en buffers/URLs de même origine côté navigateur et chemins absolus vérifiés côté Node. Aucune lecture arbitraire de fichier depuis `data`. Hash et licence de chaque asset distribuable sont inventoriés.
+`AssetResolver` resolves manifest IDs to same-origin buffers/URLs in the browser and verified absolute paths in Node. No arbitrary file reads from `data`. Inventory hashes and licenses for every distributable asset.
 
-## 7. Erreurs et révisions
+## 7. Errors and revisions
 
-Codes stables : `INVALID_DATA`, `UNSUPPORTED_FORMAT`, `UNSUPPORTED_GLYPH`, `ASSET_REJECTED`, `LAYOUT_OVERFLOW`, `QR_TOO_DENSE`, `LIMIT_EXCEEDED`, `RENDER_TIMEOUT`, `RENDER_FAILED`. Diagnostics sans données personnelles, stack réservée au développement.
+Stable codes: `INVALID_DATA`, `UNSUPPORTED_FORMAT`, `UNSUPPORTED_GLYPH`, `ASSET_REJECTED`, `LAYOUT_OVERFLOW`, `QR_TOO_DENSE`, `LIMIT_EXCEEDED`, `RENDER_TIMEOUT`, `RENDER_FAILED`. Diagnostics contain no personal data; stacks are development-only.
 
-Une révision identifie données, format, thème, locale, images et profil d'impression. Tous ces changements invalident le téléchargement précédent. Le dernier résultat valide peut rester affiché avec indication « aperçu précédent ». Après correction, l'erreur s'efface et la génération reprend ; les résultats de requêtes antérieures ne remplacent jamais la dernière.
+A revision identifies data, format, theme, locale, images, and print profile. Any such change invalidates the previous download. The last valid result may remain visible as "previous preview". After correction, clear the error and resume generation; results from older requests must never replace the latest.

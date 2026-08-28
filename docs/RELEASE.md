@@ -1,56 +1,56 @@
-# Git, CI et livraison
+# Git, CI, and delivery
 
-Procédure de livraison. L00G configure GitHub avant L01 ; l'état réel est dans [github.json](implementation/github.json). Aucun hébergement n'est implicite. Voir [ADR 0002](adr/0002-git-release.md) et [GITHUB](GITHUB.md).
+Delivery procedure. L00G configures GitHub before L01; actual state is in [github.json](implementation/github.json). No hosting is implicit. See [ADR 0002](adr/0002-git-release.md) and [GITHUB](GITHUB.md).
 
-## Commits et revue
+## Commits and review
 
-Une branche par lot, moins de responsabilités possible par commit. Les lockfiles et composants shadcn générés peuvent être volumineux ; isoler ces changements des comportements métier. La fiche de lot fixe les commits, pas un quota de lignes.
+One branch per lot, with as few responsibilities as possible per commit. Lockfiles and generated shadcn components may be large; isolate these changes from application behavior. The lot specification defines commits, not a line quota.
 
-À la fin d'un lot, joindre les preuves ciblées, la liste des exigences satisfaites, les limites et tout changement d'ADR. Pas de merge sans accord. Pas de commit de rapports HTML/PDF générés, secrets ou assets non licenciés.
+At the end of a lot, attach targeted evidence, satisfied requirements, limitations, and ADR changes. No merging without approval. Do not commit generated HTML/PDF reports, secrets, or unlicensed assets.
 
-## CI progressive
+## Progressive CI
 
-L00G : `branch-policy` obligatoire sur dev/main, aucune suite applicative. L01 : `quality`, `unit-tests`, `build`, rendus obligatoires après leur premier run réel. Le job historique `unit-tests` peut garder ce nom, mais couvre unit/components/integration une seule fois. L02 ajoute `pdf-tests`, L07 `consumer-tests`, L06 un premier `e2e-chromium`. Étendre sans multiplier les suites miroir et maintenir une synthèse stable pour les contrôles conditionnels.
+L00G: required `branch-policy` on dev/main, no application suite. L01: `quality`, `unit-tests`, `build`, made mandatory after their first real run. The historical `unit-tests` job may keep its name, but runs unit/components/integration exactly once. L02 adds `pdf-tests`, L07 `consumer-tests`, and L06 the first `e2e-chromium`. Extend without duplicate suites; maintain a stable summary for conditional checks.
 
-L15 rend les exigences finales explicites :
+L15 makes final requirements explicit:
 
-- `quality` : format/lint/types.
-- `unit-tests` : trois projets légers, avec couverture diagnostique en une exécution.
-- `pdf-tests` : suite PDF réelle et références visuelles sélectionnées, sorties partagées.
-- `consumer-tests` : installations externes sur changements de distribution ; obligatoire sur release.
-- `build` : build statique, manifest/hashes/assets ; une fois par candidat.
-- `e2e-chromium` : dépend du build, télécharge et vérifie le même artefact, ne reconstruit pas.
-- `release-policy` : seulement pour la promotion `dev -> main`, SHA candidat et autorisation vérifiés.
+- `quality`: formatting/lint/types.
+- `unit-tests`: three lightweight projects, diagnostic coverage in one run.
+- `pdf-tests`: actual PDF suite and selected visual references, sharing outputs.
+- `consumer-tests`: external installations on distribution changes; required for release.
+- `build`: static build, manifest/hashes/assets; once per candidate.
+- `e2e-chromium`: depends on the build, downloads and verifies the same artifact without rebuilding.
+- `release-policy`: only for `dev -> main` promotion, verifying candidate SHA and authorization.
 
-Permissions minimales `contents: read`, actions de provenance vérifiée épinglées, pas de secrets sur PR de fork. Annuler les runs supplantés d'une PR. Tests lourds séquentiels sur petits runners, pas de relance automatique qui masque la flakiness. Maintenir des noms stables pour les protections ; ne pas exiger un check qui n'a jamais tourné.
+Minimum permissions `contents: read`, pinned actions with verified provenance, no secrets on fork PRs. Cancel superseded PR runs. Run heavy tests sequentially on small runners; no automatic retries hiding flakiness. Keep stable protection check names; do not require a check that has never run.
 
-Les filtres de chemins peuvent éviter consumer/PDF/browser pour de la documentation de planification seule. Ils doivent être testés pour les dépendances partagées : lockfile, fonts, moteur ou registry imposent les contrôles concernés. Une release n'emploie pas ces exemptions.
+Path filters may skip consumer/PDF/browser work for planning-only documentation. Test shared dependency handling: lockfile, fonts, engine, and registry changes require the affected checks. Release uses no such exemptions.
 
-## Hébergement
+## Hosting
 
-Par défaut technique : build statique portable (`apps/www/out`). L'hébergeur reste à confirmer ; Vercel, serveur statique ou autre sont possibles. Ne pas configurer de fournisseur uniquement parce qu'un plugin est disponible.
+Technical default: portable static build (`apps/www/out`). The host remains unconfirmed; Vercel, a static server, or another host are possible. Do not configure a provider simply because a plugin is available.
 
-L15 prévoit une preview si la destination est autorisée, sinon une procédure et une validation HTTP locale clairement marquée. `SITE_URL` contrôle canonical, sitemap et registre ; le build release refuse une URL placeholder. Les previews ne sont pas indexées.
+L15 provides a preview if the destination is authorized; otherwise provide a procedure and clearly labeled local HTTP validation. `SITE_URL` controls canonical URLs, sitemap, and registry; a release build rejects placeholder URLs. Previews are not indexed.
 
-Cache long pour assets hashés et registre versionné immuable ; HTML/catalogue courant revalidables. Les JSON de registre/archives publiques nécessaires à un consommateur sont accessibles sans session ; CORS configuré si nécessaire pour les usages documentés, pas une autorisation générale d'exfiltration.
+Long cache lifetimes for hashed assets and immutable versioned registry files; current HTML/catalog can be revalidated. Registry JSON/public archives needed by consumers are accessible without a session; configure CORS where documented use requires it, not as general permission for exfiltration.
 
-Headers : MIME corrects, `nosniff`, Referrer-Policy, CSP dérivée du build réel, worker-src et font-src locaux. Les besoins `blob:` et scripts inline Next sont mesurés, pas supprimés par un `unsafe-*` global par facilité. Les headers d'un export statique sont appliqués par l'hébergeur. TLS obligatoire pour la publication.
+Headers: correct MIME types, `nosniff`, Referrer-Policy, CSP derived from the actual build, local worker-src/font-src. Measure needs for `blob:` and Next inline scripts; do not use blanket `unsafe-*` allowances for convenience. The host applies static-export headers. Publication requires TLS.
 
-## Licence et attribution
+## License and attribution
 
-Proposer une licence permissive pour le code uniquement après confirmation de l'auteur ; ne pas attribuer un nom depuis la machine Windows. Chaque police/image/dépendance a sa provenance et sa licence. Pas de copie du code ou des assets PDFx pendant cette planification. Toute réutilisation future respecte sa licence et conserve les mentions requises.
+Propose a permissive code license only after confirming the author; do not infer a name from the Windows machine. Every font/image/dependency needs provenance and a license. No PDFx code/assets were copied during planning. Any future reuse must respect its license and retain required notices.
 
 ## Release v1.0.0
 
-1. Tous les lots précédents vérifiés et intégrés, preuve du SHA candidat.
-2. QA fonctionnelle/visuelle et limites documentées ; aucun résultat matériel inventé.
-3. Licence, identité, remote, URL et autorisation de publication confirmés.
-4. Branche release depuis `dev` ; version du catalogue/registre et changelog cohérents. PR de préparation vers `dev`, puis PR de promotion distincte `dev -> main` seulement. Aucune publication npm nécessaire en V1.
-5. Validation complète et preview du candidat exact ; régler les défauts avec commits séparés et relancer uniquement les preuves invalidées, plus la validation finale du SHA retenu.
-6. Promotion autorisée `dev -> main`, conservation du lien de filiation du candidat et déploiement de l'artefact qualifié.
-7. Vérifier le public : liens profonds, source, workers, polices, téléchargement, registre et une installation depuis l'URL publique.
-8. Tag annoté et release sur `main` uniquement après confirmation ; enregistrer tag/SHA/URL, contrôles et limitations. Fermer l'issue L16 et passer Done seulement après cette livraison vérifiée. Les mises à jour documentaires postérieures suivent docs/* -> dev -> main, jamais un push direct.
+1. Verify and integrate all preceding lots, with candidate SHA evidence.
+2. Complete functional/visual QA and document limitations; invent no hardware results.
+3. Confirm license, identity, remote, URL, and publication authorization.
+4. Create a release branch from `dev`; align catalog/registry versions and changelog. Preparation PR to `dev`, then a separate promotion PR `dev -> main` only. No npm publication is required in V1.
+5. Fully validate and preview the exact candidate. Fix defects in separate commits and rerun invalidated evidence, plus final validation of the selected SHA.
+6. Authorize promotion `dev -> main`, retain candidate ancestry, and deploy the qualified artifact.
+7. Verify the public site: deep links, source, workers, fonts, download, registry, and one installation from the public URL.
+8. Create an annotated tag and release on `main` only after confirmation; record tag/SHA/URL, checks, and limitations. Close L16 and set Done only after verified delivery. Later documentation updates follow docs/* -> dev -> main, never a direct push.
 
 ## Rollback
 
-Garder un manifeste et l'artefact du déploiement précédent. Restaurer la version de site et son catalogue courant, sans réécrire les items de registre déjà publiés. Une correction incompatible crée une nouvelle version. Une première release sans précédent documente retrait/maintenance et test de restauration sur preview ; ne pas prétendre avoir testé un rollback de production inexistant.
+Keep the previous deployment's manifest and artifact. Restore its site version and current catalog without rewriting published registry items. An incompatible fix creates a new version. A first release without a predecessor documents withdrawal/maintenance and a preview restoration test; do not claim to have tested a nonexistent production rollback.

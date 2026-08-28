@@ -1,59 +1,59 @@
-# L16 — Release candidate et livraison v1.0.0
+# L16 — Release candidate and v1.0.0 delivery
 
-Statut initial : **planned**. Branche : `release/v1.0.0`.
+Initial status: **planned**. Branch: `release/v1.0.0`.
 
-Dépendances : L15. Exigences : G6 ; définition de terminé du PRD.
+Dependencies: L15. Requirements: G6; PRD definition of done.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../RELEASE.md), [référence 2](../../PRD.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../RELEASE.md), [reference 2](../../PRD.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Qualifier et publier le candidat autorisé, en distinguant préparation locale et livraison publique. Une correction imprévue obtient son propre commit.
+Qualify and publish the authorized candidate, distinguishing local preparation from public delivery. An unexpected fix gets its own commit.
 
-Fichiers/responsabilités cibles : Version catalogue/registre, CHANGELOG.md, README, licences confirmées, docs/qa/L16.md et état.
+Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, confirmed licenses, docs/qa/L16.md, and status.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L16-S01 — `docs(release): prepare v1 documentation licenses and release notes`
 
-- [ ] Confirmer identité/licence avant création des mentions ; compléter licences tierces et README réel.
-- [ ] Notes de version : quinze compositions, formats qualifiés, fonctionnalités réelles et limites, migration si nécessaire.
-- [ ] QA checklist finale avec liens vers preuves L14/L15 et décisions externes ; pas de statut released anticipé.
+- [ ] Confirm identity/license before creating notices; complete third-party licenses and the actual README.
+- [ ] Release notes: fifteen compositions, qualified formats, actual features and limitations, migration if needed.
+- [ ] Final QA checklist linking L14/L15 evidence and external decisions; no premature released status.
 
-**Acceptation :** Les documents publics correspondent au produit réellement implémenté et aux droits de distribution confirmés.
+**Acceptance:** Public documents match the implemented product and confirmed distribution rights.
 
-**Vérification ciblée :** Liens/inventaire/licences ; vérification de version et origin publiques, pas de suite applicative supplémentaire pour un texte seul.
+**Targeted verification:** Links/inventory/licenses; public version/origin checks, no additional application suite for text alone.
 
 ### L16-S02 — `chore(release): prepare docn-ui version 1.0.0`
 
-- [ ] Versionner catalogue/registre/metadata et chemins immuables de release ; dépendances d'items pointent sur même version.
-- [ ] Exécuter validation complète du SHA candidat ; vérifier comparaison preview/download et installation depuis registry candidat.
-- [ ] Traiter tout défaut via fix séparé référencé, puis invalider seulement les preuves concernées avant validation finale du candidat.
-- [ ] PR release/v1.0.0 vers dev, puis promotion dev du même dépôt vers main seulement selon autorisations. Conserver artefact exact et lien avec SHA ; ne pas utiliser Closes sur l'issue L16 avant livraison publique.
+- [ ] Version catalog/registry/metadata and immutable release paths; item dependencies target the same version.
+- [ ] Fully validate the candidate SHA; verify preview/download comparison and installation from the candidate registry.
+- [ ] Handle defects with separate referenced fixes; invalidate only affected evidence before final candidate validation.
+- [ ] PR release/v1.0.0 to dev, then only same-repository dev to main promotion according to authorization. Preserve the exact artifact and SHA relationship; do not use Closes on L16 before public delivery.
 
-**Acceptation :** Le candidat v1.0.0 est vérifié ; aucun chemin dev ni placeholder dans les fichiers publics.
+**Acceptance:** The v1.0.0 candidate is verified; no development path or placeholder in public files.
 
-**Vérification ciblée :** pnpm validate:full sur candidat, CI et preview si disponibles. Le build réutilisé doit porter l'empreinte du candidat.
+**Targeted verification:** pnpm validate:full on the candidate, CI and preview if available. The reused build must carry the candidate fingerprint.
 
 ### L16-S03 — `docs(release): record verified v1 delivery and handoff`
 
-- [ ] Après promotion/déploiement autorisés, vérifier origine publique, deep links, assets, téléchargement et un install public.
-- [ ] Créer tag/release uniquement si autorisés ; enregistrer SHAs/tag/URL exacts et rapport, pas de valeurs fictives.
-- [ ] Marquer L16 released seulement quand G6 est satisfait. Si autorisation manquante, rester verified_local ou blocked avec prochaine action claire.
-- [ ] Écrire guide de maintenance, prochaine famille dans backlog et procédure rollback/retour correctif via dev. Fermer l'issue L16, mettre Project à Done et renseigner les liens réels seulement après G6 ; la trace post-release suit elle aussi une PR vers dev.
+- [ ] After authorized promotion/deployment, verify public origin, deep links, assets, download, and one public installation.
+- [ ] Create tag/release only if authorized; record exact SHAs/tag/URL and report, no fabricated values.
+- [ ] Set L16 released only when G6 is satisfied. If authorization is missing, remain verified_local or blocked with a clear next action.
+- [ ] Write the maintenance guide, next family in the backlog, and rollback/fix-return procedure through dev. Close L16, set Project Done, and record actual links only after G6; post-release records also follow a PR to dev.
 
-**Acceptation :** G6 : produit public vérifié et mainteneur informé ; à défaut, livraison explicitement non accomplie.
+**Acceptance:** G6: verified public product and informed maintainer; otherwise explicitly state delivery is incomplete.
 
-**Vérification ciblée :** Smoke public réel, installation publique représentative, lecture des IDs de version et revue du rapport final. Ne pas refaire quinze exports publics identiques.
+**Targeted verification:** Actual public smoke check, representative public installation, version-ID reads, final report review. Do not repeat fifteen identical public exports.
 
-## Critère de sortie
+## Exit criteria
 
-V1 livrée uniquement après preuves et autorisations. Les tâches postérieures n'autorisent pas des fonctionnalités supplémentaires implicites.
+V1 delivered only after evidence and authorization. Subsequent work does not implicitly authorize additional features.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L16.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L16.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de publication npm inutile, faux compte GitHub, release marquée réussie sur seule base d'un build local.
+No unnecessary npm publication, fake GitHub account, or release claimed successful solely from a local build.

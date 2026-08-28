@@ -72,7 +72,7 @@
   "milestones": {
     "G0": {
       "number": 1,
-      "title": "G0 — Gouvernance",
+      "title": "G0 — Governance",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/1",
       "lots": [
         "L00",
@@ -81,7 +81,7 @@
     },
     "G1": {
       "number": 2,
-      "title": "G1 — Faisabilité PDF",
+      "title": "G1 — PDF feasibility",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/2",
       "lots": [
         "L01",
@@ -90,7 +90,7 @@
     },
     "G2": {
       "number": 3,
-      "title": "G2 — Première carte complète",
+      "title": "G2 — First complete business card",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/3",
       "lots": [
         "L03",
@@ -100,7 +100,7 @@
     },
     "G3": {
       "number": 4,
-      "title": "G3 — Distribution autonome",
+      "title": "G3 — Standalone distribution",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/4",
       "lots": [
         "L06",
@@ -109,7 +109,7 @@
     },
     "G4": {
       "number": 5,
-      "title": "G4 — Catalogue V1",
+      "title": "G4 — V1 catalog",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/5",
       "lots": [
         "L08",
@@ -130,7 +130,7 @@
     },
     "G6": {
       "number": 7,
-      "title": "G6 — Livraison v1.0.0",
+      "title": "G6 — v1.0.0 delivery",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/7",
       "lots": [
         "L15",

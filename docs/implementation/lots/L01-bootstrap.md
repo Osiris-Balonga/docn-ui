@@ -1,68 +1,68 @@
-# L01 — Bootstrap reproductible et périmètres de qualité
+# L01 — Reproducible bootstrap and quality scopes
 
-Statut initial : **planned**. Branche : `chore/bootstrap-workspace`.
+Initial status: **planned**. Branch: `chore/bootstrap-workspace`.
 
-Dépendances : L00G. Exigences : NFR-02, NFR-03, NFR-06, NFR-08.
+Dependencies: L00G. Requirements: NFR-02, NFR-03, NFR-06, NFR-08.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../ARCHITECTURE.md), [référence 2](../../TESTING.md), [référence 3](../../adr/0001-stack.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../ARCHITECTURE.md), [reference 2](../../TESTING.md), [reference 3](../../adr/0001-stack.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Deux workspaces et une page minimale, sans moteur PDF ni faux catalogue. Établir dès maintenant les commandes de tests séparées.
+Two workspaces and a minimal page, without a PDF engine or fake catalog. Establish separate test commands now.
 
-Fichiers/responsabilités cibles : package.json, pnpm-workspace.yaml, pnpm-lock.yaml, apps/www, packages/documents, configs TS/Vitest, .github/workflows/ci.yml.
+Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml, apps/www, packages/documents, TS/Vitest configuration, .github/workflows/ci.yml.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L01-S01 — `chore(workspace): scaffold static Next.js and document sources`
 
-- [ ] Résoudre versions stables compatibles Node/pnpm/React/Next/TS et consigner la table réelle dans docs/DEPENDENCIES.md ; fixer packageManager, engines et versions exactes.
-- [ ] Créer apps/www Next App Router en export statique et packages/documents privé ; TS strict, aliases propres, scripts pnpm multiplateformes, pas de shell Unix imposé à Windows.
-- [ ] Retirer les démos du scaffold ; page minimale honnête, 404 et title ; générer un export qui s'ouvre sur serveur statique.
+- [ ] Resolve compatible stable Node/pnpm/React/Next/TS versions and record the actual table in docs/DEPENDENCIES.md; set packageManager, engines, and exact versions.
+- [ ] Create apps/www with Next App Router/static export and private packages/documents; strict TS, clean aliases, cross-platform pnpm scripts, no Unix shell requirement on Windows.
+- [ ] Remove scaffold demos; provide an honest minimal page, 404, and title; generate an export served by a static server.
 
-**Acceptation :** Installation avec lockfile figé, typecheck et build reproductibles. Aucun import serveur runtime requis.
+**Acceptance:** Frozen-lockfile installation, typechecking, and reproducible build. No runtime server import required.
 
-**Vérification ciblée :** pnpm install --frozen-lockfile ; pnpm typecheck ; pnpm build ; lecture HTTP locale de la page.
+**Targeted verification:** pnpm install --frozen-lockfile; pnpm typecheck; pnpm build; local HTTP page inspection.
 
 ### L01-S02 — `chore(ui): initialize shadcn with Base UI and Tailwind`
 
-- [ ] Consulter les options de la version exacte du CLI ; init non interactif, Base UI, configuration d'aliases et CSS variables.
-- [ ] Installer seulement Button et Tooltip nécessaires au smoke écran ; committer sources et components.json ; ne pas rejouer init avec --force.
-- [ ] Vérifier compilation, thème de base et polices locales du site ; ne pas confondre polices web et PDF.
+- [ ] Inspect exact CLI version options; noninteractive init with Base UI, aliases, and CSS variables.
+- [ ] Install only Button and Tooltip needed for the screen smoke check; commit sources and components.json; do not rerun init with --force.
+- [ ] Verify compilation, base theme, and local site fonts; distinguish web and PDF fonts.
 
-**Acceptation :** Le bouton visible provient des sources shadcn et fonctionne dans le build statique.
+**Acceptance:** The visible button comes from shadcn sources and works in the static build.
 
-**Vérification ciblée :** Build ciblé ; inspection visuelle simple. Aucun test qui recopie les variantes internes de shadcn.
+**Targeted verification:** Targeted build and simple visual inspection. No tests repeating shadcn's internal variants.
 
 ### L01-S03 — `chore(testing): separate unit component and integration scopes`
 
-- [ ] Configurer Vitest unit/components/integration avec globs exclusifs et environnements adaptés ; réserver conventions pdf/consumers sans fausse suite vide réussie.
-- [ ] Fournir scripts décrits dans TESTING : test, watch, coverage, validate, format/lint/types. Préparer un orchestrateur qui ne collecte que les périmètres réellement activés et les documente.
-- [ ] Créer un smoke de composition UI et un test uniquement si un comportement propre existe ; ne pas générer des tests par fichier de config.
-- [ ] Limiter workers, ignorer .artifacts ; vérifier via listing que chaque fichier est collecté une seule fois.
+- [ ] Configure Vitest unit/components/integration with exclusive globs and appropriate environments; reserve pdf/consumers conventions without fake successful empty suites.
+- [ ] Provide TESTING scripts: test, watch, coverage, validate, formatting/lint/types. Prepare an orchestrator that collects only actually activated scopes and documents them.
+- [ ] Create a UI composition smoke check and a test only where custom behavior exists; do not generate tests for every configuration file.
+- [ ] Limit workers, ignore .artifacts, and use test listings to verify each file is collected exactly once.
 
-**Acceptation :** test:unit ne démarre ni DOM ni navigateur ; test:components ne rend pas de PDF ; la liste des périmètres activés est explicite.
+**Acceptance:** test:unit starts neither DOM nor browser; test:components renders no PDF; activated scopes are explicit.
 
-**Vérification ciblée :** pnpm validate ; listing Vitest par projet et vérification des exclusions. Pas de seuil de couverture arbitraire.
+**Targeted verification:** pnpm validate; Vitest listings per project and exclusion checks. No arbitrary coverage threshold.
 
 ### L01-S04 — `ci: add focused quality and build checks`
 
-- [ ] Ajouter quality, unit-tests (trois projets légers en un passage) et build ; actions vérifiées, permissions en lecture et concurrence PR.
-- [ ] Étendre le template PR de L00G avec les commandes désormais disponibles ; conserver issue, risque et preuves. Ne pas recréer le Project ni la politique de branches.
-- [ ] Après un run CI réel, ajouter quality/unit-tests/build aux checks requis des deux branches en conservant branch-policy ; lire les règles actives et les reporter dans github.json. Pas de workflow qui pousse ou déploie.
+- [ ] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
+- [ ] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
+- [ ] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
 
-**Acceptation :** Workflow lisible, commandes locales et CI réelle passent ; nouveaux checks requis vérifiés sur la PR du lot. GitHub indisponible empêche de déclarer cette étape complète.
+**Acceptance:** Readable workflow, passing local commands and actual CI; new required checks verified on the lot PR. Unavailable GitHub prevents claiming completion.
 
-**Vérification ciblée :** pnpm validate ; pnpm build. Réutiliser les résultats du même SHA au lieu de lancer chaque scope deux fois.
+**Targeted verification:** pnpm validate; pnpm build. Reuse results from the same SHA instead of running each scope twice.
 
-## Critère de sortie
+## Exit criteria
 
-Workspace et build propres ; contrats de commandes publiés ; aucun lot PDF dépend d'un test factice.
+Clean workspace and build; published command contracts; no PDF lot depends on a fake test.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L01.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L01.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de plugin d'hébergement, CMS, auth, base de données, Turborepo ou CLI propriétaire.
+No hosting plugin, CMS, authentication, database, Turborepo, or proprietary CLI.

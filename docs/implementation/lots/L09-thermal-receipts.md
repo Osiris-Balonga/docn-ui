@@ -1,57 +1,57 @@
-# L09 — Reçus thermiques et calculs communs
+# L09 — Thermal receipts and shared calculations
 
-Statut initial : **planned**. Branche : `feat/thermal-receipt-templates`.
+Initial status: **planned**. Branch: `feat/thermal-receipt-templates`.
 
-Dépendances : L08. Exigences : FR-10, FR-13, FR-16 ; NFR-05.
+Dependencies: L08. Requirements: FR-10, FR-13, FR-16; NFR-05.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/DOCUMENT_MODEL.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/DOCUMENT_MODEL.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Trois reçus à largeur fixe et hauteur adaptée. Le noyau money servira à la facture, sans répéter les tests de calcul.
+Three fixed-width receipts with adaptive height. The money core will support invoices without repeating calculation tests.
 
-Fichiers/responsabilités cibles : packages/documents/src/core/money, templates/receipts, formulaire reçu et registre.
+Target files/responsibilities: packages/documents/src/core/money, templates/receipts, receipt form, and registry.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L09-S01 — `feat(receipts): add minor-unit totals and receipt data contracts`
 
-- [ ] Implémenter calculs en unités mineures sûres, taux basis-points, arrondi half-up et sommes ; quantités entières V1.
-- [ ] Schémas et bornes, devises/exposants explicites, absence de PAN ou données de paiement sensibles.
-- [ ] Tester les cas économiques distincts : zéro, tax rounding, devise sans décimales, overflow et total de plusieurs lignes ; garder ces tests dans money.
+- [ ] Implement safe minor-unit calculations, basis-point rates, half-up rounding, and sums; V1 integer quantities.
+- [ ] Schemas and limits, explicit currencies/exponents, no PAN or sensitive payment data.
+- [ ] Test distinct economic cases: zero, tax rounding, currency without decimals, overflow, multiline totals; keep these tests in money.
 
-**Acceptation :** Totaux déterministes et identiques pour reçu/facture futur ; aucune arithmétique monétaire flottante implicite.
+**Acceptance:** Deterministic totals shared by receipts/future invoices; no implicit floating-point monetary arithmetic.
 
-**Vérification ciblée :** pnpm test:unit money ; pas de répétition de tous les calculs dans les tests PDF.
+**Targeted verification:** pnpm test:unit money; do not repeat every calculation in PDF tests.
 
 ### L09-S02 — `feat(receipts): add retail hospitality and service roll layouts`
 
-- [ ] Créer compositions retail/hospitality/service et variations 58/80 mm avec taille de texte lisible.
-- [ ] Réutiliser hauteur qualifiée en L02 ; vérifier dernière ligne et pieds, limiter à 2 000 mm, erreur sans troncature.
-- [ ] Thèmes adaptés au monochrome et imports logo sûrs ; brancher éditeur, catalogue, source et registre.
+- [ ] Create retail/hospitality/service compositions and 58/80 mm variants with readable text sizes.
+- [ ] Reuse height qualified in L02; verify last lines and footers, limit to 2,000 mm, error without truncation.
+- [ ] Monochrome-adapted themes and safe logo imports; connect editor, catalog, source, and registry.
 
-**Acceptation :** Un reçu court n'est pas une page A4 et un reçu long conserve son total ; 58 mm n'est pas une réduction illisible de 80 mm.
+**Acceptance:** A short receipt is not an A4 page; a long receipt retains its total; 58 mm is not an unreadable shrink of 80 mm.
 
-**Vérification ciblée :** Suite PDF de famille : exemples nominaux, limite étroite et fixture longue ; réutiliser fixtures de faisabilité.
+**Targeted verification:** Family PDF suite: nominal examples, narrow boundary, long fixture; reuse feasibility fixtures.
 
 ### L09-S03 — `test(receipts): verify variable-height output and limit recovery`
 
-- [ ] Consolider contrôle de hauteur/max et message utilisateur ; pas de test par nombre possible de lignes.
-- [ ] Une référence visuelle du reçu et un contrôle manuel de lecture sur le viewer long.
-- [ ] Documenter largeur papier versus largeur imprimable, échelle 100 % et limites matérielles.
+- [ ] Consolidate height/maximum checks and user messages; no test for every possible line count.
+- [ ] One receipt visual reference and a manual readability check in the long-document viewer.
+- [ ] Document paper width versus printable width, 100% scale, and hardware limitations.
 
-**Acceptation :** Dépassement expliqué, correction relance le rendu ; aucune facture multipage utilisée comme substitut de reçu.
+**Acceptance:** Explain overflow and resume rendering after correction; never substitute a multipage invoice for a receipt.
 
-**Vérification ciblée :** pnpm test:pdf receipt ; component erreur de famille seulement si spécifique ; pnpm verify:registry.
+**Targeted verification:** pnpm test:pdf receipt; a family error component test only if specific; pnpm verify:registry.
 
-## Critère de sortie
+## Exit criteria
 
-Neuf compositions au total ; calculs et hauteur réutilisables sans logique métier dupliquée.
+Nine compositions in total; reusable calculations and height without duplicated application logic.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L09.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L09.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de commande directe d'imprimante, protocole ESC/POS, conformité fiscale ou paiement réel.
+No direct printer commands, ESC/POS protocol, tax compliance, or actual payments.

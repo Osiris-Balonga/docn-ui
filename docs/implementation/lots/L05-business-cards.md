@@ -1,68 +1,68 @@
-# L05 — Carte de visite de bout en bout
+# L05 — Business cards from editing to export
 
-Statut initial : **planned**. Branche : `feat/business-card-templates`.
+Initial status: **planned**. Branch: `feat/business-card-templates`.
 
-Dépendances : L04. Exigences : FR-02, FR-04–FR-08 ; NFR-04, NFR-05 ; G2.
+Dependencies: L04. Requirements: FR-02, FR-04–FR-08; NFR-04, NFR-05; G2.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/TEMPLATE_CATALOG.md), [référence 2](../../specs/DOCUMENT_MODEL.md), [référence 3](../../../DESIGN.md), [référence 4](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/TEMPLATE_CATALOG.md), [reference 2](../../specs/DOCUMENT_MODEL.md), [reference 3](../../../DESIGN.md), [reference 4](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Première chaîne complète avec business-card-minimal, puis deux autres compositions. Valider le produit avant généralisation de la galerie.
+First complete workflow with business-card-minimal, then two additional compositions. Validate the product before generalizing the gallery.
 
-Fichiers/responsabilités cibles : packages/documents/src/templates/business-cards, apps/www/src/features/playground et pdf-viewer, route template.
+Target files/responsibilities: packages/documents/src/templates/business-cards, apps/www/src/features/playground and pdf-viewer, template route.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L05-S01 — `feat(cards): add typed two-sided minimal business card`
 
-- [ ] Schéma carte, données synthétiques FR/EN, metadata et formats déclarés ; composer recto/verso minimal.
-- [ ] Respecter zones sûres, coordonnées facultatives et ordre des faces ; message si nom ou adresse ne tient pas.
-- [ ] Une suite PDF de famille contient le cas nominal et le risque de débordement ; mesurer les deux faces.
+- [ ] Create the card schema, synthetic French/English data, metadata, and declared formats; compose minimal front/back.
+- [ ] Respect safe areas, optional contact details, and side order; report names or addresses that do not fit.
+- [ ] One family PDF suite contains the nominal case and overflow risk; measure both sides.
 
-**Acceptation :** Le PDF minimal a deux pages à la bonne taille, sans perte des coordonnées et sans dépendance site.
+**Acceptance:** The minimal PDF has two correctly sized pages, preserves contact details, and has no site dependency.
 
-**Vérification ciblée :** pnpm test:pdf business-card ; revue des deux faces.
+**Targeted verification:** pnpm test:pdf business-card; review both sides.
 
 ### L05-S02 — `feat(playground): edit card data and preview the actual PDF`
 
-- [ ] Créer fiche et formulaire carte avec shadcn, validation près des champs et reset à l'exemple.
-- [ ] Brancher worker/version des données, choix format/thème et viewer pages/zoom ; état ancien/erreur explicite.
-- [ ] Téléchargement du même résultat final ; nom de fichier neutre et sûr, pas de données personnelles inutiles dans le nom.
-- [ ] Activer `test:e2e` et la configuration Playwright Chromium au premier parcours réel : serveur de build isolé, un worker, retries 0, artefacts ignorés. Ajouter ce périmètre à `test:all` sans l'inclure dans les tests légers.
+- [ ] Create the card detail page and form with shadcn, field-level validation, and reset to sample data.
+- [ ] Connect the worker/data revision, format/theme selection, and page/zoom viewer; explicit stale/error states.
+- [ ] Download the same final result; use a neutral, safe filename without unnecessary personal data.
+- [ ] Activate `test:e2e` and Playwright Chromium configuration with the first real journey: isolated build server, one worker, retries 0, ignored artifacts. Add this scope to `test:all` without including it in lightweight tests.
 
-**Acceptation :** Modifier le nom met à jour le PDF ; le verso et l'export correspondent à la dernière révision valide.
+**Acceptance:** Changing the name updates the PDF; the back and export match the latest valid revision.
 
-**Vérification ciblée :** Components du formulaire avec renderer simulé ; un vrai parcours browser modification→verso→export.
+**Targeted verification:** Form component tests with a simulated renderer; one real browser edit→back→export journey.
 
 ### L05-S03 — `feat(cards): add editorial and studio compositions`
 
-- [ ] Ajouter les deux structures distinctes prévues, partager schéma et helpers de famille.
-- [ ] Déclarer les formats réellement supportés ; tester le changement de taille aux limites, pas tous les thèmes/langues combinés.
-- [ ] Produire les vignettes depuis les PDF ; relire ensemble les trois compositions et leurs versos.
+- [ ] Add the two planned distinct structures, sharing family schema and helpers.
+- [ ] Declare actually supported formats; test size changes at boundaries without combining all themes/languages.
+- [ ] Generate thumbnails from PDFs; review the three compositions and their backs together.
 
-**Acceptation :** Trois compositions différenciées structurellement ; toute taille annoncée reste lisible.
+**Acceptance:** Three structurally different compositions; every advertised size remains readable.
 
-**Vérification ciblée :** Étendre la même suite PDF aux deux exemples nominaux ; planche contact et cas de plus petit format.
+**Targeted verification:** Extend the same PDF suite with two nominal examples; contact sheet and smallest-format case.
 
 ### L05-S04 — `test(cards): verify faithful export and fixed-layout recovery`
 
-- [ ] Consolider le parcours réel avec saisie invalide puis correction, reset et changement de format.
-- [ ] Vérifier contenu et dimensions du fichier téléchargé, pas seulement l'événement download ; empreinte/octets de la révision de preview.
-- [ ] Supprimer les écrans de spike devenus inutiles ; enregistrer QA G2 et limites physiques.
+- [ ] Consolidate the real journey with invalid input, correction, reset, and format changes.
+- [ ] Verify downloaded content and dimensions, not only the download event; check preview-revision fingerprint/bytes.
+- [ ] Remove obsolete spike screens; record G2 QA and physical limitations.
 
-**Acceptation :** G2 : utilisateur sans aide produit une carte personnalisée et en récupère un PDF correct ; aucune fonctionnalité annoncée n'est simulée.
+**Acceptance:** G2: an unaided user creates a customized card and obtains a correct PDF; no advertised functionality is simulated.
 
-**Vérification ciblée :** pnpm validate ; pnpm test:pdf business-card ; E2E carte ciblé et revue visuelle. Aucun E2E copié pour chaque composition.
+**Targeted verification:** pnpm validate; pnpm test:pdf business-card; targeted card E2E and visual review. No copied E2E for each composition.
 
-## Critère de sortie
+## Exit criteria
 
-G2 atteint ; première expérience complète et trois cartes prêtes pour catalogue/registre.
+G2 reached; first complete experience and three cards ready for catalog/registry.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L05.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L05.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de rendu HTML de substitution, code editor exécutable ou catalogue général avant cette preuve.
+No substitute HTML rendering, executable code editor, or general catalog before this evidence.

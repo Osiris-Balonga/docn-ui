@@ -1,59 +1,59 @@
-# L15 — CI finale et préparation du déploiement
+# L15 — Final CI and deployment preparation
 
-Statut initial : **planned**. Branche : `ci/release-delivery`.
+Initial status: **planned**. Branch: `ci/release-delivery`.
 
-Dépendances : L14. Exigences : NFR-06, NFR-09, NFR-10.
+Dependencies: L14. Requirements: NFR-06, NFR-09, NFR-10.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../RELEASE.md), [référence 2](../../TESTING.md), [référence 3](../../adr/0002-git-release.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../RELEASE.md), [reference 2](../../TESTING.md), [reference 3](../../adr/0002-git-release.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Rendre les validations et la publication reproductibles, sans publier tant que les autorisations/destinations sont inconnues.
+Make validation and publication reproducible without publishing while authorizations/destinations remain unknown.
 
-Fichiers/responsabilités cibles : .github/workflows, tooling/build, configuration hébergeur si autorisée, docs/RELEASE.md.
+Target files/responsibilities: .github/workflows, tooling/build, host configuration if authorized, docs/RELEASE.md.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L15-S01 — `ci: gate releases with scoped checks and one build artifact`
 
-- [ ] Finaliser quality/unit-tests/pdf-tests/consumer-tests/build/e2e-chromium et release-policy ; vérifier les chemins de dépendances partagées.
-- [ ] Épingler actions, permissions et environnements ; un seul build consommé par E2E/deploy, SHA/manifest vérifiés.
-- [ ] Tests lourds séparés, pas de validate:full relancé dans chaque job, aucun secret exposé aux forks.
-- [ ] Auditer les protections réelles issues de L00G et mises à jour depuis L01 ; vérifier les checks requis et ajouter release-policy après preuve réelle. Aucun bootstrap GitHub reporté à ce lot.
+- [ ] Finalize quality/unit-tests/pdf-tests/consumer-tests/build/e2e-chromium and release-policy; verify shared dependency paths.
+- [ ] Pin actions, permissions, and environments; E2E/deploy consume one build with verified SHA/manifest.
+- [ ] Separate heavy tests; do not rerun validate:full in every job or expose secrets to forks.
+- [ ] Audit actual protections established in L00G and updated since L01; verify required checks and add release-policy after real evidence. No GitHub bootstrap deferred to this lot.
 
-**Acceptation :** Le graphe CI explique quelle suite tourne et quel artefact sera déployé ; aucune preuve omise par filtre incorrect.
+**Acceptance:** The CI graph explains which suite runs and which artifact will deploy; incorrect filters omit no evidence.
 
-**Vérification ciblée :** Simulation des déclencheurs/commandes locales ; run CI réel seulement avec remote autorisé.
+**Targeted verification:** Simulate triggers/local commands; actual CI run only with an authorized remote.
 
 ### L15-S02 — `build(site): prepare portable static deployment and registry caching`
 
-- [ ] Configurer SITE_URL et assets du vrai build ; chemins profonds et MIME JSON/fonts/workers corrects.
-- [ ] Cache distinct HTML/catalogue courant vs assets/version immuable, headers validés, preview non indexable.
-- [ ] Créer commande/procédure de preview locale ; adapter hébergeur seulement après choix explicite.
-- [ ] Vérifier registre depuis HTTP, pas seulement fichiers locaux ; placeholder de domaine interdit en release.
+- [ ] Configure SITE_URL and actual build assets; correct deep paths and JSON/font/worker MIME types.
+- [ ] Separate HTML/current-catalog caching from immutable version/assets; validated headers and nonindexable previews.
+- [ ] Create a local preview command/procedure; adapt to a host only after explicit selection.
+- [ ] Verify the registry through HTTP, not only local files; release prohibits domain placeholders.
 
-**Acceptation :** La version construite fonctionne derrière un serveur statique et ses commandes d'installation ciblent l'origine correcte.
+**Acceptance:** The built version works behind a static server; installation commands target the correct origin.
 
-**Vérification ciblée :** Smoke HTTP local ou preview autorisée : page profonde, PDF, worker, fonts, registre ; vérifier les headers de l'environnement réellement testé.
+**Targeted verification:** Local HTTP or authorized preview smoke check: deep page, PDF, worker, fonts, registry; inspect headers of the environment actually tested.
 
 ### L15-S03 — `docs(release): document publication approval and rollback procedure`
 
-- [ ] Renseigner décisions encore nécessaires : auteur/licence, remote/visibilité, domaine/hébergeur et permission publication.
-- [ ] Conserver procédure release/rollback de l'artefact, immutabilité des anciens items et matrice de compatibilité.
-- [ ] Préparer checklist L16 et ressources disponibles, ne pas créer compte/domaine/tag en avance.
+- [ ] Record remaining decisions: author/license, remote/visibility, domain/host, publication permission.
+- [ ] Retain the artifact release/rollback procedure, old-item immutability, and compatibility matrix.
+- [ ] Prepare the L16 checklist and available resources; do not create accounts/domains/tags in advance.
 
-**Acceptation :** Le mainteneur peut identifier exactement ce qu'il doit autoriser ; tout le développement local est terminé indépendamment de ces décisions.
+**Acceptance:** The maintainer can identify exactly what needs authorization; all local development is complete independently of these decisions.
 
-**Vérification ciblée :** Revue de procédure et test de restauration en preview si disponible ; aucun claim de rollback production avant première release.
+**Targeted verification:** Procedure review and preview restoration test if available; no production rollback claim before the first release.
 
-## Critère de sortie
+## Exit criteria
 
-Pipeline prêt ; preview vérifiée si autorisée, sinon état local précis. L16 attend les autorisations réellement manquantes.
+Pipeline ready; verified preview if authorized, otherwise precise local state. L16 waits for actually missing authorizations.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L15.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L15.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas d'achat, compte, push, merge, domaine ou package publié sans accord explicite.
+No purchase, account, push, merge, domain, or package publication without explicit approval.

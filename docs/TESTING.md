@@ -1,106 +1,106 @@
-# Tests — périmètres séparés et couverture utile
+# Testing — separate scopes and useful coverage
 
-**Instruction explicite du mainteneur : ne pas multiplier les tests inutiles.** Référence : `paint-3d` final, `docs/TESTING.md`, `package.json`, `vitest.config.ts` et `playwright.config.ts`, lus au commit `8e370cd5e6802be762bf14a192a3e68cbb52fa54`.
+**Explicit maintainer instruction: do not multiply unnecessary tests.** Reference: final `paint-3d`, `docs/TESTING.md`, `package.json`, `vitest.config.ts`, and `playwright.config.ts`, read at commit `8e370cd5e6802be762bf14a192a3e68cbb52fa54`.
 
-## 1. Question avant chaque nouveau test
+## 1. Question before every new test
 
-Quel bug concret ce test détecte-t-il que les tests existants ne détecteraient pas ? Si la réponse est « le composant existe », « la config répète une valeur » ou « une autre couleur », ne pas ajouter le test. Étendre une suite/fixture existante avant de créer un fichier.
+Which concrete bug would this test detect that existing tests would miss? If the answer is "the component exists", "the configuration repeats a value", or "another color", do not add it. Extend an existing suite/fixture before creating a file.
 
-Ne pas retester shadcn, React, Zod, QR encoder ou PDF.js eux-mêmes. Tester notre composition, notre contrat et nos intégrations aux frontières. Ne pas répéter en E2E toutes les permutations de tests unitaires. Conserver les vrais cas limites et régressions même si un tableau de cas les regroupe : réduire le nombre de fichiers n'est pas le but.
+Do not retest shadcn, React, Zod, the QR encoder, or PDF.js themselves. Test our compositions, contracts, and boundary integrations. Do not repeat all unit-test permutations in E2E. Retain real edge cases and regressions even when a case table groups them: reducing file count is not the objective.
 
-Pas d'objectif de nombre de tests, pas de seuil global de couverture qui pousse à écrire du remplissage. La couverture est un diagnostic des chemins métier non exercés ; les risques critiques ont des assertions explicites. Pas de snapshots complets de DOM ni de snapshots de JSX PDF.
+No target test count or global coverage threshold that encourages filler. Coverage diagnoses untested application paths; critical risks need explicit assertions. No complete DOM snapshots or PDF JSX snapshots.
 
-## 2. Affectation exclusive des fichiers
+## 2. Exclusive file assignment
 
-| Périmètre | Fichiers | Environnement et responsabilité |
+| Scope | Files | Environment and responsibility |
 | --- | --- | --- |
-| `unit` | `*.test.ts`, hors suffixes ci-dessous | Node ; géométrie, money, schémas, transitions pures, graphe registre |
-| `components` | `*.test.tsx`, hors suffixes spécialisés | jsdom ; interactions et sémantique des compositions UI métier |
-| `integration` | `*.integration.test.{ts,tsx}` | modules réels combinés ; effets lourds aux frontières simulés explicitement |
-| `pdf` | `*.pdf.test.{ts,tsx}` | Node ; vrai moteur PDF, contenu, pages, géométrie et décodage QR |
-| `consumers` | `tests/consumers/**/*.consumer.test.ts` | Node/process ; vrai CLI dans projets externes, assets et rendu |
-| `e2e` | `tests/e2e/**/*.spec.ts` | Chromium ; site construit, workers et export réels |
-| `visual` | liste explicite `tests/visual/cases.*` | rasterisation de PDF sélectionnés + comparaison approuvée |
+| `unit` | `*.test.ts`, excluding suffixes below | Node; geometry, money, schemas, pure transitions, registry graph |
+| `components` | `*.test.tsx`, excluding specialized suffixes | jsdom; interactions and semantics of application UI compositions |
+| `integration` | `*.integration.test.{ts,tsx}` | Real combined modules; explicitly simulated heavy boundary effects |
+| `pdf` | `*.pdf.test.{ts,tsx}` | Node; actual PDF engine, content, pages, geometry, QR decoding |
+| `consumers` | `tests/consumers/**/*.consumer.test.ts` | Node/process; real CLI in external projects, assets, rendering |
+| `e2e` | `tests/e2e/**/*.spec.ts` | Chromium; built site, real workers and exports |
+| `visual` | Explicit list `tests/visual/cases.*` | Selected PDF rasterizations and approved comparisons |
 
-Les globs unit/components excluent integration/pdf/consumer. Chaque fichier appartient à un seul projet. Les tests browser ne sont pas collectés par Vitest. Les tests UI n'importent pas le moteur PDF réel ; le périmètre PDF ne monte pas le site.
+Unit/components globs exclude integration/pdf/consumer. Each file belongs to exactly one project. Vitest does not collect browser tests. UI tests do not import the real PDF engine; PDF tests do not mount the site.
 
-## 3. Commandes contractuelles
+## 3. Command contracts
 
-Ces scripts sont à implémenter dans L01, puis activés avec leur première vraie suite. Un périmètre non encore implémenté est marqué indisponible, pas remplacé par un script qui retourne succès.
+Implement these scripts in L01, then activate each scope with its first real suite. An unimplemented scope is unavailable, not replaced by a script returning success.
 
-| Commande | Ce qu'elle exécute exclusivement |
+| Command | Exclusive execution |
 | --- | --- |
 | `pnpm test:unit` | `vitest run --project unit` |
 | `pnpm test:components` | `vitest run --project components` |
 | `pnpm test:integration` | `vitest run --project integration` |
-| `pnpm test` | ces trois projets légers, chacun une fois, puis sortie |
-| `pnpm test:watch` | mêmes trois projets en watch ; `--project` permet le filtrage documenté |
-| `pnpm test:coverage` | mêmes trois projets, une seule exécution avec rapport commun |
-| `pnpm test:pdf` | `vitest run --project pdf`, vrai PDF uniquement |
-| `pnpm test:consumers` | projet consumers isolé, installations et processus externes |
-| `pnpm test:e2e` | Playwright Chromium, parcours du site uniquement |
-| `pnpm test:visual` | références PDF sélectionnées, pas les parcours E2E |
-| `pnpm test:all` | orchestrateur séquentiel : test, pdf, consumers, e2e, visual ; aucune double collecte |
-| `pnpm validate` | format, lint, types et `pnpm test` ; contrôle quotidien rapide |
-| `pnpm validate:full` | format, lint, types et `test:all` ; build préparé/réutilisé une seule fois |
-| `pnpm build` | vérification assets/registre puis build statique ; aucun test caché |
-| `pnpm verify:registry` | schéma/graphe/chemins/imports du registre déjà généré ; pas d'installation |
-| `pnpm verify:assets` | présence, licences et checksums ; pas de tests browser |
-| `pnpm verify:bundle` | tailles des fichiers du build existant |
+| `pnpm test` | These three lightweight projects, once each, then exit |
+| `pnpm test:watch` | The same three projects in watch mode; documented filtering with `--project` |
+| `pnpm test:coverage` | The same three projects, one run with a combined report |
+| `pnpm test:pdf` | `vitest run --project pdf`, actual PDFs only |
+| `pnpm test:consumers` | Isolated consumers project, installations and external processes |
+| `pnpm test:e2e` | Playwright Chromium, site journeys only |
+| `pnpm test:visual` | Selected PDF references, not E2E journeys |
+| `pnpm test:all` | Sequential orchestrator: test, pdf, consumers, e2e, visual; no duplicate collection |
+| `pnpm validate` | Formatting, lint, types, and `pnpm test`; fast daily check |
+| `pnpm validate:full` | Formatting, lint, types, and `test:all`; build prepared/reused once |
+| `pnpm build` | Asset/registry verification, then static build; no hidden tests |
+| `pnpm verify:registry` | Schema/graph/paths/imports of the generated registry; no installation |
+| `pnpm verify:assets` | Presence, licenses, checksums; no browser tests |
+| `pnpm verify:bundle` | File sizes from the existing build |
 
-La différence avec DrawMotion est volontaire et explicite : `validate` est léger ici ; `validate:full` est le verrou complet de jalon. Ne pas utiliser `validate` seul comme preuve de release. `test:all` doit inclure tous les périmètres activés, pas une sélection cachée. L01 documente le contrat des commandes présentes ; les lots suivants ajoutent leurs périmètres à l'agrégateur au moment de leur activation.
+The difference from DrawMotion is intentional: `validate` is lightweight here; `validate:full` is the complete gate check. Do not use `validate` alone as release evidence. `test:all` must include every activated scope, not a hidden selection. L01 documents the available commands; later lots add their scopes to the aggregator when activated.
 
-Filtres natifs : `pnpm test:unit geometry`, `pnpm test:pdf invoice`, `pnpm test:e2e catalog.spec.ts`. Pas d'alias par scénario, par thème ou par template. Pour un watch isolé, documenter aussi `pnpm exec vitest --project unit` afin d'éviter le cumul de flags de projets du script global.
+Native filters: `pnpm test:unit geometry`, `pnpm test:pdf invoice`, `pnpm test:e2e catalog.spec.ts`. No aliases per scenario, theme, or template. For isolated watch mode, also document `pnpm exec vitest --project unit` to avoid accumulating project flags from the global script.
 
-## 4. Quand exécuter quoi
+## 4. What to run and when
 
-| Changement | Vérification suffisante pendant le lot |
+| Change | Sufficient verification during the lot |
 | --- | --- |
-| Documentation seule | liens, cohérence IDs/commandes ; aucune suite applicative sans raison |
-| Gouvernance GitHub | politique de branches ciblée, lectures API et PR/probes contrôlées ; aucune suite PDF/UI |
-| Fonction pure | unit ciblé + types/lint concernés |
-| Formulaire métier | components ciblé ; integration si coordination affectée |
-| Layout PDF | suite PDF de la famille ; revue du rendu modifié |
-| Pipeline worker/export | integration ciblé + un vrai parcours E2E |
-| Distribution/imports/assets | verify:registry/assets + consumers ciblé |
-| Style/navigation | parcours concerné et contrôle visuel responsive ciblé |
-| Fin de jalon G1/G2/G3 | contrôles spécifiques du jalon + validate |
-| G4/G5 et release | validate:full sur checkout propre ; réutiliser une preuve CI du même SHA |
+| Documentation only | Links and ID/command consistency; no application suite without a reason |
+| GitHub governance | Targeted branch policy, API reads, controlled PRs/probes; no PDF/UI suite |
+| Pure function | Targeted unit tests and affected types/lint |
+| Application form | Targeted component tests; integration if coordination changes |
+| PDF layout | Family PDF suite; review the changed rendering |
+| Worker/export pipeline | Targeted integration and one real E2E journey |
+| Distribution/imports/assets | verify:registry/assets and targeted consumers |
+| Styling/navigation | Affected journey and targeted responsive visual check |
+| End of gate G1/G2/G3 | Gate-specific checks and validate |
+| G4/G5 and release | validate:full on a clean checkout; reuse CI evidence for the same SHA |
 
-Pas de suite complète après chaque retouche de texte. Pas de couverture + test léger répétés dans le même job CI : le job avec couverture remplace l'exécution sans couverture, il ne s'y ajoute pas.
+No full suite after every text edit. Do not run coverage and repeat lightweight tests in the same CI job: coverage replaces the run without coverage rather than adding to it.
 
-## 5. Couverture PDF proportionnée
+## 5. Proportionate PDF coverage
 
-Une suite partagée par famille produit les trois exemples nominaux et vérifie les invariants utiles : fichier lisible, dimensions, texte essentiel, nombre de pages/faces attendu, absence de page blanche finale. Les attentes ne sont pas calculées par la fonction testée.
+One shared suite per family generates the three nominal examples and verifies useful invariants: readable file, dimensions, essential text, expected pages/sides, no final blank page. Expected values must not be computed by the function under test.
 
-Ajouter ensuite les risques différents : carte débordante, QR impossible, reçu à la limite de hauteur, cellule de départ d'une planche, facture sur plusieurs pages. Les limites communes d'image, de données et de monnaie sont testées au niveau partagé, pas pour quinze compositions.
+Then add distinct risks: overflowing card, impossible QR, receipt at the height limit, sheet starting cell, multipage invoice. Common image/data/money limits are tested at the shared level, not repeated for fifteen compositions.
 
-Les tests PDF inspectent les fichiers avec un lecteur indépendant du layout. Une signature `%PDF` ou un `Blob.size > 0` ne prouve pas le contenu. Le décodage QR porte sur une rasterisation du PDF final, pas seulement sur la chaîne envoyée à l'encodeur.
+Inspect PDFs with a reader independent of the layout. A `%PDF` signature or `Blob.size > 0` does not prove content. Decode QR from a rasterization of the final PDF, not merely from the string sent to the encoder.
 
-Les snapshots visuels commencent avec un exemple représentatif par famille. Ajouter une référence uniquement pour une structure ou régression visuelle distincte. Pas de matrice automatique 15 × formats × thèmes × langues × navigateurs. Une planche contact des quinze exemples facilite la revue humaine sans quinze suites browser.
+Visual snapshots start with one representative example per family. Add a reference only for a distinct structure or visual regression. No automatic 15 × formats × themes × languages × browsers matrix. A contact sheet of all fifteen examples helps human review without fifteen browser suites.
 
-Le test de fichier vérifie ce qu'un test unitaire ne peut pas prouver : moteur, pagination, polices et placements. Les seuils de pixel diff sont calibrés sur un runner Linux fixé avec rasteriseur/polices épinglés ; ne pas comparer Windows et Linux comme s'ils étaient bit-identiques. Metadonnées temporelles fixées en fixture ; pas d'égalité binaire arbitraire entre deux rendus.
+File tests verify what unit tests cannot: the engine, pagination, fonts, and placement. Calibrate pixel-diff thresholds on a fixed Linux runner with pinned rasterizer/fonts; do not treat Windows and Linux as bit-identical. Fix temporal metadata in fixtures; do not require arbitrary binary equality between renders.
 
-## 6. E2E et installation externe
+## 6. E2E and external installation
 
-Petit ensemble de parcours qui couvrent des risques distincts : découverte/filtre ; carte modifiée puis export et verso ; données invalides et reprise ; changement rapide de template/révision ; import image refusé ; une facture multipage ; clavier/recherche et confidentialité. Regrouper les assertions d'un même parcours au lieu de créer un test par bouton.
+Keep a small set of journeys covering distinct risks: discovery/filtering; edited card with export and back side; invalid data and recovery; rapid template/revision changes; rejected image import; one multipage invoice; keyboard/search and privacy. Group assertions from one journey instead of making one test per button.
 
-Les données/moteur/worker sont réels dans le parcours nominal. Les échecs de worker ou permissions sont injectés uniquement dans les scénarios qui les demandent. Pas de test hooks de mutation de l'état React en production.
+Use real data/engine/worker in the nominal journey. Inject worker or permission failures only in scenarios requiring them. No production test hooks that mutate React state.
 
-Consumers : deux environnements, pas une installation par déclinaison. La validation statique couvre tous les items ; les installations couvrent les fermetures de dépendances distinctes. Un changement du thème ne justifie pas une série de téléchargements npm.
+Consumers: two environments, not one installation per variant. Static validation covers all items; installations cover distinct dependency closures. A theme change does not justify repeated npm downloads.
 
-## 7. Coût, isolation et artefacts
+## 7. Cost, isolation, and artifacts
 
-Vitest deux workers maximum par défaut ; PDF/consumers et Playwright un worker, retries 0. Aucun serveur utilisateur réutilisé. Ports loopback contrôlés, profils temporaires, erreurs si port occupé. Date/locale/fuseau explicites. Artefacts sous `.artifacts/` et ignorés ; seules fixtures et références sélectionnées vont dans Git.
+Vitest defaults to at most two workers; PDF/consumers and Playwright use one worker, retries 0. Never reuse a user's server. Use controlled loopback ports, temporary profiles, and fail on occupied ports. Explicit dates/locales/time zones. Ignore artifacts under `.artifacts/`; only fixtures and selected references go into Git.
 
-L'orchestrateur de validation prépare le build une fois, enregistre SHA/hash des entrées et le transmet à l'E2E (`E2E_USE_BUILD=1`). Une commande E2E autonome construit elle-même si aucun artefact validé n'est fourni. Ne jamais réutiliser un build périmé. Le visual peut utiliser les PDF déjà générés avec empreinte correspondante ; sinon générer ses entrées sans rejouer toutes les assertions PDF.
+The validation orchestrator prepares the build once, records SHA/input hashes, and passes it to E2E (`E2E_USE_BUILD=1`). Standalone E2E builds when no validated artifact is supplied. Never reuse a stale build. Visual checks may use already generated PDFs with matching fingerprints; otherwise generate inputs without rerunning every PDF assertion.
 
-En CI : un job Vitest léger, un job PDF, un job consumer, un job build et un job browser/visual selon coût ; ne pas relancer `validate:full` dans chacun. Les jobs dépendants réutilisent l'artefact de build. Les jobs conditionnels signalent explicitement `not-applicable`, jamais un résultat inventé ; la release exécute tous les périmètres.
+CI: one lightweight Vitest job, one PDF job, one consumer job, one build job, and browser/visual jobs according to cost; do not rerun `validate:full` in every job. Dependent jobs reuse the build artifact. Conditional jobs explicitly report `not-applicable`, never an invented result; release runs every scope.
 
-## 8. Preuves et limites
+## 8. Evidence and limitations
 
-L00G précède pnpm : `node --test tooling/github/branch-policy.test.mjs` couvre une seule table de cas de gouvernance, avec le runner Node natif. Ce périmètre outillage reste explicite et distinct des sept périmètres applicatifs ; aucune collecte Vitest de `.test.mjs`, aucune matrice E2E ajoutée. `branch-policy` tourne sur chaque PR ; sa table de tests est exécutée lors des modifications de politique. Les lectures/probes GitHub de setup ne sont jamais relancées par `pnpm test` ou `validate:full`.
+L00G precedes pnpm: `node --test tooling/github/branch-policy.test.mjs` covers one governance case table using Node's native runner. This tooling scope stays explicit and separate from the seven application scopes; no Vitest collection of `.test.mjs` and no additional E2E matrix. `branch-policy` runs on every PR; its test table runs when policy changes. GitHub setup reads/probes never rerun through `pnpm test` or `validate:full`.
 
-Chaque `docs/qa/Lxx.md` mentionne commande réelle, SHA, environnement, résultat, fichiers examinés et limites. Distinguer test simulé, vrai PDF, vrai navigateur et impression physique. Les dimensions du fichier ne prouvent pas le réglage d'échelle d'une imprimante ; le scan automatisé QR ne remplace pas entièrement un essai matériel.
+Every `docs/qa/Lxx.md` records the actual command, SHA, environment, result, inspected files, and limitations. Distinguish simulated tests, real PDFs, real browsers, and physical printing. File dimensions do not prove a printer's scale setting; automated QR decoding does not fully replace a hardware trial.
 
-Au jalon final : vérifier clavier et lecteur d'écran, zoom 200 %, contraste, téléchargement sur navigateurs ciblés et impression à 100 % d'une carte/planche. L'absence d'imprimante n'empêche pas le développement ; elle est notée et empêche de promettre une calibration physique universelle.
+At the final gate: check keyboard and screen-reader use, 200% zoom, contrast, downloading in target browsers, and printing a card/sheet at 100%. Lack of a printer does not block development; record it and do not promise universal physical calibration.
