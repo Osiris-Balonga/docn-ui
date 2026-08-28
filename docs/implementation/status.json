@@ -54,7 +54,8 @@
       "branch": "chore/github-governance",
       "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
       "actualCommits": [
-        "fdfcc573eccd70f7cfa191c8fa40a278119310c1"
+        "fdfcc573eccd70f7cfa191c8fa40a278119310c1",
+        "88519ed3bfc85c54401222f65f3cbcdfa1e05ab7"
       ],
       "evidence": "../qa/L00G.md",
       "blocker": null

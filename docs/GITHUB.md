@@ -48,7 +48,7 @@ Un workflow présent mais absent des required checks ne protège pas les fusions
 1. Inspecter Git, cible, identité existante et accès ; ne pas réinitialiser un dépôt distant qui existe.
 2. Préparer le plan, les templates, les rulesets et le workflow fiable dans des commits locaux. Vérifier liens, politique et absence de secrets.
 3. Créer le dépôt vide public sans README/licence générés. Créer initialement `main` et `dev` sur le même SHA documentaire de bootstrap, descendant de L00, qui contient déjà la politique. Conserver les anciens SHAs ; aucune force ni réécriture des refs existantes.
-4. Cette création initiale de références est l'unique exception de bootstrap aux PR. La consigner avec SHA ; elle n'autorise aucun push direct ultérieur. Activer immédiatement les deux rulesets et fixer `dev` comme défaut.
+4. Cette création initiale de références est l'unique exception de bootstrap aux PR. La consigner avec SHA ; elle n'autorise aucun push direct ultérieur. Activer immédiatement les deux rulesets, fixer `dev` comme défaut et activer explicitement GitHub Actions. Si les runs n'apparaissent pas malgré les permissions API, vérifier le message d'activation dans l'interface ; ne pas retirer le check requis.
 5. Les commits suivants, y compris la trace de configuration, vont sur `chore/github-governance`, avec PR vers `dev`. Aucune fusion sans accord du mainteneur. Les protections ne sont jamais suspendues pour achever le lot.
 6. Vérifier par lectures API et PR de contrôle. Les probes de push utilisent un commit vide isolé ; un succès inattendu arrête l'audit, sans reset forcé ni suppression pour masquer l'incident. Un `--dry-run` seul ne prouve pas le refus serveur.
 

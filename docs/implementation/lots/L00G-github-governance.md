@@ -36,9 +36,9 @@ Lire [AGENTS](../../../AGENTS.md), [le plan](../../../IMPLEMENTATION_PLAN.md), [
 
 ### L00G-S03 — `chore(project): seed milestones and lot issue tracking`
 
-- [ ] Créer/réutiliser le Project public docn-ui V1 lié au dépôt, un seul Status, Lot/Priority et champs natifs ; stocker IDs réels.
-- [ ] Créer labels limités, sept milestones et 18 issues de lot avec checklists des 60 stories ; L00 historique, autres états justifiés par preuves.
-- [ ] Idempotence par marqueur stable et mapping ; préserver contenu humain et cases existantes. Documenter mises à jour par l'agent et droits Projects, sans token ajouté aux workflows.
+- [x] Créer/réutiliser le Project public docn-ui V1 lié au dépôt, un seul Status, Lot/Priority et champs natifs ; stocker IDs réels.
+- [x] Créer labels limités, sept milestones et 18 issues de lot avec checklists des 60 stories ; L00 historique, autres états justifiés par preuves.
+- [x] Idempotence par marqueur stable et mapping ; préserver contenu humain et cases existantes. Documenter mises à jour par l'agent et droits Projects, sans token ajouté aux workflows.
 
 **Acceptation :** Chaque lot possède une seule issue et un seul item ; dépendances, commits, jalons et statuts sont lisibles ; aucune date ni assignation inventée.
 
