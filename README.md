@@ -14,11 +14,14 @@ Use Node `24.18.0` and pnpm `11.24.0` (the exact project pin). If the host pnpm 
 pnpm install --frozen-lockfile
 pnpm dev
 pnpm typecheck
+pnpm validate
 pnpm build
 pnpm preview
 ```
 
 `preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. No deployment is configured.
+
+See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs lightweight projects once; only the component composition suite currently exists. PDF/browser/consumer suites will activate with their implementation lots.
 
 ## Agent startup
 

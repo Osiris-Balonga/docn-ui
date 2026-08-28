@@ -38,10 +38,10 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S03 — `chore(testing): separate unit component and integration scopes`
 
-- [ ] Configure Vitest unit/components/integration with exclusive globs and appropriate environments; reserve pdf/consumers conventions without fake successful empty suites.
-- [ ] Provide TESTING scripts: test, watch, coverage, validate, formatting/lint/types. Prepare an orchestrator that collects only actually activated scopes and documents them.
-- [ ] Create a UI composition smoke check and a test only where custom behavior exists; do not generate tests for every configuration file.
-- [ ] Limit workers, ignore .artifacts, and use test listings to verify each file is collected exactly once.
+- [x] Configure Vitest unit/components/integration with exclusive globs and appropriate environments; reserve pdf/consumers conventions without fake successful empty suites.
+- [x] Provide TESTING scripts: test, watch, coverage, validate, formatting/lint/types. Prepare an orchestrator that collects only actually activated scopes and documents them.
+- [x] Create a UI composition smoke check and a test only where custom behavior exists; do not generate tests for every configuration file.
+- [x] Limit workers, ignore .artifacts, and use test listings to verify each file is collected exactly once.
 
 **Acceptance:** test:unit starts neither DOM nor browser; test:components renders no PDF; activated scopes are explicit.
 

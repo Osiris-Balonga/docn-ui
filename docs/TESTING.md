@@ -26,6 +26,16 @@ Unit/components globs exclude integration/pdf/consumer. Each file belongs to exa
 
 ## 3. Command contracts
 
+### L01 activation status
+
+`unit`, `components`, and `integration` are configured with exclusive globs. Only `components` currently contains a real suite: one project-link composition check covering the observed link-role regression, keyboard focus, and tooltip wiring. No pure document logic or module coordination exists yet, so unit/integration are **not verified suites**. Their standalone commands fail with "No test files found" until real tests are added; `passWithNoTests` remains false. The shared lightweight command selects all three projects and collects the one existing suite once.
+
+PDF, consumers, E2E, visual, and asset/registry/bundle verification commands are not implemented yet. Their file conventions are reserved and excluded from the lightweight projects. Do not add empty successful placeholder scripts.
+
+Available now: `test`, the three lightweight scoped commands, `test:watch`, `test:coverage`, `test:all`, `quality`, `validate`, and `validate:full`. `test:all --list` prints activation without executing tests. The sequential orchestrator reads the actual package scripts; adding a heavy command activates it automatically. `validate:full` prepares one build and runs each activated scope once. Build fingerprinting/artifact handoff will be implemented with the first E2E suite in L06; no reusable E2E artifact is claimed today.
+
+`quality` runs code/config formatting, lint, and types without tests or builds. `format` / `format:check` target TS/TSX/MJS/JSON/YAML/CSS, respect `.prettierignore`, and leave historical Markdown formatting and the generated lockfile intact. Markdown remains subject to link/content review. Tests use at most two workers and no retries; no coverage percentage gate is imposed.
+
 Implement these scripts in L01, then activate each scope with its first real suite. An unimplemented scope is unavailable, not replaced by a script returning success.
 
 | Command | Exclusive execution |

@@ -44,3 +44,22 @@ shadcn add tooltip --cwd apps/www --yes
 Both were run with exact `shadcn@4.19.0` and `pnpm@11.24.0`. Init installed Button; only Tooltip was added afterwards. Style `base-nova`, neutral tokens, CSS variables, and aliases are recorded in `components.json`. Generated sources are in `components/ui` and `lib/utils.ts`; the upstream MIT license is retained in `components/ui/LICENSE.txt` (GitHub license blob `fad4d887a681dd49233e5ed01ee2c7a1513089a0`). No force initialization, Radix primitives, or additional UI components.
 
 Init's Google Fonts import and circular `--font-sans` token were replaced by locally bundled, licensed font files with literal family names. [Font provenance and hashes](../apps/www/src/assets/fonts/README.md) are tracked. The fonts belong to the website; PDF font qualification is separate.
+
+## Quality tooling (L01-S03)
+
+All packages below are development dependencies; none is imported by the production application.
+
+| Dependency | Version | License | Purpose |
+| --- | --- | --- | --- |
+| ESLint | 9.39.5 | MIT | Compatible lint runtime for the current Next plugins; see limitation below |
+| eslint-config-next | 16.3.3 | MIT | Framework, accessibility, React, and TypeScript lint rules |
+| Prettier | 3.9.6 | MIT | Code/config formatting |
+| Vitest / coverage-v8 | 4.1.11 | MIT | Exclusive lightweight projects and optional coverage; same version |
+| Vite (transitive, locked) | 8.2.2 | MIT | Vitest transformation; not the production Next bundler |
+| jsdom | 30.0.1 | MIT | Component environment only; compatible with Node 24.18 |
+| Testing Library React / DOM | 16.3.3 / 10.4.1 | MIT | Composition semantics and rendering |
+| Testing Library user-event | 14.6.6 | MIT | Keyboard interaction in jsdom |
+| Testing Library jest-dom | 7.0.1 | MIT | DOM assertions |
+| unrs-resolver (transitive, locked) | 1.12.2 | MIT | ESLint import resolution; reviewed native-package postinstall explicitly allowed |
+
+**Compatibility limitation:** ESLint 9.39.5 is deprecated upstream. ESLint 10.9.1 was actually tried and rejected: the Next-resolved import/jsx-a11y/react plugins declare ESLint 9 peer ranges, and `react/display-name` crashes on the removed `context.getFilename` API. Pin the functioning compatible version without suppressing rules or peer checks; reconsider at L13 or when Next's plugin dependencies support ESLint 10. This affects developer tooling, not shipped site code. `pnpm peers check` must remain clean.

@@ -4,13 +4,16 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "docn-ui — PDF templates, in your codebase",
-  description: "A source-owned PDF template toolkit in development. Follow the public implementation plan.",
+  description:
+    "A source-owned PDF template toolkit in development. Follow the public implementation plan.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-svh bg-background font-sans text-foreground antialiased">{children}</body>
+      <body className="min-h-svh bg-background font-sans text-foreground antialiased">
+        {children}
+      </body>
     </html>
   );
 }
