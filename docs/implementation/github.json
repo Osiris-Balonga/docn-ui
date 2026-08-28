@@ -1,7 +1,25 @@
 {
   "schemaVersion": 1,
-  "repository": { "fullName": "Osiris-Balonga/docn-ui", "visibility": "public", "url": null, "id": null, "defaultBranch": "dev", "bootstrapCommit": null },
-  "rulesets": {},
+  "repository": {
+    "fullName": "Osiris-Balonga/docn-ui",
+    "visibility": "public",
+    "url": "https://github.com/Osiris-Balonga/docn-ui",
+    "id": 1350094647,
+    "defaultBranch": "dev",
+    "bootstrapCommit": "fdfcc573eccd70f7cfa191c8fa40a278119310c1"
+  },
+  "rulesets": {
+    "dev": {
+      "id": 21769287,
+      "name": "protect-dev",
+      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769287"
+    },
+    "main": {
+      "id": 21769289,
+      "name": "protect-main",
+      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769289"
+    }
+  },
   "project": null,
   "milestones": {},
   "lots": {},

@@ -7,8 +7,8 @@
   "currentLot": "L00G",
   "git": {
     "initialized": true,
-    "remote": null,
-    "mode": "local-only"
+    "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
+    "mode": "connected"
   },
   "externalDecisions": {
     "repository": "Osiris-Balonga/docn-ui",
@@ -53,7 +53,9 @@
       ],
       "branch": "chore/github-governance",
       "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
-      "actualCommits": [],
+      "actualCommits": [
+        "fdfcc573eccd70f7cfa191c8fa40a278119310c1"
+      ],
       "evidence": "../qa/L00G.md",
       "blocker": null
     },

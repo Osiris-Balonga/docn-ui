@@ -26,9 +26,9 @@ Lire [AGENTS](../../../AGENTS.md), [le plan](../../../IMPLEMENTATION_PLAN.md), [
 
 ### L00G-S02 — `chore(github): record protected repository bootstrap`
 
-- [ ] Créer le dépôt public vide puis les références initiales sur le SHA de S01 ; consigner l'exception unique de bootstrap, sans réécrire L00.
-- [ ] Fixer dev par défaut, merge commits seuls, auto-merge désactivé ; activer protect-dev/protect-main et lire leur contenu effectif.
-- [ ] Enregistrer URL/IDs et droits effectivement obtenus ; les commits de traçabilité suivants restent sur la branche de lot avec PR.
+- [x] Créer le dépôt public vide puis les références initiales sur le SHA de S01 ; consigner l'exception unique de bootstrap, sans réécrire L00.
+- [x] Fixer dev par défaut, merge commits seuls, auto-merge désactivé ; activer protect-dev/protect-main et lire leur contenu effectif.
+- [x] Enregistrer URL/IDs et droits effectivement obtenus ; les commits de traçabilité suivants restent sur la branche de lot avec PR.
 
 **Acceptation :** Dépôt réel, deux branches protégées, aucune liste de bypass et contrôle obligatoire ; rien publié sur un hébergeur.
 
