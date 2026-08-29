@@ -66,11 +66,11 @@ export const templateCatalog = [
   }),
   cardEntry(businessCardEditorialMetadata, {
     fixture: "editorialBusinessCardExample",
-    height: 283,
+    height: 284,
     page: 1,
     sha256: "9b885b931c3d1ccbcc365afabd1cc84fac58c28aea93dc6bc2f50b5f211d759f",
     src: "/generated/catalog/business-card-editorial.png",
-    width: 510,
+    width: 511,
   }),
   cardEntry(businessCardStudioMetadata, {
     fixture: "studioBusinessCardExample",
@@ -78,7 +78,7 @@ export const templateCatalog = [
     page: 1,
     sha256: "4baf81fc88f82e37d19556136dea9a29457bb358c4721ce0ac359e414ddae2b0",
     src: "/generated/catalog/business-card-studio.png",
-    width: 504,
+    width: 505,
   }),
 ] as const satisfies readonly TemplateCatalogEntry[];
 
