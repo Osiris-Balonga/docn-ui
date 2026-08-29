@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -40,7 +41,9 @@ export function ThemeMenu() {
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>Color theme</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Color theme</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuRadioGroup
           value={theme ?? "system"}
           onValueChange={setTheme}
