@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S01 — `feat(cards): add typed two-sided minimal business card`
 
-- [ ] Create the card schema, synthetic French/English data, metadata, and declared formats; compose minimal front/back.
-- [ ] Respect safe areas, optional contact details, and side order; report names or addresses that do not fit.
-- [ ] One family PDF suite contains the nominal case and overflow risk; measure both sides.
+- [x] Create the card schema, synthetic French/English data, metadata, and declared formats; compose minimal front/back.
+- [x] Respect safe areas, optional contact details, and side order; report names or addresses that do not fit.
+- [x] One family PDF suite contains the nominal case and overflow risk; measure both sides.
 
 **Acceptance:** The minimal PDF has two correctly sized pages, preserves contact details, and has no site dependency.
 
@@ -28,10 +28,10 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S02 — `feat(playground): edit card data and preview the actual PDF`
 
-- [ ] Create the card detail page and form with shadcn, field-level validation, and reset to sample data.
-- [ ] Connect the worker/data revision, format/theme selection, and page/zoom viewer; explicit stale/error states.
-- [ ] Download the same final result; use a neutral, safe filename without unnecessary personal data.
-- [ ] Activate `test:e2e` and Playwright Chromium configuration with the first real journey: isolated build server, one worker, retries 0, ignored artifacts. Add this scope to `test:all` without including it in lightweight tests.
+- [x] Create the card detail page and form with shadcn, field-level validation, and reset to sample data.
+- [x] Connect the worker/data revision, format/theme selection, and page/zoom viewer; explicit stale/error states.
+- [x] Download the same final result; use a neutral, safe filename without unnecessary personal data.
+- [x] Activate `test:e2e` and Playwright Chromium configuration with the first real journey: isolated build server, one worker, retries 0, ignored artifacts. Add this scope to `test:all` without including it in lightweight tests.
 
 **Acceptance:** Changing the name updates the PDF; the back and export match the latest valid revision.
 
@@ -39,9 +39,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S03 — `feat(cards): add editorial and studio compositions`
 
-- [ ] Add the two planned distinct structures, sharing family schema and helpers.
-- [ ] Declare actually supported formats; test size changes at boundaries without combining all themes/languages.
-- [ ] Generate thumbnails from PDFs; review the three compositions and their backs together.
+- [x] Add the two planned distinct structures, sharing family schema and helpers.
+- [x] Declare actually supported formats; test size changes at boundaries without combining all themes/languages.
+- [x] Generate thumbnails from PDFs; review the three compositions and their backs together.
 
 **Acceptance:** Three structurally different compositions; every advertised size remains readable.
 
@@ -49,9 +49,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S04 — `test(cards): verify faithful export and fixed-layout recovery`
 
-- [ ] Consolidate the real journey with invalid input, correction, reset, and format changes.
-- [ ] Verify downloaded content and dimensions, not only the download event; check preview-revision fingerprint/bytes.
-- [ ] Remove obsolete spike screens; record G2 QA and physical limitations.
+- [x] Consolidate the real journey with invalid input, correction, reset, and format changes.
+- [x] Verify downloaded content and dimensions, not only the download event; check preview-revision fingerprint/bytes.
+- [x] Remove obsolete spike screens; record G2 QA and physical limitations.
 
 **Acceptance:** G2: an unaided user creates a customized card and obtains a correct PDF; no advertised functionality is simulated.
 

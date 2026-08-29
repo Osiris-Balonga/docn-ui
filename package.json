@@ -22,6 +22,7 @@
     "test:components": "vitest run --project components",
     "test:integration": "vitest run --project integration",
     "test:pdf": "vitest run --project pdf",
+    "test:e2e": "playwright test",
     "test:watch": "vitest --project unit --project components --project integration",
     "test:coverage": "vitest run --project unit --project components --project integration --coverage",
     "test:all": "node tooling/testing/run-all.mjs",
@@ -29,6 +30,7 @@
     "validate:full": "pnpm quality && pnpm build && pnpm test:all"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
@@ -39,6 +41,7 @@
     "eslint-config-next": "16.3.3",
     "http-server": "14.1.1",
     "jsdom": "30.0.1",
+    "pdfjs-dist": "6.2.108",
     "prettier": "3.9.6",
     "typescript": "5.9.3",
     "vitest": "4.1.11"

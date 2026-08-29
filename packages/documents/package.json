@@ -10,6 +10,13 @@
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
     "./node": "./src/render/node.ts",
     "./primitives": "./src/primitives/index.tsx",
+    "./templates/business-cards": "./src/templates/business-cards/index.ts",
+    "./templates/business-cards/minimal": "./src/templates/business-cards/business-card-minimal/index.ts",
+    "./templates/business-cards/minimal/examples": "./src/templates/business-cards/business-card-minimal/examples.ts",
+    "./templates/business-cards/minimal/metadata": "./src/templates/business-cards/business-card-minimal/metadata.ts",
+    "./templates/business-cards/editorial": "./src/templates/business-cards/business-card-editorial/index.ts",
+    "./templates/business-cards/schema": "./src/templates/business-cards/schema.ts",
+    "./templates/business-cards/studio": "./src/templates/business-cards/business-card-studio/index.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {
@@ -19,11 +26,13 @@
     "@react-pdf/renderer": "4.9.0",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "6.2.108",
+    "qrcode": "1.5.4",
     "react": "19.2.8",
     "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/node": "24.13.3",
+    "@types/qrcode": "1.5.6",
     "@types/react": "19.2.18"
   }
 }

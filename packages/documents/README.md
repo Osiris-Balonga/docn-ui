@@ -9,6 +9,7 @@
 | `@docn-ui/documents/core` | Serializable render contracts, formats, validation, units, limits, and input fingerprints | No React, browser, Node filesystem, DOM, or CSS |
 | `@docn-ui/documents/themes` | The three PDF token sets | Core only; hex colors and point values, no website tokens |
 | `@docn-ui/documents/primitives` | Fixed-page PDF composition primitives and safe-frame helpers | React and `@react-pdf/renderer`; no site imports |
+| `@docn-ui/documents/templates/business-cards` | Typed business-card schemas, metadata, examples, and render plans | Core, themes, primitives, and React-pdf only; no site imports |
 | `@docn-ui/documents/browser` | Browser fixed-document adapter and same-origin asset resolver | React-pdf browser renderer and manifest assets |
 | `@docn-ui/documents/node` | Node fixed-document adapter and absolute-path asset resolver | React-pdf Node renderer and pdf-lib box finalization |
 | `@docn-ui/documents` | Node-oriented convenience surface for repository tooling | Core, themes, manifest, measurement, and Node adapter |

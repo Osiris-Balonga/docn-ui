@@ -35,7 +35,7 @@
     {
       "id": "L00",
       "file": "lots/L00-governance.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": [],
       "branch": "main",
       "baseCommit": null,
@@ -123,7 +123,7 @@
     {
       "id": "L04",
       "file": "lots/L04-document-foundations.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L03"],
       "branch": "feat/document-foundations",
       "baseCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
@@ -134,17 +134,24 @@
         "2b8d6568552f1da794dafde9953698bed3fd8e8b"
       ],
       "evidence": "../qa/L04.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "37d799556498c7019ac53ebfcf74816031c011de",
+      "mergedAt": "2026-08-29T21:46:15Z"
     },
     {
       "id": "L05",
       "file": "lots/L05-business-cards.md",
-      "state": "planned",
+      "state": "in_review",
       "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
+      "actualCommits": [
+        "dbf7baaf4354f04a75e06cb39ed68cd45ccc2421",
+        "d9a4f05b42a559cdc939f593dbde09e36955b0ed",
+        "088912ba8116d2ebde4017d85a1c30418a01a386",
+        "a0077c1803bdfdd1fa7840ca123f0826c97c16d3"
+      ],
+      "evidence": "../qa/L05.md",
       "blocker": null
     },
     {

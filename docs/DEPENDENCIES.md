@@ -89,3 +89,22 @@ Zod is a direct dependency because render requests cross the browser-worker boun
 No JavaScript dependency was added. The PDF asset inventory now contains 70,000 bytes across static Latin WOFF files: Noto Sans 400/700 and Noto Serif 400/700 from the published `@fontsource/noto-sans@5.3.0` and `@fontsource/noto-serif@5.3.0` packages, both OFL-1.1. Noto Sans 400 was already qualified in L02; the three added files total 53,312 bytes. Browser builds copy these local files, while Node rendering resolves verified absolute paths from the same manifest. Rendering never downloads a font or accepts a user-provided URL/path.
 
 The asset manifest records exact byte sizes, SHA-256 hashes, license location, source package, family, style, and weight. The Serif registry tarball stalled; the two exact versioned files retrieved through unpkg matched jsDelivr's package mirror byte-for-byte before being committed. This retrieval path is development provenance only and is not used at runtime.
+
+## Browser journey (L05-S02)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| @playwright/test | 1.61.1 | Apache-2.0 | One real Chromium journey verifies the built static site, browser worker, PDF.js preview, and downloaded PDF; test tooling only |
+
+The same-day 1.62.1 release was not adopted. Version 1.61.1 satisfies Node 24, the Next.js optional peer range, and the existing supply-chain policy without an exception. Playwright runs with one worker and zero retries against a dedicated loopback static server. Its browser binary and artifacts are development/CI resources and are not shipped to users.
+
+The root E2E scope also declares `pdfjs-dist` 6.2.108 as a development dependency so strict pnpm workspace isolation permits independent inspection of downloaded bytes. This is the exact version already used by the document and website workspaces, so the lockfile retains one package instance and no additional browser payload is introduced.
+
+## Vector business-card QR (L05-S03)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| qrcode | 1.5.4 | MIT | Produces a deterministic module matrix rendered as native React-pdf SVG rectangles; used only by templates that declare QR support |
+| @types/qrcode | 1.5.6 | MIT | Type declarations for the document workspace; development only |
+
+The primitive renders the matrix itself rather than embedding a generated bitmap or making a network request. It enforces the existing 512-byte payload budget, error-correction level M, a four-module quiet zone, and a minimum module size for the selected card layout. Final-PDF decoding remains a separate visual/QR qualification risk and is not inferred from successful matrix creation.
