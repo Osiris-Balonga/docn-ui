@@ -2,9 +2,9 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 29, 2026: L01 is merged; the L02 PDF feasibility gate is verified and in review in [PR #22](https://github.com/Osiris-Balonga/docn-ui/pull/22).** Exact geometry, local PDF fonts, print boxes, pagination, measured receipt height, browser-worker generation, and local PDF.js preview are qualified. Public templates and the registry are not implemented yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L02 evidence](docs/qa/L02.md).
+**Status on August 29, 2026: L02 is merged; the L03 shadcn site shell is verified and in review in [PR #23](https://github.com/Osiris-Balonga/docn-ui/pull/23).** Exact PDF geometry, local fonts, print boxes, pagination, measured receipt height, browser generation, and local PDF.js preview are qualified. The responsive documentation shell, themes, and page search are implemented. Public templates and the registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L03 evidence](docs/qa/L03.md).
 
-[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L02 PR #22](https://github.com/Osiris-Balonga/docn-ui/pull/22) · [L02 evidence](docs/qa/L02.md)
+[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L03 PR #23](https://github.com/Osiris-Balonga/docn-ui/pull/23) · [L03 evidence](docs/qa/L03.md)
 
 ## Local development
 

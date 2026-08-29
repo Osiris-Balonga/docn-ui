@@ -35,7 +35,7 @@
     {
       "id": "L00",
       "file": "lots/L00-governance.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": [],
       "branch": "main",
       "baseCommit": null,
@@ -112,7 +112,8 @@
       "actualCommits": [
         "bec8bdb5033eb992d6c3ab52eb702afb50facb05",
         "dd22d6451934f5eed5223e18a0900d506d5ad58f",
-        "a0e81b700802f63f48bc229ebd6edd4ec7401c89"
+        "a0e81b700802f63f48bc229ebd6edd4ec7401c89",
+        "a8d75c4cdcd544b9022c22e7968c899e04bf3fc0"
       ],
       "evidence": "../qa/L03.md",
       "blocker": null
