@@ -1,6 +1,6 @@
 # docn-ui — implementation and delivery plan
 
-Date: 2026-08-28. Status: **L00 verified; GitHub L00G configured, PR #9 in review before L01**. The plan contains **18 lots and 60 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English.
+Date: 2026-08-28. Status: **L00 verified; L00G merged through PR #9; L01 verified and in review through PR #21**. The plan contains **18 lots and 60 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French.
 
 ## 1. Execution contract
 

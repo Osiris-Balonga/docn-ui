@@ -12,12 +12,48 @@
     "dev": {
       "id": 21769287,
       "name": "protect-dev",
-      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769287"
+      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769287",
+      "requiredChecks": [
+        {
+          "context": "branch-policy",
+          "integration_id": 15368
+        },
+        {
+          "context": "quality",
+          "integration_id": 15368
+        },
+        {
+          "context": "unit-tests",
+          "integration_id": 15368
+        },
+        {
+          "context": "build",
+          "integration_id": 15368
+        }
+      ]
     },
     "main": {
       "id": 21769289,
       "name": "protect-main",
-      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769289"
+      "url": "https://github.com/Osiris-Balonga/docn-ui/rules/21769289",
+      "requiredChecks": [
+        {
+          "context": "branch-policy",
+          "integration_id": 15368
+        },
+        {
+          "context": "quality",
+          "integration_id": 15368
+        },
+        {
+          "context": "unit-tests",
+          "integration_id": 15368
+        },
+        {
+          "context": "build",
+          "integration_id": 15368
+        }
+      ]
     }
   },
   "project": {
@@ -74,68 +110,43 @@
       "number": 1,
       "title": "G0 — Governance",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/1",
-      "lots": [
-        "L00",
-        "L00G"
-      ]
+      "lots": ["L00", "L00G"]
     },
     "G1": {
       "number": 2,
       "title": "G1 — PDF feasibility",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/2",
-      "lots": [
-        "L01",
-        "L02"
-      ]
+      "lots": ["L01", "L02"]
     },
     "G2": {
       "number": 3,
       "title": "G2 — First complete business card",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/3",
-      "lots": [
-        "L03",
-        "L04",
-        "L05"
-      ]
+      "lots": ["L03", "L04", "L05"]
     },
     "G3": {
       "number": 4,
       "title": "G3 — Standalone distribution",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/4",
-      "lots": [
-        "L06",
-        "L07"
-      ]
+      "lots": ["L06", "L07"]
     },
     "G4": {
       "number": 5,
       "title": "G4 — V1 catalog",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/5",
-      "lots": [
-        "L08",
-        "L09",
-        "L10",
-        "L11"
-      ]
+      "lots": ["L08", "L09", "L10", "L11"]
     },
     "G5": {
       "number": 6,
       "title": "G5 — Qualification",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/6",
-      "lots": [
-        "L12",
-        "L13",
-        "L14"
-      ]
+      "lots": ["L12", "L13", "L14"]
     },
     "G6": {
       "number": 7,
       "title": "G6 — v1.0.0 delivery",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/7",
-      "lots": [
-        "L15",
-        "L16"
-      ]
+      "lots": ["L15", "L16"]
     }
   },
   "lots": {
@@ -154,7 +165,9 @@
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVNY",
       "pullRequest": {
         "number": 9,
-        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/9"
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/9",
+        "mergeCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
+        "mergedAt": "2026-08-28T23:33:07Z"
       },
       "initialized": true
     },
@@ -163,8 +176,41 @@
       "issueId": "I_kwDOUHjPN88AAAABOuMiLg",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/3",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVPg",
-      "pullRequest": null,
-      "initialized": true
+      "pullRequest": {
+        "number": 21,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/21"
+      },
+      "initialized": true,
+      "verification": {
+        "headSha": "b914ea19a72a785841e29eb46356179504dc1308",
+        "checks": [
+          {
+            "name": "branch-policy",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33221904349/job/99017517181",
+            "headSha": "b914ea19a72a785841e29eb46356179504dc1308"
+          },
+          {
+            "name": "quality",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33221904319/job/99017517073",
+            "headSha": "b914ea19a72a785841e29eb46356179504dc1308"
+          },
+          {
+            "name": "unit-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33221904319/job/99017517198",
+            "headSha": "b914ea19a72a785841e29eb46356179504dc1308"
+          },
+          {
+            "name": "build",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33221904319/job/99017517215",
+            "headSha": "b914ea19a72a785841e29eb46356179504dc1308"
+          }
+        ],
+        "verifiedAt": "2026-08-28T23:55:46.205Z"
+      }
     },
     "L02": {
       "issueNumber": 4,

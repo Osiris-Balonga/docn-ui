@@ -1,6 +1,6 @@
 # L01 — Reproducible bootstrap and quality scopes
 
-Initial status: **planned**. Branch: `chore/bootstrap-workspace`.
+Initial status: **planned**. Current status: **in review** through [PR #21](https://github.com/Osiris-Balonga/docn-ui/pull/21); see [QA](../../qa/L01.md). Branch: `chore/bootstrap-workspace`.
 
 Dependencies: L00G. Requirements: NFR-02, NFR-03, NFR-06, NFR-08.
 
@@ -18,9 +18,9 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S01 — `chore(workspace): scaffold static Next.js and document sources`
 
-- [ ] Resolve compatible stable Node/pnpm/React/Next/TS versions and record the actual table in docs/DEPENDENCIES.md; set packageManager, engines, and exact versions.
-- [ ] Create apps/www with Next App Router/static export and private packages/documents; strict TS, clean aliases, cross-platform pnpm scripts, no Unix shell requirement on Windows.
-- [ ] Remove scaffold demos; provide an honest minimal page, 404, and title; generate an export served by a static server.
+- [x] Resolve compatible stable Node/pnpm/React/Next/TS versions and record the actual table in docs/DEPENDENCIES.md; set packageManager, engines, and exact versions.
+- [x] Create apps/www with Next App Router/static export and private packages/documents; strict TS, clean aliases, cross-platform pnpm scripts, no Unix shell requirement on Windows.
+- [x] Remove scaffold demos; provide an honest minimal page, 404, and title; generate an export served by a static server.
 
 **Acceptance:** Frozen-lockfile installation, typechecking, and reproducible build. No runtime server import required.
 
@@ -28,9 +28,9 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S02 — `chore(ui): initialize shadcn with Base UI and Tailwind`
 
-- [ ] Inspect exact CLI version options; noninteractive init with Base UI, aliases, and CSS variables.
-- [ ] Install only Button and Tooltip needed for the screen smoke check; commit sources and components.json; do not rerun init with --force.
-- [ ] Verify compilation, base theme, and local site fonts; distinguish web and PDF fonts.
+- [x] Inspect exact CLI version options; noninteractive init with Base UI, aliases, and CSS variables.
+- [x] Install only Button and Tooltip needed for the screen smoke check; commit sources and components.json; do not rerun init with --force.
+- [x] Verify compilation, base theme, and local site fonts; distinguish web and PDF fonts.
 
 **Acceptance:** The visible button comes from shadcn sources and works in the static build.
 
@@ -38,10 +38,10 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S03 — `chore(testing): separate unit component and integration scopes`
 
-- [ ] Configure Vitest unit/components/integration with exclusive globs and appropriate environments; reserve pdf/consumers conventions without fake successful empty suites.
-- [ ] Provide TESTING scripts: test, watch, coverage, validate, formatting/lint/types. Prepare an orchestrator that collects only actually activated scopes and documents them.
-- [ ] Create a UI composition smoke check and a test only where custom behavior exists; do not generate tests for every configuration file.
-- [ ] Limit workers, ignore .artifacts, and use test listings to verify each file is collected exactly once.
+- [x] Configure Vitest unit/components/integration with exclusive globs and appropriate environments; reserve pdf/consumers conventions without fake successful empty suites.
+- [x] Provide TESTING scripts: test, watch, coverage, validate, formatting/lint/types. Prepare an orchestrator that collects only actually activated scopes and documents them.
+- [x] Create a UI composition smoke check and a test only where custom behavior exists; do not generate tests for every configuration file.
+- [x] Limit workers, ignore .artifacts, and use test listings to verify each file is collected exactly once.
 
 **Acceptance:** test:unit starts neither DOM nor browser; test:components renders no PDF; activated scopes are explicit.
 
@@ -49,9 +49,9 @@ Target files/responsibilities: package.json, pnpm-workspace.yaml, pnpm-lock.yaml
 
 ### L01-S04 — `ci: add focused quality and build checks`
 
-- [ ] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
-- [ ] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
-- [ ] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
+- [x] Add quality, unit-tests (three lightweight projects in one pass), and build; verified actions, read permissions, PR concurrency.
+- [x] Extend the L00G PR template with newly available commands; retain issue, risk, and evidence. Do not recreate the Project or branch policy.
+- [x] After a real CI run, add quality/unit-tests/build to both branches' required checks, retaining branch-policy; read active rules and record them in github.json. No push/deployment workflow.
 
 **Acceptance:** Readable workflow, passing local commands and actual CI; new required checks verified on the lot PR. Unavailable GitHub prevents claiming completion.
 

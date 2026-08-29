@@ -1,6 +1,6 @@
 # Design — site and documents
 
-Status: proposed implementation specification; no screen has been rendered or validated yet. Explicit reference: the shadcn/ui documentation experience. See the [PRD](docs/PRD.md). All site copy and project documentation must be in English.
+Status: target design specification. L01's minimal foundation page has been rendered and inspected; the catalog, navigation shell, and responsive qualification below remain planned from L03 onward. Explicit reference: the shadcn/ui documentation experience. See the [PRD](docs/PRD.md). All site copy and project documentation must be in English.
 
 ## Usage scenario
 
@@ -67,4 +67,4 @@ The Code panel shows every required file and a typed usage example. Editing data
 
 ## Visual validation
 
-Capture real screenshots at 375×812, 768×1024, 1280×800, and 1440×900, in light/dark modes and at 200% zoom. Specifically check very tall receipts, both sides of a card, no global horizontal scrolling, long code, keyboard search, and error states. Store evidence in the lot report; no screenshots are available yet.
+Capture real screenshots at 375×812, 768×1024, 1280×800, and 1440×900, in light/dark modes and at 200% zoom. Specifically check very tall receipts, both sides of a card, no global horizontal scrolling, long code, keyboard search, and error states. Store evidence in the lot report. L01's desktop screenshot is a foundation smoke check, not this complete qualification.

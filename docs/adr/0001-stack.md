@@ -1,6 +1,6 @@
 # ADR 0001 — Static site and separate document sources
 
-Date: 2026-08-28. Status: proposed plan default; shadcn/ui confirmed by the maintainer.
+Date: 2026-08-28. Status: site/workspace portion implemented and verified in L01; PDF engine/worker portion remains subject to L02 feasibility. shadcn/ui is confirmed by the maintainer. Exact versions and compatibility limitations are in [DEPENDENCIES](../DEPENDENCIES.md).
 
 ## Decision
 
