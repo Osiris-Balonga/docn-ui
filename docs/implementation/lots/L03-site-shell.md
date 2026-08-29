@@ -18,9 +18,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S01 — `feat(ui): establish docn-ui tokens and accessible navigation`
 
-- [ ] Set the neutral palette, sizes, radii, focus, local fonts, and light/dark/system modes according to DESIGN.
-- [ ] Compose the header, sidebar, and mobile Sheet with shadcn primitives; add a skip link and semantic landmarks.
-- [ ] Add only ready routes; a concise homepage shows development status if the catalog is incomplete.
+- [x] Set the neutral palette, sizes, radii, focus, local fonts, and light/dark/system modes according to DESIGN.
+- [x] Compose the header, sidebar, and mobile Sheet with shadcn primitives; add a skip link and semantic landmarks.
+- [x] Add only ready routes; a concise homepage shows development status if the catalog is incomplete.
 
 **Acceptance:** Keyboard navigation and theme switching work without content jumps or unreadable contrast between modes.
 

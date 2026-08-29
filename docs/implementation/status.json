@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L02",
+  "currentLot": "L03",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -88,7 +88,7 @@
     {
       "id": "L02",
       "file": "lots/L02-pdf-feasibility.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L01"],
       "branch": "feat/pdf-rendering-spike",
       "baseCommit": "3b7b418670e121fdd63eed2b9b0f55dde2a02acc",
@@ -98,17 +98,19 @@
         "52b798d8a9265e65c6fc5fa4628df3f86bacfca8"
       ],
       "evidence": "../qa/L02.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
+      "mergedAt": "2026-08-29T06:26:48Z"
     },
     {
       "id": "L03",
       "file": "lots/L03-site-shell.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L02"],
       "branch": "feat/shadcn-site-shell",
-      "baseCommit": null,
+      "baseCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L03.md",
       "blocker": null
     },
     {
