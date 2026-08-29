@@ -2,9 +2,9 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 29, 2026: L02 is merged; the L03 shadcn site shell is verified and in review in [PR #23](https://github.com/Osiris-Balonga/docn-ui/pull/23).** Exact PDF geometry, local fonts, print boxes, pagination, measured receipt height, browser generation, and local PDF.js preview are qualified. The responsive documentation shell, themes, and page search are implemented. Public templates and the registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L03 evidence](docs/qa/L03.md).
+**Status on August 29, 2026: L03 is merged and L04 document foundations are in review.** Exact PDF geometry, local fonts, print boxes, pagination, measured receipt height, browser generation, and local PDF.js preview are qualified. The responsive documentation shell, themes, and page search are implemented. Reusable PDF contracts, formats, themes, primitives, and shared rendering adapters are implemented in [PR #24](https://github.com/Osiris-Balonga/docn-ui/pull/24); public templates and the registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L04 evidence](docs/qa/L04.md).
 
-[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L03 PR #23](https://github.com/Osiris-Balonga/docn-ui/pull/23) · [L03 evidence](docs/qa/L03.md)
+[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L04 issue #6](https://github.com/Osiris-Balonga/docn-ui/issues/6) · [L04 evidence](docs/qa/L04.md)
 
 ## Local development
 
@@ -21,7 +21,7 @@ pnpm preview
 
 `preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. No deployment is configured.
 
-See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs lightweight projects once; only the component composition suite currently exists. PDF/browser/consumer suites will activate with their implementation lots.
+See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs each active lightweight project once. PDF tests remain a separate actual-document scope; browser and consumer suites activate only with the lots that need them.
 
 ## Agent startup
 

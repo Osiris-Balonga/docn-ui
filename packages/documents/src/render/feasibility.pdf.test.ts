@@ -6,7 +6,12 @@ import {
   type PDFDocumentLoadingTask,
 } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { afterEach, describe, expect, it } from "vitest";
-import { renderQualificationInNode } from "./node";
+import { resolveFormat } from "../core/formats";
+import {
+  assertWithinSafeFrame,
+  createSafeFrame,
+} from "../primitives/measurement";
+import { renderFeasibilityFixtureInNode } from "./feasibility.node";
 
 const POINT_TOLERANCE = 0.1;
 const expected = {
@@ -29,11 +34,29 @@ async function inspectWithPdfJs(bytes: Uint8Array) {
     Array.from({ length: document.numPages }, async (_, index) => {
       const page = await document.getPage(index + 1);
       const content = await page.getTextContent();
-      const text = content.items
-        .filter((item): item is typeof item & { str: string } => "str" in item)
-        .map((item) => item.str)
-        .join(" ");
-      return { view: page.view, text };
+      const textItems = content.items.filter(
+        (
+          item,
+        ): item is typeof item & {
+          height: number;
+          str: string;
+          transform: number[];
+          width: number;
+        } =>
+          "str" in item &&
+          "height" in item &&
+          "transform" in item &&
+          "width" in item,
+      );
+      const text = textItems.map((item) => item.str).join(" ");
+      const pageHeight = (page.view[3] ?? 0) - (page.view[1] ?? 0);
+      const bounds = textItems.map((item) => ({
+        x: item.transform[4] ?? 0,
+        y: pageHeight - (item.transform[5] ?? 0) - item.height,
+        width: item.width,
+        height: item.height,
+      }));
+      return { bounds, view: page.view, text };
     }),
   );
   return { pageCount: document.numPages, pages };
@@ -82,11 +105,17 @@ afterEach(async () => {
 
 describe("PDF rendering feasibility", () => {
   it("renders an exact two-sided card with local accented text", async () => {
-    const bytes = await renderQualificationInNode({
+    const bytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "screen" },
     });
+    const editorialBytes = await renderFeasibilityFixtureInNode({
+      fixture: "card",
+      printProfile: { kind: "screen" },
+      themeId: "editorial",
+    });
     const inspection = await inspectWithPdfJs(bytes);
+    const editorialInspection = await inspectWithPdfJs(editorialBytes);
     const boxes = await inspectBoxes(bytes);
 
     expect(inspection.pageCount).toBe(2);
@@ -98,6 +127,11 @@ describe("PDF rendering feasibility", () => {
       "Direction créative · Brazzaville",
     );
     expect(inspection.pages[1]?.text).toContain("Back side · 2 / 2");
+    expect(editorialInspection.pageCount).toBe(2);
+    expect(editorialInspection.pages[0]?.text).toContain("Élodie Mbemba");
+    expect(editorialInspection.pages[1]?.text).toContain(
+      "Documents précis, sources ouvertes.",
+    );
     for (const page of boxes) {
       const trim = {
         x: 0,
@@ -111,14 +145,15 @@ describe("PDF rendering feasibility", () => {
       expectBox(page.bleed, trim);
     }
     await retainArtifact("card-screen", bytes);
+    await retainArtifact("card-editorial", editorialBytes);
   });
 
   it("publishes exact trim and bleed boxes with and without crop-mark margins", async () => {
-    const noMarksBytes = await renderQualificationInNode({
+    const noMarksBytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "print", bleedMm: 3, cropMarks: false },
     });
-    const marksBytes = await renderQualificationInNode({
+    const marksBytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "print", bleedMm: 3, cropMarks: true },
     });
@@ -175,7 +210,7 @@ describe("PDF rendering feasibility", () => {
   });
 
   it("paginates a small table without losing its final row", async () => {
-    const bytes = await renderQualificationInNode({ fixture: "table" });
+    const bytes = await renderFeasibilityFixtureInNode({ fixture: "table" });
     const inspection = await inspectWithPdfJs(bytes);
     const allText = inspection.pages.map((page) => page.text).join(" ");
 
@@ -184,6 +219,27 @@ describe("PDF rendering feasibility", () => {
     expect(allText).toContain("Deterministic pagination row 56");
     expect(inspection.pages.at(-1)?.text).toContain("Final marker row 56");
     await retainArtifact("multipage-table", bytes);
+  });
+
+  it("composes shared primitives inside the measured card safe area", async () => {
+    const bytes = await renderFeasibilityFixtureInNode({
+      fixture: "primitives",
+      themeId: "editorial",
+    });
+    const inspection = await inspectWithPdfJs(bytes);
+    const format = resolveFormat("card-85x55");
+    if (format.kind !== "fixed")
+      throw new Error("Expected a fixed card format.");
+    const frame = createSafeFrame(format);
+
+    expect(inspection.pageCount).toBe(1);
+    expect(inspection.pages[0]?.text).toContain("Élodie Mbemba");
+    expect(inspection.pages[0]?.text).toContain("Direction créative");
+    expect(inspection.pages[0]?.text).toContain("bonjour@docn-ui.dev");
+    for (const bounds of inspection.pages[0]?.bounds ?? []) {
+      assertWithinSafeFrame(bounds, frame, ["pages", 0, "text"]);
+    }
+    await retainArtifact("primitives-card", bytes);
   });
 
   it("measures short and long 58/80 mm receipts from rendered content", async () => {
@@ -216,7 +272,7 @@ describe("PDF rendering feasibility", () => {
     const measurements = new Map<string, number>();
 
     for (const fixture of cases) {
-      const bytes = await renderQualificationInNode({
+      const bytes = await renderFeasibilityFixtureInNode({
         fixture: "receipt",
         receipt: fixture,
       });
@@ -249,7 +305,7 @@ describe("PDF rendering feasibility", () => {
 
   it("rejects receipt content that exceeds the configured physical limit", async () => {
     await expect(
-      renderQualificationInNode({
+      renderFeasibilityFixtureInNode({
         fixture: "receipt",
         receipt: {
           widthMm: 58,

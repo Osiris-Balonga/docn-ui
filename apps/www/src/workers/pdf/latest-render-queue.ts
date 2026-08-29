@@ -1,9 +1,11 @@
 import {
+  getRequestRevision,
+  getResponseRevision,
   PDF_RENDER_PROTOCOL_VERSION,
   type PdfRenderFailure,
   type PdfRenderRequest,
   type PdfRenderResponse,
-} from "./pdf-render.protocol";
+} from "./protocol";
 
 export interface PdfWorkerPort {
   onerror: ((event: ErrorEvent) => void) | null;
@@ -31,7 +33,7 @@ export class LatestRenderQueue {
       this.#complete({
         kind: "failure",
         protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-        revision: this.#active.revision,
+        revision: getRequestRevision(this.#active),
         code: "WORKER_FAILURE",
         message: "The PDF worker stopped unexpectedly. Try again.",
       } satisfies PdfRenderFailure);
@@ -59,7 +61,12 @@ export class LatestRenderQueue {
   }
 
   #complete(response: PdfRenderResponse) {
-    if (this.#disposed || response.revision !== this.#active?.revision) return;
+    if (
+      this.#disposed ||
+      !this.#active ||
+      getResponseRevision(response) !== getRequestRevision(this.#active)
+    )
+      return;
     this.#active = undefined;
     this.#onResponse(response);
     const next = this.#pending;

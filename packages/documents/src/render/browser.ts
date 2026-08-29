@@ -1,19 +1,25 @@
 import { pdf } from "@react-pdf/renderer";
+import { createBrowserAssetResolver } from "./assets.browser";
 import {
-  renderQualification,
-  type QualificationRenderOptions,
-} from "./qualification";
+  renderFixedDocument,
+  type DocumentRenderRuntime,
+  type FixedDocumentRenderPlan,
+} from "./runtime";
 
-const browserFontSource = "/generated/fonts/noto-sans-latin-400-normal.woff";
+export { createBrowserAssetResolver } from "./assets.browser";
 
-export function renderQualificationInBrowser(
-  options: Omit<QualificationRenderOptions, "fontSource">,
-): Promise<Uint8Array> {
-  return renderQualification(
-    { ...options, fontSource: browserFontSource },
-    async (document) => {
+export function createBrowserDocumentRuntime(): DocumentRenderRuntime {
+  return {
+    assetResolver: createBrowserAssetResolver(),
+    async renderDocument(document) {
       const blob = await pdf(document).toBlob();
       return new Uint8Array(await blob.arrayBuffer());
     },
-  );
+  };
+}
+
+export function renderDocumentInBrowser(
+  plan: FixedDocumentRenderPlan,
+): Promise<Uint8Array> {
+  return renderFixedDocument(plan, createBrowserDocumentRuntime());
 }

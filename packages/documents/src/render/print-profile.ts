@@ -1,8 +1,6 @@
 import { PDFDocument, type PDFPage } from "pdf-lib";
+import type { PrintProfile } from "../core/formats";
 import { millimetersToPoints } from "../core/units";
-
-export type QualificationPrintProfile =
-  { kind: "screen" } | { kind: "print"; bleedMm: 3; cropMarks: boolean };
 
 export interface PageGeometry {
   bleedInset: number;
@@ -18,7 +16,7 @@ const MARK_MARGIN_MM = 5;
 export function getPageGeometry(
   trimWidth: number,
   trimHeight: number,
-  profile: QualificationPrintProfile,
+  profile: PrintProfile,
 ): PageGeometry {
   if (profile.kind === "screen") {
     return {

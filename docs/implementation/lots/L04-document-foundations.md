@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S01 — `feat(documents): define validated formats and render contracts`
 
-- [ ] Define request/result types, IDs/version, fixed/continuous formats, and mm/pt helpers; separate metadata from rendering functions.
-- [ ] Validate dimensions, orientation, allowed formats, and print profile; structured errors include field paths.
-- [ ] Define data normalization and shared limits without erasing invalid data.
+- [x] Define request/result types, IDs/version, fixed/continuous formats, and mm/pt helpers; separate metadata from rendering functions.
+- [x] Validate dimensions, orientation, allowed formats, and print profile; structured errors include field paths.
+- [x] Define data normalization and shared limits without erasing invalid data.
 
 **Acceptance:** Invalid/incompatible formats are rejected before reaching the engine; orientation applies exactly once.
 
@@ -28,9 +28,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S02 — `feat(documents): add local typography and portable theme tokens`
 
-- [ ] Create three PDF themes independent of web tokens, with engine-compatible colors and a bounded typographic scale.
-- [ ] Explicitly register required static weights; manifest provenance/licenses/hashes and French/English examples.
-- [ ] Create browser/Node AssetResolver with allowed IDs; never read URLs or paths from user data.
+- [x] Create three PDF themes independent of web tokens, with engine-compatible colors and a bounded typographic scale.
+- [x] Explicitly register required static weights; manifest provenance/licenses/hashes and French/English examples.
+- [x] Create browser/Node AssetResolver with allowed IDs; never read URLs or paths from user data.
 
 **Acceptance:** Changing the site theme does not change the PDF; document themes load only declared assets.
 
@@ -38,9 +38,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S03 — `feat(documents): add composable PDF layout primitives`
 
-- [ ] Implement only PageFrame, text/heading, Stack/Row, Separator, Image, and FieldPair used by the card.
-- [ ] Provide safe-area guards and fixed-frame overflow measurement using actual fonts; errors instead of unlimited shrinking.
-- [ ] Export explicit entry points; boundary tests prohibit site imports and DOM CSS in distribution.
+- [x] Implement only PageFrame, text/heading, Stack/Row, Separator, Image, and FieldPair used by the card.
+- [x] Provide safe-area guards and fixed-frame overflow measurement using actual fonts; errors instead of unlimited shrinking.
+- [x] Export explicit entry points; boundary tests prohibit site imports and DOM CSS in distribution.
 
 **Acceptance:** Compose a page without Tailwind/shadcn/Next dependencies; text does not silently escape its frame.
 
@@ -48,9 +48,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S04 — `refactor(pdf): promote the rendering spike into shared adapters`
 
-- [ ] Replace temporary spike structures with final contracts; remove unused disposable code.
-- [ ] Retain useful feasibility fixtures and evidence; move viewer/protocol to architecture locations.
-- [ ] Document exports, permitted dependencies, and asset strategy for the future registry.
+- [x] Replace temporary spike structures with final contracts; remove unused disposable code.
+- [x] Retain useful feasibility fixtures and evidence; move viewer/protocol to architecture locations.
+- [x] Document exports, permitted dependencies, and asset strategy for the future registry.
 
 **Acceptance:** No competing second engine/reference fixture; build and initial qualification remain valid.
 
