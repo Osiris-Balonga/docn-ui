@@ -18,9 +18,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S01 — `feat(ui): establish docn-ui tokens and accessible navigation`
 
-- [ ] Set the neutral palette, sizes, radii, focus, local fonts, and light/dark/system modes according to DESIGN.
-- [ ] Compose the header, sidebar, and mobile Sheet with shadcn primitives; add a skip link and semantic landmarks.
-- [ ] Add only ready routes; a concise homepage shows development status if the catalog is incomplete.
+- [x] Set the neutral palette, sizes, radii, focus, local fonts, and light/dark/system modes according to DESIGN.
+- [x] Compose the header, sidebar, and mobile Sheet with shadcn primitives; add a skip link and semantic landmarks.
+- [x] Add only ready routes; a concise homepage shows development status if the catalog is incomplete.
 
 **Acceptance:** Keyboard navigation and theme switching work without content jumps or unreadable contrast between modes.
 
@@ -28,9 +28,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S02 — `feat(docs): add searchable navigation and content layouts`
 
-- [ ] Create a lightweight known-page index, Command/Dialog palette, and Ctrl/Cmd+K shortcut.
-- [ ] Restore focus on close; handle no matches and avoid shortcuts interfering with application input.
-- [ ] Add reading/code layouts and breadcrumbs; install only used shadcn components.
+- [x] Create a lightweight known-page index, Command/Dialog palette, and Ctrl/Cmd+K shortcut.
+- [x] Restore focus on close; handle no matches and avoid shortcuts interfering with application input.
+- [x] Add reading/code layouts and breadcrumbs; install only used shadcn components.
 
 **Acceptance:** Finding a known page, opening it, and closing search works with the keyboard; the index imports no PDF engine.
 
@@ -38,9 +38,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S03 — `test(ui): verify shell keyboard flow and responsive states`
 
-- [ ] Consolidate checks in the existing navigation suite; add axe checks for the shell and open Sheet if an uncovered risk justifies them.
-- [ ] Capture the four DESIGN viewports in representative light/dark states; manually check 200% zoom and reduced motion.
-- [ ] Record resolved defects and actual screenshots; do not create a snapshot for every component.
+- [x] Consolidate checks in the existing navigation suite; add axe checks for the shell and open Sheet if an uncovered risk justifies them.
+- [x] Capture the four DESIGN viewports in representative light/dark states; manually check 200% zoom and reduced motion.
+- [x] Record resolved defects and actual screenshots; do not create a snapshot for every component.
 
 **Acceptance:** Usable shell at 375 px, no global overflow, visible focus, logical order.
 
