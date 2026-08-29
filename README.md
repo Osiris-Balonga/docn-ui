@@ -2,7 +2,7 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 29, 2026: L03 is merged and L04 document foundations are in progress.** Exact PDF geometry, local fonts, print boxes, pagination, measured receipt height, browser generation, and local PDF.js preview are qualified. The responsive documentation shell, themes, and page search are implemented. Reusable PDF contracts, formats, themes, and primitives are the current work; public templates and the registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L04 evidence](docs/qa/L04.md).
+**Status on August 29, 2026: L03 is merged and L04 document foundations are in review.** Exact PDF geometry, local fonts, print boxes, pagination, measured receipt height, browser generation, and local PDF.js preview are qualified. The responsive documentation shell, themes, and page search are implemented. Reusable PDF contracts, formats, themes, primitives, and shared rendering adapters are implemented in [PR #24](https://github.com/Osiris-Balonga/docn-ui/pull/24); public templates and the registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L04 evidence](docs/qa/L04.md).
 
 [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L04 issue #6](https://github.com/Osiris-Balonga/docn-ui/issues/6) · [L04 evidence](docs/qa/L04.md)
 

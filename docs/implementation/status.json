@@ -123,7 +123,7 @@
     {
       "id": "L04",
       "file": "lots/L04-document-foundations.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L03"],
       "branch": "feat/document-foundations",
       "baseCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
