@@ -1,14 +1,16 @@
 import {
   Document,
+  type DocumentProps,
   Font,
   Line,
   Page,
+  Rect,
   Svg,
   StyleSheet,
   Text,
   View,
-  renderToBuffer,
 } from "@react-pdf/renderer";
+import type { ReactElement } from "react";
 import { cardTrim, millimetersToPoints } from "../core/units";
 import {
   applyPrintBoxes,
@@ -23,14 +25,17 @@ export interface QualificationRenderOptions {
   printProfile?: QualificationPrintProfile;
 }
 
+export type QualificationDocumentRenderer = (
+  document: ReactElement<DocumentProps>,
+) => Promise<Uint8Array>;
+
 const fixedDate = new Date("2026-01-15T12:00:00.000Z");
 const styles = StyleSheet.create({
   page: {
     color: "#17212b",
     fontFamily: "NotoSansQualification",
   },
-  cardBackground: { backgroundColor: "#f7f3ec", position: "absolute" },
-  card: { flex: 1, justifyContent: "space-between", padding: 18 },
+  card: { position: "absolute" },
   accent: { backgroundColor: "#e45835", height: 7, width: 44 },
   name: { fontSize: 19 },
   small: { fontSize: 7, lineHeight: 1.45 },
@@ -55,6 +60,7 @@ function registerFont(source: string) {
 }
 
 function CropMarks({
+  bleedInset,
   mediaHeight,
   mediaWidth,
   trimInset,
@@ -80,6 +86,13 @@ function CropMarks({
       width={mediaWidth}
       height={mediaHeight}
     >
+      <Rect
+        x={bleedInset}
+        y={bleedInset}
+        width={mediaWidth - 2 * bleedInset}
+        height={mediaHeight - 2 * bleedInset}
+        fill="#f7f3ec"
+      />
       {lines.map(([x1, y1, x2, y2], index) => (
         <Line
           key={index}
@@ -104,6 +117,8 @@ function CardDocument({
 }) {
   const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
   const contentInset = geometry.trimInset;
+  const pageBackground =
+    profile.kind === "print" && profile.cropMarks ? "#ffffff" : "#f7f3ec";
   return (
     <Document
       title="docn-ui PDF qualification card"
@@ -114,26 +129,34 @@ function CardDocument({
     >
       <Page
         size={[geometry.mediaWidth, geometry.mediaHeight]}
-        style={styles.page}
-        wrap={false}
+        style={[
+          styles.page,
+          {
+            backgroundColor: pageBackground,
+            width: geometry.mediaWidth,
+            height: geometry.mediaHeight,
+          },
+        ]}
       >
-        <View
-          style={[
-            styles.cardBackground,
-            {
-              left: geometry.bleedInset,
-              top: geometry.bleedInset,
-              width: geometry.mediaWidth - 2 * geometry.bleedInset,
-              height: geometry.mediaHeight - 2 * geometry.bleedInset,
-            },
-          ]}
-        />
         {profile.kind === "print" && profile.cropMarks ? (
           <CropMarks {...geometry} />
         ) : null}
-        <View style={[styles.card, { margin: contentInset }]}>
-          <View style={styles.accent} />
-          <View>
+        <View
+          wrap={false}
+          style={[
+            styles.card,
+            {
+              left: contentInset,
+              top: contentInset,
+              width: geometry.trimWidth,
+              height: geometry.trimHeight,
+            },
+          ]}
+        >
+          <View
+            style={[styles.accent, { position: "absolute", left: 18, top: 18 }]}
+          />
+          <View style={{ position: "absolute", left: 18, bottom: 18 }}>
             <Text style={styles.name}>{name}</Text>
             <Text style={styles.small}>Direction créative · Brazzaville</Text>
             <Text style={styles.small}>bonjour@docn-ui.dev</Text>
@@ -142,27 +165,54 @@ function CardDocument({
       </Page>
       <Page
         size={[geometry.mediaWidth, geometry.mediaHeight]}
-        style={styles.page}
-        wrap={false}
+        style={[
+          styles.page,
+          {
+            backgroundColor: pageBackground,
+            width: geometry.mediaWidth,
+            height: geometry.mediaHeight,
+          },
+        ]}
       >
-        <View
-          style={[
-            styles.cardBackground,
-            {
-              left: geometry.bleedInset,
-              top: geometry.bleedInset,
-              width: geometry.mediaWidth - 2 * geometry.bleedInset,
-              height: geometry.mediaHeight - 2 * geometry.bleedInset,
-            },
-          ]}
-        />
         {profile.kind === "print" && profile.cropMarks ? (
           <CropMarks {...geometry} />
         ) : null}
-        <View style={[styles.card, { margin: contentInset }]}>
-          <Text style={styles.small}>Back side · 2 / 2</Text>
-          <Text style={styles.name}>Documents précis, sources ouvertes.</Text>
-          <View style={styles.accent} />
+        <View
+          wrap={false}
+          style={[
+            styles.card,
+            {
+              left: contentInset,
+              top: contentInset,
+              width: geometry.trimWidth,
+              height: geometry.trimHeight,
+            },
+          ]}
+        >
+          <Text
+            style={[styles.small, { position: "absolute", left: 18, top: 18 }]}
+          >
+            Back side · 2 / 2
+          </Text>
+          <Text
+            style={[
+              styles.name,
+              {
+                position: "absolute",
+                left: 18,
+                top: 57,
+                width: geometry.trimWidth - 36,
+              },
+            ]}
+          >
+            Documents précis, sources ouvertes.
+          </Text>
+          <View
+            style={[
+              styles.accent,
+              { position: "absolute", left: 18, bottom: 18 },
+            ]}
+          />
         </View>
       </Page>
     </Document>
@@ -199,16 +249,14 @@ function TableDocument() {
 
 export async function renderQualification(
   options: QualificationRenderOptions,
+  renderDocument: QualificationDocumentRenderer,
 ): Promise<Uint8Array> {
   registerFont(options.fontSource);
-  if (options.fixture === "table")
-    return new Uint8Array(await renderToBuffer(<TableDocument />));
+  if (options.fixture === "table") return renderDocument(<TableDocument />);
   const profile = options.printProfile ?? { kind: "screen" };
   const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
-  const raw = new Uint8Array(
-    await renderToBuffer(
-      <CardDocument name={options.name ?? "Élodie Mbemba"} profile={profile} />,
-    ),
+  const raw = await renderDocument(
+    <CardDocument name={options.name ?? "Élodie Mbemba"} profile={profile} />,
   );
   return applyPrintBoxes(raw, geometry);
 }

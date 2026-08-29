@@ -53,6 +53,9 @@ importers:
       '@base-ui/react':
         specifier: 1.7.0
         version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@docn-ui/documents':
+        specifier: workspace:*
+        version: link:../../packages/documents
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -65,6 +68,9 @@ importers:
       next:
         specifier: 16.3.3
         version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      pdfjs-dist:
+        specifier: 6.2.108
+        version: 6.2.108
       react:
         specifier: 19.2.8
         version: 19.2.8

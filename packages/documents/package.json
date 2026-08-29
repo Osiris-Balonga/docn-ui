@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/render/browser.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },

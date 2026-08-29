@@ -1,6 +1,6 @@
 # ADR 0003 — An actual PDF and bounded guarantees
 
-Date: 2026-08-28. Status: accepted for fixed geometry and pagination in L02-S01; browser and receipt qualification remain blocking.
+Date: 2026-08-28. Status: accepted for fixed geometry, pagination, and browser isolation through L02-S02; receipt qualification remains blocking.
 
 ## Decision
 
@@ -18,7 +18,7 @@ Worker with a static build, licensed static fonts, front/back, mm/pt sizes, auto
 
 ## L02-S01 finding
 
-React-pdf 4.9.0 rendered the 85×55 mm card, a static local Noto Sans WOFF, two sides, accented French text, and a four-page A6 table. The raw probe contained only `MediaBox`. The isolated pdf-lib 1.17.1 step is therefore accepted for explicit crop, trim, and bleed boxes; it does not calculate layout. PDF.js 6.2.108 reads content and dimensions independently, while pdf-lib and pypdf inspect the page dictionaries. Browser execution and measured roll height remain open until S02/S03.
+React-pdf 4.9.0 rendered the 85×55 mm card, a static local Noto Sans WOFF, two sides, accented French text, and a four-page A6 table. The raw probe contained only `MediaBox`. The isolated pdf-lib 1.17.1 step is therefore accepted for explicit crop, trim, and bleed boxes; it does not calculate layout. PDF.js 6.2.108 reads content and dimensions independently, while pdf-lib and pypdf inspect the page dictionaries. The S02 static build renders in a dedicated worker, previews a copy through the local PDF.js worker, and retains the original bytes for download. Measured roll height remains open until S03.
 
 ## Limits of the promise
 

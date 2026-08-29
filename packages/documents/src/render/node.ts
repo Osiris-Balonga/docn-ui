@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+import { renderToBuffer } from "@react-pdf/renderer";
 import {
   renderQualification,
   type QualificationRenderOptions,
@@ -14,5 +15,8 @@ const nodeFontSource = fileURLToPath(
 export function renderQualificationInNode(
   options: Omit<QualificationRenderOptions, "fontSource">,
 ): Promise<Uint8Array> {
-  return renderQualification({ ...options, fontSource: nodeFontSource });
+  return renderQualification(
+    { ...options, fontSource: nodeFontSource },
+    async (document) => new Uint8Array(await renderToBuffer(document)),
+  );
 }
