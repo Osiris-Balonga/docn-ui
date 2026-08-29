@@ -1,10 +1,12 @@
 /// <reference lib="webworker" />
 
-import { renderFeasibilityFixtureInBrowser } from "@docn-ui/documents/feasibility/browser";
 import {
+  DocumentValidationError,
   fingerprintRenderRequest,
   type PhysicalDimensions,
 } from "@docn-ui/documents/core";
+import { renderDocumentInBrowser } from "@docn-ui/documents/browser";
+import { createBusinessCardMinimalPlan } from "@docn-ui/documents/templates/business-cards/minimal";
 import {
   parsePdfRenderRequest,
   PDF_RENDER_PROTOCOL_VERSION,
@@ -16,6 +18,16 @@ import {
 const workerScope: DedicatedWorkerGlobalScope =
   self as unknown as DedicatedWorkerGlobalScope;
 
+function readRequestedRevision(value: unknown): number {
+  if (!value || typeof value !== "object") return 0;
+  const request = (value as { request?: unknown }).request;
+  if (!request || typeof request !== "object") return 0;
+  const revision = (request as { revision?: unknown }).revision;
+  return Number.isSafeInteger(revision) && Number(revision) > 0
+    ? Number(revision)
+    : 0;
+}
+
 workerScope.addEventListener(
   "message",
   async (event: MessageEvent<unknown>) => {
@@ -24,7 +36,7 @@ workerScope.addEventListener(
       const failure: PdfRenderFailure = {
         kind: "failure",
         protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-        revision: 0,
+        revision: readRequestedRevision(event.data),
         code: "INVALID_DATA",
         message: "The PDF render request is invalid.",
       };
@@ -34,12 +46,8 @@ workerScope.addEventListener(
 
     const request = validated.request;
     try {
-      const bytes = await renderFeasibilityFixtureInBrowser({
-        fixture: "card",
-        name: request.data.name,
-        printProfile: request.printProfile,
-        themeId: request.themeId,
-      });
+      const { plan } = createBusinessCardMinimalPlan(request);
+      const bytes = await renderDocumentInBrowser(plan);
       const pdfBytes = bytes.buffer.slice(
         bytes.byteOffset,
         bytes.byteOffset + bytes.byteLength,
@@ -59,13 +67,15 @@ workerScope.addEventListener(
       };
       workerScope.postMessage(success satisfies PdfRenderResponse, [pdfBytes]);
     } catch (error) {
-      console.error("PDF worker render failed", error);
+      const knownError = error instanceof DocumentValidationError;
       const failure: PdfRenderFailure = {
         kind: "failure",
         protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
         revision: request.revision,
-        code: "RENDER_FAILED",
-        message: "The PDF could not be rendered. Try again.",
+        code: knownError ? error.code : "RENDER_FAILED",
+        message: knownError
+          ? error.message
+          : "The PDF could not be rendered. Try again.",
       };
       workerScope.postMessage(failure satisfies PdfRenderResponse);
     }

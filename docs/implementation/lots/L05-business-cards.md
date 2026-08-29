@@ -28,10 +28,10 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S02 — `feat(playground): edit card data and preview the actual PDF`
 
-- [ ] Create the card detail page and form with shadcn, field-level validation, and reset to sample data.
-- [ ] Connect the worker/data revision, format/theme selection, and page/zoom viewer; explicit stale/error states.
-- [ ] Download the same final result; use a neutral, safe filename without unnecessary personal data.
-- [ ] Activate `test:e2e` and Playwright Chromium configuration with the first real journey: isolated build server, one worker, retries 0, ignored artifacts. Add this scope to `test:all` without including it in lightweight tests.
+- [x] Create the card detail page and form with shadcn, field-level validation, and reset to sample data.
+- [x] Connect the worker/data revision, format/theme selection, and page/zoom viewer; explicit stale/error states.
+- [x] Download the same final result; use a neutral, safe filename without unnecessary personal data.
+- [x] Activate `test:e2e` and Playwright Chromium configuration with the first real journey: isolated build server, one worker, retries 0, ignored artifacts. Add this scope to `test:all` without including it in lightweight tests.
 
 **Acceptance:** Changing the name updates the PDF; the back and export match the latest valid revision.
 

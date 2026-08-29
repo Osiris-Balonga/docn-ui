@@ -24,6 +24,12 @@ export function SiteHeader() {
           </Link>
           <nav aria-label="Primary" className="flex items-center gap-1">
             <Link
+              href="/templates/business-card-minimal/"
+              className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              Templates
+            </Link>
+            <Link
               href="/docs/"
               className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
             >

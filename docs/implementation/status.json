@@ -145,7 +145,7 @@
       "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
       "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
-      "actualCommits": [],
+      "actualCommits": ["dbf7baaf4354f04a75e06cb39ed68cd45ccc2421"],
       "evidence": "../qa/L05.md",
       "blocker": null
     },

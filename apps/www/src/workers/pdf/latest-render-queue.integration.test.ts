@@ -29,7 +29,10 @@ class FakeWorker implements PdfWorkerPort {
 }
 
 function request(revision: number): PdfRenderRequest {
-  return makePdfRenderRequest(revision, `Name ${revision}`);
+  return makePdfRenderRequest(revision, {
+    name: `Name ${revision}`,
+    email: `name-${revision}@example.com`,
+  });
 }
 
 function success(revision: number): PdfRenderResponse {

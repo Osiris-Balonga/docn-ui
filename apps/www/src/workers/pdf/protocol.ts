@@ -7,16 +7,17 @@ import {
   type RenderResult,
   type ValidatedRenderRequest,
 } from "@docn-ui/documents/core";
+import {
+  parseBusinessCardData,
+  type BusinessCardData,
+} from "@docn-ui/documents/templates/business-cards/schema";
+import { businessCardMinimalMetadata } from "@docn-ui/documents/templates/business-cards/minimal/metadata";
 
 export { PDF_RENDER_PROTOCOL_VERSION } from "@docn-ui/documents/core";
 
-export interface QualificationCardData {
-  name: string;
-}
-
 export interface PdfRenderRequest {
   kind: "render";
-  request: RenderRequest<QualificationCardData>;
+  request: RenderRequest<BusinessCardData>;
 }
 
 export type SerializedRenderResult = Omit<RenderResult, "pdfBytes"> & {
@@ -39,26 +40,26 @@ export interface PdfRenderFailure {
 
 export type PdfRenderResponse = PdfRenderFailure | PdfRenderSuccess;
 
-const compatibility = {
-  supportedFormatIds: ["card-85x55"] as const,
-  supportedThemeIds: ["neutral", "editorial", "bold"] as const,
-};
-
 export function makePdfRenderRequest(
   revision: number,
-  name: string,
+  data: BusinessCardData,
+  options: {
+    formatId: RenderRequest["formatId"];
+    locale: RenderRequest["locale"];
+    themeId: RenderRequest["themeId"];
+  } = { formatId: "card-85x55", locale: "fr", themeId: "neutral" },
 ): PdfRenderRequest {
   return {
     kind: "render",
     request: {
       protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
       revision,
-      templateId: "qualification-card",
+      templateId: businessCardMinimalMetadata.id,
       templateVersion: "1.0.0",
-      data: { name },
-      formatId: "card-85x55",
-      themeId: "neutral",
-      locale: "fr",
+      data,
+      formatId: options.formatId,
+      themeId: options.themeId,
+      locale: options.locale,
       printProfile: { kind: "screen" },
       assetIds: [],
     },
@@ -67,27 +68,27 @@ export function makePdfRenderRequest(
 
 export function parsePdfRenderRequest(
   value: unknown,
-): ValidatedRenderRequest<QualificationCardData> | undefined {
+): ValidatedRenderRequest<BusinessCardData> | undefined {
   if (!value || typeof value !== "object") return undefined;
   const wrapper = value as Partial<PdfRenderRequest>;
   if (wrapper.kind !== "render" || !wrapper.request) return undefined;
   try {
-    const validated = validateRenderRequest<QualificationCardData>(
+    const validated = validateRenderRequest<BusinessCardData>(
       wrapper.request,
-      compatibility,
+      businessCardMinimalMetadata,
     );
-    const data = validated.request.data;
     if (
-      !data ||
-      typeof data !== "object" ||
-      Object.keys(data).length !== 1 ||
-      typeof data.name !== "string" ||
-      data.name.trim().length === 0 ||
-      data.name.length > 80
-    ) {
+      validated.request.templateId !== businessCardMinimalMetadata.id ||
+      validated.request.templateVersion !== businessCardMinimalMetadata.version
+    )
       return undefined;
-    }
-    return validated;
+    return {
+      ...validated,
+      request: {
+        ...validated.request,
+        data: parseBusinessCardData(validated.request.data),
+      },
+    };
   } catch (error) {
     if (error instanceof DocumentValidationError) return undefined;
     throw error;

@@ -12,6 +12,7 @@ import {
   type PdfRenderResponse,
 } from "@/workers/pdf/protocol";
 import { LatestRenderQueue } from "@/workers/pdf/latest-render-queue";
+import { minimalBusinessCardExampleFr } from "@docn-ui/documents/templates/business-cards/minimal/examples";
 
 type RenderStatus = "rendering" | "ready" | "error";
 
@@ -52,7 +53,7 @@ export function QualificationViewer() {
     );
     queueRef.current = queue;
     const revision = ++revisionRef.current;
-    queue.enqueue(makePdfRenderRequest(revision, "Élodie Mbemba"));
+    queue.enqueue(makePdfRenderRequest(revision, minimalBusinessCardExampleFr));
     return () => {
       queue.destroy();
       queueRef.current = null;
@@ -110,7 +111,12 @@ export function QualificationViewer() {
     const revision = ++revisionRef.current;
     setStatus("rendering");
     setMessage(`Rendering revision ${revision} in a browser worker…`);
-    queueRef.current.enqueue(makePdfRenderRequest(revision, name.trim()));
+    queueRef.current.enqueue(
+      makePdfRenderRequest(revision, {
+        ...minimalBusinessCardExampleFr,
+        name: name.trim(),
+      }),
+    );
   }
 
   return (
@@ -137,7 +143,7 @@ export function QualificationViewer() {
             <input
               id="card-name"
               value={name}
-              maxLength={80}
+              maxLength={48}
               onChange={(event) => setName(event.target.value)}
               className="h-10 w-full rounded-md border bg-transparent px-3 text-sm shadow-xs outline-none transition-[border-color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/20"
             />
