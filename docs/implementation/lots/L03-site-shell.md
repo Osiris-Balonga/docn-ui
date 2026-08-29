@@ -38,9 +38,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S03 — `test(ui): verify shell keyboard flow and responsive states`
 
-- [ ] Consolidate checks in the existing navigation suite; add axe checks for the shell and open Sheet if an uncovered risk justifies them.
-- [ ] Capture the four DESIGN viewports in representative light/dark states; manually check 200% zoom and reduced motion.
-- [ ] Record resolved defects and actual screenshots; do not create a snapshot for every component.
+- [x] Consolidate checks in the existing navigation suite; add axe checks for the shell and open Sheet if an uncovered risk justifies them.
+- [x] Capture the four DESIGN viewports in representative light/dark states; manually check 200% zoom and reduced motion.
+- [x] Record resolved defects and actual screenshots; do not create a snapshot for every component.
 
 **Acceptance:** Usable shell at 375 px, no global overflow, visible focus, logical order.
 

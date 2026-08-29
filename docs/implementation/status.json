@@ -105,11 +105,15 @@
     {
       "id": "L03",
       "file": "lots/L03-site-shell.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L02"],
       "branch": "feat/shadcn-site-shell",
       "baseCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
-      "actualCommits": ["bec8bdb5033eb992d6c3ab52eb702afb50facb05"],
+      "actualCommits": [
+        "bec8bdb5033eb992d6c3ab52eb702afb50facb05",
+        "dd22d6451934f5eed5223e18a0900d506d5ad58f",
+        "a0e81b700802f63f48bc229ebd6edd4ec7401c89"
+      ],
       "evidence": "../qa/L03.md",
       "blocker": null
     },
