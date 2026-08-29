@@ -123,13 +123,14 @@
     {
       "id": "L04",
       "file": "lots/L04-document-foundations.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L03"],
       "branch": "feat/document-foundations",
       "baseCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
       "actualCommits": [
         "02d21ebdbd309898d9e29ae770f67cfe8ac3e3ec",
-        "fda84780c856b813555cbc617c694101562347a9"
+        "fda84780c856b813555cbc617c694101562347a9",
+        "49f01b3e71b81c533a2b94d3706f8fa072e2b668"
       ],
       "evidence": "../qa/L04.md",
       "blocker": null

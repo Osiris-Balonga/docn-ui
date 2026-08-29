@@ -1,6 +1,6 @@
 # Target architecture
 
-Status: target architecture with the L02 PDF feasibility gate implemented. The two workspaces, static site, shadcn primitives, local fonts, scoped quality tooling, Node/browser PDF adapters, versioned worker protocol, exact-byte PDF.js preview, print boxes, pagination, and measured roll height exist. Catalog, registry, public templates, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
+Status: target architecture with the L02 PDF feasibility gate and L04 document foundations implemented. The two workspaces, static site, shadcn primitives, validated render contracts, physical formats, PDF-only themes, controlled local fonts, fixed-page PDF primitives, Node/browser adapters, versioned worker protocol, exact-byte PDF.js preview, print boxes, pagination, and measured roll height exist. Catalog, registry, public templates, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
 
 ## Stack selected for the plan
 
@@ -59,7 +59,7 @@ Start with two workspaces only. `packages/documents` stays private on npm: it or
 
 `core` depends on neither React nor the browser. `themes` depends on `core`. `primitives` depends on `core/themes` and the engine. `templates` depends on those layers, never on the site. `render` adapts templates to the browser or Node. The site imports lightweight metadata and explicitly loads template code on demand.
 
-The registry build reads these same sources. It maintains no second implementation in `apps/www`. Form interfaces live in the site with shared JSON metadata; they are not inserted into distributed PDF sources.
+The registry build reads these same sources. It maintains no second implementation in `apps/www`. Form interfaces live in the site with shared JSON metadata; they are not inserted into distributed PDF sources. Current source entry points and dependency boundaries are recorded in [`packages/documents/README.md`](../packages/documents/README.md); the feasibility entry is internal evidence and is not distributable template code.
 
 ## Rendering flow
 
@@ -71,7 +71,7 @@ Fields/JSON -> validation -> serializable request {revision, templateId, data, f
                -> download (same content)
 ```
 
-Do not send React components, functions, File objects, local paths, or DOM references through the protocol. Normalize to permitted data and buffers. The worker loads templates through a known loader index; never import from a user-provided URL.
+Do not send React components, functions, File objects, local paths, or DOM references through the protocol. Normalize to permitted data and buffers. The current protocol wraps the shared `RenderRequest`, validates it before engine entry, and returns the serializable form of `RenderResult`, including final dimensions, diagnostics, and an in-memory SHA-256 input fingerprint. The worker loads templates through a known loader index; never import from a user-provided URL.
 
 One active render and one pending request replaced by the latest. Use a short 250 ms debounce; ignore stale results. Logical cancellation does not stop CPU work: terminate and recreate the worker when needed on timeout or navigation. Do not spawn unlimited workers.
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { validateRenderRequest, inspectDocumentData } from "./contracts";
 import { DocumentValidationError } from "./errors";
+import { fingerprintRenderRequest } from "./fingerprint";
 import { resolveFormat } from "./formats";
 
 const compatibility = {
@@ -86,5 +87,20 @@ describe("document formats and render contracts", () => {
         path: ["data", "name"],
       }),
     ]);
+  });
+
+  it("fingerprints normalized inputs independent of object key order", async () => {
+    const first = validateRenderRequest(request(), compatibility).request;
+    const second = validateRenderRequest(
+      request({ data: { name: "Élodie Mbemba" } }),
+      compatibility,
+    ).request;
+
+    expect(await fingerprintRenderRequest(first)).toBe(
+      await fingerprintRenderRequest(second),
+    );
+    expect(await fingerprintRenderRequest({ ...first, revision: 2 })).not.toBe(
+      await fingerprintRenderRequest(first),
+    );
   });
 });

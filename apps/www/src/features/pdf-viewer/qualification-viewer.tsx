@@ -8,24 +8,12 @@ import {
 } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { useEffect, useRef, useState } from "react";
 import {
-  PDF_RENDER_PROTOCOL_VERSION,
-  type PdfRenderRequest,
+  makePdfRenderRequest,
   type PdfRenderResponse,
-} from "@/workers/pdf-render.protocol";
-import { LatestRenderQueue } from "@/workers/latest-render-queue";
+} from "@/workers/pdf/protocol";
+import { LatestRenderQueue } from "@/workers/pdf/latest-render-queue";
 
 type RenderStatus = "rendering" | "ready" | "error";
-
-function makeRequest(revision: number, name: string): PdfRenderRequest {
-  return {
-    kind: "render",
-    protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-    revision,
-    fixture: "card",
-    name,
-    printProfile: "screen",
-  };
-}
 
 export function QualificationViewer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,7 +30,7 @@ export function QualificationViewer() {
 
   useEffect(() => {
     const worker = new Worker(
-      new URL("../../workers/pdf-render.worker.ts", import.meta.url),
+      new URL("../../workers/pdf/render.worker.ts", import.meta.url),
       { type: "module" },
     );
     const queue = new LatestRenderQueue(
@@ -53,18 +41,18 @@ export function QualificationViewer() {
           setMessage(response.message);
           return;
         }
-        setPdfBytes(response.pdfBytes);
-        setPageCount(response.pageCount);
+        setPdfBytes(response.result.pdfBytes);
+        setPageCount(response.result.pageCount);
         setPageNumber(1);
         setStatus("ready");
         setMessage(
-          `Revision ${response.revision} · ${response.pdfBytes.byteLength.toLocaleString("en-US")} bytes`,
+          `Revision ${response.result.revision} · ${response.result.pdfBytes.byteLength.toLocaleString("en-US")} bytes`,
         );
       },
     );
     queueRef.current = queue;
     const revision = ++revisionRef.current;
-    queue.enqueue(makeRequest(revision, "Élodie Mbemba"));
+    queue.enqueue(makePdfRenderRequest(revision, "Élodie Mbemba"));
     return () => {
       queue.destroy();
       queueRef.current = null;
@@ -122,7 +110,7 @@ export function QualificationViewer() {
     const revision = ++revisionRef.current;
     setStatus("rendering");
     setMessage(`Rendering revision ${revision} in a browser worker…`);
-    queueRef.current.enqueue(makeRequest(revision, name.trim()));
+    queueRef.current.enqueue(makePdfRenderRequest(revision, name.trim()));
   }
 
   return (

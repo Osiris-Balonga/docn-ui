@@ -1,6 +1,5 @@
 import {
   Document,
-  type DocumentProps,
   Line,
   Page,
   Rect,
@@ -9,10 +8,9 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import type { ReactElement } from "react";
 import type { ThemeId } from "../core/contracts";
-import { resolveFormat } from "../core/formats";
-import { cardTrim, millimetersToPoints } from "../core/units";
+import { resolveFormat, type PrintProfile } from "../core/formats";
+import { millimetersToPoints } from "../core/units";
 import {
   FieldPair,
   Heading,
@@ -23,19 +21,14 @@ import {
   Text as DocumentText,
 } from "../primitives";
 import { getPdfTheme, type PdfTheme } from "../themes/themes";
-import type { AssetResolver } from "./assets";
 import { registerDocumentFonts } from "./fonts";
-import {
-  applyPrintBoxes,
-  getPageGeometry,
-  type QualificationPrintProfile,
-} from "./print-profile";
+import { applyPrintBoxes, getPageGeometry } from "./print-profile";
+import { renderFixedDocument, type DocumentRenderRuntime } from "./runtime";
 
-export interface QualificationRenderOptions {
-  assetResolver: AssetResolver;
+export interface FeasibilityRenderOptions {
   fixture: "card" | "primitives" | "receipt" | "table";
   name?: string;
-  printProfile?: QualificationPrintProfile;
+  printProfile?: PrintProfile;
   receipt?: {
     finalText: string;
     lineCount: number;
@@ -45,27 +38,23 @@ export interface QualificationRenderOptions {
   themeId?: ThemeId;
 }
 
-export type QualificationDocumentRenderer = (
-  document: ReactElement<DocumentProps>,
-) => Promise<Uint8Array>;
-
-export interface QualificationMeasurement {
+export interface FeasibilityMeasurement {
   pageCount: number;
   usedHeight: number;
 }
 
-export type QualificationDocumentMeasurer = (
+export type FeasibilityDocumentMeasurer = (
   bytes: Uint8Array,
   finalText: string,
-) => Promise<QualificationMeasurement>;
+) => Promise<FeasibilityMeasurement>;
 
-export class PdfQualificationError extends Error {
+export class PdfFeasibilityError extends Error {
   constructor(
     readonly code: "RECEIPT_HEIGHT_LIMIT" | "RECEIPT_MEASUREMENT_FAILED",
     message: string,
   ) {
     super(message);
-    this.name = "PdfQualificationError";
+    this.name = "PdfFeasibilityError";
   }
 }
 
@@ -109,7 +98,7 @@ const styles = StyleSheet.create({
 
 const MAX_RECEIPT_HEIGHT_MM = 500;
 const RECEIPT_HEIGHT_SAFETY_POINTS = 12;
-const primitiveCardFormat = (() => {
+const qualificationCardFormat = (() => {
   const format = resolveFormat("card-85x55");
   if (format.kind !== "fixed") {
     throw new Error(
@@ -128,7 +117,7 @@ function PrimitivesDocument({ theme }: { theme: PdfTheme }) {
       modificationDate={fixedDate}
       language="fr-FR"
     >
-      <PageFrame format={primitiveCardFormat} theme={theme}>
+      <PageFrame format={qualificationCardFormat} theme={theme}>
         <Stack gap="sm">
           <Heading>Élodie Mbemba</Heading>
           <DocumentText tone="muted">
@@ -201,10 +190,14 @@ function CardDocument({
   theme,
 }: {
   name: string;
-  profile: QualificationPrintProfile;
+  profile: PrintProfile;
   theme: PdfTheme;
 }) {
-  const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
+  const geometry = getPageGeometry(
+    qualificationCardFormat.trim.widthPt,
+    qualificationCardFormat.trim.heightPt,
+    profile,
+  );
   const contentInset = geometry.trimInset;
   const pageBackground =
     profile.kind === "print" && profile.cropMarks
@@ -467,13 +460,13 @@ function ReceiptDocument({
 }
 
 async function renderMeasuredReceipt(
-  options: QualificationRenderOptions,
+  options: FeasibilityRenderOptions,
   theme: PdfTheme,
-  renderDocument: QualificationDocumentRenderer,
-  measureDocument: QualificationDocumentMeasurer | undefined,
+  runtime: DocumentRenderRuntime,
+  measureDocument: FeasibilityDocumentMeasurer | undefined,
 ) {
   if (!options.receipt || !measureDocument) {
-    throw new PdfQualificationError(
+    throw new PdfFeasibilityError(
       "RECEIPT_MEASUREMENT_FAILED",
       "Receipt rendering requires measured PDF content.",
     );
@@ -481,14 +474,14 @@ async function renderMeasuredReceipt(
   const { finalText, lineCount, widthMm } = options.receipt;
   const maxHeightMm = options.receipt.maxHeightMm ?? MAX_RECEIPT_HEIGHT_MM;
   if (!Number.isSafeInteger(lineCount) || lineCount < 1 || lineCount > 300) {
-    throw new PdfQualificationError(
+    throw new PdfFeasibilityError(
       "RECEIPT_HEIGHT_LIMIT",
       "Receipt content exceeds the qualified line limit.",
     );
   }
   const width = millimetersToPoints(widthMm);
   const maxHeight = millimetersToPoints(maxHeightMm);
-  const probe = await renderDocument(
+  const probe = await runtime.renderDocument(
     <ReceiptDocument
       finalText={finalText}
       height={maxHeight}
@@ -497,23 +490,23 @@ async function renderMeasuredReceipt(
       width={width}
     />,
   );
-  let measurement: QualificationMeasurement;
+  let measurement: FeasibilityMeasurement;
   try {
     measurement = await measureDocument(probe, finalText);
   } catch {
-    throw new PdfQualificationError(
+    throw new PdfFeasibilityError(
       "RECEIPT_MEASUREMENT_FAILED",
       "The rendered receipt content could not be measured.",
     );
   }
   const height = measurement.usedHeight + RECEIPT_HEIGHT_SAFETY_POINTS;
   if (measurement.pageCount !== 1 || height > maxHeight) {
-    throw new PdfQualificationError(
+    throw new PdfFeasibilityError(
       "RECEIPT_HEIGHT_LIMIT",
       `Receipt content exceeds the ${maxHeightMm} mm height limit.`,
     );
   }
-  const raw = await renderDocument(
+  const raw = await runtime.renderDocument(
     <ReceiptDocument
       finalText={finalText}
       height={height}
@@ -528,42 +521,41 @@ async function renderMeasuredReceipt(
   );
 }
 
-export async function renderQualification(
-  options: QualificationRenderOptions,
-  renderDocument: QualificationDocumentRenderer,
-  measureDocument?: QualificationDocumentMeasurer,
+export async function renderFeasibilityFixture(
+  options: FeasibilityRenderOptions,
+  runtime: DocumentRenderRuntime,
+  measureDocument?: FeasibilityDocumentMeasurer,
 ): Promise<Uint8Array> {
-  registerDocumentFonts(options.assetResolver);
+  registerDocumentFonts(runtime.assetResolver);
   const theme = getPdfTheme(options.themeId ?? "neutral");
   if (options.fixture === "primitives") {
-    const raw = await renderDocument(<PrimitivesDocument theme={theme} />);
-    return applyPrintBoxes(
-      raw,
-      getPageGeometry(
-        primitiveCardFormat.trim.widthPt,
-        primitiveCardFormat.trim.heightPt,
-        { kind: "screen" },
-      ),
+    return renderFixedDocument(
+      {
+        document: <PrimitivesDocument theme={theme} />,
+        format: qualificationCardFormat,
+        printProfile: { kind: "screen" },
+      },
+      runtime,
     );
   }
   if (options.fixture === "table")
-    return renderDocument(<TableDocument theme={theme} />);
+    return runtime.renderDocument(<TableDocument theme={theme} />);
   if (options.fixture === "receipt") {
-    return renderMeasuredReceipt(
-      options,
-      theme,
-      renderDocument,
-      measureDocument,
-    );
+    return renderMeasuredReceipt(options, theme, runtime, measureDocument);
   }
   const profile = options.printProfile ?? { kind: "screen" };
-  const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
-  const raw = await renderDocument(
-    <CardDocument
-      name={options.name ?? "Élodie Mbemba"}
-      profile={profile}
-      theme={theme}
-    />,
+  return renderFixedDocument(
+    {
+      document: (
+        <CardDocument
+          name={options.name ?? "Élodie Mbemba"}
+          profile={profile}
+          theme={theme}
+        />
+      ),
+      format: qualificationCardFormat,
+      printProfile: profile,
+    },
+    runtime,
   );
-  return applyPrintBoxes(raw, geometry);
 }

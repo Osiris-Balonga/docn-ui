@@ -11,7 +11,7 @@ import {
   assertWithinSafeFrame,
   createSafeFrame,
 } from "../primitives/measurement";
-import { renderQualificationInNode } from "./node";
+import { renderFeasibilityFixtureInNode } from "./feasibility.node";
 
 const POINT_TOLERANCE = 0.1;
 const expected = {
@@ -105,11 +105,11 @@ afterEach(async () => {
 
 describe("PDF rendering feasibility", () => {
   it("renders an exact two-sided card with local accented text", async () => {
-    const bytes = await renderQualificationInNode({
+    const bytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "screen" },
     });
-    const editorialBytes = await renderQualificationInNode({
+    const editorialBytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "screen" },
       themeId: "editorial",
@@ -149,11 +149,11 @@ describe("PDF rendering feasibility", () => {
   });
 
   it("publishes exact trim and bleed boxes with and without crop-mark margins", async () => {
-    const noMarksBytes = await renderQualificationInNode({
+    const noMarksBytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "print", bleedMm: 3, cropMarks: false },
     });
-    const marksBytes = await renderQualificationInNode({
+    const marksBytes = await renderFeasibilityFixtureInNode({
       fixture: "card",
       printProfile: { kind: "print", bleedMm: 3, cropMarks: true },
     });
@@ -210,7 +210,7 @@ describe("PDF rendering feasibility", () => {
   });
 
   it("paginates a small table without losing its final row", async () => {
-    const bytes = await renderQualificationInNode({ fixture: "table" });
+    const bytes = await renderFeasibilityFixtureInNode({ fixture: "table" });
     const inspection = await inspectWithPdfJs(bytes);
     const allText = inspection.pages.map((page) => page.text).join(" ");
 
@@ -222,7 +222,7 @@ describe("PDF rendering feasibility", () => {
   });
 
   it("composes shared primitives inside the measured card safe area", async () => {
-    const bytes = await renderQualificationInNode({
+    const bytes = await renderFeasibilityFixtureInNode({
       fixture: "primitives",
       themeId: "editorial",
     });
@@ -272,7 +272,7 @@ describe("PDF rendering feasibility", () => {
     const measurements = new Map<string, number>();
 
     for (const fixture of cases) {
-      const bytes = await renderQualificationInNode({
+      const bytes = await renderFeasibilityFixtureInNode({
         fixture: "receipt",
         receipt: fixture,
       });
@@ -305,7 +305,7 @@ describe("PDF rendering feasibility", () => {
 
   it("rejects receipt content that exceeds the configured physical limit", async () => {
     await expect(
-      renderQualificationInNode({
+      renderFeasibilityFixtureInNode({
         fixture: "receipt",
         receipt: {
           widthMm: 58,

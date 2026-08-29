@@ -48,9 +48,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S04 — `refactor(pdf): promote the rendering spike into shared adapters`
 
-- [ ] Replace temporary spike structures with final contracts; remove unused disposable code.
-- [ ] Retain useful feasibility fixtures and evidence; move viewer/protocol to architecture locations.
-- [ ] Document exports, permitted dependencies, and asset strategy for the future registry.
+- [x] Replace temporary spike structures with final contracts; remove unused disposable code.
+- [x] Retain useful feasibility fixtures and evidence; move viewer/protocol to architecture locations.
+- [x] Document exports, permitted dependencies, and asset strategy for the future registry.
 
 **Acceptance:** No competing second engine/reference fixture; build and initial qualification remain valid.
 

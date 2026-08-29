@@ -1,9 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  getRequestRevision,
+  getResponseRevision,
+  makePdfRenderRequest,
   PDF_RENDER_PROTOCOL_VERSION,
   type PdfRenderRequest,
   type PdfRenderResponse,
-} from "./pdf-render.protocol";
+} from "./protocol";
 import { LatestRenderQueue, type PdfWorkerPort } from "./latest-render-queue";
 
 class FakeWorker implements PdfWorkerPort {
@@ -26,23 +29,21 @@ class FakeWorker implements PdfWorkerPort {
 }
 
 function request(revision: number): PdfRenderRequest {
-  return {
-    kind: "render",
-    protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-    revision,
-    fixture: "card",
-    name: `Name ${revision}`,
-    printProfile: "screen",
-  };
+  return makePdfRenderRequest(revision, `Name ${revision}`);
 }
 
 function success(revision: number): PdfRenderResponse {
   return {
     kind: "success",
     protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-    revision,
-    pageCount: 2,
-    pdfBytes: new ArrayBuffer(8),
+    result: {
+      revision,
+      pageCount: 2,
+      pdfBytes: new ArrayBuffer(8),
+      finalDimensions: [],
+      diagnostics: [],
+      fingerprint: `test-${revision}`,
+    },
   };
 }
 
@@ -57,14 +58,14 @@ describe("LatestRenderQueue", () => {
     queue.enqueue(request(1));
     queue.enqueue(request(2));
     queue.enqueue(request(3));
-    expect(worker.posted.map(({ revision }) => revision)).toEqual([1]);
+    expect(worker.posted.map(getRequestRevision)).toEqual([1]);
 
     worker.respond(success(1));
-    expect(worker.posted.map(({ revision }) => revision)).toEqual([1, 3]);
+    expect(worker.posted.map(getRequestRevision)).toEqual([1, 3]);
     worker.respond(success(2));
-    expect(responses.map(({ revision }) => revision)).toEqual([1]);
+    expect(responses.map(getResponseRevision)).toEqual([1]);
     worker.respond(success(3));
-    expect(responses.map(({ revision }) => revision)).toEqual([1, 3]);
+    expect(responses.map(getResponseRevision)).toEqual([1, 3]);
   });
 
   it("reports a worker error for the active revision and continues", () => {
@@ -83,7 +84,7 @@ describe("LatestRenderQueue", () => {
         code: "WORKER_FAILURE",
       }),
     );
-    expect(worker.posted.map(({ revision }) => revision)).toEqual([4, 5]);
+    expect(worker.posted.map(getRequestRevision)).toEqual([4, 5]);
   });
 
   it("terminates once and rejects new work after destruction", () => {

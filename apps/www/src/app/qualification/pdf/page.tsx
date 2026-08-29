@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { QualificationViewer } from "@/features/pdf-qualification/qualification-viewer";
+import { QualificationViewer } from "@/features/pdf-viewer/qualification-viewer";
 
 export const metadata: Metadata = {
   title: "PDF pipeline qualification — docn-ui",

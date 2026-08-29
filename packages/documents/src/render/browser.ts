@@ -1,20 +1,25 @@
 import { pdf } from "@react-pdf/renderer";
-import {
-  renderQualification,
-  type QualificationRenderOptions,
-} from "./qualification";
 import { createBrowserAssetResolver } from "./assets.browser";
+import {
+  renderFixedDocument,
+  type DocumentRenderRuntime,
+  type FixedDocumentRenderPlan,
+} from "./runtime";
 
 export { createBrowserAssetResolver } from "./assets.browser";
 
-export function renderQualificationInBrowser(
-  options: Omit<QualificationRenderOptions, "assetResolver">,
-): Promise<Uint8Array> {
-  return renderQualification(
-    { ...options, assetResolver: createBrowserAssetResolver() },
-    async (document) => {
+export function createBrowserDocumentRuntime(): DocumentRenderRuntime {
+  return {
+    assetResolver: createBrowserAssetResolver(),
+    async renderDocument(document) {
       const blob = await pdf(document).toBlob();
       return new Uint8Array(await blob.arrayBuffer());
     },
-  );
+  };
+}
+
+export function renderDocumentInBrowser(
+  plan: FixedDocumentRenderPlan,
+): Promise<Uint8Array> {
+  return renderFixedDocument(plan, createBrowserDocumentRuntime());
 }

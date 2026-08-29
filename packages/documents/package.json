@@ -6,6 +6,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./browser": "./src/render/browser.ts",
+    "./core": "./src/core/index.ts",
+    "./feasibility/browser": "./src/render/feasibility.browser.ts",
+    "./node": "./src/render/node.ts",
     "./primitives": "./src/primitives/index.tsx",
     "./themes": "./src/themes/themes.ts"
   },
