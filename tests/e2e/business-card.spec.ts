@@ -8,10 +8,32 @@ test("edits, inspects the back, and exports the latest business card", async ({
   await page.goto("/templates/business-card-minimal/");
   const status = page.getByTestId("render-status");
   await expect(status).toContainText("Revision 1", { timeout: 15_000 });
+  const initialFingerprint = await status.getAttribute("data-fingerprint");
 
-  await page.getByRole("textbox", { name: "Name" }).fill("Anaïs Mavoungou");
+  const name = page.getByRole("textbox", { name: "Name" });
+  await name.fill("");
+  await expect(name).toHaveAttribute("aria-invalid", "true");
+  await expect(status).toContainText("Fix the highlighted fields");
+  await expect(
+    page.getByRole("button", { name: "Download PDF" }),
+  ).toBeDisabled();
+
+  await name.fill("Anaïs Mavoungou");
   await expect(status).toContainText("Revision 2", { timeout: 15_000 });
   await expect(status).toHaveAttribute("data-fingerprint", /.+/);
+
+  await page.getByRole("button", { name: "Reset sample" }).click();
+  await expect(status).toContainText("Revision 3", { timeout: 15_000 });
+  await expect(name).toHaveValue("Élodie Mbemba");
+  await name.fill("Anaïs Mavoungou");
+  await expect(status).toContainText("Revision 4", { timeout: 15_000 });
+
+  await page.getByLabel("Format").click();
+  await page.getByRole("option", { name: "90 × 50 mm" }).click();
+  await expect(status).toContainText("Revision 5", { timeout: 15_000 });
+  const finalFingerprint = await status.getAttribute("data-fingerprint");
+  expect(finalFingerprint).toBeTruthy();
+  expect(finalFingerprint).not.toBe(initialFingerprint);
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(
@@ -38,8 +60,8 @@ test("edits, inspects the back, and exports the latest business card", async ({
     const document = await loadingTask.promise;
     expect(document.numPages).toBe(2);
     const front = await document.getPage(1);
-    expect(front.view[2]).toBeCloseTo(240.944_881_889_8, 1);
-    expect(front.view[3]).toBeCloseTo(155.905_511_811, 1);
+    expect(front.view[2]).toBeCloseTo(255.118_110_236_2, 1);
+    expect(front.view[3]).toBeCloseTo(141.732_283_464_6, 1);
     const content = await front.getTextContent();
     const text = content.items
       .filter((item): item is typeof item & { str: string } => "str" in item)

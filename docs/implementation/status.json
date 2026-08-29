@@ -141,13 +141,14 @@
     {
       "id": "L05",
       "file": "lots/L05-business-cards.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
       "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
       "actualCommits": [
         "dbf7baaf4354f04a75e06cb39ed68cd45ccc2421",
-        "d9a4f05b42a559cdc939f593dbde09e36955b0ed"
+        "d9a4f05b42a559cdc939f593dbde09e36955b0ed",
+        "088912ba8116d2ebde4017d85a1c30418a01a386"
       ],
       "evidence": "../qa/L05.md",
       "blocker": null

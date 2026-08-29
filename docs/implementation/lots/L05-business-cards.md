@@ -49,9 +49,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S04 — `test(cards): verify faithful export and fixed-layout recovery`
 
-- [ ] Consolidate the real journey with invalid input, correction, reset, and format changes.
-- [ ] Verify downloaded content and dimensions, not only the download event; check preview-revision fingerprint/bytes.
-- [ ] Remove obsolete spike screens; record G2 QA and physical limitations.
+- [x] Consolidate the real journey with invalid input, correction, reset, and format changes.
+- [x] Verify downloaded content and dimensions, not only the download event; check preview-revision fingerprint/bytes.
+- [x] Remove obsolete spike screens; record G2 QA and physical limitations.
 
 **Acceptance:** G2: an unaided user creates a customized card and obtains a correct PDF; no advertised functionality is simulated.
 

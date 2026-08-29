@@ -2,7 +2,7 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 29, 2026: L04 document foundations are merged and L05 business cards are in progress.** Exact PDF geometry, local fonts, print boxes, pagination, browser generation, local PDF.js preview, reusable contracts, formats, themes, primitives, and shared rendering adapters are qualified. The first complete editable business-card workflow is the current work; the public catalog and registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L05 evidence](docs/qa/L05.md).
+**Status on August 29, 2026: L04 document foundations are merged and L05 business cards are verified locally.** Exact PDF geometry, local fonts, print boxes, browser generation, PDF.js preview, reusable contracts, three two-sided card compositions, validated editing, and faithful local export are implemented. The public catalog and registry are not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L05 evidence](docs/qa/L05.md).
 
 [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L05 issue #7](https://github.com/Osiris-Balonga/docn-ui/issues/7) · [L05 evidence](docs/qa/L05.md)
 
