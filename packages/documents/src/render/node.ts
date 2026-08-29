@@ -1,17 +1,10 @@
-import { fileURLToPath } from "node:url";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import {
   renderQualification,
   type QualificationRenderOptions,
 } from "./qualification";
-
-const nodeFontSource = fileURLToPath(
-  new URL(
-    "../../assets/fonts/noto-sans-latin-400-normal.woff",
-    import.meta.url,
-  ),
-);
+import { createNodeAssetResolver } from "./assets.node";
 
 async function measureContent(bytes: Uint8Array, finalText: string) {
   const loadingTask = getDocument({
@@ -54,10 +47,10 @@ async function measureContent(bytes: Uint8Array, finalText: string) {
 }
 
 export function renderQualificationInNode(
-  options: Omit<QualificationRenderOptions, "fontSource">,
+  options: Omit<QualificationRenderOptions, "assetResolver">,
 ): Promise<Uint8Array> {
   return renderQualification(
-    { ...options, fontSource: nodeFontSource },
+    { ...options, assetResolver: createNodeAssetResolver() },
     async (document) => new Uint8Array(await renderToBuffer(document)),
     measureContent,
   );

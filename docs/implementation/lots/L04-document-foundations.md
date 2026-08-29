@@ -28,9 +28,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S02 — `feat(documents): add local typography and portable theme tokens`
 
-- [ ] Create three PDF themes independent of web tokens, with engine-compatible colors and a bounded typographic scale.
-- [ ] Explicitly register required static weights; manifest provenance/licenses/hashes and French/English examples.
-- [ ] Create browser/Node AssetResolver with allowed IDs; never read URLs or paths from user data.
+- [x] Create three PDF themes independent of web tokens, with engine-compatible colors and a bounded typographic scale.
+- [x] Explicitly register required static weights; manifest provenance/licenses/hashes and French/English examples.
+- [x] Create browser/Node AssetResolver with allowed IDs; never read URLs or paths from user data.
 
 **Acceptance:** Changing the site theme does not change the PDF; document themes load only declared assets.
 

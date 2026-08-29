@@ -86,7 +86,13 @@ describe("PDF rendering feasibility", () => {
       fixture: "card",
       printProfile: { kind: "screen" },
     });
+    const editorialBytes = await renderQualificationInNode({
+      fixture: "card",
+      printProfile: { kind: "screen" },
+      themeId: "editorial",
+    });
     const inspection = await inspectWithPdfJs(bytes);
+    const editorialInspection = await inspectWithPdfJs(editorialBytes);
     const boxes = await inspectBoxes(bytes);
 
     expect(inspection.pageCount).toBe(2);
@@ -98,6 +104,11 @@ describe("PDF rendering feasibility", () => {
       "Direction créative · Brazzaville",
     );
     expect(inspection.pages[1]?.text).toContain("Back side · 2 / 2");
+    expect(editorialInspection.pageCount).toBe(2);
+    expect(editorialInspection.pages[0]?.text).toContain("Élodie Mbemba");
+    expect(editorialInspection.pages[1]?.text).toContain(
+      "Documents précis, sources ouvertes.",
+    );
     for (const page of boxes) {
       const trim = {
         x: 0,
@@ -111,6 +122,7 @@ describe("PDF rendering feasibility", () => {
       expectBox(page.bleed, trim);
     }
     await retainArtifact("card-screen", bytes);
+    await retainArtifact("card-editorial", editorialBytes);
   });
 
   it("publishes exact trim and bleed boxes with and without crop-mark margins", async () => {

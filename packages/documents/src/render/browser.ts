@@ -3,14 +3,15 @@ import {
   renderQualification,
   type QualificationRenderOptions,
 } from "./qualification";
+import { createBrowserAssetResolver } from "./assets.browser";
 
-const browserFontSource = "/generated/fonts/noto-sans-latin-400-normal.woff";
+export { createBrowserAssetResolver } from "./assets.browser";
 
 export function renderQualificationInBrowser(
-  options: Omit<QualificationRenderOptions, "fontSource">,
+  options: Omit<QualificationRenderOptions, "assetResolver">,
 ): Promise<Uint8Array> {
   return renderQualification(
-    { ...options, fontSource: browserFontSource },
+    { ...options, assetResolver: createBrowserAssetResolver() },
     async (document) => {
       const blob = await pdf(document).toBlob();
       return new Uint8Array(await blob.arrayBuffer());

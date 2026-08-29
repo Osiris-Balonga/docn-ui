@@ -1,7 +1,6 @@
 import {
   Document,
   type DocumentProps,
-  Font,
   Line,
   Page,
   Rect,
@@ -11,7 +10,11 @@ import {
   View,
 } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
+import type { ThemeId } from "../core/contracts";
 import { cardTrim, millimetersToPoints } from "../core/units";
+import { getPdfTheme, type PdfTheme } from "../themes/themes";
+import type { AssetResolver } from "./assets";
+import { registerDocumentFonts } from "./fonts";
 import {
   applyPrintBoxes,
   getPageGeometry,
@@ -19,8 +22,8 @@ import {
 } from "./print-profile";
 
 export interface QualificationRenderOptions {
+  assetResolver: AssetResolver;
   fixture: "card" | "receipt" | "table";
-  fontSource: string;
   name?: string;
   printProfile?: QualificationPrintProfile;
   receipt?: {
@@ -29,6 +32,7 @@ export interface QualificationRenderOptions {
     maxHeightMm?: number;
     widthMm: 58 | 80;
   };
+  themeId?: ThemeId;
 }
 
 export type QualificationDocumentRenderer = (
@@ -57,13 +61,10 @@ export class PdfQualificationError extends Error {
 
 const fixedDate = new Date("2026-01-15T12:00:00.000Z");
 const styles = StyleSheet.create({
-  page: {
-    color: "#17212b",
-    fontFamily: "NotoSansQualification",
-  },
+  page: {},
   card: { position: "absolute" },
-  accent: { backgroundColor: "#e45835", height: 7, width: 44 },
-  name: { fontSize: 19 },
+  accent: { height: 7, width: 44 },
+  name: {},
   small: { fontSize: 7, lineHeight: 1.45 },
   tablePage: { padding: 28, fontSize: 9, lineHeight: 1.35 },
   tableHeader: { fontSize: 16, marginBottom: 12 },
@@ -99,25 +100,17 @@ const styles = StyleSheet.create({
 const MAX_RECEIPT_HEIGHT_MM = 500;
 const RECEIPT_HEIGHT_SAFETY_POINTS = 12;
 
-function registerFont(source: string) {
-  Font.register({
-    family: "NotoSansQualification",
-    src: source,
-    fontWeight: 400,
-  });
-  Font.registerHyphenationCallback((word) => [word]);
-}
-
 function CropMarks({
   bleedInset,
   mediaHeight,
   mediaWidth,
+  theme,
   trimInset,
-}: ReturnType<typeof getPageGeometry>) {
+}: ReturnType<typeof getPageGeometry> & { theme: PdfTheme }) {
   const gap = millimetersToPoints(1);
   const farX = mediaWidth - trimInset;
   const farY = mediaHeight - trimInset;
-  const stroke = "#17212b";
+  const stroke = theme.colors.text;
   const strokeWidth = 0.5;
   const lines: Array<readonly [number, number, number, number]> = [
     [0, trimInset, trimInset - gap, trimInset],
@@ -140,7 +133,7 @@ function CropMarks({
         y={bleedInset}
         width={mediaWidth - 2 * bleedInset}
         height={mediaHeight - 2 * bleedInset}
-        fill="#f7f3ec"
+        fill={theme.colors.canvas}
       />
       {lines.map(([x1, y1, x2, y2], index) => (
         <Line
@@ -160,14 +153,28 @@ function CropMarks({
 function CardDocument({
   name,
   profile,
+  theme,
 }: {
   name: string;
   profile: QualificationPrintProfile;
+  theme: PdfTheme;
 }) {
   const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
   const contentInset = geometry.trimInset;
   const pageBackground =
-    profile.kind === "print" && profile.cropMarks ? "#ffffff" : "#f7f3ec";
+    profile.kind === "print" && profile.cropMarks
+      ? theme.colors.surface
+      : theme.colors.canvas;
+  const pageTheme = {
+    color: theme.colors.text,
+    fontFamily: theme.fonts.body,
+    fontWeight: theme.fonts.regularWeight,
+  } as const;
+  const nameTheme = {
+    fontFamily: theme.fonts.heading,
+    fontSize: theme.typeScale.display,
+    fontWeight: theme.fonts.strongWeight,
+  } as const;
   return (
     <Document
       title="docn-ui PDF qualification card"
@@ -185,10 +192,11 @@ function CardDocument({
             width: geometry.mediaWidth,
             height: geometry.mediaHeight,
           },
+          pageTheme,
         ]}
       >
         {profile.kind === "print" && profile.cropMarks ? (
-          <CropMarks {...geometry} />
+          <CropMarks {...geometry} theme={theme} />
         ) : null}
         <View
           wrap={false}
@@ -203,12 +211,24 @@ function CardDocument({
           ]}
         >
           <View
-            style={[styles.accent, { position: "absolute", left: 18, top: 18 }]}
+            style={[
+              styles.accent,
+              {
+                backgroundColor: theme.colors.accent,
+                position: "absolute",
+                left: 18,
+                top: 18,
+              },
+            ]}
           />
           <View style={{ position: "absolute", left: 18, bottom: 18 }}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.small}>Direction créative · Brazzaville</Text>
-            <Text style={styles.small}>bonjour@docn-ui.dev</Text>
+            <Text style={[styles.name, nameTheme]}>{name}</Text>
+            <Text style={[styles.small, { fontSize: theme.typeScale.caption }]}>
+              Direction créative · Brazzaville
+            </Text>
+            <Text style={[styles.small, { fontSize: theme.typeScale.caption }]}>
+              bonjour@docn-ui.dev
+            </Text>
           </View>
         </View>
       </Page>
@@ -221,10 +241,11 @@ function CardDocument({
             width: geometry.mediaWidth,
             height: geometry.mediaHeight,
           },
+          pageTheme,
         ]}
       >
         {profile.kind === "print" && profile.cropMarks ? (
-          <CropMarks {...geometry} />
+          <CropMarks {...geometry} theme={theme} />
         ) : null}
         <View
           wrap={false}
@@ -246,6 +267,8 @@ function CardDocument({
           <Text
             style={[
               styles.name,
+              nameTheme,
+              { fontSize: theme.typeScale.heading, lineHeight: 1.2 },
               {
                 position: "absolute",
                 left: 18,
@@ -259,7 +282,12 @@ function CardDocument({
           <View
             style={[
               styles.accent,
-              { position: "absolute", left: 18, bottom: 18 },
+              {
+                backgroundColor: theme.colors.accent,
+                position: "absolute",
+                left: 18,
+                bottom: 18,
+              },
             ]}
           />
         </View>
@@ -268,7 +296,7 @@ function CardDocument({
   );
 }
 
-function TableDocument() {
+function TableDocument({ theme }: { theme: PdfTheme }) {
   const width = millimetersToPoints(105);
   const height = millimetersToPoints(148);
   const rows = Array.from({ length: 56 }, (_, index) => index + 1);
@@ -280,12 +308,36 @@ function TableDocument() {
       modificationDate={fixedDate}
       language="en-US"
     >
-      <Page size={[width, height]} style={[styles.page, styles.tablePage]} wrap>
-        <Text style={styles.tableHeader} fixed>
+      <Page
+        size={[width, height]}
+        style={[
+          styles.page,
+          styles.tablePage,
+          { color: theme.colors.text, fontFamily: theme.fonts.body },
+        ]}
+        wrap
+      >
+        <Text
+          style={[
+            styles.tableHeader,
+            {
+              fontFamily: theme.fonts.heading,
+              fontWeight: theme.fonts.strongWeight,
+            },
+          ]}
+          fixed
+        >
           Small multipage table
         </Text>
         {rows.map((row) => (
-          <View key={row} style={styles.tableRow} wrap={false}>
+          <View
+            key={row}
+            style={[
+              styles.tableRow,
+              { borderBottomColor: theme.colors.border },
+            ]}
+            wrap={false}
+          >
             <Text style={styles.rowIndex}>{String(row).padStart(2, "0")}</Text>
             <Text>Deterministic pagination row {row}</Text>
           </View>
@@ -300,11 +352,13 @@ function ReceiptDocument({
   finalText,
   height,
   lineCount,
+  theme,
   width,
 }: {
   finalText: string;
   height: number;
   lineCount: number;
+  theme: PdfTheme;
   width: number;
 }) {
   const rows = Array.from({ length: lineCount }, (_, index) => index + 1);
@@ -316,13 +370,41 @@ function ReceiptDocument({
       modificationDate={fixedDate}
       language="en-US"
     >
-      <Page size={[width, height]} style={[styles.page, styles.receiptPage]}>
-        <Text style={styles.receiptHeader}>Nzela Corner Store</Text>
-        <Text style={styles.receiptMeta}>
+      <Page
+        size={[width, height]}
+        style={[
+          styles.page,
+          styles.receiptPage,
+          {
+            backgroundColor: theme.colors.surface,
+            color: theme.colors.text,
+            fontFamily: theme.fonts.body,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.receiptHeader,
+            {
+              fontFamily: theme.fonts.heading,
+              fontWeight: theme.fonts.strongWeight,
+            },
+          ]}
+        >
+          Nzela Corner Store
+        </Text>
+        <Text style={[styles.receiptMeta, { color: theme.colors.mutedText }]}>
           Receipt Q-2026-0115 · 15 Jan 2026 · 13:00
         </Text>
         {rows.map((row) => (
-          <View key={row} style={styles.receiptRow} wrap={false}>
+          <View
+            key={row}
+            style={[
+              styles.receiptRow,
+              { borderBottomColor: theme.colors.border },
+            ]}
+            wrap={false}
+          >
             <Text style={styles.receiptDescription}>
               {row.toString().padStart(2, "0")} · Roasted cassava flour with
               spice blend
@@ -341,6 +423,7 @@ function ReceiptDocument({
 
 async function renderMeasuredReceipt(
   options: QualificationRenderOptions,
+  theme: PdfTheme,
   renderDocument: QualificationDocumentRenderer,
   measureDocument: QualificationDocumentMeasurer | undefined,
 ) {
@@ -365,6 +448,7 @@ async function renderMeasuredReceipt(
       finalText={finalText}
       height={maxHeight}
       lineCount={lineCount}
+      theme={theme}
       width={width}
     />,
   );
@@ -389,6 +473,7 @@ async function renderMeasuredReceipt(
       finalText={finalText}
       height={height}
       lineCount={lineCount}
+      theme={theme}
       width={width}
     />,
   );
@@ -403,15 +488,26 @@ export async function renderQualification(
   renderDocument: QualificationDocumentRenderer,
   measureDocument?: QualificationDocumentMeasurer,
 ): Promise<Uint8Array> {
-  registerFont(options.fontSource);
-  if (options.fixture === "table") return renderDocument(<TableDocument />);
+  registerDocumentFonts(options.assetResolver);
+  const theme = getPdfTheme(options.themeId ?? "neutral");
+  if (options.fixture === "table")
+    return renderDocument(<TableDocument theme={theme} />);
   if (options.fixture === "receipt") {
-    return renderMeasuredReceipt(options, renderDocument, measureDocument);
+    return renderMeasuredReceipt(
+      options,
+      theme,
+      renderDocument,
+      measureDocument,
+    );
   }
   const profile = options.printProfile ?? { kind: "screen" };
   const geometry = getPageGeometry(cardTrim.width, cardTrim.height, profile);
   const raw = await renderDocument(
-    <CardDocument name={options.name ?? "Élodie Mbemba"} profile={profile} />,
+    <CardDocument
+      name={options.name ?? "Élodie Mbemba"}
+      profile={profile}
+      theme={theme}
+    />,
   );
   return applyPrintBoxes(raw, geometry);
 }

@@ -36,4 +36,8 @@ export {
   toPhysicalDimensions,
   type PhysicalDimensions,
 } from "./core/units";
+export { assetManifest, getAssetDefinition } from "./assets/manifest";
+export { createNodeAssetResolver } from "./render/assets.node";
+export type { AssetResolver, ResolvedAsset } from "./render/assets";
+export { getPdfTheme, themes, type PdfTheme } from "./themes/themes";
 export { renderQualificationInNode } from "./render/node";

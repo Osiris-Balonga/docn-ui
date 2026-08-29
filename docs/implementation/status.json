@@ -127,7 +127,7 @@
       "dependsOn": ["L03"],
       "branch": "feat/document-foundations",
       "baseCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
-      "actualCommits": [],
+      "actualCommits": ["02d21ebdbd309898d9e29ae770f67cfe8ac3e3ec"],
       "evidence": "../qa/L04.md",
       "blocker": null
     },

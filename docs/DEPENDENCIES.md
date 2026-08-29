@@ -83,3 +83,9 @@ The raw React-pdf probe emitted only `MediaBox`; `CropBox`, `TrimBox`, and `Blee
 | Zod | 3.25.76 | MIT | Strict render-request contracts and field-path validation; imported by the document core and tree-shaken with distributed source |
 
 Zod is a direct dependency because render requests cross the browser-worker boundary and future template schemas must return the same structured field paths. Version 3.25.76 was already locked transitively through development tooling, but that copy was not a production contract. Promoting the established MIT-licensed version avoids a second copy and preserves the workspace's dependency-age policy without an exception; no runtime network request is introduced.
+
+## Portable PDF typography (L04-S02)
+
+No JavaScript dependency was added. The PDF asset inventory now contains 70,000 bytes across static Latin WOFF files: Noto Sans 400/700 and Noto Serif 400/700 from the published `@fontsource/noto-sans@5.3.0` and `@fontsource/noto-serif@5.3.0` packages, both OFL-1.1. Noto Sans 400 was already qualified in L02; the three added files total 53,312 bytes. Browser builds copy these local files, while Node rendering resolves verified absolute paths from the same manifest. Rendering never downloads a font or accepts a user-provided URL/path.
+
+The asset manifest records exact byte sizes, SHA-256 hashes, license location, source package, family, style, and weight. The Serif registry tarball stalled; the two exact versioned files retrieved through unpkg matched jsDelivr's package mirror byte-for-byte before being committed. This retrieval path is development provenance only and is not used at runtime.
