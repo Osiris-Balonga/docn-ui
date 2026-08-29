@@ -6,6 +6,11 @@ import {
   type PDFDocumentLoadingTask,
 } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { afterEach, describe, expect, it } from "vitest";
+import { resolveFormat } from "../core/formats";
+import {
+  assertWithinSafeFrame,
+  createSafeFrame,
+} from "../primitives/measurement";
 import { renderQualificationInNode } from "./node";
 
 const POINT_TOLERANCE = 0.1;
@@ -29,11 +34,29 @@ async function inspectWithPdfJs(bytes: Uint8Array) {
     Array.from({ length: document.numPages }, async (_, index) => {
       const page = await document.getPage(index + 1);
       const content = await page.getTextContent();
-      const text = content.items
-        .filter((item): item is typeof item & { str: string } => "str" in item)
-        .map((item) => item.str)
-        .join(" ");
-      return { view: page.view, text };
+      const textItems = content.items.filter(
+        (
+          item,
+        ): item is typeof item & {
+          height: number;
+          str: string;
+          transform: number[];
+          width: number;
+        } =>
+          "str" in item &&
+          "height" in item &&
+          "transform" in item &&
+          "width" in item,
+      );
+      const text = textItems.map((item) => item.str).join(" ");
+      const pageHeight = (page.view[3] ?? 0) - (page.view[1] ?? 0);
+      const bounds = textItems.map((item) => ({
+        x: item.transform[4] ?? 0,
+        y: pageHeight - (item.transform[5] ?? 0) - item.height,
+        width: item.width,
+        height: item.height,
+      }));
+      return { bounds, view: page.view, text };
     }),
   );
   return { pageCount: document.numPages, pages };
@@ -196,6 +219,27 @@ describe("PDF rendering feasibility", () => {
     expect(allText).toContain("Deterministic pagination row 56");
     expect(inspection.pages.at(-1)?.text).toContain("Final marker row 56");
     await retainArtifact("multipage-table", bytes);
+  });
+
+  it("composes shared primitives inside the measured card safe area", async () => {
+    const bytes = await renderQualificationInNode({
+      fixture: "primitives",
+      themeId: "editorial",
+    });
+    const inspection = await inspectWithPdfJs(bytes);
+    const format = resolveFormat("card-85x55");
+    if (format.kind !== "fixed")
+      throw new Error("Expected a fixed card format.");
+    const frame = createSafeFrame(format);
+
+    expect(inspection.pageCount).toBe(1);
+    expect(inspection.pages[0]?.text).toContain("Élodie Mbemba");
+    expect(inspection.pages[0]?.text).toContain("Direction créative");
+    expect(inspection.pages[0]?.text).toContain("bonjour@docn-ui.dev");
+    for (const bounds of inspection.pages[0]?.bounds ?? []) {
+      assertWithinSafeFrame(bounds, frame, ["pages", 0, "text"]);
+    }
+    await retainArtifact("primitives-card", bytes);
   });
 
   it("measures short and long 58/80 mm receipts from rendered content", async () => {

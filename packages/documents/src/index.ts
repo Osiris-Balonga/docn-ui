@@ -40,4 +40,10 @@ export { assetManifest, getAssetDefinition } from "./assets/manifest";
 export { createNodeAssetResolver } from "./render/assets.node";
 export type { AssetResolver, ResolvedAsset } from "./render/assets";
 export { getPdfTheme, themes, type PdfTheme } from "./themes/themes";
+export {
+  assertWithinSafeFrame,
+  createSafeFrame,
+  type LayoutBounds,
+  type SafeFrame,
+} from "./primitives/measurement";
 export { renderQualificationInNode } from "./render/node";

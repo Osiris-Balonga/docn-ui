@@ -38,9 +38,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S03 — `feat(documents): add composable PDF layout primitives`
 
-- [ ] Implement only PageFrame, text/heading, Stack/Row, Separator, Image, and FieldPair used by the card.
-- [ ] Provide safe-area guards and fixed-frame overflow measurement using actual fonts; errors instead of unlimited shrinking.
-- [ ] Export explicit entry points; boundary tests prohibit site imports and DOM CSS in distribution.
+- [x] Implement only PageFrame, text/heading, Stack/Row, Separator, Image, and FieldPair used by the card.
+- [x] Provide safe-area guards and fixed-frame overflow measurement using actual fonts; errors instead of unlimited shrinking.
+- [x] Export explicit entry points; boundary tests prohibit site imports and DOM CSS in distribution.
 
 **Acceptance:** Compose a page without Tailwind/shadcn/Next dependencies; text does not silently escape its frame.
 

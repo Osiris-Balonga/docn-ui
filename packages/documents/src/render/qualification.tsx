@@ -11,7 +11,17 @@ import {
 } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
 import type { ThemeId } from "../core/contracts";
+import { resolveFormat } from "../core/formats";
 import { cardTrim, millimetersToPoints } from "../core/units";
+import {
+  FieldPair,
+  Heading,
+  PageFrame,
+  Row,
+  Separator,
+  Stack,
+  Text as DocumentText,
+} from "../primitives";
 import { getPdfTheme, type PdfTheme } from "../themes/themes";
 import type { AssetResolver } from "./assets";
 import { registerDocumentFonts } from "./fonts";
@@ -23,7 +33,7 @@ import {
 
 export interface QualificationRenderOptions {
   assetResolver: AssetResolver;
-  fixture: "card" | "receipt" | "table";
+  fixture: "card" | "primitives" | "receipt" | "table";
   name?: string;
   printProfile?: QualificationPrintProfile;
   receipt?: {
@@ -99,6 +109,41 @@ const styles = StyleSheet.create({
 
 const MAX_RECEIPT_HEIGHT_MM = 500;
 const RECEIPT_HEIGHT_SAFETY_POINTS = 12;
+const primitiveCardFormat = (() => {
+  const format = resolveFormat("card-85x55");
+  if (format.kind !== "fixed") {
+    throw new Error(
+      "The primitives qualification requires a fixed card format.",
+    );
+  }
+  return format;
+})();
+
+function PrimitivesDocument({ theme }: { theme: PdfTheme }) {
+  return (
+    <Document
+      title="docn-ui PDF primitives qualification"
+      creator="docn-ui"
+      creationDate={fixedDate}
+      modificationDate={fixedDate}
+      language="fr-FR"
+    >
+      <PageFrame format={primitiveCardFormat} theme={theme}>
+        <Stack gap="sm">
+          <Heading>Élodie Mbemba</Heading>
+          <DocumentText tone="muted">
+            Creative direction · Direction créative
+          </DocumentText>
+          <Separator spacing="xs" />
+          <Row gap="lg">
+            <FieldPair label="Email" value="bonjour@docn-ui.dev" />
+            <FieldPair label="Location" value="Brazzaville" />
+          </Row>
+        </Stack>
+      </PageFrame>
+    </Document>
+  );
+}
 
 function CropMarks({
   bleedInset,
@@ -490,6 +535,17 @@ export async function renderQualification(
 ): Promise<Uint8Array> {
   registerDocumentFonts(options.assetResolver);
   const theme = getPdfTheme(options.themeId ?? "neutral");
+  if (options.fixture === "primitives") {
+    const raw = await renderDocument(<PrimitivesDocument theme={theme} />);
+    return applyPrintBoxes(
+      raw,
+      getPageGeometry(
+        primitiveCardFormat.trim.widthPt,
+        primitiveCardFormat.trim.heightPt,
+        { kind: "screen" },
+      ),
+    );
+  }
   if (options.fixture === "table")
     return renderDocument(<TableDocument theme={theme} />);
   if (options.fixture === "receipt") {

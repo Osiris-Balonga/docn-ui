@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./browser": "./src/render/browser.ts"
+    "./browser": "./src/render/browser.ts",
+    "./primitives": "./src/primitives/index.tsx",
+    "./themes": "./src/themes/themes.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
