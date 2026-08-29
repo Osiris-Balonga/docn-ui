@@ -18,9 +18,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S01 — `feat(catalog): add searchable format-aware template gallery`
 
-- [ ] Create a lightweight metadata catalog, gallery with actual thumbnails, search, and combinable filters.
-- [ ] Synchronize only public filters to the URL; count, empty state, clearing, and back navigation.
-- [ ] Pregenerate known routes and 404; load engines/templates on demand, never for every thumbnail.
+- [x] Create a lightweight metadata catalog, gallery with actual thumbnails, search, and combinable filters.
+- [x] Synchronize only public filters to the URL; count, empty state, clearing, and back navigation.
+- [x] Pregenerate known routes and 404; load engines/templates on demand, never for every thumbnail.
 
 **Acceptance:** The gallery shows only the three available cards at this stage; filters work without importing the engine.
 

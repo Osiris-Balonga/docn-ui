@@ -8,15 +8,22 @@ export default function NotFound() {
         This page is not here.
       </h1>
       <p className="max-w-xl leading-7 text-muted-foreground">
-        The project is still taking shape. Return to the home page for its
-        current status.
+        Check the template catalog or return to the home page.
       </p>
-      <Link
-        className="w-fit underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4"
-        href="/"
-      >
-        Back to docn-ui
-      </Link>
+      <div className="flex flex-wrap gap-5">
+        <Link
+          className="w-fit underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4"
+          href="/templates/"
+        >
+          Browse templates
+        </Link>
+        <Link
+          className="w-fit underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4"
+          href="/"
+        >
+          Back to docn-ui
+        </Link>
+      </div>
     </main>
   );
 }

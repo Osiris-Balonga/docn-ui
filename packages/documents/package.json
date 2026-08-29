@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./browser": "./src/render/browser.ts",
+    "./catalog": "./src/catalog/index.ts",
     "./core": "./src/core/index.ts",
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
     "./node": "./src/render/node.ts",
