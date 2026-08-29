@@ -302,7 +302,10 @@
       "issueId": "I_kwDOUHjPN88AAAABOuMvpA",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/7",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVYI",
-      "pullRequest": null,
+      "pullRequest": {
+        "number": 25,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/25"
+      },
       "initialized": true
     },
     "L06": {

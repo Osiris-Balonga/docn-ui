@@ -141,7 +141,7 @@
     {
       "id": "L05",
       "file": "lots/L05-business-cards.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
       "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
