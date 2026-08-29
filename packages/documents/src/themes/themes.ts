@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { DocumentValidationError, normalizeDocumentPath } from "../core/errors";
-import { THEME_IDS, type ThemeId } from "../core/contracts";
+import {
+  PDF_ACCENT_COLORS,
+  THEME_IDS,
+  type PdfAccentColor,
+  type ThemeId,
+} from "../core/contracts";
 
 const colorSchema = z.string().regex(/^#[0-9a-f]{6}$/);
 const pointSizeSchema = z.number().min(5).max(32);
@@ -159,7 +164,10 @@ export const themes = Object.fromEntries(
   THEME_IDS.map((themeId) => [themeId, validateTheme(themeInputs[themeId])]),
 ) as Record<ThemeId, PdfTheme>;
 
-export function getPdfTheme(themeId: string): PdfTheme {
+export function getPdfTheme(
+  themeId: string,
+  accentColor?: PdfAccentColor,
+): PdfTheme {
   if (!THEME_IDS.includes(themeId as ThemeId)) {
     throw new DocumentValidationError([
       {
@@ -169,5 +177,19 @@ export function getPdfTheme(themeId: string): PdfTheme {
       },
     ]);
   }
-  return themes[themeId as ThemeId];
+  const theme = themes[themeId as ThemeId];
+  if (!accentColor) return theme;
+  if (!PDF_ACCENT_COLORS.includes(accentColor)) {
+    throw new DocumentValidationError([
+      {
+        code: "INVALID_DATA",
+        message: `Unsupported PDF accent "${accentColor}".`,
+        path: ["overrides", "accentColor"],
+      },
+    ]);
+  }
+  return validateTheme({
+    ...theme,
+    colors: { ...theme.colors, accent: accentColor },
+  });
 }

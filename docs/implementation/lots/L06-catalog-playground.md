@@ -28,10 +28,10 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S02 — `feat(playground): add validated data theme and format controls`
 
-- [ ] Separate the reusable shell from explicit family forms; serializable metadata and a form registry without universal Zod introspection.
-- [ ] Add bounded advanced JSON text, validation before applying, and return to the form; no code evaluation.
-- [ ] Add accent/locale/print-profile controls and reset; retain the last valid preview marked outdated during errors.
-- [ ] Any parameter change invalidates the exportable revision; never put JSON/logos in URLs or storage.
+- [x] Separate the reusable shell from explicit family forms; serializable metadata and a form registry without universal Zod introspection.
+- [x] Add bounded advanced JSON text, validation before applying, and return to the form; no code evaluation.
+- [x] Add accent/locale/print-profile controls and reset; retain the last valid preview marked outdated during errors.
+- [x] Any parameter change invalidates the exportable revision; never put JSON/logos in URLs or storage.
 
 **Acceptance:** Form and JSON states/actions remain consistent without silent data loss.
 

@@ -6,7 +6,9 @@ import {
   type PhysicalDimensions,
 } from "@docn-ui/documents/core";
 import { renderDocumentInBrowser } from "@docn-ui/documents/browser";
-import { createBusinessCardMinimalPlan } from "@docn-ui/documents/templates/business-cards/minimal";
+import type { RenderRequest } from "@docn-ui/documents/core";
+import type { FixedDocumentRenderPlan } from "@docn-ui/documents";
+import type { BusinessCardData } from "@docn-ui/documents/templates/business-cards/schema";
 import {
   parsePdfRenderRequest,
   PDF_RENDER_PROTOCOL_VERSION,
@@ -17,6 +19,36 @@ import {
 
 const workerScope: DedicatedWorkerGlobalScope =
   self as unknown as DedicatedWorkerGlobalScope;
+
+async function createPlan(
+  request: RenderRequest<BusinessCardData>,
+): Promise<FixedDocumentRenderPlan> {
+  switch (request.templateId) {
+    case "business-card-editorial": {
+      const { createBusinessCardEditorialPlan } =
+        await import("@docn-ui/documents/templates/business-cards/editorial");
+      return createBusinessCardEditorialPlan(request).plan;
+    }
+    case "business-card-studio": {
+      const { createBusinessCardStudioPlan } =
+        await import("@docn-ui/documents/templates/business-cards/studio");
+      return createBusinessCardStudioPlan(request).plan;
+    }
+    case "business-card-minimal": {
+      const { createBusinessCardMinimalPlan } =
+        await import("@docn-ui/documents/templates/business-cards/minimal");
+      return createBusinessCardMinimalPlan(request).plan;
+    }
+    default:
+      throw new DocumentValidationError([
+        {
+          code: "INVALID_DATA",
+          message: "The selected PDF template is not available.",
+          path: ["templateId"],
+        },
+      ]);
+  }
+}
 
 function readRequestedRevision(value: unknown): number {
   if (!value || typeof value !== "object") return 0;
@@ -46,7 +78,7 @@ workerScope.addEventListener(
 
     const request = validated.request;
     try {
-      const { plan } = createBusinessCardMinimalPlan(request);
+      const plan = await createPlan(request);
       const bytes = await renderDocumentInBrowser(plan);
       const pdfBytes = bytes.buffer.slice(
         bytes.byteOffset,

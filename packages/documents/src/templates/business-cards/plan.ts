@@ -15,6 +15,7 @@ export interface BusinessCardDocumentProps {
   data: BusinessCardData;
   format: ResolvedFixedFormat;
   locale: RenderRequest["locale"];
+  overrides: NonNullable<RenderRequest["overrides"]>;
   printProfile: RenderRequest["printProfile"];
   themeId: RenderRequest["themeId"];
 }
@@ -58,6 +59,7 @@ export function createBusinessCardPlan(
         data,
         format: validated.format,
         locale: request.locale,
+        overrides: request.overrides ?? {},
         printProfile: request.printProfile,
         themeId: request.themeId,
       }),

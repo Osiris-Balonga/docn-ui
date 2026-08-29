@@ -44,16 +44,18 @@ export function BusinessCardMinimalDocument({
   data,
   format,
   locale,
+  overrides,
   printProfile,
   themeId,
 }: {
   data: BusinessCardData;
   format: ResolvedFixedFormat;
   locale: "en" | "fr";
+  overrides: NonNullable<RenderRequest["overrides"]>;
   printProfile: RenderRequest["printProfile"];
   themeId: RenderRequest["themeId"];
 }) {
-  const theme = getPdfTheme(themeId);
+  const theme = getPdfTheme(themeId, overrides.accentColor);
   const labels =
     locale === "fr"
       ? { address: "Adresse", phone: "Téléphone", website: "Site" }

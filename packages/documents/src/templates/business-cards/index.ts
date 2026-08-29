@@ -6,3 +6,8 @@ export {
   parseBusinessCardData,
   type BusinessCardData,
 } from "./schema";
+export {
+  businessCardTemplateMetadata,
+  getBusinessCardTemplateMetadata,
+  type BusinessCardTemplateId,
+} from "./metadata";

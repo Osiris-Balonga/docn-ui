@@ -3,6 +3,8 @@ import {
   PDF_RENDER_PROTOCOL_VERSION,
   validateRenderRequest,
   type DocumentErrorCode,
+  type PdfAccentColor,
+  type PrintProfile,
   type RenderRequest,
   type RenderResult,
   type ValidatedRenderRequest,
@@ -11,7 +13,10 @@ import {
   parseBusinessCardData,
   type BusinessCardData,
 } from "@docn-ui/documents/templates/business-cards/schema";
-import { businessCardMinimalMetadata } from "@docn-ui/documents/templates/business-cards/minimal/metadata";
+import {
+  getBusinessCardTemplateMetadata,
+  type BusinessCardTemplateId,
+} from "@docn-ui/documents/templates/business-cards/metadata";
 
 export { PDF_RENDER_PROTOCOL_VERSION } from "@docn-ui/documents/core";
 
@@ -46,6 +51,9 @@ export function makePdfRenderRequest(
   options: {
     formatId: RenderRequest["formatId"];
     locale: RenderRequest["locale"];
+    accentColor?: PdfAccentColor | undefined;
+    printProfile?: PrintProfile;
+    templateId?: BusinessCardTemplateId;
     themeId: RenderRequest["themeId"];
   } = { formatId: "card-85x55", locale: "fr", themeId: "neutral" },
 ): PdfRenderRequest {
@@ -54,13 +62,16 @@ export function makePdfRenderRequest(
     request: {
       protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
       revision,
-      templateId: businessCardMinimalMetadata.id,
+      templateId: options.templateId ?? "business-card-minimal",
       templateVersion: "1.0.0",
       data,
       formatId: options.formatId,
       themeId: options.themeId,
       locale: options.locale,
-      printProfile: { kind: "screen" },
+      overrides: options.accentColor
+        ? { accentColor: options.accentColor }
+        : {},
+      printProfile: options.printProfile ?? { kind: "screen" },
       assetIds: [],
     },
   };
@@ -72,14 +83,20 @@ export function parsePdfRenderRequest(
   if (!value || typeof value !== "object") return undefined;
   const wrapper = value as Partial<PdfRenderRequest>;
   if (wrapper.kind !== "render" || !wrapper.request) return undefined;
+  const metadata = getBusinessCardTemplateMetadata(
+    typeof wrapper.request.templateId === "string"
+      ? wrapper.request.templateId
+      : "",
+  );
+  if (!metadata) return undefined;
   try {
     const validated = validateRenderRequest<BusinessCardData>(
       wrapper.request,
-      businessCardMinimalMetadata,
+      metadata,
     );
     if (
-      validated.request.templateId !== businessCardMinimalMetadata.id ||
-      validated.request.templateVersion !== businessCardMinimalMetadata.version
+      validated.request.templateId !== metadata.id ||
+      validated.request.templateVersion !== metadata.version
     )
       return undefined;
     return {

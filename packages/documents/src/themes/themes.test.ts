@@ -14,6 +14,7 @@ describe("portable PDF themes and declared assets", () => {
     expect(serialized).not.toMatch(/var\(|oklch|className|tailwind/i);
     expect(themes.editorial.fonts.heading).toBe("Noto Serif");
     expect(themes.bold.typeScale.display).toBeLessThanOrEqual(32);
+    expect(getPdfTheme("neutral", "#0f766e").colors.accent).toBe("#0f766e");
     expect(() => getPdfTheme("website-dark")).toThrowError(
       expect.objectContaining({
         issues: [expect.objectContaining({ path: ["themeId"] })],

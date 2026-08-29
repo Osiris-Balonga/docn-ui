@@ -13,10 +13,11 @@ export function BusinessCardEditorialDocument({
   data,
   format,
   locale,
+  overrides,
   printProfile,
   themeId,
 }: BusinessCardDocumentProps) {
-  const theme = getPdfTheme(themeId);
+  const theme = getPdfTheme(themeId, overrides.accentColor);
   return (
     <Document
       title={`${data.name} — editorial business card`}

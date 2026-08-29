@@ -13,10 +13,11 @@ export function BusinessCardStudioDocument({
   data,
   format,
   locale,
+  overrides,
   printProfile,
   themeId,
 }: BusinessCardDocumentProps) {
-  const theme = getPdfTheme(themeId);
+  const theme = getPdfTheme(themeId, overrides.accentColor);
   const brand = data.organization ?? "Independent studio";
   return (
     <Document

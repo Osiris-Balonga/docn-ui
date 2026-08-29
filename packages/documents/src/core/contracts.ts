@@ -18,6 +18,17 @@ export const PDF_RENDER_PROTOCOL_VERSION = 1 as const;
 export const THEME_IDS = ["neutral", "editorial", "bold"] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
 export type DocumentLocale = "en" | "fr";
+export const PDF_ACCENT_COLORS = [
+  "#3f5f73",
+  "#9a4f35",
+  "#5a35d6",
+  "#0f766e",
+] as const;
+export type PdfAccentColor = (typeof PDF_ACCENT_COLORS)[number];
+
+export interface DocumentOverrides {
+  accentColor?: PdfAccentColor | undefined;
+}
 
 export const DOCUMENT_LIMITS = {
   dataBytes: 256 * 1024,
@@ -35,6 +46,7 @@ export interface RenderRequest<TData = unknown> {
   formatId: FormatId;
   formatOptions?: FixedFormatOptions;
   locale: DocumentLocale;
+  overrides?: DocumentOverrides;
   printProfile: PrintProfile;
   protocolVersion: typeof PDF_RENDER_PROTOCOL_VERSION;
   revision: number;
@@ -71,6 +83,7 @@ export type TemplateRenderFunction<TData, TOutput> = (context: {
   data: TData;
   format: ResolvedFormat;
   locale: DocumentLocale;
+  overrides: DocumentOverrides;
   printProfile: PrintProfile;
   themeId: ThemeId;
 }) => TOutput;
@@ -107,6 +120,10 @@ const renderRequestSchema = z
     formatOptions: z.unknown().optional(),
     themeId: z.enum(THEME_IDS),
     locale: z.enum(["en", "fr"]),
+    overrides: z
+      .object({ accentColor: z.enum(PDF_ACCENT_COLORS).optional() })
+      .strict()
+      .default({}),
     printProfile: z.unknown(),
     assetIds: z
       .array(identifier)

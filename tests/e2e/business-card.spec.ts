@@ -46,7 +46,9 @@ test("edits, inspects the back, and exports the latest business card", async ({
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("link", { name: "Download PDF" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("docn-ui-business-card.pdf");
+  expect(download.suggestedFilename()).toBe(
+    "docn-ui-business-card-minimal.pdf",
+  );
   const downloadPath = await download.path();
   if (!downloadPath) throw new Error("Playwright did not retain the download.");
   const bytes = await readFile(downloadPath);
