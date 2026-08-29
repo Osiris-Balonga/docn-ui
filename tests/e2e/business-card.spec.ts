@@ -35,6 +35,28 @@ test("edits, inspects the back, and exports the latest business card", async ({
   expect(finalFingerprint).toBeTruthy();
   expect(finalFingerprint).not.toBe(initialFingerprint);
 
+  const logoInput = page.getByLabel("Local logo");
+  await logoInput.setInputFiles({
+    name: "not-an-image.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.7"),
+  });
+  await expect(
+    page.getByText("Choose a valid PNG or JPEG image."),
+  ).toBeVisible();
+  await expect(status).toContainText("Revision 5");
+
+  await logoInput.setInputFiles({
+    name: "logo.png",
+    mimeType: "image/png",
+    buffer: await readFile(
+      "apps/www/public/generated/catalog/business-card-studio.png",
+    ),
+  });
+  await expect(page.getByText(/\d+ × \d+ px · metadata removed/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Remove logo" })).toBeVisible();
+  await expect(status).toContainText("Revision 6", { timeout: 15_000 });
+
   await page.getByRole("button", { name: "Back" }).click();
   await expect(
     page.getByLabel("PDF preview, page 2", { exact: true }),

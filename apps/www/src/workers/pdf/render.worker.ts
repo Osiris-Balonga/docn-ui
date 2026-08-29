@@ -9,6 +9,7 @@ import { renderDocumentInBrowser } from "@docn-ui/documents/browser";
 import type { RenderRequest } from "@docn-ui/documents/core";
 import type { FixedDocumentRenderPlan } from "@docn-ui/documents";
 import type { BusinessCardData } from "@docn-ui/documents/templates/business-cards/schema";
+import type { PdfUserAsset } from "./protocol";
 import {
   parsePdfRenderRequest,
   PDF_RENDER_PROTOCOL_VERSION,
@@ -22,22 +23,23 @@ const workerScope: DedicatedWorkerGlobalScope =
 
 async function createPlan(
   request: RenderRequest<BusinessCardData>,
+  assetSources: Readonly<Record<string, string>>,
 ): Promise<FixedDocumentRenderPlan> {
   switch (request.templateId) {
     case "business-card-editorial": {
       const { createBusinessCardEditorialPlan } =
         await import("@docn-ui/documents/templates/business-cards/editorial");
-      return createBusinessCardEditorialPlan(request).plan;
+      return createBusinessCardEditorialPlan(request, { assetSources }).plan;
     }
     case "business-card-studio": {
       const { createBusinessCardStudioPlan } =
         await import("@docn-ui/documents/templates/business-cards/studio");
-      return createBusinessCardStudioPlan(request).plan;
+      return createBusinessCardStudioPlan(request, { assetSources }).plan;
     }
     case "business-card-minimal": {
       const { createBusinessCardMinimalPlan } =
         await import("@docn-ui/documents/templates/business-cards/minimal");
-      return createBusinessCardMinimalPlan(request).plan;
+      return createBusinessCardMinimalPlan(request, { assetSources }).plan;
     }
     default:
       throw new DocumentValidationError([
@@ -48,6 +50,19 @@ async function createPlan(
         },
       ]);
   }
+}
+
+function createAssetUrls(assets: readonly PdfUserAsset[]) {
+  const urls = assets.map((asset) => ({
+    id: asset.id,
+    url: URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType })),
+  }));
+  return {
+    sources: Object.fromEntries(urls.map(({ id, url }) => [id, url])),
+    revoke() {
+      for (const { url } of urls) URL.revokeObjectURL(url);
+    },
+  };
 }
 
 function readRequestedRevision(value: unknown): number {
@@ -77,8 +92,9 @@ workerScope.addEventListener(
     }
 
     const request = validated.request;
+    const assetUrls = createAssetUrls(validated.assets);
     try {
-      const plan = await createPlan(request);
+      const plan = await createPlan(request, assetUrls.sources);
       const bytes = await renderDocumentInBrowser(plan);
       const pdfBytes = bytes.buffer.slice(
         bytes.byteOffset,
@@ -110,6 +126,8 @@ workerScope.addEventListener(
           : "The PDF could not be rendered. Try again.",
       };
       workerScope.postMessage(failure satisfies PdfRenderResponse);
+    } finally {
+      assetUrls.revoke();
     }
   },
 );

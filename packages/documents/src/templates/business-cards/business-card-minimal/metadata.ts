@@ -19,7 +19,7 @@ export const businessCardMinimalMetadata = {
   supportedThemeIds: THEME_IDS,
   sides: 2,
   capabilities: {
-    logo: false,
+    logo: true,
     printProfiles: true,
     qr: false,
   },

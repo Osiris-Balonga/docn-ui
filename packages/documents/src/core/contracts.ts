@@ -36,6 +36,8 @@ export const DOCUMENT_LIMITS = {
   finalPdfBytes: 20 * 1024 * 1024,
   generalStringCharacters: 2_000,
   generationMilliseconds: 15_000,
+  imageBytes: 5 * 1024 * 1024,
+  imagePixels: 16_000_000,
   pages: 50,
   permittedAssets: 2,
 } as const;

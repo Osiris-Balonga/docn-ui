@@ -163,7 +163,11 @@
       "dependsOn": ["L05"],
       "branch": "feat/catalog-and-playground",
       "baseCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
-      "actualCommits": ["c1dbe884dd3072360aff1894497cd240c39261c8"],
+      "actualCommits": [
+        "c1dbe887c0dfaf8073f850e4cb0583f8aa72693e",
+        "5d702cbe1e49b04c9604b36e63832dd766b8321a",
+        "cdd531e81c8b51e7dfaf8b7a48d7ce7c7abf392f"
+      ],
       "evidence": "../qa/L06.md",
       "blocker": null
     },

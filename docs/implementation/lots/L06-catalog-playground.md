@@ -39,9 +39,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S03 — `feat(playground): handle safe image uploads and render lifecycle`
 
-- [ ] Bounded local PNG/JPEG imports, actual decoding/dimensions, normalized orientation, EXIF removal; local removal available.
-- [ ] Active/pending latest-wins queue, timeout, worker termination, cleanup of buffers/Object URLs and PDF.js tasks.
-- [ ] Sanitized generic errors; controlled recovery and disabled download when the revision is invalid or stale.
+- [x] Bounded local PNG/JPEG imports, actual decoding/dimensions, normalized orientation, EXIF removal; local removal available.
+- [x] Active/pending latest-wins queue, timeout, worker termination, cleanup of buffers/Object URLs and PDF.js tasks.
+- [x] Sanitized generic errors; controlled recovery and disabled download when the revision is invalid or stale.
 
 **Acceptance:** Rejected files have explanations; rapid edits cannot produce stale exports; navigation leaves no active worker.
 

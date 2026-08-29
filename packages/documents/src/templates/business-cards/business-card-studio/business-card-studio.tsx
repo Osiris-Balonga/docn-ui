@@ -94,8 +94,14 @@ export function BusinessCardStudioDocument({
   );
 }
 
-export function createBusinessCardStudioPlan(input: unknown) {
-  return createBusinessCardPlan(input, businessCardStudioMetadata, (props) => (
-    <BusinessCardStudioDocument {...props} />
-  ));
+export function createBusinessCardStudioPlan(
+  input: unknown,
+  options?: import("../plan").BusinessCardPlanOptions,
+) {
+  return createBusinessCardPlan(
+    input,
+    businessCardStudioMetadata,
+    (props) => <BusinessCardStudioDocument {...props} />,
+    options,
+  );
 }

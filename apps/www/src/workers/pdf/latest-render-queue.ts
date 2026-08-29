@@ -1,3 +1,4 @@
+import { DOCUMENT_LIMITS } from "@docn-ui/documents/core";
 import {
   getRequestRevision,
   getResponseRevision,
@@ -10,34 +11,31 @@ import {
 export interface PdfWorkerPort {
   onerror: ((event: ErrorEvent) => void) | null;
   onmessage: ((event: MessageEvent<PdfRenderResponse>) => void) | null;
-  postMessage(request: PdfRenderRequest): void;
+  postMessage(request: PdfRenderRequest, transfer?: Transferable[]): void;
   terminate(): void;
 }
 
+export type CreatePdfWorker = () => PdfWorkerPort;
+
 export class LatestRenderQueue {
+  readonly #createWorker: CreatePdfWorker;
   readonly #onResponse: (response: PdfRenderResponse) => void;
-  readonly #worker: PdfWorkerPort;
+  readonly #timeoutMilliseconds: number;
   #active: PdfRenderRequest | undefined;
   #disposed = false;
   #pending: PdfRenderRequest | undefined;
+  #timeout: ReturnType<typeof setTimeout> | undefined;
+  #worker: PdfWorkerPort;
 
   constructor(
-    worker: PdfWorkerPort,
+    createWorker: CreatePdfWorker,
     onResponse: (response: PdfRenderResponse) => void,
+    timeoutMilliseconds: number = DOCUMENT_LIMITS.generationMilliseconds,
   ) {
-    this.#worker = worker;
+    this.#createWorker = createWorker;
     this.#onResponse = onResponse;
-    worker.onmessage = (event) => this.#complete(event.data);
-    worker.onerror = () => {
-      if (!this.#active) return;
-      this.#complete({
-        kind: "failure",
-        protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-        revision: getRequestRevision(this.#active),
-        code: "WORKER_FAILURE",
-        message: "The PDF worker stopped unexpectedly. Try again.",
-      } satisfies PdfRenderFailure);
-    };
+    this.#timeoutMilliseconds = timeoutMilliseconds;
+    this.#worker = this.#connectWorker();
   }
 
   enqueue(request: PdfRenderRequest) {
@@ -53,11 +51,15 @@ export class LatestRenderQueue {
   destroy() {
     if (this.#disposed) return;
     this.#disposed = true;
+    this.#clearTimeout();
     this.#active = undefined;
     this.#pending = undefined;
-    this.#worker.onmessage = null;
-    this.#worker.onerror = null;
-    this.#worker.terminate();
+    this.#disconnectWorker();
+  }
+
+  #clearTimeout() {
+    if (this.#timeout !== undefined) clearTimeout(this.#timeout);
+    this.#timeout = undefined;
   }
 
   #complete(response: PdfRenderResponse) {
@@ -67,15 +69,61 @@ export class LatestRenderQueue {
       getResponseRevision(response) !== getRequestRevision(this.#active)
     )
       return;
+    this.#clearTimeout();
     this.#active = undefined;
-    this.#onResponse(response);
     const next = this.#pending;
     this.#pending = undefined;
+    if (!next) this.#onResponse(response);
     if (next) this.#dispatch(next);
+  }
+
+  #connectWorker() {
+    const worker = this.#createWorker();
+    worker.onmessage = (event) => this.#complete(event.data);
+    worker.onerror = () => this.#restartAfterFailure("WORKER_FAILURE");
+    return worker;
+  }
+
+  #disconnectWorker() {
+    this.#worker.onmessage = null;
+    this.#worker.onerror = null;
+    this.#worker.terminate();
   }
 
   #dispatch(request: PdfRenderRequest) {
     this.#active = request;
-    this.#worker.postMessage(request);
+    this.#worker.postMessage(
+      request,
+      request.assets.map((asset) => asset.bytes),
+    );
+    this.#timeout = setTimeout(
+      () => this.#restartAfterFailure("RENDER_TIMEOUT"),
+      this.#timeoutMilliseconds,
+    );
+  }
+
+  #restartAfterFailure(code: "RENDER_TIMEOUT" | "WORKER_FAILURE") {
+    if (this.#disposed || !this.#active) return;
+    const revision = getRequestRevision(this.#active);
+    const next = this.#pending;
+    this.#clearTimeout();
+    this.#active = undefined;
+    this.#pending = undefined;
+    this.#disconnectWorker();
+    this.#worker = this.#connectWorker();
+    if (next) {
+      this.#dispatch(next);
+      return;
+    }
+    this.#onResponse({
+      kind: "failure",
+      protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
+      revision,
+      code,
+      message:
+        code === "RENDER_TIMEOUT"
+          ? "PDF generation timed out. Try again."
+          : "The PDF worker stopped unexpectedly. Try again.",
+    } satisfies PdfRenderFailure);
   }
 }

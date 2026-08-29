@@ -84,10 +84,14 @@ export function BusinessCardEditorialDocument({
   );
 }
 
-export function createBusinessCardEditorialPlan(input: unknown) {
+export function createBusinessCardEditorialPlan(
+  input: unknown,
+  options?: import("../plan").BusinessCardPlanOptions,
+) {
   return createBusinessCardPlan(
     input,
     businessCardEditorialMetadata,
     (props) => <BusinessCardEditorialDocument {...props} />,
+    options,
   );
 }

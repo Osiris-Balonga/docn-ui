@@ -25,6 +25,7 @@ export function DocumentPlaygroundShell({
   message,
   onPreviewError,
   onReset,
+  onRetry,
   pdfBytes,
   status,
   template,
@@ -37,6 +38,7 @@ export function DocumentPlaygroundShell({
   message: string;
   onPreviewError: (message: string) => void;
   onReset: () => void;
+  onRetry?: (() => void) | undefined;
   pdfBytes?: ArrayBuffer | undefined;
   status: RenderStatus;
   template: TemplateCatalogEntry;
@@ -186,21 +188,28 @@ export function DocumentPlaygroundShell({
                 {message}
               </p>
             </div>
-            <Button
-              variant="outline"
-              disabled={!downloadUrl}
-              render={
-                downloadUrl ? (
-                  <a
-                    href={downloadUrl}
-                    download={`docn-ui-${template.id}.pdf`}
-                  />
-                ) : undefined
-              }
-            >
-              <Download aria-hidden="true" />
-              Download PDF
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {status === "error" && onRetry ? (
+                <Button variant="secondary" onClick={onRetry}>
+                  Retry rendering
+                </Button>
+              ) : null}
+              <Button
+                variant="outline"
+                disabled={!downloadUrl}
+                render={
+                  downloadUrl ? (
+                    <a
+                      href={downloadUrl}
+                      download={`docn-ui-${template.id}.pdf`}
+                    />
+                  ) : undefined
+                }
+              >
+                <Download aria-hidden="true" />
+                Download PDF
+              </Button>
+            </div>
           </div>
         </section>
       </div>

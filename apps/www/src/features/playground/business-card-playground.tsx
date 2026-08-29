@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { ImagePlus, Trash2 } from "lucide-react";
 import {
   DOCUMENT_LIMITS,
   type DocumentLocale,
@@ -16,6 +18,7 @@ import {
 import type { BusinessCardTemplateId } from "@docn-ui/documents/templates/business-cards/metadata";
 import { businessCardDataSchema } from "@docn-ui/documents/templates/business-cards/schema";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -30,6 +33,7 @@ import {
   makePdfRenderRequest,
   type PdfRenderRequest,
   type PdfRenderResponse,
+  type PdfUserAsset,
 } from "@/workers/pdf/protocol";
 import {
   BusinessCardForm,
@@ -43,6 +47,7 @@ import {
   type RenderStatus,
 } from "./document-playground-shell";
 import { getBusinessCardFormRegistration } from "./form-registry";
+import { ImageImportError, normalizeLocalImage } from "./image-import";
 
 export interface BusinessCardRenderSession {
   destroy(): void;
@@ -94,11 +99,14 @@ const printProfileOptions = [
 function createWorkerRenderSession(
   onResponse: (response: PdfRenderResponse) => void,
 ): BusinessCardRenderSession {
-  const worker = new Worker(
-    new URL("../../workers/pdf/render.worker.ts", import.meta.url),
-    { type: "module" },
+  return new LatestRenderQueue(
+    () =>
+      new Worker(
+        new URL("../../workers/pdf/render.worker.ts", import.meta.url),
+        { type: "module" },
+      ),
+    onResponse,
   );
-  return new LatestRenderQueue(worker, onResponse);
 }
 
 function resolvePrintProfile(id: PrintProfileId): PrintProfile {
@@ -135,7 +143,13 @@ export function BusinessCardPlayground({
   const [message, setMessage] = useState("Preparing the first preview…");
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer>();
   const [fingerprint, setFingerprint] = useState("");
+  const [logoAsset, setLogoAsset] = useState<PdfUserAsset>();
+  const [logoMessage, setLogoMessage] = useState("");
+  const [logoImporting, setLogoImporting] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
   const revisionRef = useRef(0);
+  const desiredRevisionRef = useRef(0);
+  const imageImportRef = useRef(0);
   const sessionRef = useRef<BusinessCardRenderSession>(null);
   const hasPreviewRef = useRef(false);
   const validation = useMemo(() => validateBusinessCardDraft(draft), [draft]);
@@ -144,6 +158,11 @@ export function BusinessCardPlayground({
   )?.color;
 
   const handleResponse = useCallback((response: PdfRenderResponse) => {
+    const revision =
+      response.kind === "success"
+        ? response.result.revision
+        : response.revision;
+    if (revision !== desiredRevisionRef.current) return;
     if (response.kind === "failure") {
       setStatus("error");
       setMessage(response.message);
@@ -156,6 +175,11 @@ export function BusinessCardPlayground({
     setMessage(
       `Revision ${response.result.revision} · ${response.result.pdfBytes.byteLength.toLocaleString("en-US")} bytes`,
     );
+  }, []);
+
+  const handlePreviewError = useCallback((errorMessage: string) => {
+    setStatus("error");
+    setMessage(errorMessage);
   }, []);
 
   useEffect(() => {
@@ -176,11 +200,16 @@ export function BusinessCardPlayground({
     const validData = validation.data;
     const timer = window.setTimeout(() => {
       const revision = ++revisionRef.current;
+      desiredRevisionRef.current = revision;
       setStatus("rendering");
       setMessage(`Rendering revision ${revision} in your browser…`);
+      const renderData = logoAsset
+        ? { ...validData, logoAssetId: logoAsset.id }
+        : validData;
       sessionRef.current?.enqueue(
-        makePdfRenderRequest(revision, validData, {
+        makePdfRenderRequest(revision, renderData, {
           accentColor,
+          assets: logoAsset ? [logoAsset] : [],
           formatId,
           locale,
           printProfile: resolvePrintProfile(printProfileId),
@@ -194,7 +223,9 @@ export function BusinessCardPlayground({
     accentColor,
     formatId,
     locale,
+    logoAsset,
     printProfileId,
+    retryToken,
     templateId,
     themeId,
     validation.data,
@@ -215,7 +246,32 @@ export function BusinessCardPlayground({
     [downloadUrl],
   );
 
+  const logoPreviewUrl = useMemo(
+    () =>
+      logoAsset
+        ? URL.createObjectURL(
+            new Blob([logoAsset.bytes], { type: logoAsset.mimeType }),
+          )
+        : undefined,
+    [logoAsset],
+  );
+
+  useEffect(
+    () => () => {
+      if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
+    },
+    [logoPreviewUrl],
+  );
+
+  useEffect(
+    () => () => {
+      imageImportRef.current += 1;
+    },
+    [],
+  );
+
   function markChanged() {
+    desiredRevisionRef.current = 0;
     if (hasPreviewRef.current) {
       setStatus("stale");
       setMessage("The preview is outdated while the latest data is checked.");
@@ -225,6 +281,38 @@ export function BusinessCardPlayground({
   function updateField(field: BusinessCardDraftField, value: string) {
     markChanged();
     setDraft((current) => ({ ...current, [field]: value }));
+  }
+
+  async function importLogo(file: File) {
+    const importRevision = ++imageImportRef.current;
+    setLogoImporting(true);
+    setLogoMessage("Decoding and normalizing the image locally…");
+    try {
+      const normalized = await normalizeLocalImage(file);
+      if (importRevision !== imageImportRef.current) return;
+      markChanged();
+      setLogoAsset(normalized);
+      setLogoMessage(
+        `${normalized.width} × ${normalized.height} px · metadata removed · memory only`,
+      );
+    } catch (error) {
+      if (importRevision !== imageImportRef.current) return;
+      setLogoMessage(
+        error instanceof ImageImportError
+          ? error.message
+          : "The image could not be imported.",
+      );
+    } finally {
+      if (importRevision === imageImportRef.current) setLogoImporting(false);
+    }
+  }
+
+  function removeLogo() {
+    imageImportRef.current += 1;
+    markChanged();
+    setLogoAsset(undefined);
+    setLogoImporting(false);
+    setLogoMessage("Logo removed from memory.");
   }
 
   function openJsonEditor() {
@@ -249,6 +337,10 @@ export function BusinessCardPlayground({
         );
         return;
       }
+      if (parsed.data.logoAssetId) {
+        setJsonError("Import logos with the local image control.");
+        return;
+      }
       markChanged();
       setDraft(toBusinessCardDraft(parsed.data));
       setJsonDraft(JSON.stringify(parsed.data, null, 2));
@@ -267,6 +359,10 @@ export function BusinessCardPlayground({
     setLocale(registration.defaultLocale);
     setAccentId("default");
     setPrintProfileId("screen");
+    imageImportRef.current += 1;
+    setLogoAsset(undefined);
+    setLogoImporting(false);
+    setLogoMessage("");
     setJsonDraft("");
     setJsonError("");
     setEditorMode("form");
@@ -400,6 +496,55 @@ export function BusinessCardPlayground({
           setPrintProfileId(value as PrintProfileId);
         }}
       />
+      {template.capabilities.logo ? (
+        <div className="space-y-2">
+          <Label htmlFor="card-logo">Local logo</Label>
+          <Input
+            id="card-logo"
+            type="file"
+            accept="image/png,image/jpeg"
+            disabled={logoImporting}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (file) void importLogo(file);
+            }}
+          />
+          {logoPreviewUrl && logoAsset ? (
+            <div className="flex items-center gap-3 rounded-lg border p-3">
+              <Image
+                src={logoPreviewUrl}
+                alt="Imported logo preview"
+                width={logoAsset.width}
+                height={logoAsset.height}
+                unoptimized
+                className="size-12 rounded bg-white object-contain ring-1 ring-foreground/10"
+              />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={removeLogo}
+                className="ml-auto"
+              >
+                <Trash2 aria-hidden="true" />
+                Remove logo
+              </Button>
+            </div>
+          ) : null}
+          <p
+            className="flex items-start gap-2 text-xs leading-5 text-muted-foreground"
+            aria-live="polite"
+          >
+            <ImagePlus
+              aria-hidden="true"
+              className="mt-0.5 size-3.5 shrink-0"
+            />
+            <span>
+              {logoMessage || "PNG or JPEG · 5 MiB · 16 megapixels maximum"}
+            </span>
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 
@@ -411,9 +556,12 @@ export function BusinessCardPlayground({
       fingerprint={fingerprint}
       formatLabel={formatLabel}
       message={message}
-      onPreviewError={(errorMessage) => {
-        setStatus("error");
-        setMessage(errorMessage);
+      onPreviewError={handlePreviewError}
+      onRetry={() => {
+        desiredRevisionRef.current = 0;
+        setStatus("rendering");
+        setMessage("Retrying PDF generation in your browser…");
+        setRetryToken((current) => current + 1);
       }}
       onReset={reset}
       pdfBytes={pdfBytes}
