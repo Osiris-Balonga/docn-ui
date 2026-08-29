@@ -75,3 +75,11 @@ All packages below are development dependencies; none is imported by the product
 | Noto Sans Latin static WOFF | @fontsource/noto-sans 5.3.0 | OFL-1.1 | 20,176-byte local PDF font with fixed checksum; no external request |
 
 The raw React-pdf probe emitted only `MediaBox`; `CropBox`, `TrimBox`, and `BleedBox` were absent. That observed gap justifies the narrow `pdf-lib` step. It loads the completed bytes, writes the four page boxes, and enforces the final 20 MiB limit without participating in layout. Font provenance, license text, and checksum are stored beside the asset in `packages/documents/assets/fonts`.
+
+## Document contracts (L04-S01)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| Zod | 3.25.76 | MIT | Strict render-request contracts and field-path validation; imported by the document core and tree-shaken with distributed source |
+
+Zod is a direct dependency because render requests cross the browser-worker boundary and future template schemas must return the same structured field paths. Version 3.25.76 was already locked transitively through development tooling, but that copy was not a production contract. Promoting the established MIT-licensed version avoids a second copy and preserves the workspace's dependency-age policy without an exception; no runtime network request is introduced.

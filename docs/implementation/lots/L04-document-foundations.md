@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/core, themes, primitives, 
 
 ### L04-S01 — `feat(documents): define validated formats and render contracts`
 
-- [ ] Define request/result types, IDs/version, fixed/continuous formats, and mm/pt helpers; separate metadata from rendering functions.
-- [ ] Validate dimensions, orientation, allowed formats, and print profile; structured errors include field paths.
-- [ ] Define data normalization and shared limits without erasing invalid data.
+- [x] Define request/result types, IDs/version, fixed/continuous formats, and mm/pt helpers; separate metadata from rendering functions.
+- [x] Validate dimensions, orientation, allowed formats, and print profile; structured errors include field paths.
+- [x] Define data normalization and shared limits without erasing invalid data.
 
 **Acceptance:** Invalid/incompatible formats are rejected before reaching the engine; orientation applies exactly once.
 
