@@ -1,6 +1,6 @@
 # Target architecture
 
-Status: target architecture with the L01 bootstrap implemented and in review. The two workspaces, static root/404 routes, shadcn primitives, local site fonts, and scoped quality tooling exist. PDF, catalog, registry, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
+Status: target architecture with the L02 PDF feasibility gate implemented. The two workspaces, static site, shadcn primitives, local fonts, scoped quality tooling, Node/browser PDF adapters, versioned worker protocol, exact-byte PDF.js preview, print boxes, pagination, and measured roll height exist. Catalog, registry, public templates, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
 
 ## Stack selected for the plan
 
@@ -17,7 +17,7 @@ Status: target architecture with the L01 bootstrap implemented and in review. Th
 | Documentation | Local MDX, controlled components | Versioned content, no CMS |
 | Distribution | shadcn-compatible registry JSON | Reuse its CLI; no proprietary V1 CLI |
 
-L01 resolves and records exact compatible stable versions. Do not infer major versions from this document. L02 validates bundler/worker/engine compatibility before generalization. The `pdfjs-dist` viewer and `@react-pdf/renderer` generator are separate libraries; do not confuse them with the viewer wrapper named `react-pdf`.
+Exact compatible versions are recorded in [DEPENDENCIES.md](DEPENDENCIES.md); do not infer major versions from this document. L02 validated webpack worker bundling, local font/worker resolution, renderer geometry, page boxes, pagination, and two-pass roll height before generalization. The `pdfjs-dist` viewer and `@react-pdf/renderer` generator are separate libraries; do not confuse them with the viewer wrapper named `react-pdf`.
 
 ## Planned directory structure
 

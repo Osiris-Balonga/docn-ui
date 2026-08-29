@@ -44,6 +44,18 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          name: "pdf",
+          environment: "node",
+          include: ["packages/**/*.pdf.test.{ts,tsx}"],
+          exclude: exclude.filter((pattern) => !pattern.includes(".pdf.test")),
+          maxWorkers: 1,
+          retry: 0,
+          testTimeout: 15_000,
+        },
+      },
+      {
+        extends: true,
+        test: {
           name: "components",
           environment: "jsdom",
           include: ["apps/**/*.test.tsx"],

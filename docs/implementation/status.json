@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L01",
+  "currentLot": "L02",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -68,7 +68,7 @@
     {
       "id": "L01",
       "file": "lots/L01-bootstrap.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L00G"],
       "branch": "chore/bootstrap-workspace",
       "baseCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
@@ -77,20 +77,27 @@
         "a5ea60d0b03af4ab53e280a21e69324b15cfce1c",
         "cead66f0a47857afcdeb764a0123359472d7c8e7",
         "0fd6c339388632db7b683ec9cc0ca6daaeec7e2c",
-        "b914ea19a72a785841e29eb46356179504dc1308"
+        "b914ea19a72a785841e29eb46356179504dc1308",
+        "9d2a420256d2039fd63af698cd4f8b4d0f8fa379"
       ],
       "evidence": "../qa/L01.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "3b7b418670e121fdd63eed2b9b0f55dde2a02acc",
+      "mergedAt": "2026-08-29T00:04:41Z"
     },
     {
       "id": "L02",
       "file": "lots/L02-pdf-feasibility.md",
-      "state": "planned",
+      "state": "in_review",
       "dependsOn": ["L01"],
       "branch": "feat/pdf-rendering-spike",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "baseCommit": "3b7b418670e121fdd63eed2b9b0f55dde2a02acc",
+      "actualCommits": [
+        "88cb17531e9f3b1214fa8241d79e425b0ecafcc7",
+        "7b0cf796db5eccf75291553de7fb0b28e0d80775",
+        "52b798d8a9265e65c6fc5fa4628df3f86bacfca8"
+      ],
+      "evidence": "../qa/L02.md",
       "blocker": null
     },
     {

@@ -2,13 +2,13 @@
 
 ## Current state
 
-L00 is locally verified. [L00G](lots/L00G-github-governance.md) is merged through PR #9; [L01](lots/L01-bootstrap.md) is verified and in review through PR #21 on `chore/bootstrap-workspace`, based on `07dd743db42c293ed59f99e6ff734eaef94ea86b`. The plan contains 18 lots and 60 stories; L01–L16 IDs are unchanged. Read [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json), and the latest evidence. No implicit hosting or license choice.
+L00 is locally verified. [L00G](lots/L00G-github-governance.md) is merged through PR #9 and [L01](lots/L01-bootstrap.md) through PR #21. [L02](lots/L02-pdf-feasibility.md) is verified and in review through PR #22 on `feat/pdf-rendering-spike`, based on `3b7b418670e121fdd63eed2b9b0f55dde2a02acc`. The plan contains 18 lots and 60 stories; L01–L16 IDs are unchanged. Read [GITHUB](../GITHUB.md), [status.json](status.json), [github.json](github.json), and the latest evidence. No implicit hosting or license choice.
 
 Write everything in English: documentation, plans, acceptance criteria, QA, UI copy, comments, and GitHub content. This confirmed requirement also applies to future agents. French/English document-data support remains part of the technical scope.
 
 ## Instruction for an agent
 
-Current handoff: review [PR #21](https://github.com/Osiris-Balonga/docn-ui/pull/21), [L01 QA](../qa/L01.md), and [issue #3](https://github.com/Osiris-Balonga/docn-ui/issues/3). The four required checks pass; both protected branches require them. Wait for an authorized L01 merge, read its SHA/date, set L01 merged/Done, then L02 Ready. Start `feat/pdf-rendering-spike` from the resulting origin/dev. Do not repeat bootstrap, recreate issues, or push to dev/main. Speak French to the maintainer; write project artifacts in English.
+Current handoff: review [PR #22](https://github.com/Osiris-Balonga/docn-ui/pull/22), [L02 QA](../qa/L02.md), and [issue #4](https://github.com/Osiris-Balonga/docn-ui/issues/4). The five required checks pass on implementation SHA `52b798d8a9265e65c6fc5fa4628df3f86bacfca8`; both protected branches require them, including `pdf-tests`. Wait for an authorized L02 merge, read its SHA/date, set L02 merged/Done, then L03 Ready. Start `feat/shadcn-site-shell` only from the resulting origin/dev. Do not repeat the PDF spike, recreate issues, or push to dev/main. Speak French to the maintainer; write project artifacts in English.
 
 > Read AGENTS.md, IMPLEMENTATION_PLAN.md, and docs/implementation/status.json. Implement the next eligible lot according to its specification, stories, and commits. Keep shadcn/ui for the site and PDF components separate. Add only tests justified by uncovered risks, using the scoped commands in docs/TESTING.md. Verify the result; update status, QA report, issue, and Project Status at each transition; then report commits and the next lot. Write all project content in English. Do not modify paint-3d or publish anything without authorization.
 
@@ -31,4 +31,4 @@ Compare JSON state with Git and the latest report. Inspect partially written sto
 
 Pure function → `test:unit`. UI interaction → `test:components`. Module coordination → `test:integration`. Actual document → `test:pdf`. Installed source → `test:consumers`. Browser journey → `test:e2e`. Selected visual regression → `test:visual`.
 
-Commands activate progressively: L01 provides the lightweight projects (one real component suite today), quality, static build, and the sequential aggregate. PDF/consumer/browser/visual scopes remain unavailable until their first real suites. The [full contract](../TESTING.md) documents activation and how to avoid duplicate collection.
+Commands activate progressively: the component and integration projects, PDF suite, quality, static build, and sequential aggregate are active. Unit, consumer, E2E, and visual scopes remain unavailable until their first real suites. The [full contract](../TESTING.md) documents activation and how to avoid duplicate collection.

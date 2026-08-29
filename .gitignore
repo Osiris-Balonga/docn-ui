@@ -13,6 +13,7 @@ apps/www/public/r/
 
 # Local checks and generated evidence
 .artifacts/
+apps/www/public/generated/
 coverage/
 playwright-report/
 test-results/

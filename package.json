@@ -21,6 +21,7 @@
     "test:unit": "vitest run --project unit",
     "test:components": "vitest run --project components",
     "test:integration": "vitest run --project integration",
+    "test:pdf": "vitest run --project pdf",
     "test:watch": "vitest --project unit --project components --project integration",
     "test:coverage": "vitest run --project unit --project components --project integration --coverage",
     "test:all": "node tooling/testing/run-all.mjs",

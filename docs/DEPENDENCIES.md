@@ -16,7 +16,7 @@ Resolved on 2026-08-29 from the npm registry. Versions are exact in manifests an
 | cross-env | 10.1.0 | MIT | Disable Next telemetry in portable scripts; tooling only |
 | http-server | 14.1.1 | MIT | Serve the exported files on loopback with real 404 handling; tooling only |
 
-Node is restricted to the qualified 24.x LTS line. The installed runtime satisfies all declared package engines. `packages/documents` intentionally has no rendering dependency until L02. `sharp` is the only approved installation build in S01; it is a Next dependency, not a browser dependency. Project license selection remains a maintainer decision; dependency licenses do not license this repository.
+Node is restricted to the qualified 24.x LTS line. The installed runtime satisfies all declared package engines. `sharp` is the only approved installation build in S01; it is a Next dependency, not a browser dependency. Project license selection remains a maintainer decision; dependency licenses do not license this repository.
 
 Sources: [Next static exports](https://nextjs.org/docs/app/guides/static-exports), [Next installation](https://nextjs.org/docs/app/getting-started/installation), [pnpm settings](https://pnpm.io/settings), and the published npm manifests for the exact versions above.
 
@@ -63,3 +63,15 @@ All packages below are development dependencies; none is imported by the product
 | unrs-resolver (transitive, locked) | 1.12.2 | MIT | ESLint import resolution; reviewed native-package postinstall explicitly allowed |
 
 **Compatibility limitation:** ESLint 9.39.5 is deprecated upstream. ESLint 10.9.1 was actually tried and rejected: the Next-resolved import/jsx-a11y/react plugins declare ESLint 9 peer ranges, and `react/display-name` crashes on the removed `context.getFilename` API. Pin the functioning compatible version without suppressing rules or peer checks; reconsider at L13 or when Next's plugin dependencies support ESLint 10. This affects developer tooling, not shipped site code. `pnpm peers check` must remain clean.
+
+## PDF feasibility (L02-S01)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| @react-pdf/renderer | 4.9.0 | MIT | Local React document layout and PDF generation; the browser worker imports only this rendering path |
+| pdf-lib | 1.17.1 | MIT | Isolated final-byte post-processing for explicit MediaBox, CropBox, TrimBox, and BleedBox entries |
+| pdfjs-dist | 6.2.108 | Apache-2.0 | Independent content/dimension reader in qualification and local browser viewer in S02; worker asset remains local |
+| React | 19.2.8 | MIT | Matches the website runtime and is required by the renderer |
+| Noto Sans Latin static WOFF | @fontsource/noto-sans 5.3.0 | OFL-1.1 | 20,176-byte local PDF font with fixed checksum; no external request |
+
+The raw React-pdf probe emitted only `MediaBox`; `CropBox`, `TrimBox`, and `BleedBox` were absent. That observed gap justifies the narrow `pdf-lib` step. It loads the completed bytes, writes the four page boxes, and enforces the final 20 MiB limit without participating in layout. Font provenance, license text, and checksum are stored beside the asset in `packages/documents/assets/fonts`.
