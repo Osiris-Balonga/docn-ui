@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L04",
+  "currentLot": "L06",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -141,7 +141,7 @@
     {
       "id": "L05",
       "file": "lots/L05-business-cards.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
       "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
@@ -152,17 +152,19 @@
         "a0077c1803bdfdd1fa7840ca123f0826c97c16d3"
       ],
       "evidence": "../qa/L05.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
+      "mergedAt": "2026-08-29T23:08:15Z"
     },
     {
       "id": "L06",
       "file": "lots/L06-catalog-playground.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L05"],
       "branch": "feat/catalog-and-playground",
-      "baseCommit": null,
+      "baseCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L06.md",
       "blocker": null
     },
     {
