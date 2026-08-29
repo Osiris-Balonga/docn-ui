@@ -26,11 +26,11 @@ Unit/components globs exclude integration/pdf/consumer. Each file belongs to exa
 
 ## 3. Command contracts
 
-### L01 activation status
+### Activation status through L02-S01
 
 `unit`, `components`, and `integration` are configured with exclusive globs. Only `components` currently contains a real suite: one project-link composition check covering the observed link-role regression, keyboard focus, and tooltip wiring. No pure document logic or module coordination exists yet, so unit/integration are **not verified suites**. Their standalone commands fail with "No test files found" until real tests are added; `passWithNoTests` remains false. The shared lightweight command selects all three projects and collects the one existing suite once.
 
-PDF, consumers, E2E, visual, and asset/registry/bundle verification commands are not implemented yet. Their file conventions are reserved and excluded from the lightweight projects. Do not add empty successful placeholder scripts.
+The `pdf` scope is active with one real feasibility suite covering renderer output, dimensions, text, sides, page boxes, and pagination. Its three cases represent distinct engine risks and share the same fixtures and readers. Consumers, E2E, visual, and asset/registry/bundle verification commands are not implemented yet. Their file conventions are reserved and excluded from the lightweight projects. Do not add empty successful placeholder scripts.
 
 Available now: `test`, the three lightweight scoped commands, `test:watch`, `test:coverage`, `test:all`, `quality`, `validate`, and `validate:full`. `test:all --list` prints activation without executing tests. The sequential orchestrator reads the actual package scripts; adding a heavy command activates it automatically. `validate:full` prepares one build and runs each activated scope once. Build fingerprinting/artifact handoff will be implemented with the first E2E suite in L06; no reusable E2E artifact is claimed today.
 

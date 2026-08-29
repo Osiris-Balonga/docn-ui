@@ -1,6 +1,6 @@
 # L02 — Technical qualification of the PDF pipeline
 
-Initial status: **planned**. Branch: `feat/pdf-rendering-spike`.
+Initial status: **in progress**. Branch: `feat/pdf-rendering-spike`.
 
 Dependencies: L01. Requirements: FR-03, FR-04; NFR-03, NFR-04, NFR-05, NFR-06; G1.
 
@@ -18,10 +18,10 @@ Target files/responsibilities: packages/documents/src/render, qualification fixt
 
 ### L02-S01 — `feat(pdf): render exact-size documents with local fonts`
 
-- [ ] Add a pinned engine and one minimal licensed static font; resolve assets separately for Node/browser.
-- [ ] Generate a two-page 85×55 mm card, accented text, and a small multipage table; inspect dimensions/content with an independent PDF reader.
-- [ ] Qualify trim/bleed/boxes; isolate post-processing and justify its dependency if needed.
-- [ ] Activate test:pdf with one reusable qualification suite, not one suite per size.
+- [x] Add a pinned engine and one minimal licensed static font; resolve assets separately for Node/browser.
+- [x] Generate a two-page 85×55 mm card, accented text, and a small multipage table; inspect dimensions/content with an independent PDF reader.
+- [x] Qualify trim/bleed/boxes; isolate post-processing and justify its dependency if needed.
+- [x] Activate test:pdf with one reusable qualification suite, not one suite per size.
 
 **Acceptance:** Dimensions within 0.1 pt, two correct sides, extracted French text, no third-party font request. Advertised boxes exist and are exact.
 

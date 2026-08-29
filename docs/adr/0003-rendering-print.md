@@ -1,6 +1,6 @@
 # ADR 0003 — An actual PDF and bounded guarantees
 
-Date: 2026-08-28. Status: proposed architecture; feasibility is a blocking gate in L02.
+Date: 2026-08-28. Status: accepted for fixed geometry and pagination in L02-S01; browser and receipt qualification remain blocking.
 
 ## Decision
 
@@ -15,6 +15,10 @@ Capturing HTML/canvas as an image would lose text and document reliability. Serv
 ## Required evidence
 
 Worker with a static build, licensed static fonts, front/back, mm/pt sizes, automatic receipt height, pagination, print boxes, and timeout recovery. Post-processing such as `pdf-lib` is allowed only to fill a demonstrated capability gap, with license/version review and appropriate tests.
+
+## L02-S01 finding
+
+React-pdf 4.9.0 rendered the 85×55 mm card, a static local Noto Sans WOFF, two sides, accented French text, and a four-page A6 table. The raw probe contained only `MediaBox`. The isolated pdf-lib 1.17.1 step is therefore accepted for explicit crop, trim, and bleed boxes; it does not calculate layout. PDF.js 6.2.108 reads content and dimensions independently, while pdf-lib and pypdf inspect the page dictionaries. Browser execution and measured roll height remain open until S02/S03.
 
 ## Limits of the promise
 

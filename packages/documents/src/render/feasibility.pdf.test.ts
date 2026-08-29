@@ -1,0 +1,188 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { PDFDocument } from "pdf-lib";
+import {
+  getDocument,
+  type PDFDocumentLoadingTask,
+} from "pdfjs-dist/legacy/build/pdf.mjs";
+import { afterEach, describe, expect, it } from "vitest";
+import { renderQualificationInNode } from "./node";
+
+const POINT_TOLERANCE = 0.1;
+const expected = {
+  trimWidth: 240.944_881_889_8,
+  trimHeight: 155.905_511_811,
+  bleed: 8.503_937_007_87,
+  markMargin: 14.173_228_346_5,
+};
+
+const openDocuments: PDFDocumentLoadingTask[] = [];
+
+async function inspectWithPdfJs(bytes: Uint8Array) {
+  const loadingTask = getDocument({
+    data: bytes.slice(),
+    useSystemFonts: false,
+  });
+  const document = await loadingTask.promise;
+  openDocuments.push(loadingTask);
+  const pages = await Promise.all(
+    Array.from({ length: document.numPages }, async (_, index) => {
+      const page = await document.getPage(index + 1);
+      const content = await page.getTextContent();
+      const text = content.items
+        .filter((item): item is typeof item & { str: string } => "str" in item)
+        .map((item) => item.str)
+        .join(" ");
+      return { view: page.view, text };
+    }),
+  );
+  return { pageCount: document.numPages, pages };
+}
+
+async function inspectBoxes(bytes: Uint8Array) {
+  const document = await PDFDocument.load(bytes);
+  return document.getPages().map((page) => ({
+    media: page.getMediaBox(),
+    crop: page.getCropBox(),
+    trim: page.getTrimBox(),
+    bleed: page.getBleedBox(),
+  }));
+}
+
+function expectBox(
+  actual: { x: number; y: number; width: number; height: number },
+  target: { x: number; y: number; width: number; height: number },
+) {
+  expect(actual.x).toBeCloseTo(target.x, 1);
+  expect(actual.y).toBeCloseTo(target.y, 1);
+  expect(actual.width).toBeCloseTo(target.width, 1);
+  expect(actual.height).toBeCloseTo(target.height, 1);
+  expect(Math.abs(actual.width - target.width)).toBeLessThanOrEqual(
+    POINT_TOLERANCE,
+  );
+  expect(Math.abs(actual.height - target.height)).toBeLessThanOrEqual(
+    POINT_TOLERANCE,
+  );
+}
+
+async function retainArtifact(name: string, bytes: Uint8Array) {
+  if (process.env.DOCN_WRITE_PDF_ARTIFACTS !== "1") return;
+  const directory = fileURLToPath(
+    new URL("../../../../.artifacts/l02/pdf/", import.meta.url),
+  );
+  await mkdir(directory, { recursive: true });
+  await writeFile(`${directory}${name}.pdf`, bytes);
+}
+
+afterEach(async () => {
+  await Promise.all(
+    openDocuments.splice(0).map((loadingTask) => loadingTask.destroy()),
+  );
+});
+
+describe("PDF rendering feasibility", () => {
+  it("renders an exact two-sided card with local accented text", async () => {
+    const bytes = await renderQualificationInNode({
+      fixture: "card",
+      printProfile: { kind: "screen" },
+    });
+    const inspection = await inspectWithPdfJs(bytes);
+    const boxes = await inspectBoxes(bytes);
+
+    expect(inspection.pageCount).toBe(2);
+    expect(inspection.pages[0]?.view).toEqual(expect.arrayContaining([0, 0]));
+    expect(inspection.pages[0]?.view[2]).toBeCloseTo(expected.trimWidth, 1);
+    expect(inspection.pages[0]?.view[3]).toBeCloseTo(expected.trimHeight, 1);
+    expect(inspection.pages[0]?.text).toContain("Élodie Mbemba");
+    expect(inspection.pages[0]?.text).toContain(
+      "Direction créative · Brazzaville",
+    );
+    expect(inspection.pages[1]?.text).toContain("Back side · 2 / 2");
+    for (const page of boxes) {
+      const trim = {
+        x: 0,
+        y: 0,
+        width: expected.trimWidth,
+        height: expected.trimHeight,
+      };
+      expectBox(page.media, trim);
+      expectBox(page.crop, trim);
+      expectBox(page.trim, trim);
+      expectBox(page.bleed, trim);
+    }
+    await retainArtifact("card-screen", bytes);
+  });
+
+  it("publishes exact trim and bleed boxes with and without crop-mark margins", async () => {
+    const noMarksBytes = await renderQualificationInNode({
+      fixture: "card",
+      printProfile: { kind: "print", bleedMm: 3, cropMarks: false },
+    });
+    const marksBytes = await renderQualificationInNode({
+      fixture: "card",
+      printProfile: { kind: "print", bleedMm: 3, cropMarks: true },
+    });
+    const [noMarks, marks] = await Promise.all([
+      inspectBoxes(noMarksBytes),
+      inspectBoxes(marksBytes),
+    ]);
+
+    const printWidth = expected.trimWidth + 2 * expected.bleed;
+    const printHeight = expected.trimHeight + 2 * expected.bleed;
+    for (const page of noMarks) {
+      expectBox(page.media, {
+        x: 0,
+        y: 0,
+        width: printWidth,
+        height: printHeight,
+      });
+      expectBox(page.trim, {
+        x: expected.bleed,
+        y: expected.bleed,
+        width: expected.trimWidth,
+        height: expected.trimHeight,
+      });
+      expectBox(page.bleed, {
+        x: 0,
+        y: 0,
+        width: printWidth,
+        height: printHeight,
+      });
+    }
+    for (const page of marks) {
+      const trimInset = expected.bleed + expected.markMargin;
+      expectBox(page.media, {
+        x: 0,
+        y: 0,
+        width: printWidth + 2 * expected.markMargin,
+        height: printHeight + 2 * expected.markMargin,
+      });
+      expectBox(page.trim, {
+        x: trimInset,
+        y: trimInset,
+        width: expected.trimWidth,
+        height: expected.trimHeight,
+      });
+      expectBox(page.bleed, {
+        x: expected.markMargin,
+        y: expected.markMargin,
+        width: printWidth,
+        height: printHeight,
+      });
+    }
+    await retainArtifact("card-print", noMarksBytes);
+    await retainArtifact("card-crop-marks", marksBytes);
+  });
+
+  it("paginates a small table without losing its final row", async () => {
+    const bytes = await renderQualificationInNode({ fixture: "table" });
+    const inspection = await inspectWithPdfJs(bytes);
+    const allText = inspection.pages.map((page) => page.text).join(" ");
+
+    expect(inspection.pageCount).toBeGreaterThan(1);
+    expect(allText).toContain("Deterministic pagination row 1");
+    expect(allText).toContain("Deterministic pagination row 56");
+    expect(inspection.pages.at(-1)?.text).toContain("Final marker row 56");
+    await retainArtifact("multipage-table", bytes);
+  });
+});

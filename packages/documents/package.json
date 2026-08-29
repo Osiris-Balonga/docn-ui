@@ -5,5 +5,15 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-pdf/renderer": "4.9.0",
+    "pdf-lib": "1.17.1",
+    "pdfjs-dist": "6.2.108",
+    "react": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18"
   }
 }
