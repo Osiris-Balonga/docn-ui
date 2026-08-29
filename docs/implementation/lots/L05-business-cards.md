@@ -39,9 +39,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S03 — `feat(cards): add editorial and studio compositions`
 
-- [ ] Add the two planned distinct structures, sharing family schema and helpers.
-- [ ] Declare actually supported formats; test size changes at boundaries without combining all themes/languages.
-- [ ] Generate thumbnails from PDFs; review the three compositions and their backs together.
+- [x] Add the two planned distinct structures, sharing family schema and helpers.
+- [x] Declare actually supported formats; test size changes at boundaries without combining all themes/languages.
+- [x] Generate thumbnails from PDFs; review the three compositions and their backs together.
 
 **Acceptance:** Three structurally different compositions; every advertised size remains readable.
 

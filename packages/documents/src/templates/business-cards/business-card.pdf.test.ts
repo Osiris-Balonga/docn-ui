@@ -14,27 +14,40 @@ import {
 } from "../../primitives/measurement";
 import { renderDocumentInNode } from "../../render/node";
 import {
+  createBusinessCardEditorialPlan,
+  editorialBusinessCardExample,
+} from "./business-card-editorial";
+import {
   createBusinessCardMinimalPlan,
   minimalBusinessCardExampleFr,
 } from "./business-card-minimal";
+import {
+  createBusinessCardStudioPlan,
+  studioBusinessCardExample,
+} from "./business-card-studio";
 import type { BusinessCardData } from "./schema";
 
 const openDocuments: Array<ReturnType<typeof getDocument>> = [];
 
 function createRequest(
   data: BusinessCardData | Record<string, unknown>,
+  options: {
+    formatId?: RenderRequest["formatId"];
+    templateId?: string;
+    themeId?: RenderRequest["themeId"];
+  } = {},
 ): RenderRequest {
   return {
     assetIds: [],
     data,
-    formatId: "card-85x55",
+    formatId: options.formatId ?? "card-85x55",
     locale: "fr",
     printProfile: { kind: "screen" },
     protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
     revision: 1,
-    templateId: "business-card-minimal",
+    templateId: options.templateId ?? "business-card-minimal",
     templateVersion: "1.0.0",
-    themeId: "neutral",
+    themeId: options.themeId ?? "neutral",
   };
 }
 
@@ -148,6 +161,52 @@ describe("business-card PDF family", () => {
           fixture.path,
         );
       }
+    }
+  });
+
+  it("renders distinct editorial and studio compositions at compact formats", async () => {
+    const fixtures = [
+      {
+        artifact: "business-card-editorial",
+        formatId: "card-90x50" as const,
+        plan: createBusinessCardEditorialPlan(
+          createRequest(editorialBusinessCardExample, {
+            formatId: "card-90x50",
+            templateId: "business-card-editorial",
+            themeId: "editorial",
+          }),
+        ).plan,
+        text: ["Noémie Kanza", "Revue Latitude", "Vol. 01"],
+      },
+      {
+        artifact: "business-card-studio",
+        formatId: "card-us" as const,
+        plan: createBusinessCardStudioPlan(
+          createRequest(studioBusinessCardExample, {
+            formatId: "card-us",
+            templateId: "business-card-studio",
+            themeId: "bold",
+          }),
+        ).plan,
+        text: ["Malik Turner", "Common Form Studio", "STUDIO / 01"],
+      },
+    ];
+
+    for (const fixture of fixtures) {
+      const bytes = await renderDocumentInNode(fixture.plan);
+      const inspection = await inspectPdf(bytes);
+      const format = resolveFormat(fixture.formatId);
+      if (format.kind !== "fixed") throw new Error("Expected a fixed format.");
+      const frame = createSafeFrame(format);
+      expect(inspection.pageCount).toBe(2);
+      const allText = inspection.pages.map((page) => page.text).join(" ");
+      for (const expectedText of fixture.text)
+        expect(allText).toContain(expectedText);
+      for (const page of inspection.pages) {
+        for (const bounds of page.bounds)
+          assertWithinSafeFrame(bounds, frame, ["pages", "text"]);
+      }
+      await retainArtifact(fixture.artifact, bytes);
     }
   });
 });

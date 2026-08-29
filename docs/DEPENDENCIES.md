@@ -99,3 +99,12 @@ The asset manifest records exact byte sizes, SHA-256 hashes, license location, s
 The same-day 1.62.1 release was not adopted. Version 1.61.1 satisfies Node 24, the Next.js optional peer range, and the existing supply-chain policy without an exception. Playwright runs with one worker and zero retries against a dedicated loopback static server. Its browser binary and artifacts are development/CI resources and are not shipped to users.
 
 The root E2E scope also declares `pdfjs-dist` 6.2.108 as a development dependency so strict pnpm workspace isolation permits independent inspection of downloaded bytes. This is the exact version already used by the document and website workspaces, so the lockfile retains one package instance and no additional browser payload is introduced.
+
+## Vector business-card QR (L05-S03)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| qrcode | 1.5.4 | MIT | Produces a deterministic module matrix rendered as native React-pdf SVG rectangles; used only by templates that declare QR support |
+| @types/qrcode | 1.5.6 | MIT | Type declarations for the document workspace; development only |
+
+The primitive renders the matrix itself rather than embedding a generated bitmap or making a network request. It enforces the existing 512-byte payload budget, error-correction level M, a four-module quiet zone, and a minimum module size for the selected card layout. Final-PDF decoding remains a separate visual/QR qualification risk and is not inferred from successful matrix creation.

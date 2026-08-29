@@ -1,10 +1,10 @@
 import { Document, View } from "@react-pdf/renderer";
 import type { RenderRequest } from "../../../core/contracts";
-import { DocumentValidationError, validateRenderRequest } from "../../../core";
+import type { ResolvedFixedFormat } from "../../../core/formats";
 import { Heading, PageFrame, Text } from "../../../primitives";
 import { getPdfTheme } from "../../../themes/themes";
-import type { FixedDocumentRenderPlan } from "../../../render/runtime";
-import { parseBusinessCardData, type BusinessCardData } from "../schema";
+import type { BusinessCardData } from "../schema";
+import { createBusinessCardPlan } from "../plan";
 import { businessCardMinimalMetadata } from "./metadata";
 
 const fixedDate = new Date("2026-01-15T12:00:00.000Z");
@@ -48,10 +48,7 @@ export function BusinessCardMinimalDocument({
   themeId,
 }: {
   data: BusinessCardData;
-  format: Extract<
-    ReturnType<typeof validateRenderRequest>["format"],
-    { kind: "fixed" }
-  >;
+  format: ResolvedFixedFormat;
   locale: "en" | "fr";
   printProfile: RenderRequest["printProfile"];
   themeId: RenderRequest["themeId"];
@@ -129,36 +126,8 @@ export function BusinessCardMinimalDocument({
   );
 }
 
-export function createBusinessCardMinimalPlan(input: unknown): {
-  plan: FixedDocumentRenderPlan;
-  request: RenderRequest<BusinessCardData>;
-} {
-  const validated = validateRenderRequest(input, businessCardMinimalMetadata);
-  if (validated.format.kind !== "fixed") {
-    throw new DocumentValidationError([
-      {
-        code: "UNSUPPORTED_FORMAT",
-        message: "Business cards require a fixed format.",
-        path: ["formatId"],
-      },
-    ]);
-  }
-  const data = parseBusinessCardData(validated.request.data);
-  const request = { ...validated.request, data };
-  return {
-    request,
-    plan: {
-      document: (
-        <BusinessCardMinimalDocument
-          data={data}
-          format={validated.format}
-          locale={request.locale}
-          printProfile={request.printProfile}
-          themeId={request.themeId}
-        />
-      ),
-      format: validated.format,
-      printProfile: request.printProfile,
-    },
-  };
+export function createBusinessCardMinimalPlan(input: unknown) {
+  return createBusinessCardPlan(input, businessCardMinimalMetadata, (props) => (
+    <BusinessCardMinimalDocument {...props} />
+  ));
 }

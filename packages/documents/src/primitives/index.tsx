@@ -2,11 +2,14 @@ import {
   Image as ReactPdfImage,
   Line,
   Page,
+  Rect,
   Svg,
   Text as ReactPdfText,
   View,
 } from "@react-pdf/renderer";
 import { createContext, useContext, type ReactNode } from "react";
+import QRCodeEncoder from "qrcode";
+import { DocumentValidationError } from "../core/errors";
 import type { PrintProfile, ResolvedFixedFormat } from "../core/formats";
 import { millimetersToPoints } from "../core/units";
 import { getPageGeometry } from "../render/print-profile";
@@ -252,6 +255,66 @@ export interface ImageProps {
   height: number;
   resolvedSource: string;
   width: number;
+}
+
+export interface QRCodeProps {
+  backgroundColor?: string;
+  color?: string;
+  payload: string;
+  size: number;
+}
+
+export function QRCode({
+  backgroundColor = "#ffffff",
+  color = "#111111",
+  payload,
+  size,
+}: QRCodeProps) {
+  if (new TextEncoder().encode(payload).byteLength > 512) {
+    throw new DocumentValidationError([
+      {
+        code: "LIMIT_EXCEEDED",
+        message: "QR payload exceeds 512 UTF-8 bytes.",
+        path: ["data", "qrPayload"],
+      },
+    ]);
+  }
+  const code = QRCodeEncoder.create(payload, { errorCorrectionLevel: "M" });
+  const quietZone = 4;
+  const matrixSize = code.modules.size;
+  const totalModules = matrixSize + quietZone * 2;
+  if (size / totalModules < 1) {
+    throw new DocumentValidationError([
+      {
+        code: "QR_TOO_DENSE",
+        message: "QR content is too dense for the selected card layout.",
+        path: ["data", "qrPayload"],
+      },
+    ]);
+  }
+  return (
+    <Svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${totalModules} ${totalModules}`}
+    >
+      <Rect width={totalModules} height={totalModules} fill={backgroundColor} />
+      {Array.from({ length: matrixSize }, (_, row) =>
+        Array.from({ length: matrixSize }, (_, column) =>
+          code.modules.get(row, column) ? (
+            <Rect
+              key={`${row}-${column}`}
+              x={column + quietZone}
+              y={row + quietZone}
+              width={1}
+              height={1}
+              fill={color}
+            />
+          ) : null,
+        ),
+      )}
+    </Svg>
+  );
 }
 
 export function Image({ alt, height, resolvedSource, width }: ImageProps) {
