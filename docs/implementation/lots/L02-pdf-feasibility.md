@@ -40,10 +40,10 @@ Target files/responsibilities: packages/documents/src/render, qualification fixt
 
 ### L02-S03 — `test(pdf): qualify roll height pagination and print constraints`
 
-- [ ] Extend existing fixtures with short and long receipts at 58/80 mm; measure final height and verify the last text.
-- [ ] Trigger a height limit and document the error strategy; no approximate character-count calculation.
-- [ ] Render the pagination fixture and print profile; visually inspect a contact sheet of results.
-- [ ] Record the feasibility decision, tested versions, indicative timings, and limitations in QA/ADRs. Adapt the engine or post-processing now if required.
+- [x] Extend existing fixtures with short and long receipts at 58/80 mm; measure final height and verify the last text.
+- [x] Trigger a height limit and document the error strategy; no approximate character-count calculation.
+- [x] Render the pagination fixture and print profile; visually inspect a contact sheet of results.
+- [x] Record the feasibility decision, tested versions, indicative timings, and limitations in QA/ADRs. Adapt the engine or post-processing now if required.
 
 **Acceptance:** Every G1 risk has evidence or an explicit blocking decision; assume no unverified capability.
 

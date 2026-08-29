@@ -1,6 +1,6 @@
 # ADR 0003 — An actual PDF and bounded guarantees
 
-Date: 2026-08-28. Status: accepted for fixed geometry, pagination, and browser isolation through L02-S02; receipt qualification remains blocking.
+Date: 2026-08-28. Status: accepted after the L02 feasibility gate.
 
 ## Decision
 
@@ -18,7 +18,9 @@ Worker with a static build, licensed static fonts, front/back, mm/pt sizes, auto
 
 ## L02-S01 finding
 
-React-pdf 4.9.0 rendered the 85×55 mm card, a static local Noto Sans WOFF, two sides, accented French text, and a four-page A6 table. The raw probe contained only `MediaBox`. The isolated pdf-lib 1.17.1 step is therefore accepted for explicit crop, trim, and bleed boxes; it does not calculate layout. PDF.js 6.2.108 reads content and dimensions independently, while pdf-lib and pypdf inspect the page dictionaries. The S02 static build renders in a dedicated worker, previews a copy through the local PDF.js worker, and retains the original bytes for download. Measured roll height remains open until S03.
+React-pdf 4.9.0 rendered the 85×55 mm card, a static local Noto Sans WOFF, two sides, accented French text, and a four-page A6 table. The raw probe contained only `MediaBox`. The isolated pdf-lib 1.17.1 step is therefore accepted for explicit crop, trim, and bleed boxes; it does not calculate layout. PDF.js 6.2.108 reads content and dimensions independently, while pdf-lib and pypdf inspect the page dictionaries. The S02 static build renders in a dedicated worker, previews a copy through the local PDF.js worker, and retains the original bytes for download.
+
+For roll receipts, render once against the configured maximum height, inspect actual PDF.js glyph positions and page count, then render again at the measured height plus a fixed 12 pt layout safety allowance. This uses the engine's real wrapping and selected font. It does not estimate characters. More than one probe page, a missing final marker, more than 300 input lines, or a measured result above the physical limit returns a structured error instead of truncating content.
 
 ## Limits of the promise
 

@@ -185,4 +185,79 @@ describe("PDF rendering feasibility", () => {
     expect(inspection.pages.at(-1)?.text).toContain("Final marker row 56");
     await retainArtifact("multipage-table", bytes);
   });
+
+  it("measures short and long 58/80 mm receipts from rendered content", async () => {
+    const cases = [
+      {
+        artifact: "receipt-58-short",
+        widthMm: 58 as const,
+        lineCount: 4,
+        finalText: "final 58 short",
+      },
+      {
+        artifact: "receipt-58-long",
+        widthMm: 58 as const,
+        lineCount: 34,
+        finalText: "final 58 long",
+      },
+      {
+        artifact: "receipt-80-short",
+        widthMm: 80 as const,
+        lineCount: 4,
+        finalText: "final 80 short",
+      },
+      {
+        artifact: "receipt-80-long",
+        widthMm: 80 as const,
+        lineCount: 34,
+        finalText: "final 80 long",
+      },
+    ];
+    const measurements = new Map<string, number>();
+
+    for (const fixture of cases) {
+      const bytes = await renderQualificationInNode({
+        fixture: "receipt",
+        receipt: fixture,
+      });
+      const inspection = await inspectWithPdfJs(bytes);
+      const width = inspection.pages[0]?.view[2] ?? 0;
+      const height = inspection.pages[0]?.view[3] ?? 0;
+      measurements.set(fixture.artifact, height);
+
+      expect(inspection.pageCount).toBe(1);
+      expect(width).toBeCloseTo(
+        fixture.widthMm === 58 ? 164.409_448_818_9 : 226.771_653_543_3,
+        1,
+      );
+      expect(height).toBeGreaterThan(0);
+      expect(height).toBeLessThan(1_417.322_834_645_7);
+      expect(inspection.pages[0]?.text).toContain(fixture.finalText);
+      await retainArtifact(fixture.artifact, bytes);
+    }
+
+    expect(measurements.get("receipt-58-long")).toBeGreaterThan(
+      measurements.get("receipt-58-short") ?? Infinity,
+    );
+    expect(measurements.get("receipt-80-long")).toBeGreaterThan(
+      measurements.get("receipt-80-short") ?? Infinity,
+    );
+    expect(measurements.get("receipt-58-long")).toBeGreaterThan(
+      measurements.get("receipt-80-long") ?? Infinity,
+    );
+  });
+
+  it("rejects receipt content that exceeds the configured physical limit", async () => {
+    await expect(
+      renderQualificationInNode({
+        fixture: "receipt",
+        receipt: {
+          widthMm: 58,
+          lineCount: 30,
+          finalText: "LIMIT MARKER",
+          maxHeightMm: 45,
+        },
+      }),
+    ).rejects.toMatchObject({ code: "RECEIPT_HEIGHT_LIMIT" });
+  });
 });
