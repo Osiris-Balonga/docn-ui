@@ -28,9 +28,9 @@ Target files/responsibilities: apps/www/src/app, components/ui, features/docs, s
 
 ### L03-S02 — `feat(docs): add searchable navigation and content layouts`
 
-- [ ] Create a lightweight known-page index, Command/Dialog palette, and Ctrl/Cmd+K shortcut.
-- [ ] Restore focus on close; handle no matches and avoid shortcuts interfering with application input.
-- [ ] Add reading/code layouts and breadcrumbs; install only used shadcn components.
+- [x] Create a lightweight known-page index, Command/Dialog palette, and Ctrl/Cmd+K shortcut.
+- [x] Restore focus on close; handle no matches and avoid shortcuts interfering with application input.
+- [x] Add reading/code layouts and breadcrumbs; install only used shadcn components.
 
 **Acceptance:** Finding a known page, opening it, and closing search works with the keyboard; the index imports no PDF engine.
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { GitForkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/features/theme/theme-menu";
+import { DocsSearch } from "./docs-search";
 
 export function SiteHeader() {
   return (
@@ -30,6 +31,7 @@ export function SiteHeader() {
             </Link>
           </nav>
           <div className="ml-auto flex items-center gap-1">
+            <DocsSearch />
             <Button
               nativeButton={false}
               render={

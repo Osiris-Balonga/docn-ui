@@ -109,7 +109,7 @@
       "dependsOn": ["L02"],
       "branch": "feat/shadcn-site-shell",
       "baseCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
-      "actualCommits": [],
+      "actualCommits": ["bec8bdb5033eb992d6c3ab52eb702afb50facb05"],
       "evidence": "../qa/L03.md",
       "blocker": null
     },
