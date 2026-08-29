@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/templates/business-cards, 
 
 ### L05-S01 — `feat(cards): add typed two-sided minimal business card`
 
-- [ ] Create the card schema, synthetic French/English data, metadata, and declared formats; compose minimal front/back.
-- [ ] Respect safe areas, optional contact details, and side order; report names or addresses that do not fit.
-- [ ] One family PDF suite contains the nominal case and overflow risk; measure both sides.
+- [x] Create the card schema, synthetic French/English data, metadata, and declared formats; compose minimal front/back.
+- [x] Respect safe areas, optional contact details, and side order; report names or addresses that do not fit.
+- [x] One family PDF suite contains the nominal case and overflow risk; measure both sides.
 
 **Acceptance:** The minimal PDF has two correctly sized pages, preserves contact details, and has no site dependency.
 

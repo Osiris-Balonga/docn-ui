@@ -1,11 +1,15 @@
 import {
   Image as ReactPdfImage,
+  Line,
   Page,
+  Svg,
   Text as ReactPdfText,
   View,
 } from "@react-pdf/renderer";
 import { createContext, useContext, type ReactNode } from "react";
-import type { ResolvedFixedFormat } from "../core/formats";
+import type { PrintProfile, ResolvedFixedFormat } from "../core/formats";
+import { millimetersToPoints } from "../core/units";
+import { getPageGeometry } from "../render/print-profile";
 import type { PdfTheme } from "../themes/themes";
 import { createSafeFrame, type SafeFrame } from "./measurement";
 
@@ -30,36 +34,109 @@ export interface PageFrameProps {
   backgroundColor?: string;
   children: ReactNode;
   format: ResolvedFixedFormat;
+  printProfile?: PrintProfile;
   theme: PdfTheme;
+}
+
+function CropMarks({
+  mediaHeight,
+  mediaWidth,
+  stroke,
+  trimInset,
+}: {
+  mediaHeight: number;
+  mediaWidth: number;
+  stroke: string;
+  trimInset: number;
+}) {
+  const gap = millimetersToPoints(1);
+  const farX = mediaWidth - trimInset;
+  const farY = mediaHeight - trimInset;
+  const lines: Array<readonly [number, number, number, number]> = [
+    [0, trimInset, trimInset - gap, trimInset],
+    [farX + gap, trimInset, mediaWidth, trimInset],
+    [0, farY, trimInset - gap, farY],
+    [farX + gap, farY, mediaWidth, farY],
+    [trimInset, 0, trimInset, trimInset - gap],
+    [farX, 0, farX, trimInset - gap],
+    [trimInset, farY + gap, trimInset, mediaHeight],
+    [farX, farY + gap, farX, mediaHeight],
+  ];
+  return (
+    <Svg
+      style={{ left: 0, position: "absolute", top: 0 }}
+      width={mediaWidth}
+      height={mediaHeight}
+    >
+      {lines.map(([x1, y1, x2, y2], index) => (
+        <Line
+          key={index}
+          x1={x1}
+          x2={x2}
+          y1={y1}
+          y2={y2}
+          stroke={stroke}
+          strokeWidth={0.5}
+        />
+      ))}
+    </Svg>
+  );
 }
 
 export function PageFrame({
   backgroundColor,
   children,
   format,
+  printProfile = { kind: "screen" },
   theme,
 }: PageFrameProps) {
   const frame = createSafeFrame(format);
+  const geometry = getPageGeometry(
+    format.trim.widthPt,
+    format.trim.heightPt,
+    printProfile,
+  );
+  const showCropMarks = printProfile.kind === "print" && printProfile.cropMarks;
   return (
     <Page
-      size={[frame.pageWidth, frame.pageHeight]}
+      size={[geometry.mediaWidth, geometry.mediaHeight]}
       style={{
-        backgroundColor: backgroundColor ?? theme.colors.canvas,
+        backgroundColor: showCropMarks
+          ? theme.colors.surface
+          : (backgroundColor ?? theme.colors.canvas),
         color: theme.colors.text,
         fontFamily: theme.fonts.body,
         fontWeight: theme.fonts.regularWeight,
-        height: frame.pageHeight,
-        width: frame.pageWidth,
+        height: geometry.mediaHeight,
+        width: geometry.mediaWidth,
       }}
     >
+      <View
+        style={{
+          backgroundColor: backgroundColor ?? theme.colors.canvas,
+          height: geometry.mediaHeight - 2 * geometry.bleedInset,
+          left: geometry.bleedInset,
+          position: "absolute",
+          top: geometry.bleedInset,
+          width: geometry.mediaWidth - 2 * geometry.bleedInset,
+        }}
+      />
+      {showCropMarks ? (
+        <CropMarks
+          mediaHeight={geometry.mediaHeight}
+          mediaWidth={geometry.mediaWidth}
+          stroke={theme.colors.text}
+          trimInset={geometry.trimInset}
+        />
+      ) : null}
       <FrameContext.Provider value={{ frame, theme }}>
         <View
           wrap={false}
           style={{
             height: frame.height,
-            left: frame.x,
+            left: geometry.trimInset + frame.x,
             position: "absolute",
-            top: frame.y,
+            top: geometry.trimInset + frame.y,
             width: frame.width,
           }}
         >
@@ -73,7 +150,7 @@ export function PageFrame({
 export interface TextProps {
   children: string;
   size?: TextSize;
-  tone?: "default" | "muted";
+  tone?: "default" | "inverted" | "muted";
 }
 
 export function Text({ children, size = "body", tone = "default" }: TextProps) {
@@ -81,7 +158,12 @@ export function Text({ children, size = "body", tone = "default" }: TextProps) {
   return (
     <ReactPdfText
       style={{
-        color: tone === "muted" ? theme.colors.mutedText : theme.colors.text,
+        color:
+          tone === "muted"
+            ? theme.colors.mutedText
+            : tone === "inverted"
+              ? theme.colors.invertedText
+              : theme.colors.text,
         fontFamily: theme.fonts.body,
         fontSize: theme.typeScale[size],
         fontWeight: theme.fonts.regularWeight,
@@ -96,14 +178,20 @@ export function Text({ children, size = "body", tone = "default" }: TextProps) {
 export interface HeadingProps {
   children: string;
   level?: "display" | "heading";
+  tone?: "default" | "inverted";
 }
 
-export function Heading({ children, level = "heading" }: HeadingProps) {
+export function Heading({
+  children,
+  level = "heading",
+  tone = "default",
+}: HeadingProps) {
   const { theme } = useFrame();
   return (
     <ReactPdfText
       style={{
-        color: theme.colors.text,
+        color:
+          tone === "inverted" ? theme.colors.invertedText : theme.colors.text,
         fontFamily: theme.fonts.heading,
         fontSize: theme.typeScale[level],
         fontWeight: theme.fonts.strongWeight,

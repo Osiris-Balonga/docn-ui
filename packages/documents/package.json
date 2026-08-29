@@ -10,6 +10,7 @@
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
     "./node": "./src/render/node.ts",
     "./primitives": "./src/primitives/index.tsx",
+    "./templates/business-cards": "./src/templates/business-cards/index.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {

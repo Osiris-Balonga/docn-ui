@@ -1,6 +1,6 @@
 # Target architecture
 
-Status: target architecture with the L02 PDF feasibility gate and L04 document foundations implemented. The two workspaces, static site, shadcn primitives, validated render contracts, physical formats, PDF-only themes, controlled local fonts, fixed-page PDF primitives, Node/browser adapters, versioned worker protocol, exact-byte PDF.js preview, print boxes, pagination, and measured roll height exist. Catalog, registry, public templates, and editor modules below are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
+Status: target architecture with the L02 PDF feasibility gate and L04 document foundations implemented. The two workspaces, static site, shadcn primitives, validated render contracts, physical formats, PDF-only themes, controlled local fonts, fixed-page PDF primitives, Node/browser adapters, versioned worker protocol, exact-byte PDF.js preview, print boxes, pagination, measured roll height, and the first typed two-sided business-card template exist. The remaining card compositions, editor, catalog, and registry are still planned. Detailed decisions are in the [ADRs](adr/0001-stack.md).
 
 ## Stack selected for the plan
 
