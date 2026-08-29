@@ -1,6 +1,6 @@
 # L02 — Technical qualification of the PDF pipeline
 
-Initial status: **in progress**. Branch: `feat/pdf-rendering-spike`.
+Status: **verified locally and in review through PR #22**. Branch: `feat/pdf-rendering-spike`.
 
 Dependencies: L01. Requirements: FR-03, FR-04; NFR-03, NFR-04, NFR-05, NFR-06; G1.
 

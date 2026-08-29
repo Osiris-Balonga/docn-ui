@@ -50,6 +50,10 @@
           {
             "context": "build",
             "integration_id": 15368
+          },
+          {
+            "context": "pdf-tests",
+            "integration_id": 15368
           }
         ]
       }
