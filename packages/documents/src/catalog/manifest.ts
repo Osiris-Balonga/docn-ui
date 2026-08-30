@@ -4,6 +4,9 @@ import { businessCardStudioMetadata } from "../templates/business-cards/business
 import { eventTicketClassicMetadata } from "../templates/event-tickets/event-ticket-classic/metadata";
 import { eventTicketConferenceMetadata } from "../templates/event-tickets/event-ticket-conference/metadata";
 import { eventTicketLiveMetadata } from "../templates/event-tickets/event-ticket-live/metadata";
+import { labelAddressMetadata } from "../templates/labels/label-address/metadata";
+import { labelInventoryMetadata } from "../templates/labels/label-inventory/metadata";
+import { labelProductMetadata } from "../templates/labels/label-product/metadata";
 import { receiptHospitalityMetadata } from "../templates/receipts/receipt-hospitality/metadata";
 import { receiptRetailMetadata } from "../templates/receipts/receipt-retail/metadata";
 import { receiptServiceMetadata } from "../templates/receipts/receipt-service/metadata";
@@ -24,8 +27,8 @@ export interface TemplateCatalogEntry {
     qr: boolean;
   };
   description: string;
-  family: "business-card" | "receipt" | "ticket";
-  familyLabel: "Business cards" | "Event tickets" | "Receipts";
+  family: "business-card" | "label" | "receipt" | "ticket";
+  familyLabel: "Business cards" | "Event tickets" | "Labels" | "Receipts";
   id: string;
   sides: number;
   slug: string;
@@ -44,6 +47,9 @@ type CatalogMetadata =
   | typeof eventTicketClassicMetadata
   | typeof eventTicketConferenceMetadata
   | typeof eventTicketLiveMetadata
+  | typeof labelAddressMetadata
+  | typeof labelInventoryMetadata
+  | typeof labelProductMetadata
   | typeof receiptHospitalityMetadata
   | typeof receiptRetailMetadata
   | typeof receiptServiceMetadata;
@@ -142,6 +148,30 @@ export const templateCatalog = [
     sha256: "04835e5ac2e8ae93ffec7b0544187e3198172d276b21a61d0d84b1ce7475da13",
     src: "/generated/catalog/receipt-service.png",
     width: 378,
+  }),
+  catalogEntry(labelProductMetadata, "Labels", {
+    fixture: "productLabelExample",
+    height: 210,
+    page: 1,
+    sha256: "7999202d0ec0a90352b3c9e629241bcfe871f1e3282291611280e0598602516f",
+    src: "/generated/catalog/label-product.png",
+    width: 397,
+  }),
+  catalogEntry(labelAddressMetadata, "Labels", {
+    fixture: "addressLabelExample",
+    height: 284,
+    page: 1,
+    sha256: "ca5f89159d17b3856f14117ef4afbe6cec48506676ef321ccb8ecac4ddabc3a3",
+    src: "/generated/catalog/label-address.png",
+    width: 567,
+  }),
+  catalogEntry(labelInventoryMetadata, "Labels", {
+    fixture: "inventoryLabelExample",
+    height: 284,
+    page: 1,
+    sha256: "a0f7be5a3fb56b0fa50b31f62670975a0a652f419c36ecca3ea00dc72e24162d",
+    src: "/generated/catalog/label-inventory.png",
+    width: 567,
   }),
 ] as const satisfies readonly TemplateCatalogEntry[];
 
