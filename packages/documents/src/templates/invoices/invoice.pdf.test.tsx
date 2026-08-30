@@ -288,4 +288,42 @@ describe("invoice pagination foundation", () => {
     expect(text).toContain("SUMMARY-END");
     expect(pages.at(-1)).toContain("SUMMARY-END");
   });
+
+  it("keeps a long real invoice continuous through its final total", async () => {
+    const longLabel =
+      "Accessibility review and production-ready implementation guidance for the multilingual account statement component";
+    const data = {
+      ...businessInvoiceExample,
+      number: "KA-LONG-2026-204",
+      lines: Array.from({ length: 72 }, (_, index) => ({
+        id: `workstream-${index + 1}`,
+        label:
+          index === 35
+            ? longLabel
+            : `Qualified workstream ${String(index + 1).padStart(3, "0")}`,
+        quantity: 1,
+        unitPriceMinor: 10_000,
+        taxRateBasisPoints: 2_000,
+      })),
+    } satisfies InvoiceData;
+    const plan = createInvoiceBusinessPlan(
+      templateRequest(data, "invoice-business", "a4", "neutral"),
+    ).plan;
+    const bytes = await renderDocumentInNode(plan);
+    const pages = await extractPages(bytes);
+
+    expect(pages.length).toBeGreaterThan(1);
+    for (const page of pages) {
+      expect(page).toContain("DESCRIPTION");
+      expect(page).toContain(data.number);
+      expect(page.trim()).not.toBe("");
+    }
+    const text = pages.join(" ");
+    expect(text).toContain("Qualified workstream 001");
+    expect(text).toContain("Qualified workstream 072");
+    expect(text).toContain(longLabel);
+    expect(pages.at(-1)).toContain("8,640.00 USD");
+    expect(pages.at(-1)).toContain("Payment due within 15 days");
+    await retainPdf("invoice-business-multipage", bytes);
+  });
 });
