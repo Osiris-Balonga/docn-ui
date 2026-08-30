@@ -101,32 +101,20 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
   );
 }
 
-function TemplateSpecimen({
-  featured,
-  template,
-}: {
-  featured: boolean;
-  template: TemplateCatalogEntry;
-}) {
+function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
   return (
-    <article className={cn("min-w-0", featured && "lg:col-span-2")}>
+    <article className="min-w-0">
       <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
         <h3 className="truncate text-sm font-medium">{template.title}</h3>
         <TemplateActions template={template} />
       </div>
-      <div
-        className={cn(
-          "flex items-center justify-center overflow-hidden rounded-xl bg-muted/35 p-6 sm:p-10",
-          featured ? "h-80 sm:h-112" : "h-80 sm:h-96",
-        )}
-      >
+      <div className="flex h-72 items-center justify-center overflow-hidden rounded-xl bg-muted/35 p-5 sm:h-80 sm:p-7">
         <Image
           src={template.thumbnail.src}
           alt={`${template.title} PDF preview`}
           width={template.thumbnail.width}
           height={template.thumbnail.height}
           className="max-h-full w-auto max-w-full object-contain shadow-lg ring-1 ring-foreground/10"
-          priority={featured}
         />
       </div>
     </article>
@@ -155,7 +143,7 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
     <>
       <nav
         aria-label="Template families"
-        className="mt-14 overflow-x-auto border-b sm:mt-20"
+        className="scrollbar-hidden mt-14 overflow-x-auto sm:mt-20"
       >
         <ul className="flex min-w-max items-center gap-5" role="tablist">
           {templateFamilies.map((family) => (
@@ -167,9 +155,9 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
                 aria-selected={activeFamily === family.id}
                 onClick={() => setActiveFamily(family.id)}
                 className={cn(
-                  "relative flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
+                  "flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
                   activeFamily === family.id
-                    ? "text-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-foreground"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -186,13 +174,9 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
         className="scroll-mt-28 pt-4"
       >
         <h2 className="sr-only">{familyLabel} templates</h2>
-        <div className="grid gap-x-6 gap-y-10 lg:grid-cols-2">
-          {activeTemplates.map((template, index) => (
-            <TemplateSpecimen
-              key={template.id}
-              template={template}
-              featured={index === 0}
-            />
+        <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+          {activeTemplates.map((template) => (
+            <TemplateSpecimen key={template.id} template={template} />
           ))}
         </div>
       </section>

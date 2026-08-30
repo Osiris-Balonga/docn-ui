@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { CodeViewport } from "@/components/code-viewport";
 import { cn } from "@/lib/utils";
 import { DocsBreadcrumbs } from "./docs-breadcrumbs";
 
@@ -58,9 +59,9 @@ export function CodeBlock({
       <div className="border-b bg-muted/50 px-4 py-2 font-mono text-xs text-muted-foreground">
         {label}
       </div>
-      <pre className="overflow-x-auto p-4 text-sm leading-6" tabIndex={0}>
+      <CodeViewport>
         <code>{children}</code>
-      </pre>
+      </CodeViewport>
     </div>
   );
 }
