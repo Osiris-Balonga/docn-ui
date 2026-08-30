@@ -523,56 +523,58 @@
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVi0",
       "pullRequest": {
         "number": 30,
-        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/30"
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/30",
+        "mergeCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
+        "mergedAt": "2026-08-30T17:23:07Z"
       },
       "initialized": true,
       "verification": {
-        "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c",
+        "headSha": "8c5558270137bfa772ccee95936a2971bf44369f",
         "checks": [
           {
             "name": "branch-policy",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324503863/job/99292145838",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324657839/job/99292552584",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "quality",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164154",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292557924",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "unit-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164201",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292557937",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "pdf-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164181",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292557837",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "consumer-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164012",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292557966",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "build",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164189",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292557946",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           },
           {
             "name": "e2e-chromium",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292285809",
-            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324659656/job/99292655969",
+            "headSha": "8c5558270137bfa772ccee95936a2971bf44369f"
           }
         ],
-        "verifiedAt": "2026-08-30T17:12:39Z"
+        "verifiedAt": "2026-08-30T17:22:21Z"
       }
     },
     "L11": {
