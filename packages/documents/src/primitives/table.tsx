@@ -1,9 +1,4 @@
-import {
-  Text,
-  View,
-  type TextProps,
-  type ViewProps,
-} from "@react-pdf/renderer";
+import { Text, View, type TextProps } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 
 export interface FlowTableColumn {
@@ -100,7 +95,7 @@ export function FlowTableCell({
   align?: "left" | "right";
   children: ReactNode;
   style?: TextProps["style"];
-  width: ViewProps["style"] extends infer _ ? number | string : never;
+  width: number | string;
 }) {
   return (
     <Text
