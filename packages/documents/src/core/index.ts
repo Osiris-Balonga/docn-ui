@@ -24,6 +24,16 @@ export {
 } from "./errors";
 export { fingerprintRenderRequest } from "./fingerprint";
 export {
+  CURRENCIES,
+  calculateMonetaryDocument,
+  calculateMonetaryLine,
+  formatMinorAmount,
+  type CurrencyCode,
+  type MonetaryDocumentTotals,
+  type MonetaryLineInput,
+  type MonetaryLineTotals,
+} from "./money";
+export {
   FORMAT_IDS,
   formats,
   resolveFormat,

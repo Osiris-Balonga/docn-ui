@@ -33,6 +33,8 @@
     "./templates/event-tickets/live/metadata": "./src/templates/event-tickets/event-ticket-live/metadata.ts",
     "./templates/event-tickets/metadata": "./src/templates/event-tickets/metadata.ts",
     "./templates/event-tickets/schema": "./src/templates/event-tickets/schema.ts",
+    "./templates/receipts": "./src/templates/receipts/index.ts",
+    "./templates/receipts/schema": "./src/templates/receipts/schema.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {
