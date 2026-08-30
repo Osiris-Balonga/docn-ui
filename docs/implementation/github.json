@@ -389,8 +389,8 @@
       "pullRequest": {
         "number": 27,
         "url": "https://github.com/Osiris-Balonga/docn-ui/pull/27",
-        "mergeCommit": null,
-        "mergedAt": null
+        "mergeCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
+        "mergedAt": "2026-08-30T14:51:33Z"
       },
       "initialized": true
     },

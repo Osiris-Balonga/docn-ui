@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L07",
+  "currentLot": "L08",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -178,7 +178,7 @@
     {
       "id": "L07",
       "file": "lots/L07-registry.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L06"],
       "branch": "feat/shadcn-pdf-registry",
       "baseCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
@@ -196,17 +196,19 @@
         "73efffd1c1693c637db23d518a72ef096536ede1"
       ],
       "evidence": "../qa/L07.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
+      "mergedAt": "2026-08-30T14:51:33Z"
     },
     {
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
-      "baseCommit": null,
+      "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L08.md",
       "blocker": null
     },
     {
