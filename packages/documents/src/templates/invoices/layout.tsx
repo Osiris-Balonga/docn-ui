@@ -35,7 +35,7 @@ function PartyBlock({
     <View style={{ flex: 1, gap: 2 }}>
       <Text
         style={{
-          color: strong ? "#ffffff" : "#67707c",
+          color: strong ? "#ffffff" : "#666666",
           fontSize: 6.5,
           fontWeight: 700,
           lineHeight: 1.2,
@@ -89,9 +89,9 @@ export function InvoiceDocument({
   const studio = variant === "studio";
   const business = variant === "business";
   const accent = theme.colors.accent;
-  const dark = business ? "#182230" : studio ? accent : theme.colors.text;
-  const border = business ? "#c8ced6" : studio ? "#bdc7d5" : "#d8d8d8";
-  const mutedSurface = business ? "#eef1f4" : studio ? "#f1f4f8" : "#ffffff";
+  const dark = business ? "#171717" : studio ? accent : theme.colors.text;
+  const border = business ? "#cfcfcf" : studio ? "#c7c7c7" : "#d8d8d8";
+  const mutedSurface = business ? "#f2f2f2" : studio ? "#f4f4f4" : "#ffffff";
   const labels =
     props.locale === "fr"
       ? {
@@ -144,7 +144,7 @@ export function InvoiceDocument({
       <Page
         size={[geometry.mediaWidth, geometry.mediaHeight]}
         style={{
-          backgroundColor: studio ? "#f7f8fa" : "#ffffff",
+          backgroundColor: studio ? theme.colors.canvas : "#ffffff",
           color: theme.colors.text,
           fontFamily: theme.fonts.body,
           fontSize: 8,

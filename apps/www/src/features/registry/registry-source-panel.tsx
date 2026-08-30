@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { Check, Copy, Files, Terminal } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  FileCode2,
+  Files,
+  Folder,
+  Terminal,
+} from "lucide-react";
 import { CodeViewport } from "@/components/code-viewport";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,8 +21,8 @@ import {
 } from "@/components/ui/select";
 import {
   copyText,
-  loadRegistryPrimarySource,
   loadRegistrySourceClosure,
+  loadRegistryTemplatePreview,
   tokenizeSource,
   type RegistrySourceFile,
   type SourceTokenKind,
@@ -97,6 +105,84 @@ function sourceTypeLabel(target: string) {
   return "<>";
 }
 
+interface SourceTreeNode {
+  children: Map<string, SourceTreeNode>;
+  file?: RegistrySourceFile;
+  name: string;
+}
+
+function buildSourceTree(files: RegistrySourceFile[]) {
+  const root: SourceTreeNode = { children: new Map(), name: "Files" };
+  for (const file of files) {
+    const path = file.target
+      .replace(/^~\/docn\//, "")
+      .replace(/^templates\//, "");
+    const segments = path.split("/");
+    let parent = root;
+    segments.forEach((segment, index) => {
+      const child: SourceTreeNode = parent.children.get(segment) ?? {
+        children: new Map(),
+        name: segment,
+      };
+      if (index === segments.length - 1) child.file = file;
+      parent.children.set(segment, child);
+      parent = child;
+    });
+  }
+  return root;
+}
+
+function SourceTree({
+  node,
+  onSelect,
+  selectedTarget,
+  level = 0,
+}: {
+  node: SourceTreeNode;
+  onSelect: (target: string) => void;
+  selectedTarget: string;
+  level?: number;
+}) {
+  return Array.from(node.children.values()).map((child) =>
+    child.file ? (
+      <button
+        key={child.file.target}
+        type="button"
+        onClick={() => onSelect(child.file!.target)}
+        aria-current={selectedTarget === child.file.target ? "true" : undefined}
+        className={cn(
+          "flex h-8 w-full min-w-0 items-center gap-2 rounded-md pr-2 text-left text-xs outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/50",
+          selectedTarget === child.file.target && "bg-muted text-foreground",
+        )}
+        style={{ paddingLeft: `${8 + level * 14}px` }}
+      >
+        <FileCode2
+          aria-hidden="true"
+          className="size-3.5 shrink-0 text-muted-foreground"
+        />
+        <span className="truncate">{child.name}</span>
+      </button>
+    ) : (
+      <div key={`${level}-${child.name}`}>
+        <div
+          className="flex h-8 min-w-0 items-center gap-1.5 pr-2 text-xs font-medium text-muted-foreground"
+          style={{ paddingLeft: `${6 + level * 14}px` }}
+        >
+          <ChevronDown aria-hidden="true" className="size-3 shrink-0" />
+          <Folder aria-hidden="true" className="size-3.5 shrink-0" />
+          <span className="truncate">{child.name}</span>
+        </div>
+        <SourceTree
+          node={child}
+          onSelect={onSelect}
+          selectedTarget={selectedTarget}
+          level={level + 1}
+        />
+      </div>
+    ),
+  );
+}
+
 function CommandBlock({ command, label }: { command: string; label: string }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-lg border bg-muted/35">
@@ -137,9 +223,7 @@ export function RegistrySourcePanel({
     let active = true;
     const itemUrl = `/r/dev/${itemName}.json`;
     const sourceRequest = drawer
-      ? loadRegistryPrimarySource({ itemUrl, origin: currentOrigin }).then(
-          (file) => ({ files: [file], itemCount: 1 }),
-        )
+      ? loadRegistryTemplatePreview({ itemUrl, origin: currentOrigin })
       : loadRegistrySourceClosure({ itemUrl, origin: currentOrigin });
     sourceRequest
       .then((result) => {
@@ -261,27 +345,47 @@ export function RegistrySourcePanel({
             <p className="mt-1 text-sm text-muted-foreground">{error}</p>
           </div>
         ) : selectedFile ? (
-          <div className={cn(drawer && "flex min-h-0 flex-1 flex-col")}>
-            {drawer ? null : (
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/25 px-4 py-2 text-xs text-muted-foreground">
-                <span>{selectedFile.owner}</span>
-                <span>{selectedFile.path}</span>
-              </div>
+          <div
+            className={cn(
+              drawer &&
+                "grid min-h-0 flex-1 md:grid-cols-[14rem_minmax(0,1fr)]",
             )}
-            <CodeViewport
-              className={cn(drawer ? "min-h-0 flex-1" : "max-h-[42rem]")}
-            >
-              <code aria-label={`${selectedFile.target} source`}>
-                {highlighted.map((token, index) => (
-                  <span
-                    className={tokenClasses[token.kind]}
-                    key={`${index}-${token.value.slice(0, 8)}`}
-                  >
-                    {token.value}
-                  </span>
-                ))}
-              </code>
-            </CodeViewport>
+          >
+            {drawer ? (
+              <aside
+                className="scrollbar-hidden max-h-40 overflow-auto border-b bg-muted/10 p-2 md:max-h-none md:border-r md:border-b-0"
+                aria-label="Template files"
+              >
+                <p className="px-2 pb-2 text-xs font-medium">Files</p>
+                <SourceTree
+                  node={buildSourceTree(files)}
+                  onSelect={setSelectedTarget}
+                  selectedTarget={selectedFile.target}
+                />
+              </aside>
+            ) : null}
+            <div className={cn(drawer && "flex min-h-0 min-w-0 flex-col")}>
+              {drawer ? null : (
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/25 px-4 py-2 text-xs text-muted-foreground">
+                  <span>{selectedFile.owner}</span>
+                  <span>{selectedFile.path}</span>
+                </div>
+              )}
+              <CodeViewport
+                className={cn(drawer ? "min-h-0 flex-1" : "max-h-[42rem]")}
+              >
+                <code aria-label={`${selectedFile.target} source`}>
+                  {highlighted.map((token, index) => (
+                    <span
+                      className={tokenClasses[token.kind]}
+                      key={`${index}-${token.value.slice(0, 8)}`}
+                    >
+                      {token.value}
+                    </span>
+                  ))}
+                </code>
+              </CodeViewport>
+            </div>
           </div>
         ) : (
           <div className="p-8 text-sm text-muted-foreground">

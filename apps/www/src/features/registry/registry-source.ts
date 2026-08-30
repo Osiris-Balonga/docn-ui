@@ -110,6 +110,71 @@ export async function loadRegistryPrimarySource({
   return { ...file, owner: item.name } satisfies RegistrySourceFile;
 }
 
+function isPreviewableTemplateFile(file: RegistrySourceFile) {
+  return (
+    !file.target.endsWith("/index.ts") &&
+    !file.target.endsWith("/metadata.ts") &&
+    /\/(?:examples|layout|plan|schema|[^/]+)\.tsx?$/.test(file.target)
+  );
+}
+
+function previewFileOrder(file: RegistrySourceFile) {
+  if (file.type === "registry:component") return 0;
+  if (file.target.endsWith("/layout.tsx")) return 1;
+  if (file.target.endsWith("/schema.ts")) return 2;
+  if (file.target.endsWith("/examples.ts")) return 3;
+  if (file.target.endsWith("/plan.ts")) return 4;
+  return 5;
+}
+
+/**
+ * Loads only the template block and its direct family foundation. This keeps
+ * the source drawer useful without turning it into a repository browser or
+ * exposing transitive primitives as navigable files.
+ */
+export async function loadRegistryTemplatePreview({
+  fetchImpl = globalThis.fetch,
+  itemUrl,
+  origin,
+}: {
+  fetchImpl?: typeof fetch;
+  itemUrl: string;
+  origin: string;
+}) {
+  const response = await fetchImpl(localRegistryUrl(itemUrl, origin));
+  if (!response.ok)
+    throw new Error(`Registry source returned HTTP ${response.status}.`);
+  const item = parseRegistryItem(await response.json());
+  const files = item.files.map((file) => ({ ...file, owner: item.name }));
+  const foundationDependency = item.registryDependencies.find((dependency) =>
+    /-foundation(?:\.json)?$/.test(new URL(dependency, origin).pathname),
+  );
+
+  if (foundationDependency) {
+    const foundationResponse = await fetchImpl(
+      localRegistryUrl(foundationDependency, origin),
+    );
+    if (!foundationResponse.ok)
+      throw new Error(
+        `Registry source returned HTTP ${foundationResponse.status}.`,
+      );
+    const foundation = parseRegistryItem(await foundationResponse.json());
+    files.push(
+      ...foundation.files.map((file) => ({
+        ...file,
+        owner: foundation.name,
+      })),
+    );
+  }
+
+  const previewFiles = files
+    .filter(isPreviewableTemplateFile)
+    .sort((left, right) => previewFileOrder(left) - previewFileOrder(right));
+  if (previewFiles.length === 0)
+    throw new Error("The registry item contains no previewable source files.");
+  return { files: previewFiles, itemCount: foundationDependency ? 2 : 1 };
+}
+
 export type SourceTokenKind =
   "comment" | "keyword" | "number" | "plain" | "string";
 

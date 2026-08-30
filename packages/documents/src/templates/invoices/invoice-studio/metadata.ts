@@ -5,9 +5,10 @@ export const invoiceStudioMetadata = {
   version: "1.0.0",
   schemaVersion: 1,
   family: "invoice",
-  title: "Studio invoice",
-  description: "An accent-led invoice with project and total hierarchy.",
-  tags: ["invoice", "studio", "creative"],
+  title: "Subscription invoice",
+  description:
+    "A SaaS-style invoice with billing period, usage, and payment references.",
+  tags: ["invoice", "subscription", "saas"],
   supportedFormatIds: ["a4", "letter"],
   supportedThemeIds: THEME_IDS,
   sides: 1,

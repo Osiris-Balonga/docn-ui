@@ -232,9 +232,10 @@ describe("invoice pagination foundation", () => {
       {
         artifact: "invoice-studio-a4",
         expected: [
+          "Northstar Cloud",
           "Common Form Studio",
-          "CFS-2608-17",
-          "Print-ready production",
+          "NSC-2026-0830",
+          "Northstar Pro workspace",
         ],
         plan: createInvoiceStudioPlan(
           templateRequest(studioInvoiceExample, "invoice-studio", "a4", "bold"),

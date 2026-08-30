@@ -16,7 +16,7 @@ Implementation status on 2026-08-30: all fifteen IDs below have metadata, a nomi
 | `event-ticket-live` | Ticket | Expressive title, prominent date, dedicated QR/access area |
 | `receipt-retail` | Receipt | Merchant, compact lines, taxes, total, payment |
 | `receipt-hospitality` | Receipt | Optional table/order, readable groups, service footer |
-| `receipt-service` | Receipt | Provider/customer, service description, compact summary |
+| `receipt-service` | Receipt | SaaS subscription, customer, billing period, payment summary |
 | `label-product` | Label | Product name, reference, short information, optional QR |
 | `label-address` | Label | Prominent recipient/address, optional sender marker |
 | `label-inventory` | Label | Prominent identifier, location and QR in a second area |

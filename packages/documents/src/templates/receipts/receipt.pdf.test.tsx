@@ -114,7 +114,7 @@ describe("thermal receipt compositions", () => {
             "bold",
           ),
         ).plan,
-        text: ["Atelier Nzela", "Common Form Studio", "Paid in full"],
+        text: ["Northstar Cloud", "Common Form Studio", "Payment received"],
         width: 226.771_653_543_3,
       },
     ];

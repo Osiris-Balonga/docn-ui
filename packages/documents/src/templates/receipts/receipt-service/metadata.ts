@@ -5,10 +5,10 @@ export const receiptServiceMetadata = {
   version: "1.0.0",
   schemaVersion: 1,
   family: "receipt",
-  title: "Service receipt",
+  title: "Subscription receipt",
   description:
-    "A provider-and-customer service receipt with a compact summary.",
-  tags: ["service", "customer", "thermal"],
+    "A SaaS-style subscription receipt with customer and billing context.",
+  tags: ["subscription", "saas", "thermal"],
   supportedFormatIds: ["receipt-58", "receipt-80"],
   supportedThemeIds: THEME_IDS,
   sides: 1,

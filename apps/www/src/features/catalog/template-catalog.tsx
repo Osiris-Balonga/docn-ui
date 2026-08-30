@@ -10,6 +10,14 @@ import {
 } from "@docn-ui/documents/catalog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -89,7 +97,7 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
           <SheetHeader className="sr-only">
             <SheetTitle>{template.title} code</SheetTitle>
             <SheetDescription>
-              Browse and copy the complete registry source for this template.
+              Browse the template files and its direct family foundation.
             </SheetDescription>
           </SheetHeader>
           <div className="min-h-0 flex-1 p-3 pt-13">
@@ -111,15 +119,45 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
         <h3 className="truncate text-sm font-medium">{template.title}</h3>
         <TemplateActions template={template} />
       </div>
-      <div className="flex h-72 items-center justify-center overflow-hidden rounded-xl bg-muted/35 p-5 sm:h-80 sm:p-7">
-        <Image
-          src={template.thumbnail.src}
-          alt={`${template.title} PDF preview`}
-          width={template.thumbnail.width}
-          height={template.thumbnail.height}
-          className="max-h-full w-auto max-w-full object-contain shadow-lg ring-1 ring-foreground/10"
-        />
-      </div>
+      <Dialog>
+        <DialogTrigger
+          render={
+            <button
+              type="button"
+              className="group relative flex h-72 w-full items-center justify-center overflow-hidden rounded-xl bg-muted/35 p-5 outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:h-80 sm:p-7"
+              aria-label={`Enlarge ${template.title} preview`}
+            />
+          }
+        >
+          <Image
+            src={template.thumbnail.src}
+            alt={`${template.title} PDF preview`}
+            width={template.thumbnail.width}
+            height={template.thumbnail.height}
+            className="max-h-full w-auto max-w-full object-contain shadow-lg ring-1 ring-foreground/10 transition-transform duration-200 ease-out group-hover:scale-[1.015] motion-reduce:transition-none"
+          />
+          <span className="absolute right-3 bottom-3 rounded-md bg-background/95 px-2.5 py-1.5 text-xs font-medium text-foreground opacity-0 ring-1 ring-foreground/10 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none">
+            Open preview
+          </span>
+        </DialogTrigger>
+        <DialogContent className="flex h-[min(92svh,62rem)] max-w-[min(94vw,72rem)]! grid-rows-[auto_minmax(0,1fr)] gap-3 bg-background p-3 sm:p-4">
+          <DialogHeader className="pr-12">
+            <DialogTitle>{template.title}</DialogTitle>
+            <DialogDescription>
+              Enlarged preview of the generated PDF.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex min-h-0 items-center justify-center overflow-hidden rounded-lg bg-muted/35 p-3 sm:p-6">
+            <Image
+              src={template.thumbnail.src}
+              alt={`Enlarged ${template.title} PDF preview`}
+              width={template.thumbnail.width}
+              height={template.thumbnail.height}
+              className="max-h-full w-auto max-w-full object-contain shadow-lg ring-1 ring-foreground/10"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </article>
   );
 }

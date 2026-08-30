@@ -197,9 +197,8 @@ export const registrySourceManifest = {
     {
       name: "docn-receipt-service",
       type: "registry:block",
-      title: "Service receipt",
-      description:
-        "A measured provider receipt with customer and summary fields.",
+      title: "Subscription receipt",
+      description: "A measured SaaS receipt with customer and billing context.",
       dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
       registryDependencies: ["docn-receipt-foundation"],
       files: [
@@ -343,8 +342,9 @@ export const registrySourceManifest = {
     {
       name: "docn-invoice-studio",
       type: "registry:block",
-      title: "Studio invoice",
-      description: "An accent-led invoice with project and total hierarchy.",
+      title: "Subscription invoice",
+      description:
+        "A SaaS-style invoice with billing period and payment references.",
       dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
       registryDependencies: ["docn-invoice-foundation"],
       files: [
