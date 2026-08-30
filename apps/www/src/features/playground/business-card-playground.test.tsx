@@ -92,7 +92,12 @@ describe("BusinessCardPlayground", () => {
     await user.click(
       screen.getByRole("option", { name: "Print · bleed and crop marks" }),
     );
-    await waitFor(() => expect(requests.length).toBeGreaterThanOrEqual(3));
+    await waitFor(() =>
+      expect(requests.at(-1)?.request).toMatchObject({
+        overrides: { accentColor: "#0f766e" },
+        printProfile: { kind: "print" },
+      }),
+    );
     const latest = requests.at(-1)?.request;
     expect(latest?.overrides).toEqual({ accentColor: "#0f766e" });
     expect(latest?.printProfile).toEqual({

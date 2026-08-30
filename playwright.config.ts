@@ -2,6 +2,10 @@ import { defineConfig, devices } from "@playwright/test";
 
 const port = 4174;
 const baseURL = `http://127.0.0.1:${port}`;
+const usePreparedBuild = process.env.E2E_USE_BUILD === "1";
+const serverCommand = usePreparedBuild
+  ? "node tooling/testing/build-fingerprint.mjs verify && node node_modules/http-server/bin/http-server apps/www/out -a 127.0.0.1 -p 4174 -c-1"
+  : "corepack pnpm --filter @docn-ui/www build && node tooling/testing/build-fingerprint.mjs write && node node_modules/http-server/bin/http-server apps/www/out -a 127.0.0.1 -p 4174 -c-1";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -18,8 +22,7 @@ export default defineConfig({
     video: "off",
   },
   webServer: {
-    command:
-      "corepack pnpm --filter @docn-ui/www build && node node_modules/http-server/bin/http-server apps/www/out -a 127.0.0.1 -p 4174 -c-1",
+    command: serverCommand,
     url: `${baseURL}/templates/business-card-minimal/`,
     reuseExistingServer: false,
     timeout: 120_000,

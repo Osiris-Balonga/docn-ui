@@ -49,9 +49,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S04 — `test(playground): verify export privacy and stale-result protection`
 
-- [ ] Extend card E2E to verify the latest revision export and no requests containing data/images.
-- [ ] Targeted negative test for user asset URLs; memory-only data.
-- [ ] Activate e2e-chromium and its artifacts without rerunning all lightweight suites; document real/mock boundaries.
+- [x] Extend card E2E to verify the latest revision export and no requests containing data/images.
+- [x] Targeted negative test for user asset URLs; memory-only data.
+- [x] Activate e2e-chromium and its artifacts without rerunning all lightweight suites; document real/mock boundaries.
 
 **Acceptance:** The nominal journey uses actual workers and PDFs; entered data is never transmitted to the site or a third party.
 

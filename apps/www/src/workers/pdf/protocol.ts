@@ -151,8 +151,11 @@ function parseUserAssets(
     return undefined;
   const assets: PdfUserAsset[] = [];
   const ids = new Set<string>();
+  const allowedKeys = new Set(["bytes", "height", "id", "mimeType", "width"]);
   for (const candidate of value) {
     if (!candidate || typeof candidate !== "object") return undefined;
+    if (Object.keys(candidate).some((key) => !allowedKeys.has(key)))
+      return undefined;
     const asset = candidate as Partial<PdfUserAsset>;
     if (
       typeof asset.id !== "string" ||
