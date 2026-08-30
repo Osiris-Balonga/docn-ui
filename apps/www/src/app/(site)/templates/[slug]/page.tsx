@@ -6,6 +6,7 @@ import {
 } from "@docn-ui/documents/catalog";
 import type { BusinessCardTemplateId } from "@docn-ui/documents/templates/business-cards/metadata";
 import { BusinessCardPlayground } from "@/features/playground/business-card-playground";
+import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 
 export const dynamicParams = false;
 
@@ -37,9 +38,12 @@ export default async function TemplatePage({
   if (!template) notFound();
 
   return (
-    <BusinessCardPlayground
-      key={template.id}
-      templateId={template.id as BusinessCardTemplateId}
-    />
+    <>
+      <BusinessCardPlayground
+        key={template.id}
+        templateId={template.id as BusinessCardTemplateId}
+      />
+      <RegistrySourcePanel itemName={`docn-${template.id}`} />
+    </>
   );
 }

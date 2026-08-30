@@ -39,9 +39,9 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S03 — `feat(code): expose complete source and installation instructions`
 
-- [ ] Display the file list, highlighted code, and copy action from the same sources; fallback when the clipboard is unavailable.
-- [ ] Actual command targeting the configured origin/version; local in development, public URL only after a decision.
-- [ ] Document shadcn prerequisites, dependencies, assets, customization, and updates without automatic overwrite.
+- [x] Display the file list, highlighted code, and copy action from the same sources; fallback when the clipboard is unavailable.
+- [x] Actual command targeting the configured origin/version; local in development, public URL only after a decision.
+- [x] Document shadcn prerequisites, dependencies, assets, customization, and updates without automatic overwrite.
 
 **Acceptance:** Users access complete source, not only page JSX; the local command is executable.
 
