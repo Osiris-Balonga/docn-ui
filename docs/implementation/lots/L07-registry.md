@@ -49,10 +49,10 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S04 — `test(registry): install and render templates in isolated consumers`
 
-- [ ] Activate test:consumers; run two temporary projects outside the workspace with the actual pinned CLI.
-- [ ] Install a card and its dependency closure; run browser and Node rendering with local assets, then verify content/dimensions.
-- [ ] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
-- [ ] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
+- [x] Activate test:consumers; run two temporary projects outside the workspace with the actual pinned CLI.
+- [x] Install a card and its dependency closure; run browser and Node rendering with local assets, then verify content/dimensions.
+- [x] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
+- [x] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
 
 **Acceptance:** G3: no hidden access to monorepo node_modules/aliases or the docn-ui domain after installation.
 
