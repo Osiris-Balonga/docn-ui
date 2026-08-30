@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 import { DocsBreadcrumbs } from "./docs-breadcrumbs";
 
 type DocsArticleProps = {
@@ -7,6 +8,7 @@ type DocsArticleProps = {
   breadcrumb?: string;
   rootHref?: string;
   rootTitle?: string;
+  hideBreadcrumb?: boolean;
   children: ReactNode;
 };
 
@@ -16,16 +18,24 @@ export function DocsArticle({
   breadcrumb,
   rootHref,
   rootTitle,
+  hideBreadcrumb = false,
   children,
 }: DocsArticleProps) {
   return (
     <article className="mx-auto max-w-[40rem]">
-      <DocsBreadcrumbs
-        {...(breadcrumb ? { current: breadcrumb } : {})}
-        {...(rootHref ? { rootHref } : {})}
-        {...(rootTitle ? { rootTitle } : {})}
-      />
-      <h1 className="mt-4 scroll-m-20 text-3xl font-semibold tracking-tight text-balance">
+      {hideBreadcrumb ? null : (
+        <DocsBreadcrumbs
+          {...(breadcrumb ? { current: breadcrumb } : {})}
+          {...(rootHref ? { rootHref } : {})}
+          {...(rootTitle ? { rootTitle } : {})}
+        />
+      )}
+      <h1
+        className={cn(
+          "scroll-m-20 text-3xl font-semibold tracking-tight text-balance",
+          !hideBreadcrumb && "mt-4",
+        )}
+      >
         {title}
       </h1>
       <p className="mt-3 text-lg leading-8 text-muted-foreground">

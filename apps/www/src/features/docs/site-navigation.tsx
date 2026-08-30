@@ -71,7 +71,7 @@ function NavigationLinks({
 
 export function DesktopSiteNavigation() {
   return (
-    <div className="hidden lg:block">
+    <div className="hidden md:block">
       <NavigationLinks ariaLabel="Primary" />
     </div>
   );
@@ -84,7 +84,7 @@ export function MobileSiteNavigation() {
     pathname.startsWith("/docs") || pathname.startsWith("/components");
 
   return (
-    <div className="lg:hidden">
+    <div className="md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
           render={
@@ -111,7 +111,7 @@ export function MobileSiteNavigation() {
               onNavigate={() => setOpen(false)}
             />
             {showsDocumentation ? (
-              <div className="mt-5 border-t pt-5">
+              <div className="mt-5 border-t pt-5 md:hidden">
                 <p className="mb-4 text-sm font-semibold">Documentation</p>
                 <DocsNavigationLinks onNavigate={() => setOpen(false)} />
               </div>

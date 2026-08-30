@@ -48,6 +48,14 @@ test("browses templates and opens their registry source", async ({ page }) => {
   await expect(
     sourceDialog.getByRole("button", { name: "Copy source" }),
   ).toBeVisible();
+  await expect(sourceDialog.getByText(/registry items/)).toHaveCount(0);
+  await expect(sourceDialog.getByText(/packages\/documents\/src/)).toHaveCount(
+    0,
+  );
+  await expect(sourceDialog.locator("pre")).toHaveCSS(
+    "scrollbar-width",
+    "none",
+  );
   await sourceDialog.getByRole("button", { name: "Close" }).click();
   await expect(sourceDialog).toBeHidden();
 });
@@ -67,20 +75,32 @@ test("keeps direct template URLs in the gallery without a playground", async ({
   await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
 });
 
-test("shares the template gallery, footer, and responsive documentation menu", async ({
+test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 900, height: 900 });
+  await page.setViewportSize({ width: 1015, height: 900 });
   await page.goto("/");
 
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Open site navigation" }),
+  ).toHaveCount(0);
+  await expect(page.getByText("The PDF foundation is qualified.")).toHaveCount(
+    0,
+  );
   await expect(
     page.getByRole("button", { name: "View Minimal business card code" }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(page.getByRole("contentinfo")).toContainText(
     "Source-owned PDF components for React.",
   );
 
   await page.goto("/docs/");
+  await expect(
+    page.getByRole("navigation", { name: "Documentation" }),
+  ).toBeVisible();
+
+  await page.setViewportSize({ width: 700, height: 900 });
   await expect(
     page.getByRole("button", { name: "Open site navigation" }),
   ).toHaveCount(1);
@@ -93,4 +113,22 @@ test("shares the template gallery, footer, and responsive documentation menu", a
   await expect(
     menu.getByRole("navigation", { name: "Documentation" }),
   ).toBeVisible();
+});
+
+test("presents the component index with the shadcn documentation hierarchy", async ({
+  page,
+}) => {
+  await page.goto("/components/");
+
+  await expect(
+    page.getByRole("heading", { name: "Components", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "New Components" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "All Components" }),
+  ).toBeVisible();
+  await expect(page.getByText("Layout primitives")).toHaveCount(0);
+  await expect(page.getByText("Browse templates")).toHaveCount(0);
 });

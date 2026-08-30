@@ -134,6 +134,15 @@
     background: color-mix(in oklch, var(--primary) 24%, transparent);
   }
 }
+@layer utilities {
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+}
 @font-face {
   font-family: "Geist";
   src: url("../assets/fonts/Geist-Variable.woff2") format("woff2");

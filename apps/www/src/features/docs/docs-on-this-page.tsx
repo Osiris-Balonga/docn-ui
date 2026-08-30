@@ -14,9 +14,8 @@ const pageSections: Record<string, readonly { title: string; href: string }[]> =
       },
     ],
     "/components/": [
-      { title: "Layout primitives", href: "#layout-primitives" },
-      { title: "Content primitives", href: "#content-primitives" },
-      { title: "Template examples", href: "#template-examples" },
+      { title: "New Components", href: "#new-components" },
+      { title: "All Components", href: "#all-components" },
     ],
   };
 

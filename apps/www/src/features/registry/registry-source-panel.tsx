@@ -29,7 +29,15 @@ const tokenClasses: Record<SourceTokenKind, string> = {
 
 const subscribeToStaticOrigin = () => () => {};
 
-function CopyAction({ label, text }: { label: string; text: string }) {
+function CopyAction({
+  compact = false,
+  label,
+  text,
+}: {
+  compact?: boolean;
+  label: string;
+  text: string;
+}) {
   const [status, setStatus] = useState<"copied" | "idle" | "manual">("idle");
 
   async function handleCopy() {
@@ -43,24 +51,39 @@ function CopyAction({ label, text }: { label: string; text: string }) {
   return (
     <div className="flex items-center gap-2">
       <Button
-        size="sm"
+        size={compact ? "icon" : "sm"}
         variant="outline"
-        className="min-h-10"
+        className={cn("min-h-10", compact && "size-10")}
         onClick={handleCopy}
+        aria-label={
+          compact ? (status === "copied" ? "Copied" : label) : undefined
+        }
       >
         {status === "copied" ? (
           <Check aria-hidden="true" />
         ) : (
           <Copy aria-hidden="true" />
         )}
-        {status === "copied" ? "Copied" : label}
+        {compact ? null : status === "copied" ? "Copied" : label}
       </Button>
-      <span className="text-xs text-muted-foreground" aria-live="polite">
+      <span
+        className={cn("text-xs text-muted-foreground", compact && "sr-only")}
+        aria-live="polite"
+      >
         {status === "manual"
           ? "Clipboard unavailable — select and copy manually."
           : ""}
       </span>
     </div>
+  );
+}
+
+function sourceDisplayName(target: string) {
+  return (
+    target
+      .split("/")
+      .at(-1)
+      ?.replace(/\.[^.]+$/, "") ?? target
   );
 }
 
@@ -149,24 +172,40 @@ export function RegistrySourcePanel({
       <div
         className={cn(
           "overflow-hidden rounded-lg border bg-card",
-          drawer && "flex min-h-0 flex-1 flex-col rounded-xl bg-background",
+          drawer && "flex min-h-0 flex-1 flex-col bg-background",
         )}
       >
-        <div className="flex flex-col gap-3 border-b p-3 md:flex-row md:items-center md:justify-between">
+        <div
+          className={cn(
+            "border-b",
+            drawer
+              ? "flex items-center gap-2 p-2"
+              : "flex flex-col gap-3 p-3 md:flex-row md:items-center md:justify-between",
+          )}
+        >
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <Files
-              aria-hidden="true"
-              className="size-4 shrink-0 text-muted-foreground"
-            />
+            {drawer ? null : (
+              <Files
+                aria-hidden="true"
+                className="size-4 shrink-0 text-muted-foreground"
+              />
+            )}
             <Select
               value={selectedFile?.target ?? ""}
               onValueChange={(value) => setSelectedTarget(value ?? "")}
             >
               <SelectTrigger
                 aria-label="Source file"
-                className="w-full min-w-0 md:max-w-lg"
+                className={cn(
+                  "w-full min-w-0",
+                  drawer ? "max-w-sm" : "md:max-w-lg",
+                )}
               >
-                <SelectValue placeholder="Loading source files…" />
+                <SelectValue placeholder="Loading source files…">
+                  {drawer && selectedFile
+                    ? sourceDisplayName(selectedFile.target)
+                    : undefined}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {files.map((file) => (
@@ -177,14 +216,18 @@ export function RegistrySourcePanel({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center justify-between gap-3 md:justify-end">
-            {files.length > 0 ? (
+          <div className="flex shrink-0 items-center justify-between gap-3 md:justify-end">
+            {!drawer && files.length > 0 ? (
               <span className="text-xs text-muted-foreground">
                 {files.length} files · {itemCount} registry items
               </span>
             ) : null}
             {selectedFile ? (
-              <CopyAction label="Copy source" text={selectedFile.content} />
+              <CopyAction
+                compact={drawer}
+                label="Copy source"
+                text={selectedFile.content}
+              />
             ) : null}
           </div>
         </div>
@@ -196,13 +239,15 @@ export function RegistrySourcePanel({
           </div>
         ) : selectedFile ? (
           <div className={cn(drawer && "flex min-h-0 flex-1 flex-col")}>
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/25 px-4 py-2 text-xs text-muted-foreground">
-              <span>{selectedFile.owner}</span>
-              <span>{selectedFile.path}</span>
-            </div>
+            {drawer ? null : (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/25 px-4 py-2 text-xs text-muted-foreground">
+                <span>{selectedFile.owner}</span>
+                <span>{selectedFile.path}</span>
+              </div>
+            )}
             <pre
               className={cn(
-                "overflow-auto p-4 font-mono text-[13px] leading-6",
+                "scrollbar-hidden overflow-auto p-4 font-mono text-[13px] leading-6",
                 drawer ? "min-h-0 flex-1" : "max-h-[42rem]",
               )}
               tabIndex={0}

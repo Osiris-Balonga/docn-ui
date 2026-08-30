@@ -1,69 +1,35 @@
-import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DocsArticle } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
-import { cn } from "@/lib/utils";
 
-const layoutPrimitives = [
-  {
-    name: "PageFrame",
-    description:
-      "Creates the physical page, safe frame, bleed, and crop marks.",
-  },
-  {
-    name: "Stack",
-    description: "Arranges document content vertically with theme spacing.",
-  },
-  {
-    name: "Row",
-    description: "Aligns related content horizontally inside a PDF page.",
-  },
-  {
-    name: "Separator",
-    description: "Adds a measured rule using document theme tokens.",
-  },
+const components = [
+  "PageFrame",
+  "Stack",
+  "Row",
+  "Separator",
+  "Heading",
+  "Text",
+  "FieldPair",
+  "Image",
+  "QRCode",
 ] as const;
 
-const contentPrimitives = [
-  {
-    name: "Heading",
-    description: "Renders display and heading text with embedded local fonts.",
-  },
-  {
-    name: "Text",
-    description: "Renders validated body, label, and caption content.",
-  },
-  {
-    name: "FieldPair",
-    description: "Pairs a muted label with a readable document value.",
-  },
-  {
-    name: "Image",
-    description: "Places a permitted, resolved image without remote rendering.",
-  },
-  {
-    name: "QRCode",
-    description: "Generates a bounded vector QR code directly in the PDF.",
-  },
-] as const;
-
-function PrimitiveGrid({
-  items,
+function ComponentName({
+  children,
+  isNew = false,
 }: {
-  items: readonly { name: string; description: string }[];
+  children: string;
+  isNew?: boolean;
 }) {
   return (
-    <ul className="mt-5 grid gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-2">
-      {items.map((item) => (
-        <li key={item.name} className="bg-background p-5">
-          <h3 className="font-mono text-sm font-semibold">{item.name}</h3>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {item.description}
-          </p>
-        </li>
-      ))}
-    </ul>
+    <span className="inline-flex min-h-10 items-center gap-2 text-sm font-medium">
+      {children}
+      {isNew ? (
+        <Badge className="h-4 rounded-full border-0 bg-blue-600 px-1.5 text-[10px] leading-none text-white dark:bg-blue-500">
+          New
+        </Badge>
+      ) : null}
+    </span>
   );
 }
 
@@ -71,60 +37,38 @@ export default function ComponentsPage() {
   return (
     <DocumentationShell>
       <DocsArticle
-        title="PDF components"
-        description="Composable primitives for source-owned PDF documents. They use @react-pdf/renderer and document tokens, never DOM or Tailwind components."
-        rootHref="/components/"
-        rootTitle="Components"
+        title="Components"
+        description="Here you can find all the PDF components available in the library. We are working on adding more components."
+        hideBreadcrumb
       >
-        <section aria-labelledby="layout-primitives">
+        <section aria-labelledby="new-components">
           <h2
-            id="layout-primitives"
-            className="scroll-m-20 text-2xl font-semibold tracking-tight"
+            id="new-components"
+            className="scroll-m-20 text-xl font-semibold tracking-tight"
           >
-            Layout primitives
+            New Components
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            These components establish physical geometry before any content is
-            placed on the page.
-          </p>
-          <PrimitiveGrid items={layoutPrimitives} />
+          <div className="mt-3">
+            <ComponentName isNew>QRCode</ComponentName>
+          </div>
         </section>
 
-        <section aria-labelledby="content-primitives">
+        <section aria-labelledby="all-components">
           <h2
-            id="content-primitives"
-            className="scroll-m-20 text-2xl font-semibold tracking-tight"
+            id="all-components"
+            className="scroll-m-20 text-xl font-semibold tracking-tight"
           >
-            Content primitives
+            All Components
           </h2>
-          <p className="mt-4 text-muted-foreground">
-            Content remains validated and local while themes control type,
-            color, and spacing.
-          </p>
-          <PrimitiveGrid items={contentPrimitives} />
-        </section>
-
-        <section aria-labelledby="template-examples">
-          <h2
-            id="template-examples"
-            className="scroll-m-20 text-2xl font-semibold tracking-tight"
-          >
-            Template examples
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            See how the primitives combine into qualified business-card PDFs,
-            then inspect the complete source closure on a template page.
-          </p>
-          <Link
-            href="/templates/"
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "mt-5 h-10 px-3",
-            )}
-          >
-            Browse templates
-            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
-          </Link>
+          <ul className="mt-4 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3">
+            {components.map((component) => (
+              <li key={component}>
+                <ComponentName isNew={component === "QRCode"}>
+                  {component}
+                </ComponentName>
+              </li>
+            ))}
+          </ul>
         </section>
       </DocsArticle>
     </DocumentationShell>

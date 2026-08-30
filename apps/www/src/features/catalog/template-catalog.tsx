@@ -73,7 +73,7 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
         </SheetTrigger>
         <SheetContent
           side="right"
-          className="w-full! gap-0 border-l-0 bg-background p-0 text-foreground sm:max-w-none! md:w-160! lg:w-175!"
+          className="w-full! gap-0 border-l-0 bg-background p-0 text-foreground sm:w-[min(44rem,58vw)]! sm:max-w-none!"
         >
           <SheetHeader className="sr-only">
             <SheetTitle>{template.title} code</SheetTitle>
