@@ -212,7 +212,9 @@
         "9559db7e968bd7449d3f0bae538a8f09eae8a65b",
         "b2aeef1cd0cb216fd16989f9270b9f36c0e7008c",
         "668da87041df4ab37992207123e09ffe18d54b3f",
-        "f285b2abd1dede008c14549adb2d6361354209f7"
+        "f285b2abd1dede008c14549adb2d6361354209f7",
+        "925f5d4ceeb5c5117e49386d4a821c928ace8b30",
+        "ed492dded03370c8606809b910e9467453fb72ae"
       ],
       "evidence": "../qa/L08.md",
       "blocker": null
