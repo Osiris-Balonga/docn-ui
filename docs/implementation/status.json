@@ -268,12 +268,21 @@
     {
       "id": "L11",
       "file": "lots/L11-invoices.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L10"],
       "branch": "feat/invoice-templates",
       "baseCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
-      "actualCommits": [],
-      "evidence": null,
+      "actualCommits": [
+        "6b9ce2d686bcdc713c1e41ff1dde9a7b821ddde4",
+        "b77287d8a51ff02587082b348ad9334033aba42b",
+        "0d29f615d177375bb229bc541976dc5d913ee0c9",
+        "53e516917b25a677b9df22c63f2dcef3555d8ee2",
+        "480cda931248fda536204981ce2ef495e5e24c66",
+        "d2f39733ad930814bbb8303b6666174c0e7d6421",
+        "821d8fbe1b27ca0a7daee00b235098171d3c0571",
+        "2e2c1c9e33c6eca4899122b843efdf0a56719e27"
+      ],
+      "evidence": "../qa/L11.md",
       "blocker": null
     },
     {

@@ -2,7 +2,7 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 30, 2026: L00G through L10 are merged and L11 is in progress.** The complete fifteen-composition V1 catalog now includes business cards, event tickets, thermal receipts, labels, and multipage invoices. Exact PDF geometry, local fonts, print boxes, actual PDF-derived previews, bounded data contracts, deterministic money calculations, and installable source through an additional shadcn registry are implemented. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and current [L11 specification](docs/implementation/lots/L11-invoices.md).
+**Status on August 30, 2026: L00G through L10 are merged and L11 is verified locally.** The complete fifteen-composition V1 catalog now includes business cards, event tickets, thermal receipts, labels, and multipage invoices. Exact PDF geometry, local fonts, print boxes, actual PDF-derived previews, bounded data contracts, deterministic money calculations, and installable source through an additional shadcn registry are implemented. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L11 evidence](docs/qa/L11.md).
 
 [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L11 issue #15](https://github.com/Osiris-Balonga/docn-ui/issues/15) · [Invoice guide](docs/guides/INVOICES.md)
 

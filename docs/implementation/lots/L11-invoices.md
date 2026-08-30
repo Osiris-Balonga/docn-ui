@@ -1,6 +1,6 @@
 # L11 — Multipage invoices and complete catalog
 
-Initial status: **planned**. Branch: `feat/invoice-templates`.
+Status: **verified locally** at `2e2c1c9e33c6eca4899122b843efdf0a56719e27`. Branch: `feat/invoice-templates`.
 
 Dependencies: L10. Requirements: FR-01, FR-12, FR-13, FR-16; NFR-05; G4.
 
