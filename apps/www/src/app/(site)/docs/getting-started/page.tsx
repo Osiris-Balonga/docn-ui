@@ -19,7 +19,24 @@ export default function GettingStartedPage() {
           local worker, and preserves physical dimensions, fonts, print boxes,
           and deterministic pagination. The business-card templates now expose
           their complete versioned source and dependency closure on each detail
-          page.
+          page. Business cards, event tickets, and measured 58/80 mm thermal
+          receipts are available in the template catalog.
+        </p>
+      </section>
+      <section aria-labelledby="thermal-printing">
+        <h2
+          id="thermal-printing"
+          className="text-2xl font-semibold tracking-tight"
+        >
+          Print thermal receipts at actual size
+        </h2>
+        <p className="mt-4 text-muted-foreground">
+          Receipt presets use the full 58 or 80 mm paper width. A printer may
+          reserve narrower hardware margins, so verify its printable width and
+          run a short test. Print at 100% / actual size with fit-to-page
+          disabled. The PDF remains one continuous page and reports an explicit
+          error above the 2,000 mm height limit; it never substitutes an A4 or
+          multipage invoice.
         </p>
       </section>
       <section aria-labelledby="development-installation">

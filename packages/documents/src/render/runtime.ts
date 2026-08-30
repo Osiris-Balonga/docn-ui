@@ -6,6 +6,7 @@ import type {
   ResolvedFixedFormat,
 } from "../core/formats";
 import type { AssetResolver } from "./assets";
+import { DocumentValidationError } from "../core/errors";
 import { registerDocumentFonts } from "./fonts";
 import { applyPrintBoxes, getPageGeometry } from "./print-profile";
 
@@ -72,16 +73,33 @@ export async function renderContinuousDocument(
   const probe = await runtime.renderDocument(
     plan.createDocument(plan.format.maxHeightPt),
   );
-  const measurement = await measureDocument(probe, plan.finalMarker);
+  let measurement: ContinuousDocumentMeasurement;
+  try {
+    measurement = await measureDocument(probe, plan.finalMarker);
+  } catch (error) {
+    if (error instanceof DocumentValidationError) throw error;
+    throw new DocumentValidationError([
+      {
+        code: "RENDER_FAILED",
+        message:
+          "The receipt height could not be measured. Review the content and render again.",
+        path: ["data"],
+      },
+    ]);
+  }
   const heightPt = measurement.usedHeightPt + CONTINUOUS_HEIGHT_SAFETY_POINTS;
   if (
     measurement.pageCount !== 1 ||
     !Number.isFinite(heightPt) ||
     heightPt > plan.format.maxHeightPt
   ) {
-    throw new Error(
-      `Receipt content exceeds the ${plan.format.maxHeightMm} mm height limit.`,
-    );
+    throw new DocumentValidationError([
+      {
+        code: "LAYOUT_OVERFLOW",
+        message: `Receipt content exceeds the ${plan.format.maxHeightMm} mm height limit. Remove lines or shorten content, then render again.`,
+        path: ["data", "lines"],
+      },
+    ]);
   }
   const raw = await runtime.renderDocument(plan.createDocument(heightPt));
   return applyPrintBoxes(

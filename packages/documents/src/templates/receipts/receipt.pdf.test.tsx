@@ -7,6 +7,8 @@ import {
   type RenderRequest,
 } from "../../core/contracts";
 import { renderContinuousDocumentInNode } from "../../render/node";
+import { millimetersToPoints } from "../../core/units";
+import { DocumentValidationError } from "../../core/errors";
 import {
   createReceiptHospitalityPlan,
   hospitalityReceiptExample,
@@ -155,5 +157,41 @@ describe("thermal receipt compositions", () => {
     expect(inspection.text).toContain("TOTAL");
     expect(inspection.text).toContain("END · RCPT-LONG-0099");
     await retainPdf("receipt-retail-58-long", bytes);
+  });
+
+  it("reports the physical limit and renders again after content is corrected", async () => {
+    const request = createRequest(
+      retailReceiptExample,
+      "receipt-retail",
+      "receipt-58",
+      "neutral",
+    );
+    const validPlan = createReceiptRetailPlan(request).plan;
+    const constrainedPlan = {
+      ...validPlan,
+      format: {
+        ...validPlan.format,
+        maxHeightMm: 45,
+        maxHeightPt: millimetersToPoints(45),
+      },
+    };
+
+    try {
+      await renderContinuousDocumentInNode(constrainedPlan);
+      throw new Error("Expected constrained receipt rendering to fail.");
+    } catch (error) {
+      expect(error).toBeInstanceOf(DocumentValidationError);
+      expect(error).toMatchObject({ code: "LAYOUT_OVERFLOW" });
+      expect((error as Error).message).toContain(
+        "Remove lines or shorten content, then render again.",
+      );
+    }
+
+    const recovered = await inspectReceipt(
+      await renderContinuousDocumentInNode(validPlan),
+    );
+    expect(recovered.pageCount).toBe(1);
+    expect(recovered.text).toContain("TOTAL");
+    expect(recovered.text).toContain("END · RCPT-2026-0042");
   });
 });
