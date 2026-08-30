@@ -90,6 +90,27 @@ test("browses templates and opens their registry source", async ({ page }) => {
     ticketSourceDialog.getByRole("combobox", { name: "Source file" }),
   ).toHaveCount(0);
   await ticketSourceDialog.getByRole("button", { name: "Close" }).click();
+
+  await page.getByRole("tab", { name: "Labels" }).click();
+  for (const title of ["Product label", "Address label", "Inventory label"]) {
+    await expect(page.getByRole("heading", { name: title })).toBeVisible();
+    await expect(page.getByAltText(`${title} PDF preview`)).toHaveJSProperty(
+      "complete",
+      true,
+    );
+  }
+  await page.getByRole("button", { name: "View Product label code" }).click();
+  const labelSourceDialog = page.getByRole("dialog", {
+    name: "Product label code",
+  });
+  await expect(labelSourceDialog).toBeVisible();
+  await expect(
+    labelSourceDialog.getByText("label-product", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    labelSourceDialog.getByRole("combobox", { name: "Source file" }),
+  ).toHaveCount(0);
+  await labelSourceDialog.getByRole("button", { name: "Close" }).click();
 });
 
 test("keeps direct template URLs in the gallery without a playground", async ({
@@ -112,6 +133,15 @@ test("keeps direct template URLs in the gallery without a playground", async ({
   ).toHaveAttribute("aria-selected", "true");
   await expect(page.locator("article").first().getByRole("heading")).toHaveText(
     "Live event ticket",
+  );
+
+  await page.goto("/templates/label-inventory/");
+  await expect(page.getByRole("tab", { name: "Labels" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+  await expect(page.locator("article").first().getByRole("heading")).toHaveText(
+    "Inventory label",
   );
 });
 
