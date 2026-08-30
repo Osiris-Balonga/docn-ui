@@ -46,7 +46,16 @@ function PartyBlock({
       >
         {label}
       </Text>
-      <Text style={{ fontSize: 9, fontWeight: 700 }}>{party.name}</Text>
+      <Text
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          lineHeight: 1.2,
+          marginBottom: 2,
+        }}
+      >
+        {party.name}
+      </Text>
       {party.address.map((line) => (
         <Text key={line} style={{ fontSize: 7 }}>
           {line}
