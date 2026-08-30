@@ -24,6 +24,14 @@ export {
 } from "./errors";
 export { fingerprintRenderRequest } from "./fingerprint";
 export {
+  LABEL_EXPORT_LIMIT,
+  imposeLabelSheet,
+  type SheetCellPlacement,
+  type SheetGeometryInput,
+  type SheetImposition,
+  type SheetInsetsMm,
+} from "./imposition";
+export {
   CURRENCIES,
   calculateMonetaryDocument,
   calculateMonetaryLine,
