@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import {
   copyText,
+  loadRegistryPrimarySource,
   loadRegistrySourceClosure,
   tokenizeSource,
   type RegistrySourceFile,
@@ -87,6 +88,14 @@ function sourceDisplayName(target: string) {
   );
 }
 
+function sourceTypeLabel(target: string) {
+  const extension = target.split(".").at(-1)?.toLowerCase();
+  if (extension === "tsx" || extension === "ts") return "TS";
+  if (extension === "jsx" || extension === "js") return "JS";
+  if (extension === "json") return "{}";
+  return "<>";
+}
+
 function CommandBlock({ command, label }: { command: string; label: string }) {
   return (
     <div className="min-w-0 overflow-hidden rounded-lg border bg-muted/35">
@@ -114,6 +123,7 @@ export function RegistrySourcePanel({
   itemName: string;
   variant?: "drawer" | "page";
 }) {
+  const drawer = variant === "drawer";
   const [files, setFiles] = useState<RegistrySourceFile[]>([]);
   const [itemCount, setItemCount] = useState(0);
   const [selectedTarget, setSelectedTarget] = useState("");
@@ -127,10 +137,13 @@ export function RegistrySourcePanel({
   useEffect(() => {
     const currentOrigin = window.location.origin;
     let active = true;
-    loadRegistrySourceClosure({
-      itemUrl: `/r/dev/${itemName}.json`,
-      origin: currentOrigin,
-    })
+    const itemUrl = `/r/dev/${itemName}.json`;
+    const sourceRequest = drawer
+      ? loadRegistryPrimarySource({ itemUrl, origin: currentOrigin }).then(
+          (file) => ({ files: [file], itemCount: 1 }),
+        )
+      : loadRegistrySourceClosure({ itemUrl, origin: currentOrigin });
+    sourceRequest
       .then((result) => {
         if (!active) return;
         setFiles(result.files);
@@ -148,7 +161,7 @@ export function RegistrySourcePanel({
     return () => {
       active = false;
     };
-  }, [itemName]);
+  }, [drawer, itemName]);
 
   const selectedFile =
     files.find((file) => file.target === selectedTarget) ?? files[0];
@@ -158,7 +171,6 @@ export function RegistrySourcePanel({
   );
   const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
   const assetCommand = `node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
-  const drawer = variant === "drawer";
   const headingId = `registry-source-${itemName}`;
 
   return (
@@ -184,37 +196,50 @@ export function RegistrySourcePanel({
           )}
         >
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            {drawer ? null : (
+            {drawer ? (
+              selectedFile ? (
+                <div className="flex min-w-0 items-center gap-2 px-1 text-sm font-medium">
+                  <span
+                    aria-hidden="true"
+                    className="flex size-4 shrink-0 items-center justify-center rounded-sm bg-muted text-[8px] leading-none font-bold text-muted-foreground"
+                  >
+                    {sourceTypeLabel(selectedFile.target)}
+                  </span>
+                  <span className="truncate">
+                    {sourceDisplayName(selectedFile.target)}
+                  </span>
+                </div>
+              ) : (
+                <span className="px-1 text-sm text-muted-foreground">
+                  Loading source…
+                </span>
+              )
+            ) : (
               <Files
                 aria-hidden="true"
                 className="size-4 shrink-0 text-muted-foreground"
               />
             )}
-            <Select
-              value={selectedFile?.target ?? ""}
-              onValueChange={(value) => setSelectedTarget(value ?? "")}
-            >
-              <SelectTrigger
-                aria-label="Source file"
-                className={cn(
-                  "w-full min-w-0",
-                  drawer ? "max-w-sm" : "md:max-w-lg",
-                )}
+            {drawer ? null : (
+              <Select
+                value={selectedFile?.target ?? ""}
+                onValueChange={(value) => setSelectedTarget(value ?? "")}
               >
-                <SelectValue placeholder="Loading source files…">
-                  {drawer && selectedFile
-                    ? sourceDisplayName(selectedFile.target)
-                    : undefined}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {files.map((file) => (
-                  <SelectItem key={file.target} value={file.target}>
-                    {file.target.replace(/^~\//, "")}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  aria-label="Source file"
+                  className="w-full min-w-0 md:max-w-lg"
+                >
+                  <SelectValue placeholder="Loading source files…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {files.map((file) => (
+                    <SelectItem key={file.target} value={file.target}>
+                      {file.target.replace(/^~\//, "")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <div className="flex shrink-0 items-center justify-between gap-3 md:justify-end">
             {!drawer && files.length > 0 ? (

@@ -95,4 +95,25 @@ describe("registry source panel", () => {
       screen.getByText("Clipboard unavailable — select and copy manually."),
     ).toBeInTheDocument();
   });
+
+  it("limits the drawer to the primary component source", async () => {
+    const fetchMock = vi.fn(registryFetch);
+    vi.stubGlobal("fetch", fetchMock);
+    render(
+      <RegistrySourcePanel
+        itemName="docn-business-card-minimal"
+        variant="drawer"
+      />,
+    );
+
+    expect(await screen.findByText("card")).toBeInTheDocument();
+    expect(screen.getByText("TS")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Source file" })).toBeNull();
+    expect(screen.queryByText("2 files · 2 registry items")).toBeNull();
+    expect(
+      screen.getByLabelText("~/docn/templates/card.tsx source"),
+    ).toHaveTextContent('export const Card = "complete source";');
+    expect(screen.queryByText(/interface Contract/)).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });

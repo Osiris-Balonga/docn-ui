@@ -44,7 +44,11 @@ test("browses templates and opens their registry source", async ({ page }) => {
   await expect(sourceDialog).toBeVisible();
   await expect(
     sourceDialog.getByRole("combobox", { name: "Source file" }),
+  ).toHaveCount(0);
+  await expect(
+    sourceDialog.getByText("business-card-minimal", { exact: true }),
   ).toBeVisible();
+  await expect(sourceDialog.getByText("TS", { exact: true })).toBeVisible();
   await expect(
     sourceDialog.getByRole("button", { name: "Copy source" }),
   ).toBeVisible();

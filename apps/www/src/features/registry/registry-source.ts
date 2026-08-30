@@ -90,6 +90,26 @@ export async function loadRegistrySourceClosure({
   return { files, itemCount: visitedNames.size };
 }
 
+export async function loadRegistryPrimarySource({
+  fetchImpl = globalThis.fetch,
+  itemUrl,
+  origin,
+}: {
+  fetchImpl?: typeof fetch;
+  itemUrl: string;
+  origin: string;
+}) {
+  const response = await fetchImpl(localRegistryUrl(itemUrl, origin));
+  if (!response.ok)
+    throw new Error(`Registry source returned HTTP ${response.status}.`);
+  const item = parseRegistryItem(await response.json());
+  const file =
+    item.files.find((candidate) => candidate.type === "registry:component") ??
+    item.files[0];
+  if (!file) throw new Error("The registry item contains no source files.");
+  return { ...file, owner: item.name } satisfies RegistrySourceFile;
+}
+
 export type SourceTokenKind =
   "comment" | "keyword" | "number" | "plain" | "string";
 
