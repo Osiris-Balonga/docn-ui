@@ -23,7 +23,14 @@ test("discovers the complete invoice family and its installable source", async (
       "complete",
       true,
     );
+    await expect(page.getByAltText(`${title} PDF preview`)).toHaveAttribute(
+      "src",
+      /\?v=[a-f0-9]{12}$/,
+    );
   }
+  const subscriptionPreviewSource = await page
+    .getByAltText("Subscription invoice PDF preview", { exact: true })
+    .getAttribute("src");
 
   await page
     .getByRole("button", { name: "Enlarge Subscription invoice preview" })
@@ -34,6 +41,9 @@ test("discovers the complete invoice family and its installable source", async (
   await expect(
     previewDialog.getByAltText("Enlarged Subscription invoice PDF preview"),
   ).toBeVisible();
+  await expect(
+    previewDialog.getByAltText("Enlarged Subscription invoice PDF preview"),
+  ).toHaveAttribute("src", subscriptionPreviewSource ?? "");
   await previewDialog.getByRole("button", { name: "Close" }).click();
 
   await page

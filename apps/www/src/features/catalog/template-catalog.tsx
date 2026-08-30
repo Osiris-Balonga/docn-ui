@@ -113,6 +113,7 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
 }
 
 function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
+  const thumbnailSrc = `${template.thumbnail.src}?v=${template.thumbnail.sha256.slice(0, 12)}`;
   return (
     <article className="min-w-0">
       <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
@@ -130,7 +131,7 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
           }
         >
           <Image
-            src={template.thumbnail.src}
+            src={thumbnailSrc}
             alt={`${template.title} PDF preview`}
             width={template.thumbnail.width}
             height={template.thumbnail.height}
@@ -149,7 +150,7 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
           </DialogHeader>
           <div className="flex min-h-0 items-center justify-center overflow-hidden rounded-lg bg-muted/35 p-3 sm:p-6">
             <Image
-              src={template.thumbnail.src}
+              src={thumbnailSrc}
               alt={`Enlarged ${template.title} PDF preview`}
               width={template.thumbnail.width}
               height={template.thumbnail.height}
