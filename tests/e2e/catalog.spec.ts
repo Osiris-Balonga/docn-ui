@@ -62,6 +62,34 @@ test("browses templates and opens their registry source", async ({ page }) => {
   );
   await sourceDialog.getByRole("button", { name: "Close" }).click();
   await expect(sourceDialog).toBeHidden();
+
+  await page.getByRole("tab", { name: "Event Tickets" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Classic event ticket" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Conference event ticket" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Live event ticket" }),
+  ).toBeVisible();
+  await expect(
+    page.getByAltText("Classic event ticket PDF preview"),
+  ).toHaveJSProperty("complete", true);
+  await page
+    .getByRole("button", { name: "View Classic event ticket code" })
+    .click();
+  const ticketSourceDialog = page.getByRole("dialog", {
+    name: "Classic event ticket code",
+  });
+  await expect(ticketSourceDialog).toBeVisible();
+  await expect(
+    ticketSourceDialog.getByText("event-ticket-classic", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    ticketSourceDialog.getByRole("combobox", { name: "Source file" }),
+  ).toHaveCount(0);
+  await ticketSourceDialog.getByRole("button", { name: "Close" }).click();
 });
 
 test("keeps direct template URLs in the gallery without a playground", async ({
@@ -77,6 +105,14 @@ test("keeps direct template URLs in the gallery without a playground", async ({
   );
   await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
+
+  await page.goto("/templates/event-ticket-live/");
+  await expect(
+    page.getByRole("tab", { name: "Event Tickets" }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("article").first().getByRole("heading")).toHaveText(
+    "Live event ticket",
+  );
 });
 
 test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
