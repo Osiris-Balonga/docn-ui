@@ -12,3 +12,4 @@ export {
 export { renderDocumentInNode } from "./render/node";
 export type { FixedDocumentRenderPlan } from "./render/runtime";
 export * from "./templates/business-cards";
+export * from "./templates/event-tickets";

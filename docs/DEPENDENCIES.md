@@ -110,3 +110,12 @@ The root E2E scope also declares `pdfjs-dist` 6.2.108 as a development dependenc
 | @types/qrcode | 1.5.6 | MIT | Type declarations for the document workspace; development only |
 
 The primitive renders the matrix itself rather than embedding a generated bitmap or making a network request. It enforces the existing 512-byte payload budget, error-correction level M, a four-module quiet zone, and a minimum module size for the selected card layout. Final-PDF decoding remains a separate visual/QR qualification risk and is not inferred from successful matrix creation.
+
+## Final-PDF QR qualification (L08-S01)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| @napi-rs/canvas | 1.0.8 | MIT | Test-only native canvas used by PDF.js to rasterize final PDF bytes in Node; already locked as PDF.js's optional renderer, now declared directly for deterministic strict-workspace imports |
+| jsQR | 1.4.0 | Apache-2.0 | Test-only independent decoder applied to the PDF raster; it is not imported by document or website runtime code |
+
+These development dependencies add no browser payload and do not replace the maintained `qrcode` encoder. The test deliberately crosses encoder, React-pdf SVG output, final PDF post-processing, PDF.js rasterization, and an independent decoding implementation. `@napi-rs/canvas` was already present in the lockfile through PDF.js, so the direct declaration adds one small JavaScript package entry and no second native binary family.

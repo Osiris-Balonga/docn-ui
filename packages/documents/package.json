@@ -21,6 +21,8 @@
     "./templates/business-cards/schema": "./src/templates/business-cards/schema.ts",
     "./templates/business-cards/studio": "./src/templates/business-cards/business-card-studio/index.ts",
     "./templates/business-cards/studio/examples": "./src/templates/business-cards/business-card-studio/examples.ts",
+    "./templates/event-tickets": "./src/templates/event-tickets/index.ts",
+    "./templates/event-tickets/schema": "./src/templates/event-tickets/schema.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {
