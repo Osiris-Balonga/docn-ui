@@ -178,7 +178,7 @@
     {
       "id": "L07",
       "file": "lots/L07-registry.md",
-      "state": "in_progress",
+      "state": "in_review",
       "dependsOn": ["L06"],
       "branch": "feat/shadcn-pdf-registry",
       "baseCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",

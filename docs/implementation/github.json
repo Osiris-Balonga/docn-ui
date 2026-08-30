@@ -386,7 +386,12 @@
       "issueId": "I_kwDOUHjPN88AAAABOuM2EQ",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/10",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVcs",
-      "pullRequest": null,
+      "pullRequest": {
+        "number": 27,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/27",
+        "mergeCommit": null,
+        "mergedAt": null
+      },
       "initialized": true
     },
     "L08": {
