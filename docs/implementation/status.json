@@ -182,7 +182,7 @@
       "dependsOn": ["L06"],
       "branch": "feat/shadcn-pdf-registry",
       "baseCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
-      "actualCommits": [],
+      "actualCommits": ["f35752cdb9d9b0112c70b9ee825d2e5c7164d689"],
       "evidence": "../qa/L07.md",
       "blocker": null
     },
