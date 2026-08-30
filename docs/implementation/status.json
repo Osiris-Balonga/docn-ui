@@ -268,7 +268,7 @@
     {
       "id": "L11",
       "file": "lots/L11-invoices.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L10"],
       "branch": "feat/invoice-templates",
       "baseCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
@@ -280,7 +280,8 @@
         "480cda931248fda536204981ce2ef495e5e24c66",
         "d2f39733ad930814bbb8303b6666174c0e7d6421",
         "821d8fbe1b27ca0a7daee00b235098171d3c0571",
-        "2e2c1c9e33c6eca4899122b843efdf0a56719e27"
+        "2e2c1c9e33c6eca4899122b843efdf0a56719e27",
+        "ff8e1255db91bc2199dfe3bf4f5f8348d69df668"
       ],
       "evidence": "../qa/L11.md",
       "blocker": null
