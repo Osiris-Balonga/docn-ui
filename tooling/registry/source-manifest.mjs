@@ -74,6 +74,7 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/index.tsx",
         "packages/documents/src/primitives/measurement.ts",
         "packages/documents/src/primitives/qr-code.ts",
+        "packages/documents/src/primitives/table.tsx",
       ],
     },
     {
