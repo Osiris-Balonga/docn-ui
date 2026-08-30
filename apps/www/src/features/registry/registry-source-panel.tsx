@@ -17,6 +17,7 @@ import {
   type RegistrySourceFile,
   type SourceTokenKind,
 } from "./registry-source";
+import { cn } from "@/lib/utils";
 
 const tokenClasses: Record<SourceTokenKind, string> = {
   comment: "text-muted-foreground italic",
@@ -41,7 +42,12 @@ function CopyAction({ label, text }: { label: string; text: string }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Button size="sm" variant="outline" onClick={handleCopy}>
+      <Button
+        size="sm"
+        variant="outline"
+        className="min-h-10"
+        onClick={handleCopy}
+      >
         {status === "copied" ? (
           <Check aria-hidden="true" />
         ) : (
@@ -78,7 +84,13 @@ function CommandBlock({ command, label }: { command: string; label: string }) {
   );
 }
 
-export function RegistrySourcePanel({ itemName }: { itemName: string }) {
+export function RegistrySourcePanel({
+  itemName,
+  variant = "page",
+}: {
+  itemName: string;
+  variant?: "drawer" | "page";
+}) {
   const [files, setFiles] = useState<RegistrySourceFile[]>([]);
   const [itemCount, setItemCount] = useState(0);
   const [selectedTarget, setSelectedTarget] = useState("");
@@ -123,13 +135,23 @@ export function RegistrySourcePanel({ itemName }: { itemName: string }) {
   );
   const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
   const assetCommand = `node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
+  const drawer = variant === "drawer";
+  const headingId = `registry-source-${itemName}`;
 
   return (
-    <section className="min-w-0" aria-labelledby="registry-source-heading">
-      <h2 id="registry-source-heading" className="sr-only">
+    <section
+      className={cn("min-w-0", drawer && "flex h-full min-h-0 flex-col")}
+      aria-labelledby={headingId}
+    >
+      <h2 id={headingId} className="sr-only">
         Template source
       </h2>
-      <div className="overflow-hidden rounded-lg border bg-card">
+      <div
+        className={cn(
+          "overflow-hidden rounded-lg border bg-card",
+          drawer && "flex min-h-0 flex-1 flex-col rounded-xl bg-background",
+        )}
+      >
         <div className="flex flex-col gap-3 border-b p-3 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <Files
@@ -173,13 +195,16 @@ export function RegistrySourcePanel({ itemName }: { itemName: string }) {
             <p className="mt-1 text-sm text-muted-foreground">{error}</p>
           </div>
         ) : selectedFile ? (
-          <div>
+          <div className={cn(drawer && "flex min-h-0 flex-1 flex-col")}>
             <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/25 px-4 py-2 text-xs text-muted-foreground">
               <span>{selectedFile.owner}</span>
               <span>{selectedFile.path}</span>
             </div>
             <pre
-              className="max-h-[42rem] overflow-auto p-4 font-mono text-[13px] leading-6"
+              className={cn(
+                "overflow-auto p-4 font-mono text-[13px] leading-6",
+                drawer ? "min-h-0 flex-1" : "max-h-[42rem]",
+              )}
               tabIndex={0}
             >
               <code aria-label={`${selectedFile.target} source`}>
@@ -201,14 +226,25 @@ export function RegistrySourcePanel({ itemName }: { itemName: string }) {
         )}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <CommandBlock label="Install with shadcn" command={installCommand} />
-        <CommandBlock label="Prepare browser assets" command={assetCommand} />
-      </div>
-      <p className="mt-4 text-sm leading-6 text-muted-foreground">
-        The command copies the complete dependency closure into your project.
-        Review the generated files and keep the install free of overwrite flags.
-      </p>
+      {!drawer ? (
+        <>
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <CommandBlock
+              label="Install with shadcn"
+              command={installCommand}
+            />
+            <CommandBlock
+              label="Prepare browser assets"
+              command={assetCommand}
+            />
+          </div>
+          <p className="mt-4 text-sm leading-6 text-muted-foreground">
+            The command copies the complete dependency closure into your
+            project. Review the generated files and keep the install free of
+            overwrite flags.
+          </p>
+        </>
+      ) : null}
     </section>
   );
 }

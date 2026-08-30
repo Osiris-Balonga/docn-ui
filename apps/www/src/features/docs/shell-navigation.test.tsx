@@ -59,6 +59,15 @@ test("the shell exposes a focused skip link and an operable mobile documentation
   expect(
     within(primaryNavigation).getByRole("link", { name: "Components" }),
   ).toBeInTheDocument();
+  expect(
+    within(primaryNavigation).getByRole("link", { name: "Template" }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole("link", { name: "Open docn-ui on GitHub" }),
+  ).toHaveAttribute("href", "https://github.com/Osiris-Balonga/docn-ui");
+  expect(
+    screen.getByRole("button", { name: "Toggle theme" }),
+  ).toBeInTheDocument();
   expect(screen.queryByText("docn-ui")).toBeNull();
 
   await user.click(

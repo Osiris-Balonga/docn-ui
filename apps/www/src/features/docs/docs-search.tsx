@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FileTextIcon, SearchIcon } from "lucide-react";
+import { FileTextIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +51,7 @@ export function DocsSearch() {
   }, []);
 
   function navigate(href: string) {
-    setOpen(false);
+    changeOpen(false);
     router.push(href);
   }
 
@@ -60,18 +60,15 @@ export function DocsSearch() {
       <Button
         ref={triggerRef}
         type="button"
-        variant="outline"
-        className="h-10 w-10 justify-start gap-2 px-0 text-muted-foreground md:w-64 md:px-3"
+        variant="secondary"
+        className="hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 md:flex md:w-48 lg:w-40 xl:w-64 dark:bg-card"
         onClick={() => setOpen(true)}
         aria-label="Search documentation"
       >
-        <SearchIcon aria-hidden="true" />
-        <span className="hidden flex-1 text-left md:inline">
-          Search docs...
+        <span className="flex-1 text-left">
+          <span className="hidden xl:inline">Search documentation...</span>
+          <span className="xl:hidden">Search...</span>
         </span>
-        <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-mono text-[10px] md:inline">
-          ⌘ K
-        </kbd>
       </Button>
       <CommandDialog
         open={open}

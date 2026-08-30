@@ -1,5 +1,6 @@
 import { ThemeMenu } from "@/features/theme/theme-menu";
 import { DocsSearch } from "./docs-search";
+import { GitHubLink } from "./github-link";
 import { DesktopSiteNavigation, MobileSiteNavigation } from "./site-navigation";
 
 export function SiteHeader() {
@@ -11,12 +12,13 @@ export function SiteHeader() {
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 bg-background/95 supports-backdrop-filter:backdrop-blur-sm">
+      <header className="sticky top-0 z-40 bg-background">
         <div className="flex h-16 w-full items-center gap-2 px-4 sm:px-6">
           <MobileSiteNavigation />
           <DesktopSiteNavigation />
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ml-auto flex items-center gap-3">
             <DocsSearch />
+            <GitHubLink />
             <ThemeMenu />
           </div>
         </div>
