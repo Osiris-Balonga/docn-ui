@@ -1,7 +1,7 @@
 import { Document, View } from "@react-pdf/renderer";
 import type { RenderRequest } from "../../../core/contracts";
 import type { ResolvedFixedFormat } from "../../../core/formats";
-import { Heading, PageFrame, Text } from "../../../primitives";
+import { Heading, Image, PageFrame, Text } from "../../../primitives";
 import { getPdfTheme } from "../../../themes/themes";
 import type { BusinessCardData } from "../schema";
 import { createBusinessCardPlan } from "../plan";
@@ -44,16 +44,20 @@ export function BusinessCardMinimalDocument({
   data,
   format,
   locale,
+  logoSource,
+  overrides,
   printProfile,
   themeId,
 }: {
   data: BusinessCardData;
   format: ResolvedFixedFormat;
   locale: "en" | "fr";
+  logoSource?: string | undefined;
+  overrides: NonNullable<RenderRequest["overrides"]>;
   printProfile: RenderRequest["printProfile"];
   themeId: RenderRequest["themeId"];
 }) {
-  const theme = getPdfTheme(themeId);
+  const theme = getPdfTheme(themeId, overrides.accentColor);
   const labels =
     locale === "fr"
       ? { address: "Adresse", phone: "Téléphone", website: "Site" }
@@ -110,6 +114,16 @@ export function BusinessCardMinimalDocument({
           }}
           wrap={false}
         >
+          {logoSource ? (
+            <View style={{ marginBottom: theme.spacing.md }}>
+              <Image
+                alt="Imported logo"
+                height={24}
+                resolvedSource={logoSource}
+                width={48}
+              />
+            </View>
+          ) : null}
           <Heading level="display" tone="inverted">
             {brand}
           </Heading>
@@ -126,8 +140,14 @@ export function BusinessCardMinimalDocument({
   );
 }
 
-export function createBusinessCardMinimalPlan(input: unknown) {
-  return createBusinessCardPlan(input, businessCardMinimalMetadata, (props) => (
-    <BusinessCardMinimalDocument {...props} />
-  ));
+export function createBusinessCardMinimalPlan(
+  input: unknown,
+  options?: import("../plan").BusinessCardPlanOptions,
+) {
+  return createBusinessCardPlan(
+    input,
+    businessCardMinimalMetadata,
+    (props) => <BusinessCardMinimalDocument {...props} />,
+    options,
+  );
 }

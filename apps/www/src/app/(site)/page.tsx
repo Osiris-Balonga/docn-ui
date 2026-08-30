@@ -28,16 +28,25 @@ export default function HomePage() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/docs/getting-started/"
+            href="/templates/"
             className={cn(buttonVariants({ size: "lg" }), "h-10 px-4")}
           >
-            Read the foundation guide
+            Browse templates
             <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
+          </Link>
+          <Link
+            href="/docs/getting-started/"
+            className={cn(
+              buttonVariants({ size: "lg", variant: "outline" }),
+              "h-10 px-4",
+            )}
+          >
+            Read the foundation guide
           </Link>
           <a
             href="https://github.com/Osiris-Balonga/docn-ui"
             className={cn(
-              buttonVariants({ size: "lg", variant: "outline" }),
+              buttonVariants({ size: "lg", variant: "ghost" }),
               "h-10 px-4",
             )}
           >
@@ -62,9 +71,9 @@ export default function HomePage() {
           </div>
           <div>
             <p className="max-w-2xl leading-7 text-muted-foreground">
-              The public template catalog and registry are still being built.
-              The implementation has already verified the core browser PDF
-              constraints that future templates will rely on.
+              The first three business cards are now available in the public
+              catalog. The source registry and later document families are still
+              being built on the qualified PDF foundation.
             </p>
             <ul className="mt-6 grid gap-3 sm:grid-cols-3">
               {qualifiedFoundations.map((item) => (

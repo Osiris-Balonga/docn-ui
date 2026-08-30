@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   getRequestRevision,
   getResponseRevision,
@@ -50,12 +50,15 @@ function success(revision: number): PdfRenderResponse {
   };
 }
 
+afterEach(() => vi.useRealTimers());
+
 describe("LatestRenderQueue", () => {
-  it("runs one request and replaces queued work with the latest revision", () => {
+  it("runs one request and exposes only the latest pending revision", () => {
     const worker = new FakeWorker();
     const responses: PdfRenderResponse[] = [];
-    const queue = new LatestRenderQueue(worker, (response) =>
-      responses.push(response),
+    const queue = new LatestRenderQueue(
+      () => worker,
+      (response) => responses.push(response),
     );
 
     queue.enqueue(request(1));
@@ -65,34 +68,47 @@ describe("LatestRenderQueue", () => {
 
     worker.respond(success(1));
     expect(worker.posted.map(getRequestRevision)).toEqual([1, 3]);
+    expect(responses).toEqual([]);
     worker.respond(success(2));
-    expect(responses.map(getResponseRevision)).toEqual([1]);
     worker.respond(success(3));
-    expect(responses.map(getResponseRevision)).toEqual([1, 3]);
+    expect(responses.map(getResponseRevision)).toEqual([3]);
   });
 
-  it("reports a worker error for the active revision and continues", () => {
-    const worker = new FakeWorker();
+  it("terminates a timed-out worker and accepts an explicit recovery request", () => {
+    vi.useFakeTimers();
+    const workers: FakeWorker[] = [];
     const onResponse = vi.fn();
-    const queue = new LatestRenderQueue(worker, onResponse);
+    const queue = new LatestRenderQueue(
+      () => {
+        const worker = new FakeWorker();
+        workers.push(worker);
+        return worker;
+      },
+      onResponse,
+      50,
+    );
+
     queue.enqueue(request(4));
-    queue.enqueue(request(5));
-
-    worker.onerror?.({} as ErrorEvent);
-
+    vi.advanceTimersByTime(51);
+    expect(workers[0]?.terminated).toBe(true);
+    expect(workers).toHaveLength(2);
     expect(onResponse).toHaveBeenCalledWith(
       expect.objectContaining({
         kind: "failure",
         revision: 4,
-        code: "WORKER_FAILURE",
+        code: "RENDER_TIMEOUT",
       }),
     );
-    expect(worker.posted.map(getRequestRevision)).toEqual([4, 5]);
+
+    queue.enqueue(request(5));
+    expect(workers[1]?.posted.map(getRequestRevision)).toEqual([5]);
+    workers[1]?.respond(success(5));
+    expect(onResponse).toHaveBeenLastCalledWith(success(5));
   });
 
   it("terminates once and rejects new work after destruction", () => {
     const worker = new FakeWorker();
-    const queue = new LatestRenderQueue(worker, vi.fn());
+    const queue = new LatestRenderQueue(() => worker, vi.fn());
     queue.enqueue(request(6));
     queue.destroy();
     queue.destroy();

@@ -18,9 +18,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S01 — `feat(catalog): add searchable format-aware template gallery`
 
-- [ ] Create a lightweight metadata catalog, gallery with actual thumbnails, search, and combinable filters.
-- [ ] Synchronize only public filters to the URL; count, empty state, clearing, and back navigation.
-- [ ] Pregenerate known routes and 404; load engines/templates on demand, never for every thumbnail.
+- [x] Create a lightweight metadata catalog, gallery with actual thumbnails, search, and combinable filters.
+- [x] Synchronize only public filters to the URL; count, empty state, clearing, and back navigation.
+- [x] Pregenerate known routes and 404; load engines/templates on demand, never for every thumbnail.
 
 **Acceptance:** The gallery shows only the three available cards at this stage; filters work without importing the engine.
 
@@ -28,10 +28,10 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S02 — `feat(playground): add validated data theme and format controls`
 
-- [ ] Separate the reusable shell from explicit family forms; serializable metadata and a form registry without universal Zod introspection.
-- [ ] Add bounded advanced JSON text, validation before applying, and return to the form; no code evaluation.
-- [ ] Add accent/locale/print-profile controls and reset; retain the last valid preview marked outdated during errors.
-- [ ] Any parameter change invalidates the exportable revision; never put JSON/logos in URLs or storage.
+- [x] Separate the reusable shell from explicit family forms; serializable metadata and a form registry without universal Zod introspection.
+- [x] Add bounded advanced JSON text, validation before applying, and return to the form; no code evaluation.
+- [x] Add accent/locale/print-profile controls and reset; retain the last valid preview marked outdated during errors.
+- [x] Any parameter change invalidates the exportable revision; never put JSON/logos in URLs or storage.
 
 **Acceptance:** Form and JSON states/actions remain consistent without silent data loss.
 
@@ -39,9 +39,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S03 — `feat(playground): handle safe image uploads and render lifecycle`
 
-- [ ] Bounded local PNG/JPEG imports, actual decoding/dimensions, normalized orientation, EXIF removal; local removal available.
-- [ ] Active/pending latest-wins queue, timeout, worker termination, cleanup of buffers/Object URLs and PDF.js tasks.
-- [ ] Sanitized generic errors; controlled recovery and disabled download when the revision is invalid or stale.
+- [x] Bounded local PNG/JPEG imports, actual decoding/dimensions, normalized orientation, EXIF removal; local removal available.
+- [x] Active/pending latest-wins queue, timeout, worker termination, cleanup of buffers/Object URLs and PDF.js tasks.
+- [x] Sanitized generic errors; controlled recovery and disabled download when the revision is invalid or stale.
 
 **Acceptance:** Rejected files have explanations; rapid edits cannot produce stale exports; navigation leaves no active worker.
 
@@ -49,9 +49,9 @@ Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-vi
 
 ### L06-S04 — `test(playground): verify export privacy and stale-result protection`
 
-- [ ] Extend card E2E to verify the latest revision export and no requests containing data/images.
-- [ ] Targeted negative test for user asset URLs; memory-only data.
-- [ ] Activate e2e-chromium and its artifacts without rerunning all lightweight suites; document real/mock boundaries.
+- [x] Extend card E2E to verify the latest revision export and no requests containing data/images.
+- [x] Targeted negative test for user asset URLs; memory-only data.
+- [x] Activate e2e-chromium and its artifacts without rerunning all lightweight suites; document real/mock boundaries.
 
 **Acceptance:** The nominal journey uses actual workers and PDFs; entered data is never transmitted to the site or a third party.
 

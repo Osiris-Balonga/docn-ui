@@ -13,10 +13,11 @@ export function BusinessCardStudioDocument({
   data,
   format,
   locale,
+  overrides,
   printProfile,
   themeId,
 }: BusinessCardDocumentProps) {
-  const theme = getPdfTheme(themeId);
+  const theme = getPdfTheme(themeId, overrides.accentColor);
   const brand = data.organization ?? "Independent studio";
   return (
     <Document
@@ -93,8 +94,14 @@ export function BusinessCardStudioDocument({
   );
 }
 
-export function createBusinessCardStudioPlan(input: unknown) {
-  return createBusinessCardPlan(input, businessCardStudioMetadata, (props) => (
-    <BusinessCardStudioDocument {...props} />
-  ));
+export function createBusinessCardStudioPlan(
+  input: unknown,
+  options?: import("../plan").BusinessCardPlanOptions,
+) {
+  return createBusinessCardPlan(
+    input,
+    businessCardStudioMetadata,
+    (props) => <BusinessCardStudioDocument {...props} />,
+    options,
+  );
 }

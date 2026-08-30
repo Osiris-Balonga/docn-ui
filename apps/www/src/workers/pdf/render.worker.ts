@@ -6,7 +6,10 @@ import {
   type PhysicalDimensions,
 } from "@docn-ui/documents/core";
 import { renderDocumentInBrowser } from "@docn-ui/documents/browser";
-import { createBusinessCardMinimalPlan } from "@docn-ui/documents/templates/business-cards/minimal";
+import type { RenderRequest } from "@docn-ui/documents/core";
+import type { FixedDocumentRenderPlan } from "@docn-ui/documents";
+import type { BusinessCardData } from "@docn-ui/documents/templates/business-cards/schema";
+import type { PdfUserAsset } from "./protocol";
 import {
   parsePdfRenderRequest,
   PDF_RENDER_PROTOCOL_VERSION,
@@ -17,6 +20,50 @@ import {
 
 const workerScope: DedicatedWorkerGlobalScope =
   self as unknown as DedicatedWorkerGlobalScope;
+
+async function createPlan(
+  request: RenderRequest<BusinessCardData>,
+  assetSources: Readonly<Record<string, string>>,
+): Promise<FixedDocumentRenderPlan> {
+  switch (request.templateId) {
+    case "business-card-editorial": {
+      const { createBusinessCardEditorialPlan } =
+        await import("@docn-ui/documents/templates/business-cards/editorial");
+      return createBusinessCardEditorialPlan(request, { assetSources }).plan;
+    }
+    case "business-card-studio": {
+      const { createBusinessCardStudioPlan } =
+        await import("@docn-ui/documents/templates/business-cards/studio");
+      return createBusinessCardStudioPlan(request, { assetSources }).plan;
+    }
+    case "business-card-minimal": {
+      const { createBusinessCardMinimalPlan } =
+        await import("@docn-ui/documents/templates/business-cards/minimal");
+      return createBusinessCardMinimalPlan(request, { assetSources }).plan;
+    }
+    default:
+      throw new DocumentValidationError([
+        {
+          code: "INVALID_DATA",
+          message: "The selected PDF template is not available.",
+          path: ["templateId"],
+        },
+      ]);
+  }
+}
+
+function createAssetUrls(assets: readonly PdfUserAsset[]) {
+  const urls = assets.map((asset) => ({
+    id: asset.id,
+    url: URL.createObjectURL(new Blob([asset.bytes], { type: asset.mimeType })),
+  }));
+  return {
+    sources: Object.fromEntries(urls.map(({ id, url }) => [id, url])),
+    revoke() {
+      for (const { url } of urls) URL.revokeObjectURL(url);
+    },
+  };
+}
 
 function readRequestedRevision(value: unknown): number {
   if (!value || typeof value !== "object") return 0;
@@ -45,8 +92,9 @@ workerScope.addEventListener(
     }
 
     const request = validated.request;
+    const assetUrls = createAssetUrls(validated.assets);
     try {
-      const { plan } = createBusinessCardMinimalPlan(request);
+      const plan = await createPlan(request, assetUrls.sources);
       const bytes = await renderDocumentInBrowser(plan);
       const pdfBytes = bytes.buffer.slice(
         bytes.byteOffset,
@@ -78,6 +126,8 @@ workerScope.addEventListener(
           : "The PDF could not be rendered. Try again.",
       };
       workerScope.postMessage(failure satisfies PdfRenderResponse);
+    } finally {
+      assetUrls.revoke();
     }
   },
 );
