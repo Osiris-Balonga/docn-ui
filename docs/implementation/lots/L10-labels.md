@@ -1,6 +1,6 @@
 # L10 — Individual labels and sheets
 
-Initial status: **planned**. Branch: `feat/label-templates`.
+Status: **verified locally** on branch `feat/label-templates`, based on merged L09 commit `b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5`.
 
 Dependencies: L09. Requirements: FR-11, FR-13, FR-16; NFR-05.
 
@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/core/imposition, templates
 
 ### L10-S01 — `feat(labels): define bounded sheet geometry and placement`
 
-- [ ] Pure functions for dimensions/margins/gaps/cells, possible row/column counts, and row-major placement.
-- [ ] First-page starting cell, quantity, subsequent pages; reject impossible formats, negative margins, and overflow.
-- [ ] Label schema, individual/sheet profile, and bounded custom dimensions.
+- [x] Pure functions for dimensions/margins/gaps/cells, possible row/column counts, and row-major placement.
+- [x] First-page starting cell, quantity, subsequent pages; reject impossible formats, negative margins, and overflow.
+- [x] Label schema, individual/sheet profile, and bounded custom dimensions.
 
 **Acceptance:** Every rectangle stays within the page; each data item occupies exactly one expected cell.
 
@@ -28,9 +28,9 @@ Target files/responsibilities: packages/documents/src/core/imposition, templates
 
 ### L10-S02 — `feat(labels): add product address and inventory layouts`
 
-- [ ] Compose three size-appropriate layouts; reuse QR with its density constraint.
-- [ ] Add individual rendering, then sheets with ordered IDs; avoid duplicating template logic.
-- [ ] UI controls for dimensions, sheet/individual mode, quantity, starting cell; metadata, thumbnails, registry.
+- [x] Compose three size-appropriate layouts; reuse QR with its density constraint.
+- [x] Add individual rendering, then sheets with ordered IDs; avoid duplicating template logic.
+- [x] Connect the accepted preview/copy/source catalog surface; add metadata, PDF-derived thumbnails, and registry items. The removed customization form is not restored.
 
 **Acceptance:** Switching export modes preserves data and produces expected dimensions/page counts.
 
@@ -38,9 +38,9 @@ Target files/responsibilities: packages/documents/src/core/imposition, templates
 
 ### L10-S03 — `test(labels): qualify sheet alignment and partial-sheet export`
 
-- [ ] Compare actual PDF placement with independently expected coordinates; verify no skipped or duplicated data.
-- [ ] Create a sheet visual reference if it covers structure absent from individual labels.
-- [ ] Document test sheets, 100% scale, hardware margins, and lack of Avery certification.
+- [x] Compare actual PDF placement with independently expected coordinates; verify no skipped or duplicated data.
+- [x] Retain a two-page partial sheet and three individual outputs for local visual inspection; select the product preview as the committed family reference.
+- [x] Document test sheets, 100% scale, hardware margins, and lack of Avery certification.
 
 **Acceptance:** A sheet starting partway through and continuing on the next page is correct; printing limits are displayed.
 
