@@ -171,11 +171,11 @@ async function scaffoldConsumer(directory: string, name: string) {
     },
     iconLibrary: "lucide",
     aliases: {
-      components: "@/components",
-      utils: "@/lib/utils",
-      ui: "@/components/ui",
-      lib: "@/lib",
-      hooks: "@/hooks",
+      components: "#/components",
+      utils: "#/lib/utils",
+      ui: "#/components/ui",
+      lib: "#/lib",
+      hooks: "#/hooks",
     },
   });
   await writeJson(resolve(directory, "tsconfig.json"), {
@@ -184,7 +184,7 @@ async function scaffoldConsumer(directory: string, name: string) {
       jsx: "react-jsx",
       module: "ESNext",
       moduleResolution: "Bundler",
-      paths: { "@/*": ["*"] },
+      paths: { "#/*": ["src/*"] },
       target: "ES2022",
     },
     include: ["docn", "src", "vite.config.mjs"],
@@ -295,7 +295,12 @@ describe("isolated registry consumers", () => {
       ...(await listFiles(resolve(browserDirectory, "docn"))),
       ...(await listFiles(resolve(nodeDirectory, "docn"))),
     ];
-    expect(installedSources.length).toBe(56);
+    expect(installedSources.length).toBe(58);
+    expect(
+      installedSources.filter((file) =>
+        /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
+      ),
+    ).toHaveLength(2);
     for (const file of installedSources) {
       const content = await readFile(file, "utf8");
       expect(content).not.toContain(root);
@@ -307,11 +312,11 @@ describe("isolated registry consumers", () => {
       resolve(nodeDirectory, "src/node-entry.ts"),
       `import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { PDF_RENDER_PROTOCOL_VERSION } from "@/docn/core/contracts";
-import { createNodeAssetResolver } from "@/docn/render/assets.node";
-import { renderDocumentInNode } from "@/docn/render/node";
-import { createBusinessCardMinimalPlan } from "@/docn/templates/business-cards/business-card-minimal/business-card-minimal";
-import { minimalBusinessCardExampleFr } from "@/docn/templates/business-cards/business-card-minimal/examples";
+import { PDF_RENDER_PROTOCOL_VERSION } from "../docn/core/contracts";
+import { createNodeAssetResolver } from "../docn/render/assets.node";
+import { renderDocumentInNode } from "../docn/render/node";
+import { createBusinessCardMinimalPlan } from "../docn/templates/business-cards/business-card-minimal/business-card-minimal";
+import { minimalBusinessCardExampleFr } from "../docn/templates/business-cards/business-card-minimal/examples";
 const { plan } = createBusinessCardMinimalPlan(${requestSource});
 const bytes = await renderDocumentInNode(plan, createNodeAssetResolver(resolve("assets")));
 await writeFile("node-output.pdf", bytes);
@@ -323,7 +328,6 @@ console.log("node-render-complete", bytes.byteLength);
       `import { resolve } from "node:path";
 import { defineConfig } from "vite";
 export default defineConfig({
-  resolve: { alias: { "@": resolve(".") } },
   build: { outDir: "dist-node", ssr: "src/node-entry.ts", rollupOptions: { output: { entryFileNames: "node-entry.mjs" } } },
 });
 `,
@@ -335,11 +339,11 @@ export default defineConfig({
     );
     await writeFile(
       resolve(browserDirectory, "src/main.ts"),
-      `import { PDF_RENDER_PROTOCOL_VERSION } from "@/docn/core/contracts";
-import { createBrowserAssetResolver } from "@/docn/render/assets.browser";
-import { renderDocumentInBrowser } from "@/docn/render/browser";
-import { createBusinessCardMinimalPlan } from "@/docn/templates/business-cards/business-card-minimal/business-card-minimal";
-import { minimalBusinessCardExampleFr } from "@/docn/templates/business-cards/business-card-minimal/examples";
+      `import { PDF_RENDER_PROTOCOL_VERSION } from "../docn/core/contracts";
+import { createBrowserAssetResolver } from "../docn/render/assets.browser";
+import { renderDocumentInBrowser } from "../docn/render/browser";
+import { createBusinessCardMinimalPlan } from "../docn/templates/business-cards/business-card-minimal/business-card-minimal";
+import { minimalBusinessCardExampleFr } from "../docn/templates/business-cards/business-card-minimal/examples";
 const { plan } = createBusinessCardMinimalPlan(${requestSource});
 const bytes = await renderDocumentInBrowser(plan, createBrowserAssetResolver(window.location.origin));
 const link = document.createElement("a");
@@ -352,9 +356,8 @@ document.querySelector("#status").textContent = "ready";
     );
     await writeFile(
       resolve(browserDirectory, "vite.config.mjs"),
-      `import { resolve } from "node:path";
-import { defineConfig } from "vite";
-export default defineConfig({ resolve: { alias: { "@": resolve(".") } }, build: { outDir: "dist-browser" } });
+      `import { defineConfig } from "vite";
+export default defineConfig({ build: { outDir: "dist-browser" } });
 `,
     );
 

@@ -8,13 +8,12 @@ import {
   View,
 } from "@react-pdf/renderer";
 import { createContext, useContext, type ReactNode } from "react";
-import QRCodeEncoder from "qrcode";
-import { DocumentValidationError } from "../core/errors";
 import type { PrintProfile, ResolvedFixedFormat } from "../core/formats";
 import { millimetersToPoints } from "../core/units";
 import { getPageGeometry } from "../render/print-profile";
 import type { PdfTheme } from "../themes/themes";
 import { createSafeFrame, type SafeFrame } from "./measurement";
+import { createPrintableQrGeometry } from "./qr-code";
 
 type SpacingToken = keyof PdfTheme["spacing"];
 type TextSize = "body" | "caption" | "label";
@@ -260,6 +259,7 @@ export interface ImageProps {
 export interface QRCodeProps {
   backgroundColor?: string;
   color?: string;
+  minimumModuleSize?: number;
   payload: string;
   size: number;
 }
@@ -267,31 +267,12 @@ export interface QRCodeProps {
 export function QRCode({
   backgroundColor = "#ffffff",
   color = "#111111",
+  minimumModuleSize = 1,
   payload,
   size,
 }: QRCodeProps) {
-  if (new TextEncoder().encode(payload).byteLength > 512) {
-    throw new DocumentValidationError([
-      {
-        code: "LIMIT_EXCEEDED",
-        message: "QR payload exceeds 512 UTF-8 bytes.",
-        path: ["data", "qrPayload"],
-      },
-    ]);
-  }
-  const code = QRCodeEncoder.create(payload, { errorCorrectionLevel: "M" });
-  const quietZone = 4;
-  const matrixSize = code.modules.size;
-  const totalModules = matrixSize + quietZone * 2;
-  if (size / totalModules < 1) {
-    throw new DocumentValidationError([
-      {
-        code: "QR_TOO_DENSE",
-        message: "QR content is too dense for the selected card layout.",
-        path: ["data", "qrPayload"],
-      },
-    ]);
-  }
+  const { code, matrixSize, quietZone, totalModules } =
+    createPrintableQrGeometry(payload, size, minimumModuleSize);
   return (
     <Svg
       width={size}

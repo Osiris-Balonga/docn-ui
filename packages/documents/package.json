@@ -21,6 +21,18 @@
     "./templates/business-cards/schema": "./src/templates/business-cards/schema.ts",
     "./templates/business-cards/studio": "./src/templates/business-cards/business-card-studio/index.ts",
     "./templates/business-cards/studio/examples": "./src/templates/business-cards/business-card-studio/examples.ts",
+    "./templates/event-tickets": "./src/templates/event-tickets/index.ts",
+    "./templates/event-tickets/classic": "./src/templates/event-tickets/event-ticket-classic/index.ts",
+    "./templates/event-tickets/classic/examples": "./src/templates/event-tickets/event-ticket-classic/examples.ts",
+    "./templates/event-tickets/classic/metadata": "./src/templates/event-tickets/event-ticket-classic/metadata.ts",
+    "./templates/event-tickets/conference": "./src/templates/event-tickets/event-ticket-conference/index.ts",
+    "./templates/event-tickets/conference/examples": "./src/templates/event-tickets/event-ticket-conference/examples.ts",
+    "./templates/event-tickets/conference/metadata": "./src/templates/event-tickets/event-ticket-conference/metadata.ts",
+    "./templates/event-tickets/live": "./src/templates/event-tickets/event-ticket-live/index.ts",
+    "./templates/event-tickets/live/examples": "./src/templates/event-tickets/event-ticket-live/examples.ts",
+    "./templates/event-tickets/live/metadata": "./src/templates/event-tickets/event-ticket-live/metadata.ts",
+    "./templates/event-tickets/metadata": "./src/templates/event-tickets/metadata.ts",
+    "./templates/event-tickets/schema": "./src/templates/event-tickets/schema.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {

@@ -30,10 +30,11 @@ export default function GettingStartedPage() {
           Install from the development registry
         </h2>
         <p className="mt-4 text-muted-foreground">
-          Initialize shadcn 4.19.0 in a React 19 TypeScript project with the
-          source alias configured. Start this repository locally, then copy the
-          origin-aware command from a template detail page. The default static
-          preview command for the minimal card is:
+          Use a React 19 TypeScript project that already has a shadcn
+          <code> components.json</code>. Keep its current aliases and style.
+          Start this repository locally, then copy the origin-aware command from
+          a template detail page. The default static preview command for the
+          minimal card is:
         </p>
         <div className="mt-5">
           <CodeBlock label="Install source">

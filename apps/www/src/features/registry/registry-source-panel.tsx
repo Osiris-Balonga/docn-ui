@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Check, Copy, Files, Terminal } from "lucide-react";
+import { CodeViewport } from "@/components/code-viewport";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -106,12 +107,9 @@ function CommandBlock({ command, label }: { command: string; label: string }) {
         </span>
         <CopyAction label="Copy" text={command} />
       </div>
-      <pre
-        className="max-w-full overflow-x-auto px-4 py-3 text-sm"
-        tabIndex={0}
-      >
+      <CodeViewport className="max-w-full px-4 py-3 text-sm">
         <code>{command}</code>
-      </pre>
+      </CodeViewport>
     </div>
   );
 }
@@ -270,12 +268,8 @@ export function RegistrySourcePanel({
                 <span>{selectedFile.path}</span>
               </div>
             )}
-            <pre
-              className={cn(
-                "scrollbar-hidden overflow-auto p-4 font-mono text-[13px] leading-6",
-                drawer ? "min-h-0 flex-1" : "max-h-[42rem]",
-              )}
-              tabIndex={0}
+            <CodeViewport
+              className={cn(drawer ? "min-h-0 flex-1" : "max-h-[42rem]")}
             >
               <code aria-label={`${selectedFile.target} source`}>
                 {highlighted.map((token, index) => (
@@ -287,7 +281,7 @@ export function RegistrySourcePanel({
                   </span>
                 ))}
               </code>
-            </pre>
+            </CodeViewport>
           </div>
         ) : (
           <div className="p-8 text-sm text-muted-foreground">

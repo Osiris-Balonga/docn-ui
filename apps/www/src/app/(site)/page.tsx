@@ -16,9 +16,9 @@ export default function HomePage() {
           Well-designed PDF templates, owned by your codebase.
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-          docn-ui is building a source-first document toolkit inspired by the
-          shadcn model: install the templates you need, edit them locally, and
-          generate PDFs in the browser.
+          docn-ui extends the shadcn source workflow to printable documents:
+          install the templates you need, edit them locally, and generate PDFs
+          in the browser.
         </p>
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link

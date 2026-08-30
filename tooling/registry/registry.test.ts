@@ -11,7 +11,7 @@ import { registrySourceManifest } from "./source-manifest.mjs";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 describe("document registry generation", () => {
-  it("builds the real card graph with bounded import rewriting", async () => {
+  it("builds the real catalog graph with bounded import rewriting", async () => {
     const result = await buildRegistry({
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
@@ -21,6 +21,10 @@ describe("document registry generation", () => {
       "docn-themes",
       "docn-render",
       "docn-primitives",
+      "docn-event-ticket-foundation",
+      "docn-event-ticket-classic",
+      "docn-event-ticket-conference",
+      "docn-event-ticket-live",
       "docn-business-card-foundation",
       "docn-business-card-minimal",
       "docn-business-card-editorial",
@@ -35,14 +39,27 @@ describe("document registry generation", () => {
     const foundation = result.items
       .find((item) => item.name === "docn-business-card-foundation")
       ?.files.find((file) => file.path.endsWith("business-cards/plan.ts"));
-    expect(composition?.content).toContain('from "@/docn/primitives/index"');
-    expect(foundation?.content).toContain('from "@/docn/core/contracts"');
-    expect(foundation?.content).toContain('from "@/docn/core/errors"');
-    expect(foundation?.content).not.toContain('from "@/docn/core/index"');
+    expect(composition?.content).toContain('from "../../../primitives/index"');
+    expect(foundation?.content).toContain('from "../../core/contracts"');
+    expect(foundation?.content).toContain('from "../../core/errors"');
+    expect(foundation?.content).not.toContain('from "../../core/index"');
     expect(composition?.content).toContain("website.replace(/^https?:\\/\\//");
     expect(minimal?.registryDependencies).toEqual(
       expect.arrayContaining([
         "http://127.0.0.1:4173/r/dev/docn-primitives.json",
+      ]),
+    );
+    const classicTicket = result.items.find(
+      (item) => item.name === "docn-event-ticket-classic",
+    );
+    expect(
+      classicTicket?.files.find((file) =>
+        file.path.endsWith("event-ticket-classic.tsx"),
+      )?.content,
+    ).toContain('from "../../../primitives/index"');
+    expect(classicTicket?.registryDependencies).toEqual(
+      expect.arrayContaining([
+        "http://127.0.0.1:4173/r/dev/docn-event-ticket-foundation.json",
       ]),
     );
     expect(
@@ -55,6 +72,7 @@ describe("document registry generation", () => {
 
   it("rewrites import specifiers only and rejects unresolved sources", () => {
     const targets = new Map([
+      ["packages/documents/src/core/contracts.ts", "~/docn/core/contracts.ts"],
       ["packages/documents/src/core/errors.ts", "~/docn/core/errors.ts"],
       ["packages/documents/src/core/formats.ts", "~/docn/core/formats.ts"],
     ]);
@@ -71,8 +89,8 @@ describe("document registry generation", () => {
       ),
     ).toBe(
       [
-        'import { x } from "@/docn/core/errors";',
-        'type T = import("@/docn/core/formats").FormatDefinition;',
+        'import { x } from "./errors";',
+        'type T = import("./formats").FormatDefinition;',
         'const example = "./errors";',
       ].join("\n"),
     );
