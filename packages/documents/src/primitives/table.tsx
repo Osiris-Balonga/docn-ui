@@ -18,13 +18,17 @@ export function FlowTableHeader({
   borderColor,
   columns,
   color,
+  left = 0,
   top,
+  width = "100%",
 }: {
   backgroundColor: string;
   borderColor: string;
   columns: readonly FlowTableColumn[];
   color: string;
+  left?: number;
   top: number;
+  width?: number | string;
 }) {
   return (
     <View
@@ -34,12 +38,12 @@ export function FlowTableHeader({
         borderBottomColor: borderColor,
         borderBottomWidth: 0.75,
         flexDirection: "row",
-        left: 0,
+        left,
         paddingBottom: 6,
         paddingTop: 6,
         position: "absolute",
         top,
-        width: "100%",
+        width,
       }}
     >
       {columns.map((column) => (

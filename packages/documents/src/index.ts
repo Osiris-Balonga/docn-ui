@@ -19,13 +19,6 @@ export type {
 } from "./render/runtime";
 export * from "./templates/business-cards";
 export * from "./templates/event-tickets";
+export * from "./templates/invoices";
 export * from "./templates/labels";
 export * from "./templates/receipts";
-export {
-  createInvoicePlan,
-  type InvoiceDocumentProps,
-} from "./templates/invoices/plan";
-export {
-  parseInvoiceData,
-  type InvoiceData,
-} from "./templates/invoices/schema";

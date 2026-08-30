@@ -34,6 +34,10 @@ describe("document registry generation", () => {
       "docn-label-address",
       "docn-label-inventory",
       "docn-business-card-foundation",
+      "docn-invoice-foundation",
+      "docn-invoice-minimal",
+      "docn-invoice-business",
+      "docn-invoice-studio",
       "docn-business-card-minimal",
       "docn-business-card-editorial",
       "docn-business-card-studio",
@@ -91,6 +95,17 @@ describe("document registry generation", () => {
     ).toContain('from "../plan"');
     expect(productLabel?.registryDependencies).toEqual([
       "http://127.0.0.1:4173/r/dev/docn-label-foundation.json",
+    ]);
+    const studioInvoice = result.items.find(
+      (item) => item.name === "docn-invoice-studio",
+    );
+    expect(
+      studioInvoice?.files.find((file) =>
+        file.path.endsWith("invoice-studio.tsx"),
+      )?.content,
+    ).toContain('from "../layout"');
+    expect(studioInvoice?.registryDependencies).toEqual([
+      "http://127.0.0.1:4173/r/dev/docn-invoice-foundation.json",
     ]);
     expect(
       await buildRegistry({

@@ -26,6 +26,7 @@ const templateFamilies = [
   { id: "ticket", label: "Event Tickets" },
   { id: "receipt", label: "Receipts" },
   { id: "label", label: "Labels" },
+  { id: "invoice", label: "Invoices" },
 ] as const satisfies readonly {
   id: TemplateCatalogEntry["family"];
   label: string;

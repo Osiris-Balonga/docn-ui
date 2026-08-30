@@ -1,4 +1,6 @@
 import { Document, Page, Text, View } from "@react-pdf/renderer";
+import { mkdir, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { describe, expect, it } from "vitest";
 import {
@@ -14,6 +16,18 @@ import {
   type FlowTableColumn,
 } from "../../primitives/table";
 import { renderDocumentInNode } from "../../render/node";
+import {
+  businessInvoiceExample,
+  createInvoiceBusinessPlan,
+} from "./invoice-business";
+import {
+  createInvoiceMinimalPlan,
+  minimalInvoiceExample,
+} from "./invoice-minimal";
+import {
+  createInvoiceStudioPlan,
+  studioInvoiceExample,
+} from "./invoice-studio";
 import { createInvoicePlan, type InvoiceDocumentProps } from "./plan";
 import type { InvoiceData } from "./schema";
 
@@ -135,6 +149,20 @@ function request(data: InvoiceData): RenderRequest<InvoiceData> {
   };
 }
 
+function templateRequest(
+  data: InvoiceData,
+  templateId: "invoice-business" | "invoice-minimal" | "invoice-studio",
+  formatId: "a4" | "letter",
+  themeId: RenderRequest["themeId"],
+): RenderRequest<InvoiceData> {
+  return {
+    ...request(data),
+    formatId,
+    templateId,
+    themeId,
+  };
+}
+
 async function extractPages(bytes: Uint8Array) {
   const loadingTask = getDocument({
     data: bytes.slice(),
@@ -161,7 +189,69 @@ async function extractPages(bytes: Uint8Array) {
   }
 }
 
+async function retainPdf(name: string, bytes: Uint8Array) {
+  if (process.env.DOCN_WRITE_PDF_ARTIFACTS !== "1") return;
+  const directory = fileURLToPath(
+    new URL("../../../../../.artifacts/l11/pdf/", import.meta.url),
+  );
+  await mkdir(directory, { recursive: true });
+  await writeFile(`${directory}${name}.pdf`, bytes);
+}
+
 describe("invoice pagination foundation", () => {
+  it("renders three distinct nominal invoices in A4 and Letter", async () => {
+    const fixtures = [
+      {
+        artifact: "invoice-minimal-a4",
+        expected: [
+          "Atelier Nzela",
+          "INV-2026-0042",
+          "Identity system refinement",
+        ],
+        plan: createInvoiceMinimalPlan(
+          templateRequest(
+            minimalInvoiceExample,
+            "invoice-minimal",
+            "a4",
+            "neutral",
+          ),
+        ).plan,
+      },
+      {
+        artifact: "invoice-business-letter",
+        expected: ["Kivu Advisory Group", "KA-2026-118", "Executive roadmap"],
+        plan: createInvoiceBusinessPlan(
+          templateRequest(
+            businessInvoiceExample,
+            "invoice-business",
+            "letter",
+            "editorial",
+          ),
+        ).plan,
+      },
+      {
+        artifact: "invoice-studio-a4",
+        expected: [
+          "Common Form Studio",
+          "CFS-2608-17",
+          "Print-ready production",
+        ],
+        plan: createInvoiceStudioPlan(
+          templateRequest(studioInvoiceExample, "invoice-studio", "a4", "bold"),
+        ).plan,
+      },
+    ];
+
+    for (const fixture of fixtures) {
+      const bytes = await renderDocumentInNode(fixture.plan);
+      const pages = await extractPages(bytes);
+      expect(pages).toHaveLength(1);
+      for (const expected of fixture.expected)
+        expect(pages[0]).toContain(expected);
+      await retainPdf(fixture.artifact, bytes);
+    }
+  });
+
   it("repeats headers and preserves every row, footer, and final summary", async () => {
     const data = {
       seller: { name: "Atelier Nzela", address: ["14 avenue des Arts"] },

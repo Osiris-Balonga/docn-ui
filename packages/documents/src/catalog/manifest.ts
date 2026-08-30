@@ -4,6 +4,9 @@ import { businessCardStudioMetadata } from "../templates/business-cards/business
 import { eventTicketClassicMetadata } from "../templates/event-tickets/event-ticket-classic/metadata";
 import { eventTicketConferenceMetadata } from "../templates/event-tickets/event-ticket-conference/metadata";
 import { eventTicketLiveMetadata } from "../templates/event-tickets/event-ticket-live/metadata";
+import { invoiceBusinessMetadata } from "../templates/invoices/invoice-business/metadata";
+import { invoiceMinimalMetadata } from "../templates/invoices/invoice-minimal/metadata";
+import { invoiceStudioMetadata } from "../templates/invoices/invoice-studio/metadata";
 import { labelAddressMetadata } from "../templates/labels/label-address/metadata";
 import { labelInventoryMetadata } from "../templates/labels/label-inventory/metadata";
 import { labelProductMetadata } from "../templates/labels/label-product/metadata";
@@ -27,8 +30,9 @@ export interface TemplateCatalogEntry {
     qr: boolean;
   };
   description: string;
-  family: "business-card" | "label" | "receipt" | "ticket";
-  familyLabel: "Business cards" | "Event tickets" | "Labels" | "Receipts";
+  family: "business-card" | "invoice" | "label" | "receipt" | "ticket";
+  familyLabel:
+    "Business cards" | "Event tickets" | "Invoices" | "Labels" | "Receipts";
   id: string;
   sides: number;
   slug: string;
@@ -47,6 +51,9 @@ type CatalogMetadata =
   | typeof eventTicketClassicMetadata
   | typeof eventTicketConferenceMetadata
   | typeof eventTicketLiveMetadata
+  | typeof invoiceBusinessMetadata
+  | typeof invoiceMinimalMetadata
+  | typeof invoiceStudioMetadata
   | typeof labelAddressMetadata
   | typeof labelInventoryMetadata
   | typeof labelProductMetadata
@@ -172,6 +179,30 @@ export const templateCatalog = [
     sha256: "a0f7be5a3fb56b0fa50b31f62670975a0a652f419c36ecca3ea00dc72e24162d",
     src: "/generated/catalog/label-inventory.png",
     width: 567,
+  }),
+  catalogEntry(invoiceMinimalMetadata, "Invoices", {
+    fixture: "minimalInvoiceExample",
+    height: 679,
+    page: 1,
+    sha256: "9ea1cbc505f708e31770ac5ddc0b722073f7d7768270744abe57130f43ba46ca",
+    src: "/generated/catalog/invoice-minimal.png",
+    width: 480,
+  }),
+  catalogEntry(invoiceBusinessMetadata, "Invoices", {
+    fixture: "businessInvoiceExample",
+    height: 622,
+    page: 1,
+    sha256: "9157a0fa9b457749026513964afbc26c4dd13f004c926239137f1194470d1e79",
+    src: "/generated/catalog/invoice-business.png",
+    width: 480,
+  }),
+  catalogEntry(invoiceStudioMetadata, "Invoices", {
+    fixture: "studioInvoiceExample",
+    height: 679,
+    page: 1,
+    sha256: "445f5a3ca493929ba29261c01078cc2aebfbebd9a55255fbc042a2a103751319",
+    src: "/generated/catalog/invoice-studio.png",
+    width: 480,
   }),
 ] as const satisfies readonly TemplateCatalogEntry[];
 
