@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L09",
+  "currentLot": "L10",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -224,7 +224,7 @@
     {
       "id": "L09",
       "file": "lots/L09-thermal-receipts.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L08"],
       "branch": "feat/thermal-receipt-templates",
       "baseCommit": "4cb0ebf9e3b57037790201b14bfea0cd1386a700",
@@ -238,15 +238,17 @@
         "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
       ],
       "evidence": "../qa/L09.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
+      "mergedAt": "2026-08-30T16:42:50Z"
     },
     {
       "id": "L10",
       "file": "lots/L10-labels.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L09"],
       "branch": "feat/label-templates",
-      "baseCommit": null,
+      "baseCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
       "actualCommits": [],
       "evidence": null,
       "blocker": null
