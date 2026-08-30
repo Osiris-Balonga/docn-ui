@@ -21,9 +21,7 @@ function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav aria-label="Documentation">
-      <p className="mb-2 px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-        Documentation
-      </p>
+      <p className="mb-2 px-2 text-sm font-semibold">Documentation</p>
       <ul className="space-y-1">
         {docsNavigation.map((item) => {
           const active = pathname === item.href || `${pathname}/` === item.href;
@@ -35,9 +33,9 @@ function NavigationLinks({ onNavigate }: { onNavigate?: () => void }) {
                 aria-current={active ? "page" : undefined}
                 {...(onNavigate ? { onClick: onNavigate } : {})}
                 className={cn(
-                  "block rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
+                  "block rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50",
                   active
-                    ? "bg-accent font-medium text-accent-foreground"
+                    ? "bg-muted font-medium text-foreground"
                     : "text-muted-foreground",
                 )}
               >

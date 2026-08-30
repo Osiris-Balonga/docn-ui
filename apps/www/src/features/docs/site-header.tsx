@@ -9,12 +9,12 @@ export function SiteHeader() {
     <>
       <a
         href="#main-content"
-        className="fixed top-3 left-3 z-[100] -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-md transition-transform focus:translate-y-0 focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+        className="fixed top-3 left-3 z-50 -translate-y-20 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground shadow-md transition-transform focus:translate-y-0 focus:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         Skip to content
       </a>
       <header className="sticky top-0 z-40 border-b bg-background/95 supports-backdrop-filter:backdrop-blur-sm">
-        <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-4 px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto flex h-14 w-full max-w-[90rem] items-center gap-4 px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
             aria-label="docn-ui home"
@@ -25,13 +25,13 @@ export function SiteHeader() {
           <nav aria-label="Primary" className="flex items-center gap-1">
             <Link
               href="/templates/"
-              className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="rounded-md px-2 py-1 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               Templates
             </Link>
             <Link
               href="/docs/"
-              className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
+              className="rounded-md px-2 py-1 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               Docs
             </Link>

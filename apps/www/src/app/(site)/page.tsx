@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRightIcon, GitForkIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -12,9 +11,11 @@ const qualifiedFoundations = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-24 lg:px-12 lg:py-28">
+    <div className="mx-auto w-full max-w-[90rem] px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <section aria-labelledby="home-heading" className="max-w-3xl">
-        <Badge variant="secondary">Open source · In development</Badge>
+        <p className="text-sm font-medium text-muted-foreground">
+          Open source · In development
+        </p>
         <h1
           id="home-heading"
           className="mt-6 text-4xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl"

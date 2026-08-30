@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Separator } from "@/components/ui/separator";
 import { DocsBreadcrumbs } from "./docs-breadcrumbs";
 
 type DocsArticleProps = {
@@ -18,14 +17,13 @@ export function DocsArticle({
   return (
     <article className="max-w-[72ch]">
       <DocsBreadcrumbs {...(breadcrumb ? { current: breadcrumb } : {})} />
-      <h1 className="mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-balance">
+      <h1 className="mt-4 scroll-m-20 text-3xl font-semibold tracking-tight text-balance">
         {title}
       </h1>
-      <p className="mt-4 text-lg leading-8 text-muted-foreground">
+      <p className="mt-3 text-lg leading-8 text-muted-foreground">
         {description}
       </p>
-      <Separator className="my-8" />
-      <div className="space-y-8 leading-7">{children}</div>
+      <div className="mt-10 space-y-10 leading-7">{children}</div>
     </article>
   );
 }

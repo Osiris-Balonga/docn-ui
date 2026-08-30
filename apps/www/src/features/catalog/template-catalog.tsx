@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpRight, Search, X } from "lucide-react";
 import { templateCatalog } from "@docn-ui/documents/catalog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,7 +55,7 @@ export function TemplateCatalog() {
   const resultLabel = `${results.length} ${results.length === 1 ? "template" : "templates"}`;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
+    <div className="mx-auto w-full max-w-[90rem] px-4 py-12 sm:px-6 lg:px-8">
       <header className="max-w-3xl">
         <p className="font-mono text-xs font-medium tracking-wide text-primary uppercase">
           Template catalog
@@ -77,7 +76,7 @@ export function TemplateCatalog() {
         <h2 id="catalog-filters" className="sr-only">
           Catalog filters
         </h2>
-        <div className="grid gap-4 md:grid-cols-[minmax(15rem,1fr)_13rem_13rem_auto] md:items-end">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[minmax(15rem,1fr)_13rem_13rem_auto] lg:items-end">
           <div className="space-y-2">
             <Label htmlFor="template-search">Search templates</Label>
             <div className="relative">
@@ -196,15 +195,11 @@ export function TemplateCatalog() {
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {template.description}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    <Badge variant="outline">{template.sides} sides</Badge>
-                    <Badge variant="outline">
-                      {template.supportedFormatIds.length} formats
-                    </Badge>
-                    {template.capabilities.qr ? (
-                      <Badge variant="outline">Vector QR</Badge>
-                    ) : null}
-                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    {template.sides} sides ·{" "}
+                    {template.supportedFormatIds.length} formats
+                    {template.capabilities.qr ? " · Vector QR" : ""}
+                  </p>
                 </div>
               </Link>
             </li>

@@ -38,12 +38,10 @@ export default async function TemplatePage({
   if (!template) notFound();
 
   return (
-    <>
-      <BusinessCardPlayground
-        key={template.id}
-        templateId={template.id as BusinessCardTemplateId}
-      />
-      <RegistrySourcePanel itemName={`docn-${template.id}`} />
-    </>
+    <BusinessCardPlayground
+      key={template.id}
+      templateId={template.id as BusinessCardTemplateId}
+      source={<RegistrySourcePanel itemName={`docn-${template.id}`} />}
+    />
   );
 }
