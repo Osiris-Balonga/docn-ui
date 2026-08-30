@@ -33,6 +33,18 @@
     "./templates/event-tickets/live/metadata": "./src/templates/event-tickets/event-ticket-live/metadata.ts",
     "./templates/event-tickets/metadata": "./src/templates/event-tickets/metadata.ts",
     "./templates/event-tickets/schema": "./src/templates/event-tickets/schema.ts",
+    "./templates/receipts": "./src/templates/receipts/index.ts",
+    "./templates/receipts/schema": "./src/templates/receipts/schema.ts",
+    "./templates/receipts/metadata": "./src/templates/receipts/metadata.ts",
+    "./templates/receipts/retail": "./src/templates/receipts/receipt-retail/index.ts",
+    "./templates/receipts/retail/examples": "./src/templates/receipts/receipt-retail/examples.ts",
+    "./templates/receipts/retail/metadata": "./src/templates/receipts/receipt-retail/metadata.ts",
+    "./templates/receipts/hospitality": "./src/templates/receipts/receipt-hospitality/index.ts",
+    "./templates/receipts/hospitality/examples": "./src/templates/receipts/receipt-hospitality/examples.ts",
+    "./templates/receipts/hospitality/metadata": "./src/templates/receipts/receipt-hospitality/metadata.ts",
+    "./templates/receipts/service": "./src/templates/receipts/receipt-service/index.ts",
+    "./templates/receipts/service/examples": "./src/templates/receipts/receipt-service/examples.ts",
+    "./templates/receipts/service/metadata": "./src/templates/receipts/receipt-service/metadata.ts",
     "./themes": "./src/themes/themes.ts"
   },
   "scripts": {

@@ -314,6 +314,6 @@ describe("PDF rendering feasibility", () => {
           maxHeightMm: 45,
         },
       }),
-    ).rejects.toMatchObject({ code: "RECEIPT_HEIGHT_LIMIT" });
+    ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
   });
 });

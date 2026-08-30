@@ -25,6 +25,10 @@ describe("document registry generation", () => {
       "docn-event-ticket-classic",
       "docn-event-ticket-conference",
       "docn-event-ticket-live",
+      "docn-receipt-foundation",
+      "docn-receipt-retail",
+      "docn-receipt-hospitality",
+      "docn-receipt-service",
       "docn-business-card-foundation",
       "docn-business-card-minimal",
       "docn-business-card-editorial",
@@ -62,6 +66,17 @@ describe("document registry generation", () => {
         "http://127.0.0.1:4173/r/dev/docn-event-ticket-foundation.json",
       ]),
     );
+    const retailReceipt = result.items.find(
+      (item) => item.name === "docn-receipt-retail",
+    );
+    expect(
+      retailReceipt?.files.find((file) =>
+        file.path.endsWith("receipt-retail.tsx"),
+      )?.content,
+    ).toContain('from "../layout"');
+    expect(retailReceipt?.registryDependencies).toEqual([
+      "http://127.0.0.1:4173/r/dev/docn-receipt-foundation.json",
+    ]);
     expect(
       await buildRegistry({
         root,

@@ -1,6 +1,6 @@
 # docn-ui — implementation and delivery plan
 
-Date: 2026-08-28. Status: **L00G through L07 are merged; L08 is in review on `feat/event-ticket-templates`**. The plan contains **18 lots and 60 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration.
+Date: 2026-08-28. Status: **L00G through L08 are merged; L09 is in review in PR #29**. The plan contains **18 lots and 60 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration.
 
 ## 1. Execution contract
 

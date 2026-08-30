@@ -4,6 +4,9 @@ import { businessCardStudioMetadata } from "../templates/business-cards/business
 import { eventTicketClassicMetadata } from "../templates/event-tickets/event-ticket-classic/metadata";
 import { eventTicketConferenceMetadata } from "../templates/event-tickets/event-ticket-conference/metadata";
 import { eventTicketLiveMetadata } from "../templates/event-tickets/event-ticket-live/metadata";
+import { receiptHospitalityMetadata } from "../templates/receipts/receipt-hospitality/metadata";
+import { receiptRetailMetadata } from "../templates/receipts/receipt-retail/metadata";
+import { receiptServiceMetadata } from "../templates/receipts/receipt-service/metadata";
 
 export interface CatalogThumbnail {
   fixture: string;
@@ -21,8 +24,8 @@ export interface TemplateCatalogEntry {
     qr: boolean;
   };
   description: string;
-  family: "business-card" | "ticket";
-  familyLabel: "Business cards" | "Event tickets";
+  family: "business-card" | "receipt" | "ticket";
+  familyLabel: "Business cards" | "Event tickets" | "Receipts";
   id: string;
   sides: number;
   slug: string;
@@ -40,7 +43,10 @@ type CatalogMetadata =
   | typeof businessCardStudioMetadata
   | typeof eventTicketClassicMetadata
   | typeof eventTicketConferenceMetadata
-  | typeof eventTicketLiveMetadata;
+  | typeof eventTicketLiveMetadata
+  | typeof receiptHospitalityMetadata
+  | typeof receiptRetailMetadata
+  | typeof receiptServiceMetadata;
 
 function catalogEntry(
   metadata: CatalogMetadata,
@@ -112,6 +118,30 @@ export const templateCatalog = [
     sha256: "b8023388d9aff72e0862b6c9efc7d70bf3c3e79d2e46e76a8d4aac279a8e0ae7",
     src: "/generated/catalog/event-ticket-live.png",
     width: 851,
+  }),
+  catalogEntry(receiptRetailMetadata, "Receipts", {
+    fixture: "retailReceiptExample",
+    height: 632,
+    page: 1,
+    sha256: "17cc313d5ed57c18d1e855cb15e8d0e12249827089ea35c0f3da255d96840307",
+    src: "/generated/catalog/receipt-retail.png",
+    width: 329,
+  }),
+  catalogEntry(receiptHospitalityMetadata, "Receipts", {
+    fixture: "hospitalityReceiptExample",
+    height: 505,
+    page: 1,
+    sha256: "6f1b2585940d33d07e87ba27c33113226e79ad1d5e74f03fd3ceb413e3fde2d9",
+    src: "/generated/catalog/receipt-hospitality.png",
+    width: 378,
+  }),
+  catalogEntry(receiptServiceMetadata, "Receipts", {
+    fixture: "serviceReceiptExample",
+    height: 477,
+    page: 1,
+    sha256: "04835e5ac2e8ae93ffec7b0544187e3198172d276b21a61d0d84b1ce7475da13",
+    src: "/generated/catalog/receipt-service.png",
+    width: 378,
   }),
 ] as const satisfies readonly TemplateCatalogEntry[];
 

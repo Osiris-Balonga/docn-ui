@@ -10,6 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import type { ThemeId } from "../core/contracts";
 import { resolveFormat, type PrintProfile } from "../core/formats";
+import { DocumentValidationError } from "../core/errors";
 import { millimetersToPoints } from "../core/units";
 import {
   FieldPair,
@@ -22,8 +23,12 @@ import {
 } from "../primitives";
 import { getPdfTheme, type PdfTheme } from "../themes/themes";
 import { registerDocumentFonts } from "./fonts";
-import { applyPrintBoxes, getPageGeometry } from "./print-profile";
-import { renderFixedDocument, type DocumentRenderRuntime } from "./runtime";
+import { getPageGeometry } from "./print-profile";
+import {
+  renderContinuousDocument,
+  renderFixedDocument,
+  type DocumentRenderRuntime,
+} from "./runtime";
 
 export interface FeasibilityRenderOptions {
   fixture: "card" | "primitives" | "receipt" | "table";
@@ -47,16 +52,6 @@ export type FeasibilityDocumentMeasurer = (
   bytes: Uint8Array,
   finalText: string,
 ) => Promise<FeasibilityMeasurement>;
-
-export class PdfFeasibilityError extends Error {
-  constructor(
-    readonly code: "RECEIPT_HEIGHT_LIMIT" | "RECEIPT_MEASUREMENT_FAILED",
-    message: string,
-  ) {
-    super(message);
-    this.name = "PdfFeasibilityError";
-  }
-}
 
 const fixedDate = new Date("2026-01-15T12:00:00.000Z");
 const styles = StyleSheet.create({
@@ -97,7 +92,6 @@ const styles = StyleSheet.create({
 });
 
 const MAX_RECEIPT_HEIGHT_MM = 500;
-const RECEIPT_HEIGHT_SAFETY_POINTS = 12;
 const qualificationCardFormat = (() => {
   const format = resolveFormat("card-85x55");
   if (format.kind !== "fixed") {
@@ -466,58 +460,55 @@ async function renderMeasuredReceipt(
   measureDocument: FeasibilityDocumentMeasurer | undefined,
 ) {
   if (!options.receipt || !measureDocument) {
-    throw new PdfFeasibilityError(
-      "RECEIPT_MEASUREMENT_FAILED",
-      "Receipt rendering requires measured PDF content.",
-    );
+    throw new DocumentValidationError([
+      {
+        code: "RENDER_FAILED",
+        message: "Receipt rendering requires measured PDF content.",
+        path: ["data"],
+      },
+    ]);
   }
   const { finalText, lineCount, widthMm } = options.receipt;
   const maxHeightMm = options.receipt.maxHeightMm ?? MAX_RECEIPT_HEIGHT_MM;
   if (!Number.isSafeInteger(lineCount) || lineCount < 1 || lineCount > 300) {
-    throw new PdfFeasibilityError(
-      "RECEIPT_HEIGHT_LIMIT",
-      "Receipt content exceeds the qualified line limit.",
-    );
+    throw new DocumentValidationError([
+      {
+        code: "LIMIT_EXCEEDED",
+        message: "Receipt content exceeds the qualified line limit.",
+        path: ["data", "lines"],
+      },
+    ]);
   }
-  const width = millimetersToPoints(widthMm);
-  const maxHeight = millimetersToPoints(maxHeightMm);
-  const probe = await runtime.renderDocument(
-    <ReceiptDocument
-      finalText={finalText}
-      height={maxHeight}
-      lineCount={lineCount}
-      theme={theme}
-      width={width}
-    />,
-  );
-  let measurement: FeasibilityMeasurement;
-  try {
-    measurement = await measureDocument(probe, finalText);
-  } catch {
-    throw new PdfFeasibilityError(
-      "RECEIPT_MEASUREMENT_FAILED",
-      "The rendered receipt content could not be measured.",
-    );
-  }
-  const height = measurement.usedHeight + RECEIPT_HEIGHT_SAFETY_POINTS;
-  if (measurement.pageCount !== 1 || height > maxHeight) {
-    throw new PdfFeasibilityError(
-      "RECEIPT_HEIGHT_LIMIT",
-      `Receipt content exceeds the ${maxHeightMm} mm height limit.`,
-    );
-  }
-  const raw = await runtime.renderDocument(
-    <ReceiptDocument
-      finalText={finalText}
-      height={height}
-      lineCount={lineCount}
-      theme={theme}
-      width={width}
-    />,
-  );
-  return applyPrintBoxes(
-    raw,
-    getPageGeometry(width, height, { kind: "screen" }),
+  const format = resolveFormat(widthMm === 58 ? "receipt-58" : "receipt-80");
+  if (format.kind !== "continuous")
+    throw new Error("Expected a continuous receipt format.");
+  const constrainedFormat = {
+    ...format,
+    maxHeightMm,
+    maxHeightPt: millimetersToPoints(maxHeightMm),
+  };
+  return renderContinuousDocument(
+    {
+      createDocument: (height) => (
+        <ReceiptDocument
+          finalText={finalText}
+          height={height}
+          lineCount={lineCount}
+          theme={theme}
+          width={format.widthPt}
+        />
+      ),
+      finalMarker: finalText,
+      format: constrainedFormat,
+    },
+    runtime,
+    async (bytes, marker) => {
+      const measurement = await measureDocument(bytes, marker);
+      return {
+        pageCount: measurement.pageCount,
+        usedHeightPt: measurement.usedHeight,
+      };
+    },
   );
 }
 
