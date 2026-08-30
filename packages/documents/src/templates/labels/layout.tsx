@@ -35,6 +35,8 @@ const headingText = (theme: PdfTheme, compact: boolean) => ({
 
 function Logo({ source }: { source?: string | undefined }) {
   return source ? (
+    // React-pdf Image is not a DOM image and does not expose an alt prop.
+    // eslint-disable-next-line jsx-a11y/alt-text
     <Image
       src={{ uri: source }}
       style={{ height: 18, objectFit: "contain", width: 42 }}

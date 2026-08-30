@@ -44,13 +44,23 @@ async function inspect(pdfBytes: Uint8Array) {
     for (let index = 1; index <= pdf.numPages; index += 1) {
       const page = await pdf.getPage(index);
       const content = await page.getTextContent();
+      const height = (page.view[3] ?? 0) - (page.view[1] ?? 0);
+      const items = content.items.filter(
+        (
+          item,
+        ): item is typeof item & {
+          height: number;
+          str: string;
+          transform: number[];
+        } => "str" in item && "height" in item && "transform" in item,
+      );
       pages.push({
-        text: content.items
-          .filter(
-            (item): item is typeof item & { str: string } => "str" in item,
-          )
-          .map((item) => item.str)
-          .join(" "),
+        items: items.map((item) => ({
+          str: item.str,
+          x: item.transform[4] ?? 0,
+          y: height - (item.transform[5] ?? 0) - item.height,
+        })),
+        text: items.map((item) => item.str).join(" "),
         view: page.view,
       });
     }
@@ -157,6 +167,41 @@ describe("label documents", () => {
     expect(result.pages[0]?.text).toContain("Recipient 2");
     expect(result.pages[1]?.text).toContain("Recipient 3");
     expect(result.pages[1]?.text).toContain("Recipient 4");
+    const expectedTitles = [
+      {
+        page: 0,
+        title: "Recipient 1",
+        xMm: 73,
+        minimumYMm: 247,
+        maximumYMm: 270,
+      },
+      {
+        page: 0,
+        title: "Recipient 2",
+        xMm: 143,
+        minimumYMm: 247,
+        maximumYMm: 270,
+      },
+      { page: 1, title: "Recipient 3", xMm: 3, minimumYMm: 13, maximumYMm: 36 },
+      {
+        page: 1,
+        title: "Recipient 4",
+        xMm: 73,
+        minimumYMm: 13,
+        maximumYMm: 36,
+      },
+    ];
+    const mmToPt = (value: number) => (value * 72) / 25.4;
+    for (const expected of expectedTitles) {
+      const matches =
+        result.pages[expected.page]?.items.filter(
+          (item) => item.str === expected.title,
+        ) ?? [];
+      expect(matches).toHaveLength(1);
+      expect(matches[0]?.x).toBeCloseTo(mmToPt(expected.xMm), 0);
+      expect(matches[0]?.y).toBeGreaterThanOrEqual(mmToPt(expected.minimumYMm));
+      expect(matches[0]?.y).toBeLessThan(mmToPt(expected.maximumYMm));
+    }
     await retain("label-address-sheet", bytes);
   });
 });
