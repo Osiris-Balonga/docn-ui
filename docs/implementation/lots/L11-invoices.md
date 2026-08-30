@@ -1,6 +1,6 @@
 # L11 — Multipage invoices and complete catalog
 
-Status: **verified locally** at `2e2c1c9e33c6eca4899122b843efdf0a56719e27`. Branch: `feat/invoice-templates`.
+Status: **in review** in PR #31. The post-review catalog refinement is locally qualified at `24761240ed18fd812c965a08e1dfee4947ae83a8`. Branch: `feat/invoice-templates`.
 
 Dependencies: L10. Requirements: FR-01, FR-12, FR-13, FR-16; NFR-05; G4.
 
@@ -31,6 +31,7 @@ Target files/responsibilities: packages/documents/src/primitives/table, template
 - [x] Implement three compositions with A4/Letter, themes, and optional contact details.
 - [x] Preserve the maintainer-approved preview/copy/source catalog surface without restoring the removed line-item customization form.
 - [x] Metadata, catalog, thumbnails, source, registry, and descriptions of visual differences.
+- [x] Apply the maintainer-requested monochrome base, enlarged preview overlay, and bounded template/family source tree without exposing transitive primitives.
 
 **Acceptance:** Fifteen compositions advertised and actually available; each invoice has its data and complete rendering.
 
