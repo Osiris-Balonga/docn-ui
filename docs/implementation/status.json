@@ -207,7 +207,10 @@
       "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
       "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
-      "actualCommits": [],
+      "actualCommits": [
+        "4d132e2dcd9b930a8a63138d27d0ff968f43c130",
+        "9559db7e968bd7449d3f0bae538a8f09eae8a65b"
+      ],
       "evidence": "../qa/L08.md",
       "blocker": null
     },
