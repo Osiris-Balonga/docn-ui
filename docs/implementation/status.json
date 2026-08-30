@@ -203,7 +203,7 @@
     {
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
       "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
