@@ -6,6 +6,7 @@ export function GitHubLink() {
   return (
     <Button
       render={<a href={repositoryUrl} target="_blank" rel="noreferrer" />}
+      nativeButton={false}
       variant="ghost"
       size="icon"
       className="relative size-8 after:absolute after:-inset-1.5"

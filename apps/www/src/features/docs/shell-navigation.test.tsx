@@ -1,7 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, expect, test, vi } from "vitest";
-import { MobileDocsNavigation } from "./docs-navigation";
 import { SiteHeader } from "./site-header";
 
 const { routerPush } = vi.hoisted(() => ({ routerPush: vi.fn() }));
@@ -38,7 +37,6 @@ test("the shell exposes a focused skip link and an operable mobile documentation
     <>
       <SiteHeader />
       <main id="main-content">Content</main>
-      <MobileDocsNavigation />
     </>,
   );
 
@@ -77,20 +75,17 @@ test("the shell exposes a focused skip link and an operable mobile documentation
   expect(
     within(siteDialog).getByRole("navigation", { name: "Primary mobile" }),
   ).toBeInTheDocument();
-  await user.keyboard("{Escape}");
-
-  await user.click(
-    screen.getByRole("button", { name: "Open documentation menu" }),
-  );
-  const dialog = await screen.findByRole("dialog", { name: "Documentation" });
   expect(
-    within(dialog).getByRole("navigation", { name: "Documentation" }),
+    within(siteDialog).getByRole("navigation", { name: "Documentation" }),
   ).toBeInTheDocument();
   expect(
-    within(dialog)
+    within(siteDialog)
       .getAllByRole("link", { name: "Overview" })
       .find((link) => link.getAttribute("aria-current") === "page"),
   ).toBeDefined();
+  expect(
+    screen.queryByRole("button", { name: "Open documentation menu" }),
+  ).toBeNull();
 });
 
 test("documentation search isolates editor shortcuts, reports no matches, and opens a known page", async () => {

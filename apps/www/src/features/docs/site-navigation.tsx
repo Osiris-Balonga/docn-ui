@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { DocsNavigationLinks } from "./docs-navigation";
 
 const primaryNavigation = [
   { title: "Home", href: "/" },
@@ -70,7 +71,7 @@ function NavigationLinks({
 
 export function DesktopSiteNavigation() {
   return (
-    <div className="hidden md:block">
+    <div className="hidden lg:block">
       <NavigationLinks ariaLabel="Primary" />
     </div>
   );
@@ -78,9 +79,12 @@ export function DesktopSiteNavigation() {
 
 export function MobileSiteNavigation() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const showsDocumentation =
+    pathname.startsWith("/docs") || pathname.startsWith("/components");
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger
           render={
@@ -106,6 +110,12 @@ export function MobileSiteNavigation() {
               ariaLabel="Primary mobile"
               onNavigate={() => setOpen(false)}
             />
+            {showsDocumentation ? (
+              <div className="mt-5 border-t pt-5">
+                <p className="mb-4 text-sm font-semibold">Documentation</p>
+                <DocsNavigationLinks onNavigate={() => setOpen(false)} />
+              </div>
+            ) : null}
           </div>
         </SheetContent>
       </Sheet>

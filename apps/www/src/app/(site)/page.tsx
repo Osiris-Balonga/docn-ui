@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
-import { templateCatalog } from "@docn-ui/documents/catalog";
 import { buttonVariants } from "@/components/ui/button";
+import { TemplateGallery } from "@/features/catalog/template-catalog";
 import { cn } from "@/lib/utils";
 
 const qualifiedFoundations = [
@@ -13,7 +12,7 @@ const qualifiedFoundations = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto w-full max-w-[90rem] px-4 py-14 sm:px-6 sm:py-20">
+    <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-20">
       <section
         aria-labelledby="home-heading"
         className="mx-auto max-w-3xl text-center"
@@ -49,44 +48,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="templates-heading" className="mt-14 sm:mt-16">
-        <h2 id="templates-heading" className="sr-only">
-          Qualified PDF templates
-        </h2>
-        <ul className="grid gap-4 md:grid-cols-3">
-          {templateCatalog.map((template) => (
-            <li key={template.id}>
-              <Link
-                href={`/templates/${template.slug}/`}
-                className="group block rounded-xl border bg-muted/25 p-4 outline-none transition-colors hover:border-foreground/25 focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-5"
-              >
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden px-4 py-5 sm:px-6">
-                  <Image
-                    src={template.thumbnail.src}
-                    alt={`${template.title} PDF preview`}
-                    width={template.thumbnail.width}
-                    height={template.thumbnail.height}
-                    className="h-auto w-full shadow-lg ring-1 ring-foreground/10 transition-transform duration-200 group-hover:scale-[1.015] motion-reduce:transition-none"
-                  />
-                </div>
-                <div className="flex items-center justify-between gap-4 border-t pt-4">
-                  <div>
-                    <h3 className="font-semibold">{template.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {template.supportedFormatIds.length} formats ·{" "}
-                      {template.sides} sides
-                    </p>
-                  </div>
-                  <ArrowRightIcon
-                    aria-hidden="true"
-                    className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
-                  />
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <TemplateGallery />
 
       <section
         aria-labelledby="qualified-heading"

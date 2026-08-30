@@ -103,7 +103,7 @@ function TemplateSpecimen({
   return (
     <article className={cn("min-w-0", featured && "lg:col-span-2")}>
       <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
-        <h2 className="truncate text-sm font-medium">{template.title}</h2>
+        <h3 className="truncate text-sm font-medium">{template.title}</h3>
         <TemplateActions template={template} />
       </div>
       <div
@@ -125,7 +125,7 @@ function TemplateSpecimen({
   );
 }
 
-export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
+export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const orderedTemplates = featuredSlug
     ? [...templateCatalog].sort((left, right) => {
         if (left.slug === featuredSlug) return -1;
@@ -135,28 +135,7 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
     : [...templateCatalog];
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
-      <header className="mx-auto flex max-w-3xl flex-col items-center pt-16 text-center sm:pt-24">
-        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Beautiful PDF Templates
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground sm:text-lg">
-          Production-ready PDF components built for real print formats. Browse
-          the previews, copy a template, and adapt the source in your project.
-        </p>
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Button render={<a href="#business-cards" />}>
-            Browse Templates
-          </Button>
-          <Button
-            variant="outline"
-            render={<Link href="/docs/getting-started/" />}
-          >
-            Documentation
-          </Button>
-        </div>
-      </header>
-
+    <>
       <nav
         aria-label="Template families"
         className="mt-14 overflow-x-auto sm:mt-20"
@@ -186,6 +165,36 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
           ))}
         </div>
       </section>
+    </>
+  );
+}
+
+export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
+      <header className="mx-auto flex max-w-3xl flex-col items-center pt-16 text-center sm:pt-24">
+        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          Beautiful PDF Templates
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground sm:text-lg">
+          Production-ready PDF components built for real print formats. Browse
+          the previews, copy a template, and adapt the source in your project.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <Button nativeButton={false} render={<a href="#business-cards" />}>
+            Browse Templates
+          </Button>
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/docs/getting-started/" />}
+          >
+            Documentation
+          </Button>
+        </div>
+      </header>
+
+      <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
     </div>
   );
 }

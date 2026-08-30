@@ -66,3 +66,31 @@ test("keeps direct template URLs in the gallery without a playground", async ({
   await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
 });
+
+test("shares the template gallery, footer, and responsive documentation menu", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 900, height: 900 });
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("button", { name: "View Minimal business card code" }),
+  ).toBeVisible();
+  await expect(page.getByRole("contentinfo")).toContainText(
+    "Source-owned PDF components for React.",
+  );
+
+  await page.goto("/docs/");
+  await expect(
+    page.getByRole("button", { name: "Open site navigation" }),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("button", { name: "Open documentation menu" }),
+  ).toHaveCount(0);
+  await expect(page.getByRole("contentinfo")).toBeVisible();
+  await page.getByRole("button", { name: "Open site navigation" }).click();
+  const menu = page.getByRole("dialog", { name: "Navigation" });
+  await expect(
+    menu.getByRole("navigation", { name: "Documentation" }),
+  ).toBeVisible();
+});
