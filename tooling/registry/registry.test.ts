@@ -7,6 +7,7 @@ import {
   validateSourceManifest,
 } from "./registry.mjs";
 import { registrySourceManifest } from "./source-manifest.mjs";
+import { templateCatalog } from "../../packages/documents/src/catalog/manifest";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
@@ -15,6 +16,22 @@ describe("document registry generation", () => {
     const result = await buildRegistry({
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
+    });
+    expect(templateCatalog).toHaveLength(15);
+    expect(new Set(templateCatalog.map((template) => template.id)).size).toBe(
+      15,
+    );
+    expect(
+      templateCatalog.reduce<Record<string, number>>((families, template) => {
+        families[template.family] = (families[template.family] ?? 0) + 1;
+        return families;
+      }, {}),
+    ).toEqual({
+      "business-card": 3,
+      invoice: 3,
+      label: 3,
+      receipt: 3,
+      ticket: 3,
     });
     expect(result.items.map((item) => item.name)).toEqual([
       "docn-core",
@@ -42,6 +59,13 @@ describe("document registry generation", () => {
       "docn-business-card-editorial",
       "docn-business-card-studio",
     ]);
+    for (const template of templateCatalog) {
+      expect(template.thumbnail.fixture).toBeTruthy();
+      expect(template.thumbnail.sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(
+        result.items.some((item) => item.name === `docn-${template.id}`),
+      ).toBe(true);
+    }
     const minimal = result.items.find(
       (item) => item.name === "docn-business-card-minimal",
     );
