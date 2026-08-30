@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L08",
+  "currentLot": "L09",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -203,7 +203,7 @@
     {
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
       "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
@@ -217,15 +217,17 @@
         "ed492dded03370c8606809b910e9467453fb72ae"
       ],
       "evidence": "../qa/L08.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "4cb0ebf9e3b57037790201b14bfea0cd1386a700",
+      "mergedAt": "2026-08-30T16:02:45Z"
     },
     {
       "id": "L09",
       "file": "lots/L09-thermal-receipts.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L08"],
       "branch": "feat/thermal-receipt-templates",
-      "baseCommit": null,
+      "baseCommit": "4cb0ebf9e3b57037790201b14bfea0cd1386a700",
       "actualCommits": [],
       "evidence": null,
       "blocker": null
