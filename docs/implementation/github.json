@@ -586,7 +586,55 @@
         "number": 31,
         "url": "https://github.com/Osiris-Balonga/docn-ui/pull/31"
       },
-      "initialized": true
+      "initialized": true,
+      "verification": {
+        "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb",
+        "checks": [
+          {
+            "name": "branch-policy",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326805501/job/99298293100",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "quality",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298337216",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "unit-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298337084",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "pdf-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298337210",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "consumer-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298337260",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "build",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298337174",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          },
+          {
+            "name": "e2e-chromium",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33326806225/job/99298466156",
+            "headSha": "69c97fccb4194a3ad3045413676e9918d8d140cb"
+          }
+        ],
+        "verifiedAt": "2026-08-30T18:02:36Z"
+      }
     },
     "L12": {
       "issueNumber": 16,
