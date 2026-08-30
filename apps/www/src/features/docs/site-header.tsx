@@ -1,8 +1,6 @@
-import Link from "next/link";
-import { GitForkIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ThemeMenu } from "@/features/theme/theme-menu";
 import { DocsSearch } from "./docs-search";
+import { DesktopSiteNavigation, MobileSiteNavigation } from "./site-navigation";
 
 export function SiteHeader() {
   return (
@@ -13,44 +11,12 @@ export function SiteHeader() {
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 border-b bg-background/95 supports-backdrop-filter:backdrop-blur-sm">
-        <div className="mx-auto flex h-14 w-full max-w-[90rem] items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/"
-            aria-label="docn-ui home"
-            className="shrink-0 font-semibold tracking-tight outline-none focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            docn-ui
-          </Link>
-          <nav aria-label="Primary" className="flex items-center gap-1">
-            <Link
-              href="/templates/"
-              className="rounded-md px-2 py-1 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              Templates
-            </Link>
-            <Link
-              href="/docs/"
-              className="rounded-md px-2 py-1 text-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              Docs
-            </Link>
-          </nav>
-          <div className="ml-auto flex items-center gap-1">
+      <header className="sticky top-0 z-40 bg-background/95 supports-backdrop-filter:backdrop-blur-sm">
+        <div className="flex h-16 w-full items-center gap-2 px-4 sm:px-6">
+          <MobileSiteNavigation />
+          <DesktopSiteNavigation />
+          <div className="ml-auto flex items-center gap-1.5">
             <DocsSearch />
-            <Button
-              nativeButton={false}
-              render={
-                <a
-                  href="https://github.com/Osiris-Balonga/docn-ui"
-                  aria-label="docn-ui on GitHub"
-                />
-              }
-              variant="ghost"
-              size="icon"
-            >
-              <GitForkIcon aria-hidden="true" />
-            </Button>
             <ThemeMenu />
           </div>
         </div>

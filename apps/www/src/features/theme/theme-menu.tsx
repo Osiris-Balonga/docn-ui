@@ -30,7 +30,7 @@ export function ThemeMenu() {
             variant="ghost"
             size="icon"
             aria-label="Choose color theme"
-            className="relative"
+            className="relative size-10"
           />
         }
       >

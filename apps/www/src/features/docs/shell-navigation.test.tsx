@@ -47,6 +47,28 @@ test("the shell exposes a focused skip link and an operable mobile documentation
   expect(
     screen.getByRole("navigation", { name: "Primary" }),
   ).toBeInTheDocument();
+  const primaryNavigation = screen.getByRole("navigation", {
+    name: "Primary",
+  });
+  expect(
+    within(primaryNavigation).getByRole("link", { name: "Home" }),
+  ).toBeInTheDocument();
+  expect(
+    within(primaryNavigation).getByRole("link", { name: "Docs" }),
+  ).toHaveAttribute("aria-current", "page");
+  expect(
+    within(primaryNavigation).getByRole("link", { name: "Components" }),
+  ).toBeInTheDocument();
+  expect(screen.queryByText("docn-ui")).toBeNull();
+
+  await user.click(
+    screen.getByRole("button", { name: "Open site navigation" }),
+  );
+  const siteDialog = await screen.findByRole("dialog", { name: "Navigation" });
+  expect(
+    within(siteDialog).getByRole("navigation", { name: "Primary mobile" }),
+  ).toBeInTheDocument();
+  await user.keyboard("{Escape}");
 
   await user.click(
     screen.getByRole("button", { name: "Open documentation menu" }),
@@ -56,8 +78,10 @@ test("the shell exposes a focused skip link and an operable mobile documentation
     within(dialog).getByRole("navigation", { name: "Documentation" }),
   ).toBeInTheDocument();
   expect(
-    within(dialog).getByRole("link", { name: "Overview" }),
-  ).toHaveAttribute("aria-current", "page");
+    within(dialog)
+      .getAllByRole("link", { name: "Overview" })
+      .find((link) => link.getAttribute("aria-current") === "page"),
+  ).toBeDefined();
 });
 
 test("documentation search isolates editor shortcuts, reports no matches, and opens a known page", async () => {

@@ -2,7 +2,7 @@ export type KnownPage = {
   title: string;
   description: string;
   href: string;
-  section: "Site" | "Documentation";
+  section: "Site" | "Documentation" | "Components";
 };
 
 export const knownPages: readonly KnownPage[] = [
@@ -11,6 +11,18 @@ export const knownPages: readonly KnownPage[] = [
     description: "Project status and qualified PDF foundations",
     href: "/",
     section: "Site",
+  },
+  {
+    title: "Components",
+    description: "PDF layout and content primitives",
+    href: "/components/",
+    section: "Components",
+  },
+  {
+    title: "Templates",
+    description: "Qualified document compositions",
+    href: "/templates/",
+    section: "Components",
   },
   {
     title: "Documentation",

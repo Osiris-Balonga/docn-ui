@@ -61,15 +61,15 @@ export function DocsSearch() {
         ref={triggerRef}
         type="button"
         variant="outline"
-        className="h-8 w-8 justify-start gap-2 px-0 text-muted-foreground sm:w-48 sm:px-2.5"
+        className="h-10 w-10 justify-start gap-2 px-0 text-muted-foreground md:w-64 md:px-3"
         onClick={() => setOpen(true)}
         aria-label="Search documentation"
       >
         <SearchIcon aria-hidden="true" />
-        <span className="hidden flex-1 text-left sm:inline">
+        <span className="hidden flex-1 text-left md:inline">
           Search docs...
         </span>
-        <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-mono text-[10px] sm:inline">
+        <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-mono text-[10px] md:inline">
           ⌘ K
         </kbd>
       </Button>
@@ -84,28 +84,32 @@ export function DocsSearch() {
           <CommandInput autoFocus placeholder="Search available pages..." />
           <CommandList>
             <CommandEmpty>No documentation found.</CommandEmpty>
-            {(["Site", "Documentation"] as const).map((section) => (
-              <CommandGroup key={section} heading={section}>
-                {knownPages
-                  .filter((page) => page.section === section)
-                  .map((page) => (
-                    <CommandItem
-                      key={page.href}
-                      value={`${page.title} ${page.description}`}
-                      onSelect={() => navigate(page.href)}
-                      className="items-start py-2"
-                    >
-                      <FileTextIcon aria-hidden="true" className="mt-0.5" />
-                      <span>
-                        <span className="block font-medium">{page.title}</span>
-                        <span className="block text-xs text-muted-foreground">
-                          {page.description}
+            {(["Site", "Documentation", "Components"] as const).map(
+              (section) => (
+                <CommandGroup key={section} heading={section}>
+                  {knownPages
+                    .filter((page) => page.section === section)
+                    .map((page) => (
+                      <CommandItem
+                        key={page.href}
+                        value={`${page.title} ${page.description}`}
+                        onSelect={() => navigate(page.href)}
+                        className="items-start py-2"
+                      >
+                        <FileTextIcon aria-hidden="true" className="mt-0.5" />
+                        <span>
+                          <span className="block font-medium">
+                            {page.title}
+                          </span>
+                          <span className="block text-xs text-muted-foreground">
+                            {page.description}
+                          </span>
                         </span>
-                      </span>
-                    </CommandItem>
-                  ))}
-              </CommandGroup>
-            ))}
+                      </CommandItem>
+                    ))}
+                </CommandGroup>
+              ),
+            )}
           </CommandList>
         </Command>
       </CommandDialog>

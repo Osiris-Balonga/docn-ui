@@ -5,6 +5,8 @@ type DocsArticleProps = {
   title: string;
   description: string;
   breadcrumb?: string;
+  rootHref?: string;
+  rootTitle?: string;
   children: ReactNode;
 };
 
@@ -12,11 +14,17 @@ export function DocsArticle({
   title,
   description,
   breadcrumb,
+  rootHref,
+  rootTitle,
   children,
 }: DocsArticleProps) {
   return (
-    <article className="max-w-[72ch]">
-      <DocsBreadcrumbs {...(breadcrumb ? { current: breadcrumb } : {})} />
+    <article className="mx-auto max-w-[40rem]">
+      <DocsBreadcrumbs
+        {...(breadcrumb ? { current: breadcrumb } : {})}
+        {...(rootHref ? { rootHref } : {})}
+        {...(rootTitle ? { rootTitle } : {})}
+      />
       <h1 className="mt-4 scroll-m-20 text-3xl font-semibold tracking-tight text-balance">
         {title}
       </h1>
