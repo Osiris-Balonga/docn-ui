@@ -189,7 +189,8 @@
         "b29ead07c031d80877d25b1ecfbfb458761872f5",
         "4c8016cd51671cf57b59ef838decd933bffb2eb7",
         "4323b424ad62e14069f6bc1a082e6f45e9e877e8",
-        "d5214fa78bb28244481a72c907c007bbbb75cb31"
+        "d5214fa78bb28244481a72c907c007bbbb75cb31",
+        "bfd7e52b7ae069efd32f1da889ba34a60e75aebe"
       ],
       "evidence": "../qa/L07.md",
       "blocker": null
