@@ -11,7 +11,7 @@ import { registrySourceManifest } from "./source-manifest.mjs";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 describe("document registry generation", () => {
-  it("builds the real card graph with bounded import rewriting", async () => {
+  it("builds the real catalog graph with bounded import rewriting", async () => {
     const result = await buildRegistry({
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
@@ -21,6 +21,10 @@ describe("document registry generation", () => {
       "docn-themes",
       "docn-render",
       "docn-primitives",
+      "docn-event-ticket-foundation",
+      "docn-event-ticket-classic",
+      "docn-event-ticket-conference",
+      "docn-event-ticket-live",
       "docn-business-card-foundation",
       "docn-business-card-minimal",
       "docn-business-card-editorial",
@@ -43,6 +47,19 @@ describe("document registry generation", () => {
     expect(minimal?.registryDependencies).toEqual(
       expect.arrayContaining([
         "http://127.0.0.1:4173/r/dev/docn-primitives.json",
+      ]),
+    );
+    const classicTicket = result.items.find(
+      (item) => item.name === "docn-event-ticket-classic",
+    );
+    expect(
+      classicTicket?.files.find((file) =>
+        file.path.endsWith("event-ticket-classic.tsx"),
+      )?.content,
+    ).toContain('from "@/docn/primitives/index"');
+    expect(classicTicket?.registryDependencies).toEqual(
+      expect.arrayContaining([
+        "http://127.0.0.1:4173/r/dev/docn-event-ticket-foundation.json",
       ]),
     );
     expect(

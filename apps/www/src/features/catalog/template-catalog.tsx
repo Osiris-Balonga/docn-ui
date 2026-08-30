@@ -21,6 +21,14 @@ import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 import { copyText } from "@/features/registry/registry-source";
 import { cn } from "@/lib/utils";
 
+const templateFamilies = [
+  { id: "business-card", label: "Business Cards" },
+  { id: "ticket", label: "Event Tickets" },
+] as const satisfies readonly {
+  id: TemplateCatalogEntry["family"];
+  label: string;
+}[];
+
 const subscribeToStaticOrigin = () => () => {};
 
 function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
@@ -126,37 +134,60 @@ function TemplateSpecimen({
 }
 
 export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
-  const orderedTemplates = featuredSlug
-    ? [...templateCatalog].sort((left, right) => {
-        if (left.slug === featuredSlug) return -1;
-        if (right.slug === featuredSlug) return 1;
-        return 0;
-      })
-    : [...templateCatalog];
+  const featuredTemplate = templateCatalog.find(
+    (template) => template.slug === featuredSlug,
+  );
+  const [activeFamily, setActiveFamily] = useState<
+    TemplateCatalogEntry["family"]
+  >(featuredTemplate?.family ?? "business-card");
+  const activeTemplates = templateCatalog
+    .filter((template) => template.family === activeFamily)
+    .sort((left, right) => {
+      if (left.slug === featuredSlug) return -1;
+      if (right.slug === featuredSlug) return 1;
+      return 0;
+    });
+  const familyLabel = templateFamilies.find(
+    (family) => family.id === activeFamily,
+  )?.label;
 
   return (
     <>
       <nav
         aria-label="Template families"
-        className="mt-14 overflow-x-auto sm:mt-20"
+        className="mt-14 overflow-x-auto border-b sm:mt-20"
       >
-        <ul className="flex min-w-max items-center gap-5">
-          <li>
-            <a
-              href="#business-cards"
-              aria-current="location"
-              className="flex h-11 items-center rounded-md text-base font-medium text-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
-            >
-              Business Cards
-            </a>
-          </li>
+        <ul className="flex min-w-max items-center gap-5" role="tablist">
+          {templateFamilies.map((family) => (
+            <li key={family.id}>
+              <button
+                type="button"
+                role="tab"
+                aria-controls="template-family-panel"
+                aria-selected={activeFamily === family.id}
+                onClick={() => setActiveFamily(family.id)}
+                className={cn(
+                  "relative flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
+                  activeFamily === family.id
+                    ? "text-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {family.label}
+              </button>
+            </li>
+          ))}
         </ul>
       </nav>
 
-      <section id="business-cards" className="scroll-mt-28 pt-4">
-        <h2 className="sr-only">Business card templates</h2>
+      <section
+        id="template-family-panel"
+        role="tabpanel"
+        className="scroll-mt-28 pt-4"
+      >
+        <h2 className="sr-only">{familyLabel} templates</h2>
         <div className="grid gap-x-6 gap-y-10 lg:grid-cols-2">
-          {orderedTemplates.map((template, index) => (
+          {activeTemplates.map((template, index) => (
             <TemplateSpecimen
               key={template.id}
               template={template}
@@ -181,7 +212,7 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
           the previews, copy a template, and adapt the source in your project.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <a href="#business-cards" className={buttonVariants()}>
+          <a href="#template-family-panel" className={buttonVariants()}>
             Browse Templates
           </a>
           <Link

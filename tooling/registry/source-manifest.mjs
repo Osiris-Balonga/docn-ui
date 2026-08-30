@@ -70,6 +70,77 @@ export const registrySourceManifest = {
       files: [
         "packages/documents/src/primitives/index.tsx",
         "packages/documents/src/primitives/measurement.ts",
+        "packages/documents/src/primitives/qr-code.ts",
+      ],
+    },
+    {
+      name: "docn-event-ticket-foundation",
+      type: "registry:lib",
+      title: "docn-ui event-ticket foundation",
+      description:
+        "Event-ticket schema, time-zone formatting, render plan, and metadata.",
+      dependencies: ["zod@3.25.76"],
+      registryDependencies: ["docn-core", "docn-render"],
+      files: [
+        "packages/documents/src/templates/event-tickets/plan.ts",
+        "packages/documents/src/templates/event-tickets/schema.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-classic/metadata.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-conference/metadata.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-live/metadata.ts",
+      ],
+    },
+    {
+      name: "docn-event-ticket-classic",
+      type: "registry:block",
+      title: "Classic event ticket",
+      description:
+        "A landscape event ticket with an isolated QR and identifier area.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: [
+        "docn-event-ticket-foundation",
+        "docn-primitives",
+        "docn-themes",
+      ],
+      files: [
+        "packages/documents/src/templates/event-tickets/event-ticket-classic/event-ticket-classic.tsx",
+        "packages/documents/src/templates/event-tickets/event-ticket-classic/examples.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-classic/index.ts",
+      ],
+    },
+    {
+      name: "docn-event-ticket-conference",
+      type: "registry:block",
+      title: "Conference event ticket",
+      description:
+        "Attendee-first portrait and landscape conference compositions.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: [
+        "docn-event-ticket-foundation",
+        "docn-primitives",
+        "docn-themes",
+      ],
+      files: [
+        "packages/documents/src/templates/event-tickets/event-ticket-conference/event-ticket-conference.tsx",
+        "packages/documents/src/templates/event-tickets/event-ticket-conference/examples.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-conference/index.ts",
+      ],
+    },
+    {
+      name: "docn-event-ticket-live",
+      type: "registry:block",
+      title: "Live event ticket",
+      description:
+        "An expressive landscape event ticket with a dedicated access field.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: [
+        "docn-event-ticket-foundation",
+        "docn-primitives",
+        "docn-themes",
+      ],
+      files: [
+        "packages/documents/src/templates/event-tickets/event-ticket-live/event-ticket-live.tsx",
+        "packages/documents/src/templates/event-tickets/event-ticket-live/examples.ts",
+        "packages/documents/src/templates/event-tickets/event-ticket-live/index.ts",
       ],
     },
     {
