@@ -8,7 +8,7 @@ import {
   templateCatalog,
   type TemplateCatalogEntry,
 } from "@docn-ui/documents/catalog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -181,16 +181,15 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
           the previews, copy a template, and adapt the source in your project.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <Button nativeButton={false} render={<a href="#business-cards" />}>
+          <a href="#business-cards" className={buttonVariants()}>
             Browse Templates
-          </Button>
-          <Button
-            nativeButton={false}
-            variant="outline"
-            render={<Link href="/docs/getting-started/" />}
+          </a>
+          <Link
+            href="/docs/getting-started/"
+            className={buttonVariants({ variant: "outline" })}
           >
             Documentation
-          </Button>
+          </Link>
         </div>
       </header>
 
