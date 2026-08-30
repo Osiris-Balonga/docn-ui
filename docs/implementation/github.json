@@ -325,7 +325,9 @@
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVaU",
       "pullRequest": {
         "number": 26,
-        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/26"
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/26",
+        "mergeCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
+        "mergedAt": "2026-08-30T07:32:47Z"
       },
       "initialized": true,
       "verification": {

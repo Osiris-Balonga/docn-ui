@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L06",
+  "currentLot": "L07",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -159,7 +159,7 @@
     {
       "id": "L06",
       "file": "lots/L06-catalog-playground.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L05"],
       "branch": "feat/catalog-and-playground",
       "baseCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
@@ -171,17 +171,19 @@
         "13cc667b34d66f18e395d74c031d841a57811637"
       ],
       "evidence": "../qa/L06.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
+      "mergedAt": "2026-08-30T07:32:47Z"
     },
     {
       "id": "L07",
       "file": "lots/L07-registry.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L06"],
       "branch": "feat/shadcn-pdf-registry",
-      "baseCommit": null,
+      "baseCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L07.md",
       "blocker": null
     },
     {

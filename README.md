@@ -2,9 +2,9 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 30, 2026: L05 is merged and L06 catalog/editor work is verified locally.** Exact PDF geometry, local fonts, print boxes, browser generation, PDF.js preview, reusable contracts, three two-sided card compositions, searchable catalog, safe local images, validated editing, stale-result protection, and faithful local export are implemented. L06 awaits review; the installable registry is not available yet. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L06 evidence](docs/qa/L06.md).
+**Status on August 30, 2026: L06 is merged and L07 standalone registry work is in progress.** Exact PDF geometry, local fonts, print boxes, browser generation, PDF.js preview, reusable contracts, three two-sided card compositions, searchable catalog, safe local images, validated editing, stale-result protection, and faithful local export are implemented. The installable shadcn registry is being built next. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L07 evidence](docs/qa/L07.md).
 
-[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L06 issue #8](https://github.com/Osiris-Balonga/docn-ui/issues/8) · [L06 evidence](docs/qa/L06.md)
+[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L07 issue #10](https://github.com/Osiris-Balonga/docn-ui/issues/10) · [L07 evidence](docs/qa/L07.md)
 
 ## Local development
 
