@@ -1,5 +1,6 @@
 import { pdf } from "@react-pdf/renderer";
 import { createBrowserAssetResolver } from "./assets.browser";
+import type { AssetResolver } from "./assets";
 import {
   renderFixedDocument,
   type DocumentRenderRuntime,
@@ -8,9 +9,11 @@ import {
 
 export { createBrowserAssetResolver } from "./assets.browser";
 
-export function createBrowserDocumentRuntime(): DocumentRenderRuntime {
+export function createBrowserDocumentRuntime(
+  assetResolver: AssetResolver = createBrowserAssetResolver(),
+): DocumentRenderRuntime {
   return {
-    assetResolver: createBrowserAssetResolver(),
+    assetResolver,
     async renderDocument(document) {
       const blob = await pdf(document).toBlob();
       return new Uint8Array(await blob.arrayBuffer());
@@ -20,6 +23,7 @@ export function createBrowserDocumentRuntime(): DocumentRenderRuntime {
 
 export function renderDocumentInBrowser(
   plan: FixedDocumentRenderPlan,
+  assetResolver?: AssetResolver,
 ): Promise<Uint8Array> {
-  return renderFixedDocument(plan, createBrowserDocumentRuntime());
+  return renderFixedDocument(plan, createBrowserDocumentRuntime(assetResolver));
 }

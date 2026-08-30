@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import Image from "next/image";
 import { ImagePlus, Trash2 } from "lucide-react";
 import {
@@ -116,9 +123,11 @@ function resolvePrintProfile(id: PrintProfileId): PrintProfile {
 
 export function BusinessCardPlayground({
   createRenderSession = createWorkerRenderSession,
+  source,
   templateId = "business-card-minimal",
 }: {
   createRenderSession?: CreateBusinessCardRenderSession;
+  source?: ReactNode;
   templateId?: BusinessCardTemplateId;
 }) {
   const registration = getBusinessCardFormRegistration(templateId);
@@ -565,6 +574,7 @@ export function BusinessCardPlayground({
       }}
       onReset={reset}
       pdfBytes={pdfBytes}
+      source={source}
       status={status}
       template={template}
     />

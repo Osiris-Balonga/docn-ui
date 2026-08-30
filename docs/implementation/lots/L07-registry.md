@@ -18,10 +18,10 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S01 — `feat(registry): generate versioned items from document sources`
 
-- [ ] Single source manifest, docn-* IDs, card items; pinned local official schema.
-- [ ] Build the dependency closure, target docn subdirectories, and rewrite imports with a bounded, tested transformation.
-- [ ] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
-- [ ] Explicit development version; no supposedly reserved namespace/domain.
+- [x] Single source manifest, docn-* IDs, card items; pinned local official schema.
+- [x] Build the dependency closure, target docn subdirectories, and rewrite imports with a bounded, tested transformation.
+- [x] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
+- [x] Explicit development version; no supposedly reserved namespace/domain.
 
 **Acceptance:** Every required file is included; no site/workspace import is distributed.
 
@@ -29,9 +29,9 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S02 — `feat(registry): distribute verified local assets and usage examples`
 
-- [ ] Choose a supported font installation mechanism; if a fetcher is needed, keep its code visible without automatic execution.
-- [ ] Resolve destinations, hashes, licenses, and overwrite rejection; traversal/size-limit tests in the existing utility suite.
-- [ ] Provide browser and Node examples with local AssetResolver and exact instructions.
+- [x] Choose a supported font installation mechanism; if a fetcher is needed, keep its code visible without automatic execution.
+- [x] Resolve destinations, hashes, licenses, and overwrite rejection; traversal/size-limit tests in the existing utility suite.
+- [x] Provide browser and Node examples with local AssetResolver and exact instructions.
 
 **Acceptance:** After asset preparation, rendering requires no docn-ui domain; asset failures are explicit.
 
@@ -39,9 +39,9 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S03 — `feat(code): expose complete source and installation instructions`
 
-- [ ] Display the file list, highlighted code, and copy action from the same sources; fallback when the clipboard is unavailable.
-- [ ] Actual command targeting the configured origin/version; local in development, public URL only after a decision.
-- [ ] Document shadcn prerequisites, dependencies, assets, customization, and updates without automatic overwrite.
+- [x] Display the file list, highlighted code, and copy action from the same sources; fallback when the clipboard is unavailable.
+- [x] Actual command targeting the configured origin/version; local in development, public URL only after a decision.
+- [x] Document shadcn prerequisites, dependencies, assets, customization, and updates without automatic overwrite.
 
 **Acceptance:** Users access complete source, not only page JSX; the local command is executable.
 
@@ -49,10 +49,10 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S04 — `test(registry): install and render templates in isolated consumers`
 
-- [ ] Activate test:consumers; run two temporary projects outside the workspace with the actual pinned CLI.
-- [ ] Install a card and its dependency closure; run browser and Node rendering with local assets, then verify content/dimensions.
-- [ ] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
-- [ ] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
+- [x] Activate test:consumers; run two temporary projects outside the workspace with the actual pinned CLI.
+- [x] Install a card and its dependency closure; run browser and Node rendering with local assets, then verify content/dimensions.
+- [x] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
+- [x] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
 
 **Acceptance:** G3: no hidden access to monorepo node_modules/aliases or the docn-ui domain after installation.
 

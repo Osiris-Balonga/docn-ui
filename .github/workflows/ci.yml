@@ -67,6 +67,51 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:pdf
 
+  consumer-tests:
+    name: consumer-tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: distribution-changes
+        name: Detect distribution changes
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git diff --name-only "$BASE_SHA" "$HEAD_SHA" > /tmp/docn-ui-changed-files.txt
+          if grep -Eq '^(\.github/workflows/ci\.yml|package\.json|pnpm-lock\.yaml|vitest\.config\.ts|packages/documents/(assets|src)/|tests/consumers/|tooling/(assets|registry)/)' /tmp/docn-ui-changed-files.txt; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "consumer-tests: not-applicable (no distribution changes)"
+          fi
+      - if: steps.distribution-changes.outputs.run == 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .node-version
+      - if: steps.distribution-changes.outputs.run == 'true'
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          run_install: false
+      - if: steps.distribution-changes.outputs.run == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.distribution-changes.outputs.run == 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - if: steps.distribution-changes.outputs.run == 'true'
+        run: pnpm test:consumers
+      - if: always() && steps.distribution-changes.outputs.run == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: consumer-tests-${{ github.event.pull_request.head.sha }}
+          path: .artifacts/consumers
+          if-no-files-found: warn
+          retention-days: 7
+
   build:
     name: build
     runs-on: ubuntu-24.04

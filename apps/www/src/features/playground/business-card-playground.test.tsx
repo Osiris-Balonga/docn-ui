@@ -106,4 +106,26 @@ describe("BusinessCardPlayground", () => {
       cropMarks: true,
     });
   });
+
+  it("switches the workspace from the PDF preview to template source", async () => {
+    const user = userEvent.setup();
+    const session: BusinessCardRenderSession = {
+      destroy: vi.fn(),
+      enqueue: vi.fn(),
+    };
+    render(
+      <BusinessCardPlayground
+        createRenderSession={() => session}
+        source={<div>Installable template source</div>}
+      />,
+    );
+
+    expect(screen.getByRole("region", { name: "PDF preview" })).toBeVisible();
+    await user.click(screen.getByRole("tab", { name: "Code" }));
+    expect(screen.getByText("Installable template source")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Code" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+  });
 });

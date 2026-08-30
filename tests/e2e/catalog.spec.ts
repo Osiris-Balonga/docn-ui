@@ -1,35 +1,138 @@
 import { expect, test } from "@playwright/test";
 
-test("filters the catalog and restores it after visiting a template", async ({
-  page,
-}) => {
+test("browses templates and opens their registry source", async ({ page }) => {
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: "http://127.0.0.1:4174",
+  });
   await page.goto("/templates/");
-  await expect(page.getByText("3 templates", { exact: true })).toBeVisible();
 
-  const search = page.getByRole("textbox", { name: "Search templates" });
-  await search.fill("studio");
-  await expect(page).toHaveURL(/q=studio/);
-  await expect(page.getByText("1 template", { exact: true })).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Studio business card" }),
+    page.getByRole("heading", { name: "Beautiful PDF Templates" }),
   ).toBeVisible();
-
-  await search.fill("does not exist");
   await expect(
-    page.getByRole("heading", { name: "No templates found" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Clear all filters" }).click();
-  await expect(page).toHaveURL(/\/templates\/$/);
-
-  await page.getByLabel("Format").click();
-  await page.getByRole("option", { name: "US · 88.9 × 50.8 mm" }).click();
-  await expect(page).toHaveURL(/format=card-us/);
-  await page.getByRole("link", { name: /Minimal business card/ }).click();
-  await expect(page).toHaveURL(/\/templates\/business-card-minimal\/$/);
+    page.getByRole("navigation", { name: "Template families" }),
+  ).toContainText("Business Cards");
   await expect(
     page.getByRole("heading", { name: "Minimal business card" }),
   ).toBeVisible();
-  await page.goBack();
-  await expect(page).toHaveURL(/format=card-us/);
-  await expect(page.getByText("3 templates", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Editorial business card" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Studio business card" }),
+  ).toBeVisible();
+  await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
+
+  await page
+    .getByRole("button", {
+      name: "Copy Minimal business card install command",
+    })
+    .click();
+  await expect(
+    page.getByRole("button", {
+      name: "Copied Minimal business card install command",
+    }),
+  ).toBeVisible();
+
+  await page
+    .getByRole("button", { name: "View Minimal business card code" })
+    .click();
+  const sourceDialog = page.getByRole("dialog", {
+    name: "Minimal business card code",
+  });
+  await expect(sourceDialog).toBeVisible();
+  await expect(
+    sourceDialog.getByRole("combobox", { name: "Source file" }),
+  ).toHaveCount(0);
+  await expect(
+    sourceDialog.getByText("business-card-minimal", { exact: true }),
+  ).toBeVisible();
+  await expect(sourceDialog.getByText("TS", { exact: true })).toBeVisible();
+  await expect(
+    sourceDialog.getByRole("button", { name: "Copy source" }),
+  ).toBeVisible();
+  await expect(sourceDialog.getByText(/registry items/)).toHaveCount(0);
+  await expect(sourceDialog.getByText(/packages\/documents\/src/)).toHaveCount(
+    0,
+  );
+  await expect(sourceDialog.locator("pre")).toHaveCSS(
+    "scrollbar-width",
+    "none",
+  );
+  await sourceDialog.getByRole("button", { name: "Close" }).click();
+  await expect(sourceDialog).toBeHidden();
+});
+
+test("keeps direct template URLs in the gallery without a playground", async ({
+  page,
+}) => {
+  await page.goto("/templates/business-card-studio/");
+
+  await expect(
+    page.getByRole("heading", { name: "Beautiful PDF Templates" }),
+  ).toBeVisible();
+  await expect(page.locator("article").first().getByRole("heading")).toHaveText(
+    "Studio business card",
+  );
+  await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
+});
+
+test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1015, height: 900 });
+  await page.goto("/");
+
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Open site navigation" }),
+  ).toHaveCount(0);
+  await expect(page.getByText("The PDF foundation is qualified.")).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("button", { name: "View Minimal business card code" }),
+  ).toHaveCount(0);
+  await expect(page.getByRole("contentinfo")).toContainText(
+    "Source-owned PDF components for React.",
+  );
+
+  await page.goto("/docs/");
+  await expect(
+    page.getByRole("navigation", { name: "Documentation" }),
+  ).toBeVisible();
+
+  await page.setViewportSize({ width: 700, height: 900 });
+  await expect(
+    page.getByRole("button", { name: "Open site navigation" }),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("button", { name: "Open documentation menu" }),
+  ).toHaveCount(0);
+  await expect(page.getByRole("contentinfo")).toBeVisible();
+  await page.getByRole("button", { name: "Open site navigation" }).click();
+  const menu = page.getByRole("dialog", { name: "Navigation" });
+  await expect(
+    menu.getByRole("navigation", { name: "Documentation" }),
+  ).toBeVisible();
+});
+
+test("presents the component index with the shadcn documentation hierarchy", async ({
+  page,
+}) => {
+  await page.goto("/components/");
+
+  await expect(
+    page.getByRole("heading", { name: "Components", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "New Components" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "All Components" }),
+  ).toBeVisible();
+  await expect(page.getByText("Layout primitives")).toHaveCount(0);
+  await expect(page.getByText("Browse templates")).toHaveCount(0);
 });

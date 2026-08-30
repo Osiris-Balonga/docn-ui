@@ -10,6 +10,7 @@ const buildDirectory = resolve(root, "apps/www/out");
 const inputPathspecs = [
   "apps/www",
   "packages/documents",
+  "tooling/registry",
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",

@@ -37,6 +37,12 @@ Contract paths: `/r/registry.json` for the current catalog and `/r/v1.0.0/<item>
 
 Documentation domains remain placeholders, not copy-ready commands, until `SITE_URL` is configured. Actually executable local examples use the test server's origin.
 
+### Current development implementation
+
+L07-S01 generates `/r/registry.json`, `/r/dev/registry.json`, and eight item files under `/r/dev/`. The default dependency origin is the executable local URL `http://127.0.0.1:4173/r/dev/`; builds for another controlled origin set `DOCN_REGISTRY_ORIGIN`. Generation validates in memory before writing, removes stale development output, writes items in stable order, and leaves `apps/www/public/r/` ignored as reproducible build output. The release path remains intentionally unavailable until a real version and public origin are approved.
+
+L07-S02 also publishes `/r/dev/assets/manifest.json`, four local WOFF files, and their OFL license. The visible installed script `docn/assets/install.mjs` prepares either `public/generated` for browser use or `assets` for Node use. It is never executed by generation, installation, or a package lifecycle hook. See the [browser and Node asset guide](../guides/REGISTRY_ASSETS.md).
+
 ## Consumption evidence
 
 Two temporary projects outside the monorepo, without resolution through its node_modules: React/Vite and Node/TypeScript. Install using the real pinned shadcn CLI, not a custom copy operation that could hide a registry defect. Test init/prerequisites, transitive installation, local assets, and final rendering.

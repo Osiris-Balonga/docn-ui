@@ -5,7 +5,7 @@ export default function GettingStartedPage() {
     <DocsArticle
       title="Getting started"
       breadcrumb="Getting started"
-      description="docn-ui is under active development. The PDF pipeline is qualified, but the public registry and installable templates are not available yet."
+      description="Use the local development registry to inspect, install, and customize a qualified PDF template. Public release URLs are not available yet."
     >
       <section aria-labelledby="ready-foundations">
         <h2
@@ -15,29 +15,38 @@ export default function GettingStartedPage() {
           What is ready
         </h2>
         <p className="mt-4 text-muted-foreground">
-          The project can generate PDFs locally in the browser, render them with
-          a local worker, and preserve physical dimensions, fonts, print boxes,
-          and deterministic pagination. The next lots turn those foundations
-          into reusable document primitives and templates.
+          The project generates PDFs locally in the browser, renders them with a
+          local worker, and preserves physical dimensions, fonts, print boxes,
+          and deterministic pagination. The business-card templates now expose
+          their complete versioned source and dependency closure on each detail
+          page.
         </p>
       </section>
-      <section aria-labelledby="planned-installation">
+      <section aria-labelledby="development-installation">
         <h2
-          id="planned-installation"
+          id="development-installation"
           className="text-2xl font-semibold tracking-tight"
         >
-          Planned installation model
+          Install from the development registry
         </h2>
         <p className="mt-4 text-muted-foreground">
-          The public registry command below documents the intended interface. It
-          is not published yet and should not be run until the registry lot is
-          complete.
+          Initialize shadcn 4.19.0 in a React 19 TypeScript project with the
+          source alias configured. Start this repository locally, then copy the
+          origin-aware command from a template detail page. The default static
+          preview command for the minimal card is:
         </p>
         <div className="mt-5">
-          <CodeBlock label="Planned command">
-            npx shadcn@latest add @docn-ui/business-card
+          <CodeBlock label="Install source">
+            corepack pnpm dlx shadcn@4.19.0 add
+            http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
           </CodeBlock>
         </div>
+        <p className="mt-4 text-sm leading-6 text-muted-foreground">
+          Review the displayed files before installation. Run the adjacent asset
+          command afterwards, and never add an overwrite flag to the documented
+          update workflow. The local <code>/r/dev/</code> path is mutable until
+          an immutable public release is approved.
+        </p>
       </section>
     </DocsArticle>
   );

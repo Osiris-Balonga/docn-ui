@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FileTextIcon, SearchIcon } from "lucide-react";
+import { FileTextIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +51,7 @@ export function DocsSearch() {
   }, []);
 
   function navigate(href: string) {
-    setOpen(false);
+    changeOpen(false);
     router.push(href);
   }
 
@@ -60,18 +60,15 @@ export function DocsSearch() {
       <Button
         ref={triggerRef}
         type="button"
-        variant="outline"
-        className="h-8 w-8 justify-start gap-2 px-0 text-muted-foreground sm:w-48 sm:px-2.5"
+        variant="secondary"
+        className="hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 md:flex md:w-48 lg:w-40 xl:w-64 dark:bg-card"
         onClick={() => setOpen(true)}
         aria-label="Search documentation"
       >
-        <SearchIcon aria-hidden="true" />
-        <span className="hidden flex-1 text-left sm:inline">
-          Search docs...
+        <span className="flex-1 text-left">
+          <span className="hidden xl:inline">Search documentation...</span>
+          <span className="xl:hidden">Search...</span>
         </span>
-        <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-mono text-[10px] sm:inline">
-          ⌘ K
-        </kbd>
       </Button>
       <CommandDialog
         open={open}
@@ -84,28 +81,32 @@ export function DocsSearch() {
           <CommandInput autoFocus placeholder="Search available pages..." />
           <CommandList>
             <CommandEmpty>No documentation found.</CommandEmpty>
-            {(["Site", "Documentation"] as const).map((section) => (
-              <CommandGroup key={section} heading={section}>
-                {knownPages
-                  .filter((page) => page.section === section)
-                  .map((page) => (
-                    <CommandItem
-                      key={page.href}
-                      value={`${page.title} ${page.description}`}
-                      onSelect={() => navigate(page.href)}
-                      className="items-start py-2"
-                    >
-                      <FileTextIcon aria-hidden="true" className="mt-0.5" />
-                      <span>
-                        <span className="block font-medium">{page.title}</span>
-                        <span className="block text-xs text-muted-foreground">
-                          {page.description}
+            {(["Site", "Documentation", "Components"] as const).map(
+              (section) => (
+                <CommandGroup key={section} heading={section}>
+                  {knownPages
+                    .filter((page) => page.section === section)
+                    .map((page) => (
+                      <CommandItem
+                        key={page.href}
+                        value={`${page.title} ${page.description}`}
+                        onSelect={() => navigate(page.href)}
+                        className="items-start py-2"
+                      >
+                        <FileTextIcon aria-hidden="true" className="mt-0.5" />
+                        <span>
+                          <span className="block font-medium">
+                            {page.title}
+                          </span>
+                          <span className="block text-xs text-muted-foreground">
+                            {page.description}
+                          </span>
                         </span>
-                      </span>
-                    </CommandItem>
-                  ))}
-              </CommandGroup>
-            ))}
+                      </CommandItem>
+                    ))}
+                </CommandGroup>
+              ),
+            )}
           </CommandList>
         </Command>
       </CommandDialog>

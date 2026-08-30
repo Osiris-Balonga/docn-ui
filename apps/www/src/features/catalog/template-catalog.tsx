@@ -1,230 +1,199 @@
 "use client";
 
+import { useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowUpRight, Search, X } from "lucide-react";
-import { templateCatalog } from "@docn-ui/documents/catalog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  templateCatalog,
+  type TemplateCatalogEntry,
+} from "@docn-ui/documents/catalog";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  filterCatalog,
-  serializeCatalogFilters,
-  type CatalogFilters,
-} from "./catalog-filter";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
+import { copyText } from "@/features/registry/registry-source";
+import { cn } from "@/lib/utils";
 
-const formatOptions = [
-  { id: "card-85x55", label: "85 × 55 mm" },
-  { id: "card-90x50", label: "90 × 50 mm" },
-  { id: "card-us", label: "US · 88.9 × 50.8 mm" },
-] as const;
+const subscribeToStaticOrigin = () => () => {};
 
-function readFilters(searchParams: URLSearchParams): CatalogFilters {
-  const family = searchParams.get("family");
-  const format = searchParams.get("format");
-  return {
-    q: searchParams.get("q") ?? undefined,
-    family: family === "business-card" ? family : undefined,
-    format: formatOptions.some((option) => option.id === format)
-      ? (format ?? undefined)
-      : undefined,
-  };
-}
+function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
+  const [copied, setCopied] = useState(false);
+  const origin = useSyncExternalStore(
+    subscribeToStaticOrigin,
+    () => window.location.origin,
+    () => "http://127.0.0.1:4173",
+  );
+  const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/docn-${template.id}.json`;
 
-export function TemplateCatalog() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const filters = readFilters(searchParams);
-  const results = filterCatalog(templateCatalog, filters);
-
-  function updateFilters(next: CatalogFilters) {
-    const query = serializeCatalogFilters(next);
-    router.replace(query ? `/templates/?${query}` : "/templates/", {
-      scroll: false,
-    });
+  async function copyInstallCommand() {
+    const success = await copyText(installCommand).catch(() => false);
+    setCopied(success);
   }
 
-  const resultLabel = `${results.length} ${results.length === 1 ? "template" : "templates"}`;
+  return (
+    <div className="flex items-center gap-1">
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-10 px-2.5"
+        onClick={copyInstallCommand}
+        aria-label={
+          copied
+            ? `Copied ${template.title} install command`
+            : `Copy ${template.title} install command`
+        }
+      >
+        {copied ? (
+          <CheckIcon aria-hidden="true" />
+        ) : (
+          <CopyIcon aria-hidden="true" />
+        )}
+        <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+      </Button>
+      <Sheet>
+        <SheetTrigger
+          render={
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-10 px-2.5"
+              aria-label={`View ${template.title} code`}
+            />
+          }
+        >
+          <Code2Icon aria-hidden="true" />
+          <span className="hidden sm:inline">View Code</span>
+        </SheetTrigger>
+        <SheetContent
+          side="right"
+          className="w-full! gap-0 border-l-0 bg-background p-0 text-foreground sm:w-[min(44rem,58vw)]! sm:max-w-none!"
+        >
+          <SheetHeader className="sr-only">
+            <SheetTitle>{template.title} code</SheetTitle>
+            <SheetDescription>
+              Browse and copy the complete registry source for this template.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="min-h-0 flex-1 p-3 pt-13">
+            <RegistrySourcePanel
+              itemName={`docn-${template.id}`}
+              variant="drawer"
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function TemplateSpecimen({
+  featured,
+  template,
+}: {
+  featured: boolean;
+  template: TemplateCatalogEntry;
+}) {
+  return (
+    <article className={cn("min-w-0", featured && "lg:col-span-2")}>
+      <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
+        <h3 className="truncate text-sm font-medium">{template.title}</h3>
+        <TemplateActions template={template} />
+      </div>
+      <div
+        className={cn(
+          "flex items-center justify-center overflow-hidden rounded-xl bg-muted/35 p-6 sm:p-10",
+          featured ? "h-80 sm:h-112" : "h-80 sm:h-96",
+        )}
+      >
+        <Image
+          src={template.thumbnail.src}
+          alt={`${template.title} PDF preview`}
+          width={template.thumbnail.width}
+          height={template.thumbnail.height}
+          className="max-h-full w-auto max-w-full object-contain shadow-lg ring-1 ring-foreground/10"
+          priority={featured}
+        />
+      </div>
+    </article>
+  );
+}
+
+export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
+  const orderedTemplates = featuredSlug
+    ? [...templateCatalog].sort((left, right) => {
+        if (left.slug === featuredSlug) return -1;
+        if (right.slug === featuredSlug) return 1;
+        return 0;
+      })
+    : [...templateCatalog];
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12">
-      <header className="max-w-3xl">
-        <p className="font-mono text-xs font-medium tracking-wide text-primary uppercase">
-          Template catalog
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Start from a document that fits the format.
-        </h1>
-        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
-          Browse real PDF compositions, then edit validated data and export the
-          exact preview locally in your browser.
-        </p>
-      </header>
-
-      <section
-        aria-labelledby="catalog-filters"
-        className="mt-10 border-y py-5"
+    <>
+      <nav
+        aria-label="Template families"
+        className="mt-14 overflow-x-auto sm:mt-20"
       >
-        <h2 id="catalog-filters" className="sr-only">
-          Catalog filters
-        </h2>
-        <div className="grid gap-4 md:grid-cols-[minmax(15rem,1fr)_13rem_13rem_auto] md:items-end">
-          <div className="space-y-2">
-            <Label htmlFor="template-search">Search templates</Label>
-            <div className="relative">
-              <Search
-                aria-hidden="true"
-                className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-              />
-              <Input
-                id="template-search"
-                value={filters.q ?? ""}
-                placeholder="Name, style, or capability"
-                className="pl-8"
-                onChange={(event) =>
-                  updateFilters({ ...filters, q: event.target.value })
-                }
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="template-family">Family</Label>
-            <Select
-              value={filters.family ?? "all"}
-              onValueChange={(value) =>
-                updateFilters({
-                  ...filters,
-                  family: value && value !== "all" ? value : undefined,
-                })
-              }
+        <ul className="flex min-w-max items-center gap-5">
+          <li>
+            <a
+              href="#business-cards"
+              aria-current="location"
+              className="flex h-11 items-center rounded-md text-base font-medium text-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
             >
-              <SelectTrigger id="template-family" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All families</SelectItem>
-                <SelectItem value="business-card">Business cards</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="template-format">Format</Label>
-            <Select
-              value={filters.format ?? "all"}
-              onValueChange={(value) =>
-                updateFilters({
-                  ...filters,
-                  format: value && value !== "all" ? value : undefined,
-                })
-              }
-            >
-              <SelectTrigger id="template-format" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All formats</SelectItem>
-                {formatOptions.map((format) => (
-                  <SelectItem key={format.id} value={format.id}>
-                    {format.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            variant="ghost"
-            className="justify-self-start md:mb-0.5"
-            disabled={!filters.q && !filters.family && !filters.format}
-            onClick={() => updateFilters({})}
-          >
-            <X aria-hidden="true" />
-            Clear filters
-          </Button>
+              Business Cards
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <section id="business-cards" className="scroll-mt-28 pt-4">
+        <h2 className="sr-only">Business card templates</h2>
+        <div className="grid gap-x-6 gap-y-10 lg:grid-cols-2">
+          {orderedTemplates.map((template, index) => (
+            <TemplateSpecimen
+              key={template.id}
+              template={template}
+              featured={index === 0}
+            />
+          ))}
         </div>
       </section>
+    </>
+  );
+}
 
-      <div className="mt-7 flex items-center justify-between gap-4">
-        <p className="text-sm font-medium" aria-live="polite">
-          {resultLabel}
+export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
+      <header className="mx-auto flex max-w-3xl flex-col items-center pt-16 text-center sm:pt-24">
+        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          Beautiful PDF Templates
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground sm:text-lg">
+          Production-ready PDF components built for real print formats. Browse
+          the previews, copy a template, and adapt the source in your project.
         </p>
-        <p className="hidden text-sm text-muted-foreground sm:block">
-          All thumbnails come from the generated PDFs.
-        </p>
-      </div>
-
-      {results.length > 0 ? (
-        <ul className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {results.map((template) => (
-            <li key={template.id}>
-              <Link
-                href={`/templates/${template.slug}/`}
-                className="group block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-              >
-                <div className="flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border bg-muted/35 p-7 transition-colors group-hover:border-foreground/25 sm:p-9">
-                  <Image
-                    src={template.thumbnail.src}
-                    alt={`${template.title} PDF preview`}
-                    width={template.thumbnail.width}
-                    height={template.thumbnail.height}
-                    className="h-auto w-full shadow-lg ring-1 ring-foreground/10 transition-transform duration-200 group-hover:scale-[1.015] motion-reduce:transition-none"
-                  />
-                </div>
-                <div className="px-1 pt-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-medium text-primary">
-                        {template.familyLabel}
-                      </p>
-                      <h2 className="mt-1 text-lg font-semibold">
-                        {template.title}
-                      </h2>
-                    </div>
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="mt-1 size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
-                    />
-                  </div>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {template.description}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    <Badge variant="outline">{template.sides} sides</Badge>
-                    <Badge variant="outline">
-                      {template.supportedFormatIds.length} formats
-                    </Badge>
-                    {template.capabilities.qr ? (
-                      <Badge variant="outline">Vector QR</Badge>
-                    ) : null}
-                  </div>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <section className="mt-5 rounded-xl border border-dashed px-6 py-14 text-center">
-          <h2 className="text-lg font-semibold">No templates found</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-            Try a different name or remove one of the active filters.
-          </p>
-          <Button
-            className="mt-5"
-            variant="outline"
-            onClick={() => updateFilters({})}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <a href="#business-cards" className={buttonVariants()}>
+            Browse Templates
+          </a>
+          <Link
+            href="/docs/getting-started/"
+            className={buttonVariants({ variant: "outline" })}
           >
-            Clear all filters
-          </Button>
-        </section>
-      )}
+            Documentation
+          </Link>
+        </div>
+      </header>
+
+      <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
     </div>
   );
 }

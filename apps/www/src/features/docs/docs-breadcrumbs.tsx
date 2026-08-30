@@ -8,17 +8,25 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export function DocsBreadcrumbs({ current }: { current?: string }) {
+export function DocsBreadcrumbs({
+  current,
+  rootHref = "/docs/",
+  rootTitle = "Docs",
+}: {
+  current?: string;
+  rootHref?: string;
+  rootTitle?: string;
+}) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           {current ? (
-            <BreadcrumbLink render={<Link href="/docs/" />}>
-              Docs
+            <BreadcrumbLink render={<Link href={rootHref} />}>
+              {rootTitle}
             </BreadcrumbLink>
           ) : (
-            <BreadcrumbPage>Docs</BreadcrumbPage>
+            <BreadcrumbPage>{rootTitle}</BreadcrumbPage>
           )}
         </BreadcrumbItem>
         {current ? (

@@ -4,8 +4,7 @@ import {
   getTemplateCatalogEntry,
   templateCatalog,
 } from "@docn-ui/documents/catalog";
-import type { BusinessCardTemplateId } from "@docn-ui/documents/templates/business-cards/metadata";
-import { BusinessCardPlayground } from "@/features/playground/business-card-playground";
+import { TemplateCatalog } from "@/features/catalog/template-catalog";
 
 export const dynamicParams = false;
 
@@ -36,10 +35,5 @@ export default async function TemplatePage({
   const template = getTemplateCatalogEntry(slug);
   if (!template) notFound();
 
-  return (
-    <BusinessCardPlayground
-      key={template.id}
-      templateId={template.id as BusinessCardTemplateId}
-    />
-  );
+  return <TemplateCatalog featuredSlug={template.slug} />;
 }

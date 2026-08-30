@@ -20,17 +20,29 @@ const fontAssetSchema = z
   })
   .strict();
 
+const assetLicenseSchema = z
+  .object({
+    id: z.string().regex(/^license-[a-z0-9.-]+$/),
+    file: z.string().regex(/^fonts\/[A-Za-z0-9.-]+\.txt$/),
+    bytes: z.number().int().positive(),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/),
+    license: z.literal("OFL-1.1"),
+  })
+  .strict();
+
 const assetManifestSchema = z
   .object({
     schemaVersion: z.literal(1),
     qualifiedExamples: z
       .object({ en: z.string().min(1), fr: z.string().min(1) })
       .strict(),
+    licenses: z.array(assetLicenseSchema).length(1),
     assets: z.array(fontAssetSchema).length(4),
   })
   .strict();
 
 export type FontAssetDefinition = z.infer<typeof fontAssetSchema>;
+export type AssetLicenseDefinition = z.infer<typeof assetLicenseSchema>;
 export const assetManifest = assetManifestSchema.parse(manifestJson);
 
 export function getAssetDefinition(

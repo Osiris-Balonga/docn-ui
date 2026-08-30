@@ -43,6 +43,8 @@ shadcn add tooltip --cwd apps/www --yes
 
 Both were run with exact `shadcn@4.19.0` and `pnpm@11.24.0`. Init installed Button; only Tooltip was added afterwards. Style `base-nova`, neutral tokens, CSS variables, and aliases are recorded in `components.json`. Generated sources are in `components/ui` and `lib/utils.ts`; the upstream MIT license is retained in `components/ui/LICENSE.txt` (GitHub license blob `fad4d887a681dd49233e5ed01ee2c7a1513089a0`). No force initialization, Radix primitives, or additional UI components.
 
+L07-S01 reuses this exact development dependency's `shadcn/schema` export to validate the generated catalog and items offline against the official Zod schemas. It does not add a parallel schema package, call the network during generation, or ship CLI code to consumers.
+
 Init's Google Fonts import and circular `--font-sans` token were replaced by locally bundled, licensed font files with literal family names. [Font provenance and hashes](../apps/www/src/assets/fonts/README.md) are tracked. The fonts belong to the website; PDF font qualification is separate.
 
 ## Quality tooling (L01-S03)

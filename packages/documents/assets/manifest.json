@@ -4,6 +4,15 @@
     "en": "Precise documents, open sources.",
     "fr": "Documents précis, sources ouvertes. Élodie Mbemba."
   },
+  "licenses": [
+    {
+      "id": "license-ofl-1.1",
+      "file": "fonts/OFL.txt",
+      "bytes": 4518,
+      "sha256": "54ec7b5a35310ad66f9f3091426f7028484cbf9ae1ab5da30122ee412a3009e1",
+      "license": "OFL-1.1"
+    }
+  ],
   "assets": [
     {
       "id": "font-noto-sans-400",
