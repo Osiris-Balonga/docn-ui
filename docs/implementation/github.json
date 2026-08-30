@@ -462,53 +462,55 @@
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVg8",
       "pullRequest": {
         "number": 29,
-        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/29"
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/29",
+        "mergeCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
+        "mergedAt": "2026-08-30T16:42:50Z"
       },
       "initialized": true,
       "verification": {
-        "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f",
+        "headSha": "91f22546e23ee59b79bff53bdc567270011208f2",
         "checks": [
           {
             "name": "branch-policy",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322800883/job/99287621450",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322943524/job/99287996729",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "quality",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287653436",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99287999341",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "unit-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287653233",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99287999200",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "pdf-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287653439",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99287999336",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "consumer-tests",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287653396",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99287999290",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "build",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287653388",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99287999356",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           },
           {
             "name": "e2e-chromium",
             "appId": 15368,
-            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322802556/job/99287770817",
-            "headSha": "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33322944449/job/99288111023",
+            "headSha": "91f22546e23ee59b79bff53bdc567270011208f2"
           }
         ],
         "verifiedAt": "2026-08-30T16:36:01.7703600Z"
@@ -519,8 +521,59 @@
       "issueId": "I_kwDOUHjPN88AAAABOuM-zA",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/14",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVi0",
-      "pullRequest": null,
-      "initialized": true
+      "pullRequest": {
+        "number": 30,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/30"
+      },
+      "initialized": true,
+      "verification": {
+        "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c",
+        "checks": [
+          {
+            "name": "branch-policy",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324503863/job/99292145838",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "quality",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164154",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "unit-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164201",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "pdf-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164181",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "consumer-tests",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164012",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "build",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292164189",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          },
+          {
+            "name": "e2e-chromium",
+            "appId": 15368,
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/33324504880/job/99292285809",
+            "headSha": "acf30364b93846ea13d3b9dd793501fd5c385d6c"
+          }
+        ],
+        "verifiedAt": "2026-08-30T17:12:39Z"
+      }
     },
     "L11": {
       "issueNumber": 15,
