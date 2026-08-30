@@ -203,13 +203,15 @@
     {
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
       "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
       "actualCommits": [
         "4d132e2dcd9b930a8a63138d27d0ff968f43c130",
-        "9559db7e968bd7449d3f0bae538a8f09eae8a65b"
+        "9559db7e968bd7449d3f0bae538a8f09eae8a65b",
+        "b2aeef1cd0cb216fd16989f9270b9f36c0e7008c",
+        "668da87041df4ab37992207123e09ffe18d54b3f"
       ],
       "evidence": "../qa/L08.md",
       "blocker": null
