@@ -13,7 +13,7 @@ export const businessCardMinimalMetadata = {
   family: "business-card",
   title: "Minimal business card",
   description:
-    "A restrained two-sided card with aligned identity and contact details.",
+    "A two-sided card with a quiet brand header, dominant identity, and compact contact columns.",
   tags: ["minimal", "professional", "two-sided"],
   supportedFormatIds: BUSINESS_CARD_FORMAT_IDS,
   supportedThemeIds: THEME_IDS,

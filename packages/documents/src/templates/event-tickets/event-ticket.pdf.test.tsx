@@ -122,6 +122,7 @@ async function inspectTicketPdf(pdfBytes: Uint8Array) {
     return {
       bounds: items.map((item) => ({
         height: item.height,
+        text: item.str,
         width: item.width,
         x: item.transform[4] ?? 0,
         y: height - (item.transform[5] ?? 0) - item.height,
@@ -246,16 +247,17 @@ describe("event-ticket printable QR", () => {
       {
         artifact: "event-ticket-classic-long",
         data: longClassicExample,
-        formatId: "ticket-210x74" as const,
-        plan: createEventTicketClassicPlan(
-          createRequest(
+        formatId: "ticket-150x70" as const,
+        plan: createEventTicketClassicPlan({
+          ...createRequest(
             longClassicExample,
             "event-ticket-classic",
-            "ticket-210x74",
+            "ticket-150x70",
             "neutral",
           ),
-        ).plan,
-        text: [longClassicExample.eventName, "IFPID-2026-0042"],
+          locale: "fr",
+        }).plan,
+        text: [longClassicExample.eventName, "IFPID-2026-0042", "ACCÈS"],
       },
     ];
 
@@ -273,6 +275,21 @@ describe("event-ticket printable QR", () => {
         expect(inspection.text).toContain(expectedText);
       for (const bounds of inspection.bounds)
         assertWithinSafeFrame(bounds, frame, [fixture.data.ticketId, "text"]);
+      if (fixture.artifact === "event-ticket-classic-long") {
+        const venueLabel = inspection.bounds.find(
+          (item) => item.text === "LIEU",
+        );
+        const venue = inspection.bounds.find(
+          (item) => item.text === fixture.data.venue,
+        );
+        const seatLabel = inspection.bounds.find(
+          (item) => item.text === "PLACE",
+        );
+        if (!venueLabel || !venue || !seatLabel)
+          throw new Error("Expected the compact ticket logistics fields.");
+        expect(venueLabel.y + venueLabel.height).toBeLessThanOrEqual(venue.y);
+        expect(venue.y + venue.height).toBeLessThanOrEqual(seatLabel.y);
+      }
       await retainPdf(fixture.artifact, pdfBytes);
     }
   });

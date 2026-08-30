@@ -7,7 +7,7 @@ export const receiptServiceMetadata = {
   family: "receipt",
   title: "Subscription receipt",
   description:
-    "A SaaS-style subscription receipt with customer and billing context.",
+    "A subscription payment confirmation with paid status, customer, and payment details.",
   tags: ["subscription", "saas", "thermal"],
   supportedFormatIds: ["receipt-58", "receipt-80"],
   supportedThemeIds: THEME_IDS,

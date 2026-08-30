@@ -7,7 +7,7 @@ export const invoiceStudioMetadata = {
   family: "invoice",
   title: "Subscription invoice",
   description:
-    "A SaaS-style invoice with billing period, usage, and payment references.",
+    "An editorial billing statement with a vertical rail, usage, and payment references.",
   tags: ["invoice", "subscription", "saas"],
   supportedFormatIds: ["a4", "letter"],
   supportedThemeIds: THEME_IDS,

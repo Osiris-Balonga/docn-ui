@@ -9,32 +9,21 @@ import { businessCardMinimalMetadata } from "./metadata";
 
 const fixedDate = new Date("2026-01-15T12:00:00.000Z");
 
-function ContactRows({
-  entries,
+function ContactColumn({
+  values,
 }: {
-  entries: ReadonlyArray<readonly [string, string | undefined]>;
+  values: readonly (string | undefined)[];
 }) {
-  const visibleEntries = entries.filter(
-    (entry): entry is readonly [string, string] => Boolean(entry[1]),
+  const visibleValues = values.filter((value): value is string =>
+    Boolean(value),
   );
-  if (visibleEntries.length === 0) return null;
+  if (visibleValues.length === 0) return null;
   return (
-    <View style={{ gap: 3 }}>
-      {visibleEntries.map(([label, value]) => (
-        <View
-          key={label}
-          style={{ alignItems: "flex-start", flexDirection: "row" }}
-          wrap={false}
-        >
-          <View style={{ width: 48 }}>
-            <Text size="caption" tone="muted">
-              {label}
-            </Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text size="label">{value}</Text>
-          </View>
-        </View>
+    <View style={{ flex: 1, gap: 3 }}>
+      {visibleValues.map((value, index) => (
+        <Text key={`${index}:${value}`} size="caption">
+          {value}
+        </Text>
       ))}
     </View>
   );
@@ -58,10 +47,6 @@ export function BusinessCardMinimalDocument({
   themeId: RenderRequest["themeId"];
 }) {
   const theme = getPdfTheme(themeId, overrides.accentColor);
-  const labels =
-    locale === "fr"
-      ? { address: "Adresse", phone: "Téléphone", website: "Site" }
-      : { address: "Address", phone: "Phone", website: "Website" };
   const brand = data.organization ?? data.name;
   return (
     <Document
@@ -76,27 +61,46 @@ export function BusinessCardMinimalDocument({
           style={{ height: "100%", justifyContent: "space-between" }}
           wrap={false}
         >
+          <View
+            style={{
+              alignItems: "flex-start",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text size="caption" tone="muted">
+              {data.organization ??
+                (locale === "fr"
+                  ? "Activité indépendante"
+                  : "Independent practice")}
+            </Text>
+            {logoSource ? (
+              <Image
+                alt="Imported logo"
+                height={14}
+                resolvedSource={logoSource}
+                width={28}
+              />
+            ) : null}
+          </View>
           <View>
-            <View
-              style={{
-                backgroundColor: theme.colors.accent,
-                height: 4,
-                marginBottom: theme.spacing.md,
-                width: 34,
-              }}
-            />
             <Heading level="display">{data.name}</Heading>
             {data.role ? <Text tone="muted">{data.role}</Text> : null}
-            {data.organization ? <Text>{data.organization}</Text> : null}
           </View>
-          <ContactRows
-            entries={[
-              ["Email", data.email],
-              [labels.phone, data.phone],
-              [labels.website, data.website?.replace(/^https?:\/\//, "")],
-              [labels.address, data.address],
-            ]}
-          />
+          <View
+            style={{
+              borderTopColor: theme.colors.border,
+              borderTopWidth: 0.75,
+              flexDirection: "row",
+              gap: 12,
+              paddingTop: 7,
+            }}
+          >
+            <ContactColumn values={[data.email, data.phone]} />
+            <ContactColumn
+              values={[data.website?.replace(/^https?:\/\//, ""), data.address]}
+            />
+          </View>
         </View>
       </PageFrame>
       <PageFrame

@@ -6,7 +6,8 @@ export const invoiceMinimalMetadata = {
   schemaVersion: 1,
   family: "invoice",
   title: "Minimal invoice",
-  description: "A light invoice with compact parties and an open line table.",
+  description:
+    "An editorial invoice with a bold title, open parties, and a clear line table.",
   tags: ["invoice", "minimal", "services"],
   supportedFormatIds: ["a4", "letter"],
   supportedThemeIds: THEME_IDS,

@@ -206,6 +206,7 @@ describe("invoice pagination foundation", () => {
         expected: [
           "Atelier Nzela",
           "INV-2026-0042",
+          "Brand identity - August 2026",
           "Identity system refinement",
         ],
         plan: createInvoiceMinimalPlan(

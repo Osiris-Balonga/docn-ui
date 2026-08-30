@@ -16,7 +16,7 @@ export const minimalInvoiceExample = {
   issueDate: "2026-08-30",
   dueDate: "2026-09-29",
   currency: "EUR",
-  project: "Identity system refinement",
+  project: "Brand identity - August 2026",
   lines: [
     {
       id: "discovery",

@@ -25,17 +25,15 @@ function formatDate(value: string, locale: "en" | "fr") {
 function PartyBlock({
   label,
   party,
-  strong,
 }: {
   label: string;
   party: InvoiceDocumentProps["data"]["seller"];
-  strong?: boolean;
 }) {
   return (
     <View style={{ flex: 1, gap: 2 }}>
       <Text
         style={{
-          color: strong ? "#ffffff" : "#666666",
+          color: "#666666",
           fontSize: 6.5,
           fontWeight: 700,
           lineHeight: 1.2,
@@ -85,13 +83,18 @@ export function InvoiceDocument({
     props.printProfile,
   );
   const margin = geometry.trimInset + 38;
-  const contentWidth = geometry.mediaWidth - margin * 2;
   const studio = variant === "studio";
   const business = variant === "business";
+  const minimal = variant === "minimal";
+  const contentLeft = margin + (studio ? 62 : 0);
+  const contentWidth = geometry.mediaWidth - contentLeft - margin;
+  const headerHeight = minimal ? 172 : 136;
+  const tableTop = geometry.trimInset + (minimal ? 194 : 158);
+  const flowTop = geometry.trimInset + (minimal ? 212 : 176);
   const accent = theme.colors.accent;
-  const dark = business ? "#171717" : studio ? accent : theme.colors.text;
-  const border = business ? "#cfcfcf" : studio ? "#c7c7c7" : "#d8d8d8";
-  const mutedSurface = business ? "#f2f2f2" : studio ? "#f4f4f4" : "#ffffff";
+  const dark = business ? "#171717" : theme.colors.text;
+  const border = business ? "#cfcfcf" : theme.colors.border;
+  const mutedSurface = business ? "#f2f2f2" : theme.colors.canvas;
   const labels =
     props.locale === "fr"
       ? {
@@ -150,94 +153,190 @@ export function InvoiceDocument({
           fontSize: 8,
           lineHeight: 1.35,
           paddingBottom: geometry.trimInset + 50,
-          paddingHorizontal: margin,
-          paddingTop: geometry.trimInset + 176,
+          paddingLeft: contentLeft,
+          paddingRight: margin,
+          paddingTop: flowTop,
         }}
       >
+        {studio ? (
+          <View
+            fixed
+            style={{
+              alignItems: "center",
+              borderRightColor: accent,
+              borderRightWidth: 1.5,
+              bottom: geometry.trimInset + 20,
+              justifyContent: "space-between",
+              left: margin - 4,
+              paddingVertical: 8,
+              position: "absolute",
+              top: geometry.trimInset + 22,
+              width: 48,
+            }}
+          >
+            <Text
+              style={{
+                color: accent,
+                fontSize: 5.5,
+                fontWeight: 700,
+                letterSpacing: 0.5,
+              }}
+            >
+              STUDIO / 01
+            </Text>
+            <Text
+              style={{
+                color: accent,
+                fontFamily: theme.fonts.heading,
+                fontSize: 26,
+                fontWeight: 700,
+                transform: "rotate(-90deg)",
+                width: 104,
+              }}
+            >
+              {labels.invoice}
+            </Text>
+            <Text style={{ color: theme.colors.mutedText, fontSize: 6 }}>
+              {props.data.currency}
+            </Text>
+          </View>
+        ) : null}
         <View
           fixed
           style={{
-            backgroundColor: studio ? accent : "#ffffff",
-            color: studio ? "#ffffff" : theme.colors.text,
-            height: 136,
-            left: margin,
-            padding: studio ? 14 : 0,
+            backgroundColor: "#ffffff",
+            color: theme.colors.text,
+            height: headerHeight,
+            left: contentLeft,
             position: "absolute",
             top: geometry.trimInset + 22,
             width: contentWidth,
           }}
         >
-          <View style={{ alignItems: "flex-start", flexDirection: "row" }}>
-            <View style={{ flex: 1, paddingRight: 20 }}>
-              <Text
+          {minimal ? (
+            <View>
+              <View
                 style={{
-                  fontFamily: theme.fonts.heading,
-                  fontSize: studio ? 19 : 15,
-                  fontWeight: 700,
-                  lineHeight: 1.2,
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                {props.data.seller.name}
-              </Text>
-              {props.data.project ? (
-                <Text style={{ fontSize: 7.5, marginTop: 3 }}>
-                  {props.data.project}
+                <Text style={{ fontSize: 8, fontWeight: 700 }}>
+                  {props.data.seller.name}
                 </Text>
-              ) : null}
-            </View>
-            <View style={{ alignItems: "flex-end", width: 180 }}>
+                <Text style={{ fontSize: 8, fontWeight: 700 }}>
+                  {props.data.number}
+                </Text>
+              </View>
               <Text
                 style={{
                   fontFamily: theme.fonts.heading,
-                  fontSize: studio ? 23 : 20,
+                  fontSize: 38,
                   fontWeight: 700,
-                  lineHeight: 1.2,
-                  marginBottom: 5,
+                  letterSpacing: -1.2,
+                  lineHeight: 1,
+                  marginTop: 10,
                   textTransform: "uppercase",
                 }}
               >
                 {labels.invoice}
               </Text>
-              <Text style={{ fontSize: 9, fontWeight: 700 }}>
-                {props.data.number}
-              </Text>
-              <Text style={{ fontSize: 6.5, marginTop: 3 }}>
-                {labels.issue}: {formatDate(props.data.issueDate, props.locale)}{" "}
-                · {labels.due}: {formatDate(props.data.dueDate, props.locale)}
-              </Text>
+              {props.data.project ? (
+                <Text
+                  style={{
+                    color: theme.colors.mutedText,
+                    fontSize: 7.5,
+                    marginTop: 3,
+                  }}
+                >
+                  {props.data.project}
+                </Text>
+              ) : null}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 7,
+                }}
+              >
+                <Text style={{ fontSize: 6.5 }}>
+                  {labels.issue}:{" "}
+                  {formatDate(props.data.issueDate, props.locale)}
+                </Text>
+                <Text style={{ fontSize: 6.5 }}>
+                  {labels.due}: {formatDate(props.data.dueDate, props.locale)}
+                </Text>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={{ alignItems: "flex-start", flexDirection: "row" }}>
+              <View style={{ flex: 1, paddingRight: 20 }}>
+                <Text
+                  style={{
+                    fontFamily: theme.fonts.heading,
+                    fontSize: studio ? 18 : 15,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {props.data.seller.name}
+                </Text>
+                {props.data.project ? (
+                  <Text style={{ fontSize: 7.5, marginTop: 3 }}>
+                    {props.data.project}
+                  </Text>
+                ) : null}
+              </View>
+              <View style={{ alignItems: "flex-end", width: 180 }}>
+                <Text
+                  style={{
+                    fontFamily: theme.fonts.heading,
+                    fontSize: business ? 20 : 12,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                    marginBottom: 5,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {business ? labels.invoice : props.data.number}
+                </Text>
+                {business ? (
+                  <Text style={{ fontSize: 9, fontWeight: 700 }}>
+                    {props.data.number}
+                  </Text>
+                ) : null}
+                <Text style={{ fontSize: 6.5, marginTop: 3 }}>
+                  {labels.issue}:{" "}
+                  {formatDate(props.data.issueDate, props.locale)} ·{" "}
+                  {labels.due}: {formatDate(props.data.dueDate, props.locale)}
+                </Text>
+              </View>
+            </View>
+          )}
           <View
             style={{
-              backgroundColor: studio ? "rgba(255,255,255,0.12)" : mutedSurface,
-              borderTopColor: studio ? "rgba(255,255,255,0.25)" : border,
-              borderTopWidth: 0.75,
+              backgroundColor: minimal ? "#ffffff" : mutedSurface,
+              borderTopColor: border,
+              borderTopWidth: minimal ? 0 : 0.75,
               flexDirection: "row",
               gap: 28,
-              marginTop: 12,
-              padding: studio ? 9 : 9,
+              marginTop: minimal ? 8 : 12,
+              padding: minimal ? 0 : 9,
             }}
           >
-            <PartyBlock
-              label={labels.billFrom}
-              party={props.data.seller}
-              strong={studio}
-            />
-            <PartyBlock
-              label={labels.billTo}
-              party={props.data.customer}
-              strong={studio}
-            />
+            <PartyBlock label={labels.billFrom} party={props.data.seller} />
+            <PartyBlock label={labels.billTo} party={props.data.customer} />
           </View>
         </View>
 
         <FlowTableHeader
-          backgroundColor={business || studio ? dark : "#ffffff"}
+          backgroundColor={business ? dark : "#ffffff"}
           borderColor={border}
           columns={columns}
-          color={business || studio ? "#ffffff" : theme.colors.text}
-          left={margin}
-          top={geometry.trimInset + 158}
+          color={business ? "#ffffff" : theme.colors.text}
+          left={contentLeft}
+          top={tableTop}
           width={contentWidth}
         />
 
@@ -246,7 +345,7 @@ export function InvoiceDocument({
           style={{
             bottom: geometry.trimInset + 20,
             flexDirection: "row",
-            left: margin,
+            left: contentLeft,
             position: "absolute",
             width: contentWidth,
           }}
@@ -294,8 +393,8 @@ export function InvoiceDocument({
           wrap={false}
           style={{
             alignSelf: "flex-end",
-            backgroundColor: studio ? accent : mutedSurface,
-            color: studio ? "#ffffff" : theme.colors.text,
+            backgroundColor: studio ? theme.colors.canvas : mutedSurface,
+            color: theme.colors.text,
             gap: 5,
             marginTop: 16,
             padding: 12,
@@ -319,7 +418,7 @@ export function InvoiceDocument({
           ))}
           <View
             style={{
-              borderTopColor: studio ? "#ffffff" : dark,
+              borderTopColor: dark,
               borderTopWidth: 1,
               flexDirection: "row",
               paddingTop: 6,

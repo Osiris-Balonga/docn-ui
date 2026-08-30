@@ -12,7 +12,7 @@ export const eventTicketClassicMetadata = {
   family: "ticket",
   title: "Classic event ticket",
   description:
-    "A clear event field with a detachable-style identifier and isolated QR area.",
+    "A boarding-pass-inspired ticket with an isolated QR stub and admission rail.",
   tags: ["classic", "landscape", "qr"],
   supportedFormatIds: EVENT_TICKET_LANDSCAPE_FORMAT_IDS,
   supportedThemeIds: THEME_IDS,
