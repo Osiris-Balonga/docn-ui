@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 const templateFamilies = [
   { id: "business-card", label: "Business Cards" },
   { id: "ticket", label: "Event Tickets" },
+  { id: "receipt", label: "Receipts" },
 ] as const satisfies readonly {
   id: TemplateCatalogEntry["family"];
   label: string;
