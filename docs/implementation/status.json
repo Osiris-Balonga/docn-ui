@@ -245,7 +245,7 @@
     {
       "id": "L10",
       "file": "lots/L10-labels.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L09"],
       "branch": "feat/label-templates",
       "baseCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
@@ -255,7 +255,8 @@
         "ad9169f1a05bf7ffc4ee539d0fa4771807abc772",
         "c498ed9375cf5e90b1d94c7432861943068c6469",
         "72c7f73ad43563ca41f1604daaceb29013824b7e",
-        "0fd268a8a7010a4c57b3d6ffde96dc36954a4195"
+        "0fd268a8a7010a4c57b3d6ffde96dc36954a4195",
+        "39a8782a420de5c3950fc04fc990c842d054132d"
       ],
       "evidence": "../qa/L10.md",
       "blocker": null

@@ -1,6 +1,6 @@
 # L10 — Individual labels and sheets
 
-Status: **verified locally** on branch `feat/label-templates`, based on merged L09 commit `b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5`.
+Status: **in review** in PR [#30](https://github.com/Osiris-Balonga/docn-ui/pull/30) after local verification, on branch `feat/label-templates` based on merged L09 commit `b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5`.
 
 Dependencies: L09. Requirements: FR-11, FR-13, FR-16; NFR-05.
 
