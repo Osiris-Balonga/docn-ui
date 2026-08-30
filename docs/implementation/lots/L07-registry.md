@@ -18,10 +18,10 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S01 — `feat(registry): generate versioned items from document sources`
 
-- [ ] Single source manifest, docn-* IDs, card items; pinned local official schema.
-- [ ] Build the dependency closure, target docn subdirectories, and rewrite imports with a bounded, tested transformation.
-- [ ] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
-- [ ] Explicit development version; no supposedly reserved namespace/domain.
+- [x] Single source manifest, docn-* IDs, card items; pinned local official schema.
+- [x] Build the dependency closure, target docn subdirectories, and rewrite imports with a bounded, tested transformation.
+- [x] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
+- [x] Explicit development version; no supposedly reserved namespace/domain.
 
 **Acceptance:** Every required file is included; no site/workspace import is distributed.
 

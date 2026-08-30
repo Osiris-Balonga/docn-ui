@@ -47,6 +47,9 @@ importers:
       prettier:
         specifier: 3.9.6
         version: 3.9.6
+      shadcn:
+        specifier: 4.19.0
+        version: 4.19.0(supports-color@7.2.0)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -8021,7 +8024,7 @@ snapshots:
       kleur: 4.1.5
       open: 11.0.1
       ora: 8.2.0
-      postcss: 8.5.23
+      postcss: 8.5.26
       postcss-selector-parser: 7.1.5
       prompts: 2.4.2
       recast: 0.23.21
