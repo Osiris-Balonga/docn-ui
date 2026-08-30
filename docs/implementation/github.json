@@ -37,6 +37,10 @@
         {
           "context": "e2e-chromium",
           "integration_id": 15368
+        },
+        {
+          "context": "consumer-tests",
+          "integration_id": 15368
         }
       ]
     },
@@ -67,6 +71,10 @@
         },
         {
           "context": "e2e-chromium",
+          "integration_id": 15368
+        },
+        {
+          "context": "consumer-tests",
           "integration_id": 15368
         }
       ]

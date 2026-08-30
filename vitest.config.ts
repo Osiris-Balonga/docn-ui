@@ -72,6 +72,21 @@ export default defineConfig({
           exclude,
         },
       },
+      {
+        extends: true,
+        test: {
+          name: "consumers",
+          environment: "node",
+          include: ["tests/consumers/**/*.consumer.test.ts"],
+          exclude: exclude.filter(
+            (pattern) => !pattern.includes(".consumer.test"),
+          ),
+          maxWorkers: 1,
+          retry: 0,
+          hookTimeout: 600_000,
+          testTimeout: 600_000,
+        },
+      },
     ],
   },
 });

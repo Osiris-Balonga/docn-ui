@@ -66,6 +66,9 @@ describe("registry source panel", () => {
       await screen.findByText("2 files · 2 registry items"),
     ).toBeInTheDocument();
     expect(
+      screen.getByText(/node docn\/assets\/install\.mjs/),
+    ).toBeInTheDocument();
+    expect(
       screen.getByLabelText("~/docn/templates/card.tsx source"),
     ).toHaveTextContent('export const Card = "complete source";');
     await user.click(screen.getByRole("button", { name: "Copy source" }));

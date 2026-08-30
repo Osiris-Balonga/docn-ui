@@ -3,11 +3,11 @@ import type {
   FixedDocumentRenderPlan,
 } from "../../render/runtime";
 import {
-  DocumentValidationError,
   validateRenderRequest,
   type RenderRequest,
   type TemplateMetadata,
-} from "../../core";
+} from "../../core/contracts";
+import { DocumentValidationError } from "../../core/errors";
 import type { ResolvedFixedFormat } from "../../core/formats";
 import { parseBusinessCardData, type BusinessCardData } from "./schema";
 

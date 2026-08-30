@@ -25,6 +25,7 @@
     "test:components": "vitest run --project components",
     "test:integration": "vitest run --project integration",
     "test:pdf": "vitest run --project pdf",
+    "test:consumers": "pnpm generate:registry && vitest run --project consumers",
     "test:e2e": "playwright test",
     "test:watch": "vitest --project unit --project components --project integration",
     "test:coverage": "vitest run --project unit --project components --project integration --coverage",

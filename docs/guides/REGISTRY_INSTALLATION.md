@@ -6,7 +6,7 @@ The L07 registry is available for local qualification. It is not a published rel
 
 - Node.js 24.x and pnpm 11.24.0 for the qualified development workflow.
 - A React 19 TypeScript project initialized with shadcn 4.19.0.
-- A `components.json` file whose `~/*` or `@/*` alias resolves to the consumer source directory. Generated docn files target `~/docn/**` and never replace `components/ui`.
+- A `components.json` file and a TypeScript `@/*` alias. The official CLI resolves generated `~/docn/**` targets below the consumer project root; internal imports use `@/docn/**`. Never point either alias at the monorepo or an installed package.
 - A running local docn-ui site. From this repository, `corepack pnpm dev` serves the registry at the origin printed by Next.js.
 
 The registry items declare their exact React-pdf, pdf-lib, Zod, QR, and React dependencies. The shadcn CLI installs the dependencies required by the selected item and its versioned registry dependency closure.
@@ -26,13 +26,13 @@ The detail page reads the same generated item JSON used by the CLI. Its source v
 For a browser consumer, install the exact fonts and license below the consumer's own public directory:
 
 ```sh
-node src/docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
 ```
 
 For a Node consumer, use the Node target and pass the resulting local root to `createNodeAssetResolver`:
 
 ```sh
-node src/docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target node
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target node
 ```
 
 See the [asset installation guide](./REGISTRY_ASSETS.md) for browser and Node code examples, destination rules, hashes, and manual installation.

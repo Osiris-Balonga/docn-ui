@@ -1,6 +1,6 @@
 # Registry asset installation
 
-PDF fonts are binary assets and are not embedded into registry JSON. The `docn-render` item installs a visible Node script at `src/docn/assets/install.mjs`. Run it explicitly after reviewing the installed source. It does not use a postinstall hook and never overwrites an existing file.
+PDF fonts are binary assets and are not embedded into registry JSON. The `docn-render` item installs a visible Node script at `docn/assets/install.mjs`. Run it explicitly after reviewing the installed source. It does not use a postinstall hook and never overwrites an existing file.
 
 The development commands below assume the registry is served by `corepack pnpm dev` at `http://127.0.0.1:4173`. Published documentation must replace this loopback URL only after an immutable release origin is approved.
 
@@ -9,7 +9,7 @@ The development commands below assume the registry is served by `corepack pnpm d
 Install the fonts and OFL license under the consumer's own `public/generated` directory:
 
 ```sh
-node src/docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
 ```
 
 The manifest paths then match the installed document manifest's `/generated/fonts/*` URLs. Create the resolver from the consumer application's origin and pass it to the browser runtime:
@@ -29,7 +29,7 @@ The browser fetches fonts from the consumer origin. It does not contact the regi
 Install the same verified files into a local `assets` directory:
 
 ```sh
-node src/docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target node
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target node
 ```
 
 Pass that directory explicitly to the Node resolver:

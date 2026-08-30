@@ -32,7 +32,13 @@ describe("document registry generation", () => {
     const composition = minimal?.files.find((file) =>
       file.path.endsWith("business-card-minimal.tsx"),
     );
+    const foundation = result.items
+      .find((item) => item.name === "docn-business-card-foundation")
+      ?.files.find((file) => file.path.endsWith("business-cards/plan.ts"));
     expect(composition?.content).toContain('from "@/docn/primitives/index"');
+    expect(foundation?.content).toContain('from "@/docn/core/contracts"');
+    expect(foundation?.content).toContain('from "@/docn/core/errors"');
+    expect(foundation?.content).not.toContain('from "@/docn/core/index"');
     expect(composition?.content).toContain("website.replace(/^https?:\\/\\//");
     expect(minimal?.registryDependencies).toEqual(
       expect.arrayContaining([

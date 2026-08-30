@@ -124,7 +124,7 @@ export function RegistrySourcePanel({ itemName }: { itemName: string }) {
     [selectedFile],
   );
   const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
-  const assetCommand = `node src/docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
+  const assetCommand = `node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
 
   return (
     <section className="border-t" aria-labelledby="registry-source-heading">
