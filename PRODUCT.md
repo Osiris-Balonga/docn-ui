@@ -14,11 +14,11 @@ React/TypeScript developers who need polished PDFs from data without redesigning
 
 ## Product purpose
 
-Provide explicit physical formats, compositions suited to each use case, and customizable visual identity. Users discover a template, try their data, inspect the exact PDF output, download it, and obtain its source code.
+Extend the shadcn source-ownership workflow to printable documents and PDFs. Developers keep their existing shadcn project and `components.json`, add docn-ui as another registry, then own the installed document source. Users discover a template, inspect the exact PDF output, and obtain its source code without adopting a parallel design system or runtime service.
 
 ## Confirmed decisions
 
-- A model inspired by shadcn and PDFx: composable components, source ownership, and a documented catalog.
+- A shadcn-compatible extension for print and PDF source: the official CLI, the consumer's existing `components.json`, composable components, source ownership, and a documented catalog.
 - shadcn/ui for the site interface, with an experience reminiscent of its documentation.
 - A variety of physical formats, including business cards and tickets.
 - A first complete workflow using a business card, followed by other families.
@@ -46,8 +46,9 @@ Precise, restrained, accessible. The interface showcases the documents; template
 1. The actual document is the source of truth for preview and download.
 2. The physical format determines the composition; changing dimensions alone is insufficient.
 3. Installed source belongs to the user's project.
-4. Limits are visible: excessive text, incompatible formats, missing fonts.
-5. Privacy is straightforward: trial data stays in the browser.
+4. The existing shadcn configuration remains authoritative; docn-ui does not create a competing project configuration.
+5. Limits are visible: excessive text, incompatible formats, missing fonts.
+6. Privacy is straightforward: trial data stays in the browser.
 
 ## Accessibility and inclusion
 

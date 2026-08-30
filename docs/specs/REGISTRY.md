@@ -2,7 +2,7 @@
 
 ## Decision
 
-Reuse the shadcn registry and CLI. Do not create `docn-cli` in V1. Generate actual complete commands from the configured registry URL and qualified CLI version, never an assumed domain. Namespace usage requires user configuration or approved registration; a direct JSON link is sufficient for launch.
+Reuse the shadcn registry and official CLI inside an already initialized shadcn project. Do not create `docn-cli` or a second project configuration in V1. Generate actual complete commands from the configured registry URL and qualified CLI version, never an assumed domain. During development, a direct JSON link is executable. For a public origin, document an additional `@docn` entry in the consumer's existing `components.json`; official registry-directory inclusion requires separate authorization.
 
 The registry distributes PDF components, not site UI components. Installed templates require no `Button`, DOM, site CSS, or Next dependency.
 
@@ -10,7 +10,7 @@ The registry distributes PDF components, not site UI components. Installed templ
 
 A source manifest references `packages/documents/src`. A generator produces the catalog, per-item JSON files, viewable source, and asset manifest. Use `docn-*` IDs for building blocks to avoid collisions with `text`, `table`, or shadcn primitives.
 
-Template items use `registry:block`; helpers use `registry:lib`/`registry:component` according to the official schema. Each file has a type and, where required, an explicit `target`. Target a `docn` subdirectory under consumer project aliases; never replace existing UI components.
+Template items use `registry:block`; helpers use `registry:lib`/`registry:component` according to the official schema. Each file has a type and an explicit root-relative target below `~/docn`; never replace existing UI components. Internal imports are rewritten only to bounded relative paths inside this source tree. Do not require `@/*`, infer another consumer prefix, or modify the consumer's configured component, UI, lib, hook, or utility aliases.
 
 Dependencies between items in the same registry use qualified, versioned URLs or a configured namespace; a bare name may target the default shadcn registry. Rewrite internal imports with a tested mechanism (AST or a strictly bounded transformation), not a blind global string replacement.
 
@@ -45,6 +45,6 @@ L07-S02 also publishes `/r/dev/assets/manifest.json`, four local WOFF files, and
 
 ## Consumption evidence
 
-Two temporary projects outside the monorepo, without resolution through its node_modules: React/Vite and Node/TypeScript. Install using the real pinned shadcn CLI, not a custom copy operation that could hide a registry defect. Test init/prerequisites, transitive installation, local assets, and final rendering.
+Two temporary projects outside the monorepo, without resolution through its node_modules: React/Vite and Node/TypeScript. Install using the real pinned shadcn CLI, not a custom copy operation that could hide a registry defect. Their existing shadcn configuration uses a non-`@` import prefix so an accidental docn-ui alias dependency fails qualification. Test prerequisites, transitive installation, local assets, and final rendering without reinitializing or replacing `components.json`.
 
 Static checks traverse every item. Expensive installations sample distinct graphs: business card, invoice, sheet. Do not reinstall the same dependency closure fifteen times. Run these tests when distribution changes and at G3/G5; form unit tests must never invoke the CLI or npm downloads.

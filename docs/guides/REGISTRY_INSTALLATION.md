@@ -6,7 +6,7 @@ The L07 registry is available for local qualification. It is not a published rel
 
 - Node.js 24.x and pnpm 11.24.0 for the qualified development workflow.
 - A React 19 TypeScript project initialized with shadcn 4.19.0.
-- A `components.json` file and a TypeScript `@/*` alias. The official CLI resolves generated `~/docn/**` targets below the consumer project root; internal imports use `@/docn/**`. Never point either alias at the monorepo or an installed package.
+- An existing shadcn `components.json` file. Keep its current style, aliases, base, and registry entries; docn-ui does not require `@/*` or a second initialization. The official CLI resolves generated `~/docn/**` targets below the consumer project root, and those files use relative internal imports.
 - A running local docn-ui site. From this repository, `corepack pnpm dev` serves the registry at the origin printed by Next.js.
 
 The registry items declare their exact React-pdf, pdf-lib, Zod, QR, and React dependencies. The shadcn CLI installs the dependencies required by the selected item and its versioned registry dependency closure.
@@ -20,6 +20,18 @@ corepack pnpm dlx shadcn@4.19.0 add http://127.0.0.1:4173/r/dev/docn-business-ca
 ```
 
 The detail page reads the same generated item JSON used by the CLI. Its source viewer follows all registry dependencies and exposes every installed file, including the asset utility. Review those files before running the command.
+
+The direct URL is the qualified development path. When an approved public HTTPS origin exists, add docn-ui alongside other registries in the same `components.json`:
+
+```json
+{
+  "registries": {
+    "@docn": "https://<approved-origin>/r/v1.0.0/{name}.json"
+  }
+}
+```
+
+Then the official CLI can install `@docn/docn-business-card-minimal`. The placeholder is intentionally not presented as a copy-ready public command before hosting and publication are authorized.
 
 ## Prepare local assets
 

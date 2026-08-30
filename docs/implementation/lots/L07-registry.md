@@ -19,7 +19,7 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 ### L07-S01 — `feat(registry): generate versioned items from document sources`
 
 - [x] Single source manifest, docn-* IDs, card items; pinned local official schema.
-- [x] Build the dependency closure, target docn subdirectories, and rewrite imports with a bounded, tested transformation.
+- [x] Build the dependency closure, target an isolated root-level docn source tree, and rewrite imports to bounded relative paths without assuming the consumer's import prefix.
 - [x] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
 - [x] Explicit development version; no supposedly reserved namespace/domain.
 
@@ -54,7 +54,7 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 - [x] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
 - [x] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
 
-**Acceptance:** G3: no hidden access to monorepo node_modules/aliases or the docn-ui domain after installation.
+**Acceptance:** G3: no hidden access to monorepo node_modules/aliases or the docn-ui domain after installation; an existing non-`@` shadcn configuration remains unchanged and works.
 
 **Targeted verification:** pnpm test:consumers; pnpm verify:registry; inspect the consumer PDF. Do not separately install all three cards sharing the same graph.
 

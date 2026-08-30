@@ -52,8 +52,13 @@ export function targetForSource(source) {
   throw new Error(`Registry source is outside the document package: ${source}`);
 }
 
-function importForTarget(target) {
-  return target.replace(/^~\//, "@/").replace(/\.(?:ts|tsx)$/, "");
+function importBetweenTargets(sourceTarget, target) {
+  const sourceDirectory = posix.dirname(sourceTarget.replace(/^~\//, ""));
+  const targetPath = target.replace(/^~\//, "").replace(/\.(?:ts|tsx)$/, "");
+  const relativeTarget = posix.relative(sourceDirectory, targetPath);
+  return relativeTarget.startsWith(".")
+    ? relativeTarget
+    : `./${relativeTarget}`;
 }
 
 function resolveSourceImport(source, specifier, knownSources) {
@@ -67,6 +72,8 @@ function resolveSourceImport(source, specifier, knownSources) {
 }
 
 export function rewriteDocumentImports(source, content, knownTargets) {
+  const sourceTarget = knownTargets.get(source);
+  if (!sourceTarget) throw new Error(`Missing registry target for ${source}.`);
   return content.replace(importPattern, (match, prefix, quote, specifier) => {
     const resolvedSource = resolveSourceImport(
       source,
@@ -76,7 +83,7 @@ export function rewriteDocumentImports(source, content, knownTargets) {
     const target = knownTargets.get(resolvedSource);
     if (!target)
       throw new Error(`Missing registry target for ${resolvedSource}.`);
-    return `${prefix}${quote}${importForTarget(target)}${quote}`;
+    return `${prefix}${quote}${importBetweenTargets(sourceTarget, target)}${quote}`;
   });
 }
 

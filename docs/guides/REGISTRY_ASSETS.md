@@ -12,11 +12,11 @@ Install the fonts and OFL license under the consumer's own `public/generated` di
 node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
 ```
 
-The manifest paths then match the installed document manifest's `/generated/fonts/*` URLs. Create the resolver from the consumer application's origin and pass it to the browser runtime:
+The manifest paths then match the installed document manifest's `/generated/fonts/*` URLs. The snippets below assume the calling file is directly under `src/`; adjust only the relative first hop when using another location. Create the resolver from the consumer application's origin and pass it to the browser runtime:
 
 ```ts
-import { createBrowserAssetResolver } from "@/docn/render/assets.browser";
-import { renderDocumentInBrowser } from "@/docn/render/browser";
+import { createBrowserAssetResolver } from "../docn/render/assets.browser";
+import { renderDocumentInBrowser } from "../docn/render/browser";
 
 const assetResolver = createBrowserAssetResolver(window.location.origin);
 const pdfBytes = await renderDocumentInBrowser(plan, assetResolver);
@@ -36,8 +36,8 @@ Pass that directory explicitly to the Node resolver:
 
 ```ts
 import { resolve } from "node:path";
-import { createNodeAssetResolver } from "@/docn/render/assets.node";
-import { renderDocumentInNode } from "@/docn/render/node";
+import { createNodeAssetResolver } from "../docn/render/assets.node";
+import { renderDocumentInNode } from "../docn/render/node";
 
 const assetResolver = createNodeAssetResolver(resolve(process.cwd(), "assets"));
 const pdfBytes = await renderDocumentInNode(plan, assetResolver);
