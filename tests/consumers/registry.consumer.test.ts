@@ -295,7 +295,12 @@ describe("isolated registry consumers", () => {
       ...(await listFiles(resolve(browserDirectory, "docn"))),
       ...(await listFiles(resolve(nodeDirectory, "docn"))),
     ];
-    expect(installedSources.length).toBe(56);
+    expect(installedSources.length).toBe(58);
+    expect(
+      installedSources.filter((file) =>
+        /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
+      ),
+    ).toHaveLength(2);
     for (const file of installedSources) {
       const content = await readFile(file, "utf8");
       expect(content).not.toContain(root);
