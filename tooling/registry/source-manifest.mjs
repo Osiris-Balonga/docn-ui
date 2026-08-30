@@ -44,6 +44,7 @@ export const registrySourceManifest = {
       registryDependencies: ["docn-core"],
       files: [
         "packages/documents/assets/manifest.json",
+        "packages/documents/src/assets/install.mjs",
         "packages/documents/src/assets/manifest.ts",
         "packages/documents/src/render/assets.browser.ts",
         "packages/documents/src/render/assets.node.ts",

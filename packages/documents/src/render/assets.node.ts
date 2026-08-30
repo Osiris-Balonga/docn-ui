@@ -1,17 +1,20 @@
-import { isAbsolute, relative } from "node:path";
+import { isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getAssetDefinition } from "../assets/manifest";
 import type { AssetResolver } from "./assets";
 
-const assetRoot = fileURLToPath(new URL("../../assets/", import.meta.url));
+const packagedAssetRoot = fileURLToPath(
+  new URL("../../assets/", import.meta.url),
+);
 
-export function createNodeAssetResolver(): AssetResolver {
+export function createNodeAssetResolver(
+  configuredAssetRoot: string = packagedAssetRoot,
+): AssetResolver {
+  const assetRoot = resolve(configuredAssetRoot);
   return {
     resolve(assetId, path = ["assetId"]) {
       const definition = getAssetDefinition(assetId, path);
-      const source = fileURLToPath(
-        new URL(`../../assets/${definition.file}`, import.meta.url),
-      );
+      const source = resolve(assetRoot, definition.file);
       const fromRoot = relative(assetRoot, source);
       if (
         !isAbsolute(source) ||

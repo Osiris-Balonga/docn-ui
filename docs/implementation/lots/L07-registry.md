@@ -29,9 +29,9 @@ Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers
 
 ### L07-S02 — `feat(registry): distribute verified local assets and usage examples`
 
-- [ ] Choose a supported font installation mechanism; if a fetcher is needed, keep its code visible without automatic execution.
-- [ ] Resolve destinations, hashes, licenses, and overwrite rejection; traversal/size-limit tests in the existing utility suite.
-- [ ] Provide browser and Node examples with local AssetResolver and exact instructions.
+- [x] Choose a supported font installation mechanism; if a fetcher is needed, keep its code visible without automatic execution.
+- [x] Resolve destinations, hashes, licenses, and overwrite rejection; traversal/size-limit tests in the existing utility suite.
+- [x] Provide browser and Node examples with local AssetResolver and exact instructions.
 
 **Acceptance:** After asset preparation, rendering requires no docn-ui domain; asset failures are explicit.
 
