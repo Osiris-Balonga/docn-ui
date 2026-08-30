@@ -159,7 +159,7 @@
     {
       "id": "L06",
       "file": "lots/L06-catalog-playground.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L05"],
       "branch": "feat/catalog-and-playground",
       "baseCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
