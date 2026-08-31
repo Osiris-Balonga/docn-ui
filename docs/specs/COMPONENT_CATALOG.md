@@ -1,6 +1,6 @@
 # PDF component catalog — PDFx comparison and L12 contract
 
-Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and the S02a shared-frame foundation are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
+Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and S02a–S02c are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
 
 ## Evidence and scope
 
@@ -97,6 +97,20 @@ These are source-owned PDF APIs, not drop-in PDFx props. Existing calls and defa
 - `QRCode` keeps its existing vector renderer, payload limit, minimum module size and four-module quiet zone. This story does not add another encoder or alter scanner qualification.
 
 The combined typed example is compiled project source, not visitor-supplied JSX. It qualifies actual selectable text, external/internal link annotations, a local image, nested lists and QR composition in one PDF. Component-sized registry entries and public gallery routes remain S02g/S02h work.
+
+## S02c pagination and table API decision
+
+`KeepTogether` is a normal-flow, non-breaking group with a required `measuredHeight` in points. It reserves that minimum height and rejects a non-finite, non-positive or larger-than-body value with LAYOUT_OVERFLOW. Children are trusted, premeasured composition: their actual height must not exceed the supplied reservation. The component does not measure arbitrary JSX, clip it, shrink its font or split it silently. `PageBreak` requires following children and starts that content on a new flowing page; do not put it inside KeepTogether or use it as an empty trailing marker. Both require DocumentFrame's flow context.
+
+`PageHeader` and `PageFooter` are inline content compositions. Put them into DocumentFrame's existing `{ content, height, gap }` regions to repeat them with reserved space; use them in body flow for one-time content. Header accepts an optional locally resolved Image; footer accepts contact/other children and optional PageNumber props. Region heights remain explicitly declared and must cover their children. `PageNumber` uses the engine's final-pagination callback with a bounded format string containing `{page}` and optionally `{pages}` (default `Page {page} of {pages}`); numbering covers the whole Document, not a reset per frame.
+
+`Table`, `TableRow`, `TableCell` and `TableHeader` compose through the existing FlowTable helpers. Public columns have unique keys, readable labels, left/right alignment and numeric percentage widths totaling 100; one to twelve columns are allowed. TableRow requires a measured height and exactly one direct TableCell per column, in column order. Cells accept bounded strings or finite numbers, not arbitrary unmeasured nested JSX. Natural text wrapping remains enabled. The reservation includes vertical cell padding and borders; rows must be measured at the actual table width/font, and every non-breaking row must fit the complete flow body. Oversized declarations are rejected, never split or truncated.
+
+`TableHeader` accepts the same column constant and a measured height. Place it in a reserved PageHeader region for repetition, or in flow for a one-time heading. It is not an independently fixed overlay: the parent frame owns repetition and spacing, so table columns cannot silently overwrite a document title. Separate frames define distinct repeated table headings when a document contains different tables. Header labels must fit the declared height. The initial table surface spans the full flow-body width; do not nest it inside a narrower column without a separately measured frame.
+
+`DataTable<T>` maps typed data with `cell(row)`, `rowKey(row, index)` and `rowHeight(row, index)` callbacks to those same Table/Row/Cell components. It accepts at most 500 rows, 12 columns and 2,000 characters per cell, rejects duplicate/empty keys, invalid values and oversized row declarations, and supports an explicit empty-message prop. Callbacks are trusted compiled source, not user-entered code. Row heights are required rather than guessed from character count. This is deliberately not a universal automatic text-measurement engine; native wrapping and the documented premeasurement boundary remain visible.
+
+The shared multipage specimen will qualify repeated headers/footers, final numbering, first/last rows exactly once, wrapped cells, a summary that moves intact and an explicit break into a compositional table. Existing invoice helper calls and nominal layouts must remain unchanged.
 
 ## shadcn installation and theme continuity
 

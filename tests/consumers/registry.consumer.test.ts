@@ -296,9 +296,9 @@ describe("isolated registry consumers", () => {
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
     const installedSources = [...browserSources, ...nodeSources];
-    // S02b adds six content/validation modules to the S02a aggregate closure.
-    expect(browserSources).toHaveLength(48);
-    expect(nodeSources).toHaveLength(49);
+    // S02c adds five pagination/table modules to the S02b aggregate closure.
+    expect(browserSources).toHaveLength(53);
+    expect(nodeSources).toHaveLength(54);
     expect(
       installedSources.filter((file) =>
         /[\\/]primitives[\\/]qr-code\.ts$/.test(file),

@@ -52,9 +52,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02c — `feat(pdf): add reusable pagination and table components`
 
-- [ ] KeepTogether, PageBreak, PageHeader, PageFooter, PageNumber, Table and DataTable.
-- [ ] Reuse flow-table helpers rather than maintaining separate invoice and component table engines.
-- [ ] Define repeated space, final page counts, row overflow and oversized-group handling explicitly.
+- [x] KeepTogether, PageBreak, PageHeader, PageFooter, PageNumber, Table and DataTable.
+- [x] Reuse flow-table helpers rather than maintaining separate invoice and component table engines.
+- [x] Define repeated space, final page counts, row overflow and oversized-group handling explicitly.
 
 **Acceptance:** A representative long table retains its first/last rows, repeating headers, final page count and summary without footer overlap.
 

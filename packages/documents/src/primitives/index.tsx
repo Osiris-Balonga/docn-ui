@@ -37,6 +37,36 @@ export { Image, type ImageProps } from "./image";
 export { Link, type LinkProps } from "./link";
 export { Section, Card, type SectionProps, type CardProps } from "./containers";
 export { List, type ListProps, type ListItem, type ListMarker } from "./list";
+export {
+  KeepTogether,
+  PageBreak,
+  PageNumber,
+  type KeepTogetherProps,
+  type PageNumberProps,
+} from "./pagination";
+export {
+  PageHeader,
+  PageFooter,
+  type PageHeaderProps,
+  type PageFooterProps,
+} from "./page-regions";
+export {
+  Table,
+  TableRow,
+  TableCell,
+  TableHeader,
+  type TableProps,
+  type TableRowProps,
+  type TableCellProps,
+  type TableHeaderProps,
+  type TableColumn,
+  type TableValue,
+} from "./composable-table";
+export {
+  DataTable,
+  type DataTableProps,
+  type DataTableColumn,
+} from "./data-table";
 export { QRCode, type QRCodeProps } from "./qr-code-view";
 export {
   createFlowFrame,

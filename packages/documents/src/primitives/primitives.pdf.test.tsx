@@ -5,9 +5,82 @@ import { getDocument, OPS } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { describe, expect, it } from "vitest";
 import { createPrimitiveFramesPlan } from "../examples/primitive-frames";
 import { createPrimitiveContentPlan } from "../examples/primitive-content";
+import { createPrimitivePaginationPlan } from "../examples/primitive-pagination";
 import { renderDocumentInNode } from "../render/node";
 
 describe("shared PDF primitive frames", () => {
+  it("keeps table rows, repeated regions, summaries and explicit breaks in their flow bounds", async () => {
+    const bytes = await renderDocumentInNode(createPrimitivePaginationPlan());
+    if (process.env.DOCN_WRITE_PDF_ARTIFACTS === "1") {
+      const directory = fileURLToPath(
+        new URL("../../../../.artifacts/l12/pdf/", import.meta.url),
+      );
+      await mkdir(directory, { recursive: true });
+      await writeFile(`${directory}primitive-pagination.pdf`, bytes);
+    }
+    const task = getDocument({ data: bytes.slice(), useSystemFonts: false });
+    try {
+      const document = await task.promise;
+      expect(document.numPages).toBe(4);
+      const pages: string[] = [];
+      for (let index = 1; index <= document.numPages; index++) {
+        const page = await document.getPage(index);
+        const content = await page.getTextContent();
+        const items = content.items.filter((item) => "str" in item);
+        const text = items.map((item) => item.str).join(" ");
+        pages.push(text);
+        expect(text).toContain("Production ledger");
+        expect(text).toContain("DESCRIPTION");
+        expect(text).toContain(`Ledger ${index} / 4`);
+        expect(text).toContain("hello@example.com");
+        for (const item of items.filter((item) => item.str.trim())) {
+          expect(item.transform[4]).toBeGreaterThanOrEqual(35.9);
+          expect(item.transform[4]! + item.width).toBeLessThanOrEqual(559.38);
+          const top = page.view[3]! - item.transform[5]! - item.height;
+          const isHeader = [
+            "Production ledger",
+            "DOCN-UI / REUSABLE PAGINATION",
+            "DESCRIPTION",
+            "QTY",
+            "AMOUNT",
+          ].includes(item.str);
+          const isFooter =
+            item.str === "hello@example.com" || item.str.startsWith("Ledger ");
+          if (isHeader) {
+            expect(top).toBeGreaterThanOrEqual(35.9);
+            expect(top + item.height).toBeLessThanOrEqual(100.1);
+          } else if (isFooter) {
+            expect(top).toBeGreaterThanOrEqual(785.7);
+            expect(top + item.height).toBeLessThanOrEqual(806);
+          } else {
+            expect(top).toBeGreaterThanOrEqual(111.9);
+            expect(top + item.height).toBeLessThanOrEqual(774);
+          }
+        }
+      }
+      const text = pages.join(" ");
+      for (let index = 1; index <= 40; index++)
+        expect(
+          text.match(
+            new RegExp(`Entry ${String(index).padStart(3, "0")}`, "g"),
+          ),
+        ).toHaveLength(1);
+      expect(pages[0]).toContain("same physical page.");
+      expect(pages[1]).toContain("Entry 040");
+      expect(pages[1]).not.toContain("Final summary");
+      expect(pages[2]).toContain("Final summary");
+      expect(pages[2]).toContain("1,000.00");
+      expect(pages[2]).toContain("SUMMARY-END");
+      expect(pages[2]).not.toContain("Verification appendix");
+      expect(pages[3]).toContain("Verification appendix");
+      expect(pages[3]).toContain("Manual verification entry");
+      expect(pages[3]).toContain("No outstanding entries.");
+      expect(pages[3]).toContain("APPENDIX-END");
+    } finally {
+      await task.destroy();
+    }
+  });
+
   it("composes selectable content, native links, local media and bounded lists", async () => {
     const canvas = createCanvas(280, 140);
     const context = canvas.getContext("2d");

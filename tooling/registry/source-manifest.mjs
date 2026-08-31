@@ -91,6 +91,11 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/measurement.ts",
         "packages/documents/src/primitives/qr-code.ts",
         "packages/documents/src/primitives/table.tsx",
+        "packages/documents/src/primitives/pagination.tsx",
+        "packages/documents/src/primitives/page-regions.tsx",
+        "packages/documents/src/primitives/table-data.ts",
+        "packages/documents/src/primitives/composable-table.tsx",
+        "packages/documents/src/primitives/data-table.tsx",
       ],
     },
     {
