@@ -60,12 +60,12 @@ const themeInputs: Record<ThemeId, unknown> = {
   neutral: {
     id: "neutral",
     colors: {
-      canvas: "#f7f5f1",
+      canvas: "#f5f5f5",
       surface: "#ffffff",
-      text: "#1f2933",
-      mutedText: "#667085",
-      accent: "#3f5f73",
-      border: "#d8dde3",
+      text: "#171717",
+      mutedText: "#666666",
+      accent: "#171717",
+      border: "#d4d4d4",
       invertedText: "#ffffff",
     },
     fonts: {
@@ -80,13 +80,13 @@ const themeInputs: Record<ThemeId, unknown> = {
   editorial: {
     id: "editorial",
     colors: {
-      canvas: "#f8f2e8",
-      surface: "#fffdf8",
-      text: "#28231f",
-      mutedText: "#75695f",
-      accent: "#9a4f35",
-      border: "#d8c9b8",
-      invertedText: "#fffdf8",
+      canvas: "#f4f4f4",
+      surface: "#ffffff",
+      text: "#1c1c1c",
+      mutedText: "#686868",
+      accent: "#1c1c1c",
+      border: "#cccccc",
+      invertedText: "#ffffff",
     },
     fonts: {
       body: "Noto Sans",
@@ -100,12 +100,12 @@ const themeInputs: Record<ThemeId, unknown> = {
   bold: {
     id: "bold",
     colors: {
-      canvas: "#f4f1ff",
+      canvas: "#f2f2f2",
       surface: "#ffffff",
-      text: "#17132e",
-      mutedText: "#625b78",
-      accent: "#5a35d6",
-      border: "#cfc6f5",
+      text: "#0a0a0a",
+      mutedText: "#595959",
+      accent: "#0a0a0a",
+      border: "#bdbdbd",
       invertedText: "#ffffff",
     },
     fonts: {

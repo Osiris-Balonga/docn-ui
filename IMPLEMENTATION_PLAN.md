@@ -1,6 +1,6 @@
 # docn-ui — implementation and delivery plan
 
-Date: 2026-08-28. Status: **L00G through L09 are merged; L10 is in review in PR #30**. The plan contains **18 lots and 60 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration.
+Date: 2026-08-28. Status: **L00G through L10 are merged; L11 is in review in PR #31**. The plan contains **18 lots and 67 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration. Component revision: 2026-08-31; L12-S02 is split into eight sequential stories to cover PDFx's component categories, barcodes, individual source installation and usable documentation. Template redesign is paused.
 
 ## 1. Execution contract
 
@@ -25,6 +25,7 @@ Revision requested on 2026-08-28: adapt Munganga's GitHub governance, tighten PR
 | Where should it be implemented?        | [Architecture](docs/ARCHITECTURE.md)                                       |
 | What PDF behavior is required?         | [Contracts](docs/specs/DOCUMENT_MODEL.md)                                  |
 | Which templates?                       | [Catalog](docs/specs/TEMPLATE_CATALOG.md)                                  |
+| Which PDF components and reference gaps? | [Component catalog](docs/specs/COMPONENT_CATALOG.md)                      |
 | How is source code obtained?           | [Registry](docs/specs/REGISTRY.md)                                         |
 | What evidence is required?             | [Testing](docs/TESTING.md)                                                 |
 | What is the actual status?             | [status.json](docs/implementation/status.json) and QA reports              |
@@ -50,7 +51,7 @@ Execution is sequential by default. `Depends on` identifies the preceding lot re
 | L09  | Three thermal receipts                                | L08        | [Receipts](docs/implementation/lots/L09-thermal-receipts.md)        |
 | L10  | Three labels and label sheets                         | L09        | [Labels](docs/implementation/lots/L10-labels.md)                    |
 | L11  | Three multipage invoices                              | L10        | [Invoices](docs/implementation/lots/L11-invoices.md)                |
-| L12  | Documentation, component gallery, and guides          | L11        | [Documentation](docs/implementation/lots/L12-documentation.md)      |
+| L12  | Reusable PDF components, barcodes, gallery, and guides | L11        | [Documentation](docs/implementation/lots/L12-documentation.md)      |
 | L13  | Accessibility, security, and performance              | L12        | [Hardening](docs/implementation/lots/L13-hardening.md)              |
 | L14  | Full qualification and installations                  | L13        | [Qualification](docs/implementation/lots/L14-qualification.md)      |
 | L15  | Final CI, preview, and delivery preparation           | L14        | [Delivery](docs/implementation/lots/L15-delivery.md)                |

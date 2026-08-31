@@ -8,15 +8,15 @@ A developer browses the documentation on a work computer, compares PDFs, and cop
 
 ## Site structure
 
-| Route | Content and primary action |
-| --- | --- |
-| `/` | Concise promise, real previews, catalog and getting-started entry points |
-| `/templates/` | Search, family/format filters, results, navigation |
-| `/templates/[slug]/` | Data, actual PDF, compatible formats, themes, source, download |
-| `/components/` and `/components/[slug]/` | API, PDF example, source, limitations, installation |
-| `/formats/` | Dimensions, compatibility, margins, printing guidance |
-| `/themes/` | Three themes shown on the same document |
-| `/docs/[[...slug]]/` | Installation, guides, adding a template, limitations |
+| Route                                    | Content and primary action                                               |
+| ---------------------------------------- | ------------------------------------------------------------------------ |
+| `/`                                      | Concise promise, real previews, catalog and getting-started entry points |
+| `/templates/`                            | Search, family/format filters, results, navigation                       |
+| `/templates/[slug]/`                     | Data, actual PDF, compatible formats, themes, source, download           |
+| `/components/` and `/components/[slug]/` | API, PDF example, source, limitations, installation                      |
+| `/formats/`                              | Dimensions, compatibility, margins, printing guidance                    |
+| `/themes/`                               | Three themes shown on the same document                                  |
+| `/docs/[[...slug]]/`                     | Installation, guides, adding a template, limitations                     |
 
 Slugs are known at build time; provide an explicit 404. No placeholder navigation pages: expose links only when their routes work.
 
@@ -26,6 +26,8 @@ Slugs are known at build time; provide an explicit 404. No placeholder navigatio
 - Documentation sidebar on desktop; `Sheet` on mobile. Breadcrumbs and a table of contents only where useful.
 - Reading width of 65–75 characters, with a wider catalog area. Template view uses two columns from 1024 px: 320–380 px settings and a flexible preview; below that, stack sections or tabs.
 - Gallery thumbnails are rasterized from PDFs at their actual proportions. Do not force cards and receipts into the same A4 ratio; use neutral space around each format.
+- Catalog specimens use a monochrome base theme so consumers can apply their own fonts, accent, and logo without first removing docn-ui branding. Third-party brands are research references, never bundled template identities.
+- Selecting a specimen opens a larger generated-PDF overlay for close inspection without adding an editor to the catalog.
 - Detail page: name, family, dimensions, page/side count, actions. `Preview` and `Code` tabs; a separate Data, Format, Theme, Print settings group.
 - A template title does not include its theme: these are separate choices.
 
@@ -48,14 +50,14 @@ Planned components: Button, Input, Textarea, Label/Field, Select, Tabs, Tooltip,
 
 ## Required states
 
-| Area | States to design |
-| --- | --- |
-| Catalog | Results, no results, cleared search, restored filters |
-| Editor | Pristine, valid changes, invalid, reset |
+| Area      | States to design                                                  |
+| --------- | ----------------------------------------------------------------- |
+| Catalog   | Results, no results, cleared search, restored filters             |
+| Editor    | Pristine, valid changes, invalid, reset                           |
 | Rendering | Initial, loading assets, generating, ready, stale, error, timeout |
-| Images | Absent, imported, rejected, removed |
-| Code | Selected file, copy success, clipboard unavailable |
-| Export | Available for the current revision, disabled, recoverable failure |
+| Images    | Absent, imported, rejected, removed                               |
+| Code      | Selected file, copy success, clipboard unavailable                |
+| Export    | Available for the current revision, disabled, recoverable failure |
 
 Keep the last valid PDF during input errors, mark it as outdated, and disable downloading until it matches current input. Announce errors near the field and through a restrained live region. Do not show a success toast before producing the file.
 
@@ -64,6 +66,8 @@ Keep the last valid PDF during input errors, mark it as outdated, and disable do
 Search through `Ctrl/Cmd+K`, return focus to the trigger, and close with Escape. Use a logical editor tab order, PDF page navigation, zoom, and fit-to-width. Public filters may live in the URL; never place personal data, images, or document JSON in the URL or localStorage. Persist only the site theme preference.
 
 The Code panel shows every required file and a typed usage example. Editing data never executes arbitrary code. Incompatible formats are hidden or disabled with a reason, never applied silently.
+
+The catalog source drawer shows a bounded file tree: the template entry and example plus the direct family layout, schema, and plan. It does not expose `index` or metadata files, transitive primitives, or a general repository browser.
 
 ## Visual validation
 

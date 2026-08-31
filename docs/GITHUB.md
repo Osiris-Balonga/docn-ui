@@ -60,7 +60,7 @@ For conditional heavy suites, a stable summary check verifies success or explici
 
 ## 6. Project and backlog
 
-A public **docn-ui V1** Project linked to the repository contains work issues. Create **one issue per lot (18)**; stories and commits are issue checklists, not 60 extra issues by default. A sub-issue is useful only for independent work, a distinct bug, or separate assignment.
+A public **docn-ui V1** Project linked to the repository contains work issues. Create **one issue per lot (18)**; stories and commits are issue checklists, not separate issues by default. A sub-issue is useful only for independent work, a distinct bug, or separate assignment.
 
 Each issue has a stable `<!-- docn:lot:Lxx -->` marker, a `[Lxx] …` title, dependencies, a specification link at the appropriate SHA/branch, stories/commits, acceptance criteria, targeted verification, and evidence. Import L00 as completed history without inventing an old PR. Keep L00G open until validation and merge of its documentation PR.
 

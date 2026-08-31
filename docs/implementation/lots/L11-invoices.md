@@ -1,6 +1,6 @@
 # L11 — Multipage invoices and complete catalog
 
-Initial status: **planned**. Branch: `feat/invoice-templates`.
+Status: **in review** in PR #31. The post-review catalog refinement is locally qualified at `24761240ed18fd812c965a08e1dfee4947ae83a8`. Branch: `feat/invoice-templates`.
 
 Dependencies: L10. Requirements: FR-01, FR-12, FR-13, FR-16; NFR-05; G4.
 
@@ -18,9 +18,9 @@ Target files/responsibilities: packages/documents/src/primitives/table, template
 
 ### L11-S01 — `feat(invoices): add invoice schema and multipage table primitives`
 
-- [ ] Reuse money and its tests; add seller/customer/number/dates/lines and bounded text fields.
-- [ ] Flowing PDF tables, repeated headers, footer margins; split tall rows according to the contract or return an explicit error.
-- [ ] Keep totals/signatures together where possible; extract text from every page.
+- [x] Reuse money and its tests; add seller/customer/number/dates/lines and bounded text fields.
+- [x] Flowing PDF tables, repeated headers, footer margins; split tall rows according to the contract or return an explicit error.
+- [x] Keep totals/signatures together where possible; extract text from every page.
 
 **Acceptance:** A long invoice does not overlap its footer or lose any line or total.
 
@@ -28,9 +28,10 @@ Target files/responsibilities: packages/documents/src/primitives/table, template
 
 ### L11-S02 — `feat(invoices): add minimal business and studio layouts`
 
-- [ ] Implement three compositions with A4/Letter, themes, and optional contact details.
-- [ ] Bounded line-item form with stable addition/removal; reuse playground data/error controls.
-- [ ] Metadata, catalog, thumbnails, source, registry, and descriptions of visual differences.
+- [x] Implement three compositions with A4/Letter, themes, and optional contact details.
+- [x] Preserve the maintainer-approved preview/copy/source catalog surface without restoring the removed line-item customization form.
+- [x] Metadata, catalog, thumbnails, source, registry, and descriptions of visual differences.
+- [x] Apply the maintainer-requested monochrome base, enlarged preview overlay, and bounded template/family source tree without exposing transitive primitives.
 
 **Acceptance:** Fifteen compositions advertised and actually available; each invoice has its data and complete rendering.
 
@@ -38,9 +39,9 @@ Target files/responsibilities: packages/documents/src/primitives/table, template
 
 ### L11-S03 — `test(invoices): verify long-table export and summary placement`
 
-- [ ] One representative multipage fixture with a long label, continuity checks, and correct total.
-- [ ] Extend an E2E journey with line addition and downloaded PDF inspection; do not repeat rounding permutations in the browser.
-- [ ] Verify line-count limits or overly long fields at the appropriate level.
+- [x] One representative multipage fixture with a long label, continuity checks, and correct total.
+- [x] Add an invoice catalog/source E2E journey without restoring the maintainer-rejected public editor or download control.
+- [x] Verify line-count limits or overly long fields at the appropriate level.
 
 **Acceptance:** Final export contains first/last lines, number, and total; no blank page or unreadably split block.
 
@@ -48,9 +49,9 @@ Target files/responsibilities: packages/documents/src/primitives/table, template
 
 ### L11-S04 — `docs(catalog): document the complete v1 template inventory`
 
-- [ ] Verify the inventory of fifteen unique IDs with associated metadata/fixtures/source/registry.
-- [ ] Add calculation/tax warnings and format limits without claiming jurisdictional compliance.
-- [ ] Complete G4 with validate:full for activated scopes; install new dependency graphs if distribution changed and record evidence.
+- [x] Verify the inventory of fifteen unique IDs with associated metadata/fixtures/source/registry.
+- [x] Add calculation/tax warnings and format limits without claiming jurisdictional compliance.
+- [x] Complete G4 with validate:full for activated scopes; install new dependency graphs if distribution changed and record evidence.
 
 **Acceptance:** G4: complete V1 catalog; each family requirement is traceable; no future-template promises in navigation.
 

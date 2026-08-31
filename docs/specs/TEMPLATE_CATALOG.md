@@ -2,6 +2,8 @@
 
 This catalog defines launch scope. Three compositions per family, not three colors of the same layout. IDs are stable for URLs, fixtures, and registry items.
 
+Implementation status on 2026-08-30: all fifteen IDs below have metadata, a nominal fixture, PDF-derived catalog image, static detail route, and shadcn registry block. The family suites qualify one representative adversarial risk per family instead of a format/theme matrix.
+
 ## Inventory
 
 | ID | Family | Composition and expected distinction |
@@ -14,7 +16,7 @@ This catalog defines launch scope. Three compositions per family, not three colo
 | `event-ticket-live` | Ticket | Expressive title, prominent date, dedicated QR/access area |
 | `receipt-retail` | Receipt | Merchant, compact lines, taxes, total, payment |
 | `receipt-hospitality` | Receipt | Optional table/order, readable groups, service footer |
-| `receipt-service` | Receipt | Provider/customer, service description, compact summary |
+| `receipt-service` | Receipt | SaaS subscription, customer, billing period, payment summary |
 | `label-product` | Label | Product name, reference, short information, optional QR |
 | `label-address` | Label | Prominent recipient/address, optional sender marker |
 | `label-inventory` | Label | Prominent identifier, location and QR in a second area |
@@ -59,3 +61,7 @@ Metadata: ID, version, title, description, tags, family, formats/themes, sides, 
 ## After V1
 
 Reports, quotes, proposals, CVs, certificates, menus, brochures, badges, and invitations belong in a separate backlog. A new family needs its own need, composition, and constraint. Catalog quality takes priority over a large advertised count.
+
+## Invoice limitations
+
+Invoices use integer minor-unit prices, integer quantities, basis-point tax rates, and per-line half-up tax rounding. This deterministic calculation policy may not match every jurisdiction. The templates are not tax, bookkeeping, or certified electronic-invoicing software; consumers must adapt legal fields and calculation rules where required. See the [invoice guide](../guides/INVOICES.md) for pagination, format, and print limits.

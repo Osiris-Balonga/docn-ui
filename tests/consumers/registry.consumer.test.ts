@@ -17,7 +17,6 @@ import { afterEach, describe, expect, it } from "vitest";
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
 const browserOrigin = "http://127.0.0.1:4176";
-const registryItemUrl = `${registryOrigin}/r/dev/docn-business-card-minimal.json`;
 const assetManifestUrl = `${registryOrigin}/r/dev/assets/manifest.json`;
 const artifacts = resolve(root, ".artifacts/consumers");
 const temporaryRoots: string[] = [];
@@ -196,6 +195,7 @@ async function installTemplate(
   directory: string,
   temporaryRoot: string,
   target: "browser" | "node",
+  itemName: "docn-business-card-minimal" | "docn-invoice-business",
 ) {
   await runPnpm(["install", "--ignore-workspace"], directory, temporaryRoot);
   await run(
@@ -203,7 +203,7 @@ async function installTemplate(
     [
       resolve(root, "node_modules/shadcn/dist/index.js"),
       "add",
-      registryItemUrl,
+      `${registryOrigin}/r/dev/${itemName}.json`,
       "--cwd",
       directory,
       "--yes",
@@ -259,7 +259,7 @@ async function inspectPdf(bytes: Uint8Array) {
   }
 }
 
-const requestSource = `{
+const businessCardRequestSource = `{
   assetIds: [],
   data: minimalBusinessCardExampleFr,
   formatId: "card-85x55",
@@ -268,6 +268,19 @@ const requestSource = `{
   protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
   revision: 1,
   templateId: "business-card-minimal",
+  templateVersion: "1.0.0",
+  themeId: "neutral",
+}`;
+
+const invoiceRequestSource = `{
+  assetIds: [],
+  data: businessInvoiceExample,
+  formatId: "a4",
+  locale: "en",
+  printProfile: { kind: "screen" },
+  protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
+  revision: 1,
+  templateId: "invoice-business",
   templateVersion: "1.0.0",
   themeId: "neutral",
 }`;
@@ -288,14 +301,24 @@ describe("isolated registry consumers", () => {
       4173,
     );
 
-    await installTemplate(browserDirectory, temporaryRoot, "browser");
-    await installTemplate(nodeDirectory, temporaryRoot, "node");
+    await installTemplate(
+      browserDirectory,
+      temporaryRoot,
+      "browser",
+      "docn-business-card-minimal",
+    );
+    await installTemplate(
+      nodeDirectory,
+      temporaryRoot,
+      "node",
+      "docn-invoice-business",
+    );
 
-    const installedSources = [
-      ...(await listFiles(resolve(browserDirectory, "docn"))),
-      ...(await listFiles(resolve(nodeDirectory, "docn"))),
-    ];
-    expect(installedSources.length).toBe(62);
+    const browserSources = await listFiles(resolve(browserDirectory, "docn"));
+    const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
+    const installedSources = [...browserSources, ...nodeSources];
+    expect(browserSources).toHaveLength(32);
+    expect(nodeSources).toHaveLength(33);
     expect(
       installedSources.filter((file) =>
         /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
@@ -309,6 +332,13 @@ describe("isolated registry consumers", () => {
         /[\\/]core[\\/]imposition\.ts$/.test(file),
       ),
     ).toHaveLength(2);
+    expect(
+      nodeSources.some((file) =>
+        /[\\/]templates[\\/]invoices[\\/]invoice-business[\\/]invoice-business\.tsx$/.test(
+          file,
+        ),
+      ),
+    ).toBe(true);
     for (const file of installedSources) {
       const content = await readFile(file, "utf8");
       expect(content).not.toContain(root);
@@ -323,9 +353,9 @@ import { resolve } from "node:path";
 import { PDF_RENDER_PROTOCOL_VERSION } from "../docn/core/contracts";
 import { createNodeAssetResolver } from "../docn/render/assets.node";
 import { renderDocumentInNode } from "../docn/render/node";
-import { createBusinessCardMinimalPlan } from "../docn/templates/business-cards/business-card-minimal/business-card-minimal";
-import { minimalBusinessCardExampleFr } from "../docn/templates/business-cards/business-card-minimal/examples";
-const { plan } = createBusinessCardMinimalPlan(${requestSource});
+import { createInvoiceBusinessPlan } from "../docn/templates/invoices/invoice-business/invoice-business";
+import { businessInvoiceExample } from "../docn/templates/invoices/invoice-business/examples";
+const { plan } = createInvoiceBusinessPlan(${invoiceRequestSource});
 const bytes = await renderDocumentInNode(plan, createNodeAssetResolver(resolve("assets")));
 await writeFile("node-output.pdf", bytes);
 console.log("node-render-complete", bytes.byteLength);
@@ -352,7 +382,7 @@ import { createBrowserAssetResolver } from "../docn/render/assets.browser";
 import { renderDocumentInBrowser } from "../docn/render/browser";
 import { createBusinessCardMinimalPlan } from "../docn/templates/business-cards/business-card-minimal/business-card-minimal";
 import { minimalBusinessCardExampleFr } from "../docn/templates/business-cards/business-card-minimal/examples";
-const { plan } = createBusinessCardMinimalPlan(${requestSource});
+const { plan } = createBusinessCardMinimalPlan(${businessCardRequestSource});
 const bytes = await renderDocumentInBrowser(plan, createBrowserAssetResolver(window.location.origin));
 const link = document.createElement("a");
 link.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
@@ -422,13 +452,17 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
       inspectPdf(nodeBytes),
       inspectPdf(browserBytes),
     ]);
-    for (const inspection of [nodeInspection, browserInspection]) {
-      expect(inspection.pages).toBe(2);
-      expect(inspection.view[2]).toBeCloseTo(240.944_881_889_8, 1);
-      expect(inspection.view[3]).toBeCloseTo(155.905_511_811, 1);
-      expect(inspection.text).toContain("Élodie Mbemba");
-      expect(inspection.text).toContain("Atelier Nzela");
-    }
+    expect(nodeInspection.pages).toBe(1);
+    expect(nodeInspection.view[2]).toBeCloseTo(595.275_590_551, 1);
+    expect(nodeInspection.view[3]).toBeCloseTo(841.889_763_78, 1);
+    expect(nodeInspection.text).toContain("Kivu Advisory Group");
+    expect(nodeInspection.text).toContain("KA-2026-118");
+    expect(nodeInspection.text).toContain("9,628.00 USD");
+    expect(browserInspection.pages).toBe(2);
+    expect(browserInspection.view[2]).toBeCloseTo(240.944_881_889_8, 1);
+    expect(browserInspection.view[3]).toBeCloseTo(155.905_511_811, 1);
+    expect(browserInspection.text).toContain("Élodie Mbemba");
+    expect(browserInspection.text).toContain("Atelier Nzela");
 
     await mkdir(artifacts, { recursive: true });
     await Promise.all([
@@ -437,13 +471,16 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
       writeFile(resolve(artifacts, "run.log"), `${logs.join("\n\n")}\n`),
       writeJson(resolve(artifacts, "install-state.json"), {
         schemaVersion: 1,
-        registryItem: "docn-business-card-minimal",
+        registryItems: ["docn-business-card-minimal", "docn-invoice-business"],
         registryOnlineDuringRender: false,
         consumerRoots: [
           "<consumer-root>/browser-consumer",
           "<consumer-root>/node-consumer",
         ],
-        installedSourceFilesPerConsumer: installedSources.length / 2,
+        installedSourceFiles: {
+          browser: browserSources.length,
+          node: nodeSources.length,
+        },
         browserRemoteOrigins: [...remoteOrigins].map((origin) =>
           origin === browserOrigin ? "<browser-consumer-origin>" : origin,
         ),

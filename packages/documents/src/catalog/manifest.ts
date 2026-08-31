@@ -4,6 +4,9 @@ import { businessCardStudioMetadata } from "../templates/business-cards/business
 import { eventTicketClassicMetadata } from "../templates/event-tickets/event-ticket-classic/metadata";
 import { eventTicketConferenceMetadata } from "../templates/event-tickets/event-ticket-conference/metadata";
 import { eventTicketLiveMetadata } from "../templates/event-tickets/event-ticket-live/metadata";
+import { invoiceBusinessMetadata } from "../templates/invoices/invoice-business/metadata";
+import { invoiceMinimalMetadata } from "../templates/invoices/invoice-minimal/metadata";
+import { invoiceStudioMetadata } from "../templates/invoices/invoice-studio/metadata";
 import { labelAddressMetadata } from "../templates/labels/label-address/metadata";
 import { labelInventoryMetadata } from "../templates/labels/label-inventory/metadata";
 import { labelProductMetadata } from "../templates/labels/label-product/metadata";
@@ -27,8 +30,9 @@ export interface TemplateCatalogEntry {
     qr: boolean;
   };
   description: string;
-  family: "business-card" | "label" | "receipt" | "ticket";
-  familyLabel: "Business cards" | "Event tickets" | "Labels" | "Receipts";
+  family: "business-card" | "invoice" | "label" | "receipt" | "ticket";
+  familyLabel:
+    "Business cards" | "Event tickets" | "Invoices" | "Labels" | "Receipts";
   id: string;
   sides: number;
   slug: string;
@@ -47,6 +51,9 @@ type CatalogMetadata =
   | typeof eventTicketClassicMetadata
   | typeof eventTicketConferenceMetadata
   | typeof eventTicketLiveMetadata
+  | typeof invoiceBusinessMetadata
+  | typeof invoiceMinimalMetadata
+  | typeof invoiceStudioMetadata
   | typeof labelAddressMetadata
   | typeof labelInventoryMetadata
   | typeof labelProductMetadata
@@ -81,7 +88,7 @@ export const templateCatalog = [
     fixture: "minimalBusinessCardExampleFr",
     height: 312,
     page: 1,
-    sha256: "54e348d5b715ae6c305e33c273e76d70e40f23d7b4c2904f95d5cbd9f04e0327",
+    sha256: "da2630aa2ae017509368fc7adf49927886273549a71e838c27fc73492ea942f0",
     src: "/generated/catalog/business-card-minimal.png",
     width: 482,
   }),
@@ -89,15 +96,15 @@ export const templateCatalog = [
     fixture: "editorialBusinessCardExample",
     height: 284,
     page: 1,
-    sha256: "9b885b931c3d1ccbcc365afabd1cc84fac58c28aea93dc6bc2f50b5f211d759f",
+    sha256: "170b078262b3d5cc2f69f301a2d909fceabacf2230f8708a2367b797153c48d4",
     src: "/generated/catalog/business-card-editorial.png",
     width: 511,
   }),
   catalogEntry(businessCardStudioMetadata, "Business cards", {
     fixture: "studioBusinessCardExample",
-    height: 288,
+    height: 289,
     page: 1,
-    sha256: "4baf81fc88f82e37d19556136dea9a29457bb358c4721ce0ac359e414ddae2b0",
+    sha256: "21eb18367922adc0ac6b116b4eedf51d1ca0ce9dd1644fb48dd757a823afbf7e",
     src: "/generated/catalog/business-card-studio.png",
     width: 505,
   }),
@@ -105,23 +112,23 @@ export const templateCatalog = [
     fixture: "classicEventTicketExample",
     height: 420,
     page: 1,
-    sha256: "c55bc79e9dd69f86d7f54a2b9e846970b20cfb37a6c8277b30eac71e7ec21cb9",
+    sha256: "e1e0d94457f2dfbd3042c85ddc215d7d5aafe13f1bbd34bb7dc25a220f652bb4",
     src: "/generated/catalog/event-ticket-classic.png",
     width: 1191,
   }),
   catalogEntry(eventTicketConferenceMetadata, "Event tickets", {
     fixture: "conferenceEventTicketExample",
-    height: 840,
+    height: 841,
     page: 1,
-    sha256: "37f1510fc12bec7eff20cd3e9bdf4aa11ac41f5a0277e9baa0de31fe3370a388",
+    sha256: "bed29025958b9fd0a5ba552acba2526cf3ccdb498d61f2d75420f1fb279177b0",
     src: "/generated/catalog/event-ticket-conference.png",
     width: 596,
   }),
   catalogEntry(eventTicketLiveMetadata, "Event tickets", {
     fixture: "liveEventTicketExample",
-    height: 397,
+    height: 398,
     page: 1,
-    sha256: "b8023388d9aff72e0862b6c9efc7d70bf3c3e79d2e46e76a8d4aac279a8e0ae7",
+    sha256: "9c840fdc51e50b102d950bb8ef45017a9221f67ec71f2846dd4dbd579f1b0e93",
     src: "/generated/catalog/event-ticket-live.png",
     width: 851,
   }),
@@ -129,7 +136,7 @@ export const templateCatalog = [
     fixture: "retailReceiptExample",
     height: 632,
     page: 1,
-    sha256: "17cc313d5ed57c18d1e855cb15e8d0e12249827089ea35c0f3da255d96840307",
+    sha256: "9d7bf1f3312ed308606698642f1f2139c4a380e0c58ff42d735f5a3bf0530978",
     src: "/generated/catalog/receipt-retail.png",
     width: 329,
   }),
@@ -137,15 +144,15 @@ export const templateCatalog = [
     fixture: "hospitalityReceiptExample",
     height: 505,
     page: 1,
-    sha256: "6f1b2585940d33d07e87ba27c33113226e79ad1d5e74f03fd3ceb413e3fde2d9",
+    sha256: "90e1addf3692ac163bcb7f21312f31010311cdf55e292a6522ceabc04d57cd3f",
     src: "/generated/catalog/receipt-hospitality.png",
     width: 378,
   }),
   catalogEntry(receiptServiceMetadata, "Receipts", {
     fixture: "serviceReceiptExample",
-    height: 477,
+    height: 535,
     page: 1,
-    sha256: "04835e5ac2e8ae93ffec7b0544187e3198172d276b21a61d0d84b1ce7475da13",
+    sha256: "18c71dc27c983246d312e736e7a7815ef5b28af3a5795eccb10525d0b104aee8",
     src: "/generated/catalog/receipt-service.png",
     width: 378,
   }),
@@ -153,7 +160,7 @@ export const templateCatalog = [
     fixture: "productLabelExample",
     height: 210,
     page: 1,
-    sha256: "7999202d0ec0a90352b3c9e629241bcfe871f1e3282291611280e0598602516f",
+    sha256: "fb3624aa53e82798b91426d1cbcfcac7520ca3515f16d6ffa9f73b23ba86b53a",
     src: "/generated/catalog/label-product.png",
     width: 397,
   }),
@@ -161,7 +168,7 @@ export const templateCatalog = [
     fixture: "addressLabelExample",
     height: 284,
     page: 1,
-    sha256: "ca5f89159d17b3856f14117ef4afbe6cec48506676ef321ccb8ecac4ddabc3a3",
+    sha256: "a07211f3dc4456467216eb50db8de77c1c05174c6fa0983d2785cd9aa3d9b424",
     src: "/generated/catalog/label-address.png",
     width: 567,
   }),
@@ -169,9 +176,33 @@ export const templateCatalog = [
     fixture: "inventoryLabelExample",
     height: 284,
     page: 1,
-    sha256: "a0f7be5a3fb56b0fa50b31f62670975a0a652f419c36ecca3ea00dc72e24162d",
+    sha256: "4d6277d50db7c476cb7b22ea807f6e1025de566dcfac655fc969fed899394c36",
     src: "/generated/catalog/label-inventory.png",
     width: 567,
+  }),
+  catalogEntry(invoiceMinimalMetadata, "Invoices", {
+    fixture: "minimalInvoiceExample",
+    height: 679,
+    page: 1,
+    sha256: "f0b4f74f50fbfb6f65fbf78cca2bf503df191ffffd89bde479709b7f9758f75b",
+    src: "/generated/catalog/invoice-minimal.png",
+    width: 480,
+  }),
+  catalogEntry(invoiceBusinessMetadata, "Invoices", {
+    fixture: "businessInvoiceExample",
+    height: 622,
+    page: 1,
+    sha256: "e5c6a9c70080b249b0fa0a85721e7c51139d211b10b5c9afbc10725db3ea7c9b",
+    src: "/generated/catalog/invoice-business.png",
+    width: 480,
+  }),
+  catalogEntry(invoiceStudioMetadata, "Invoices", {
+    fixture: "studioInvoiceExample",
+    height: 679,
+    page: 1,
+    sha256: "7bd4abfb0fb58cb82730e9e350c0874d0b5b4211e1dcca2140a5023a2f358f47",
+    src: "/generated/catalog/invoice-studio.png",
+    width: 480,
   }),
 ] as const satisfies readonly TemplateCatalogEntry[];
 

@@ -327,3 +327,9 @@ export function FieldPair({ label, value }: FieldPairProps) {
 
 export { assertWithinSafeFrame, createSafeFrame } from "./measurement";
 export type { LayoutBounds, SafeFrame } from "./measurement";
+export {
+  FlowTableCell,
+  FlowTableHeader,
+  FlowTableRow,
+  type FlowTableColumn,
+} from "./table";

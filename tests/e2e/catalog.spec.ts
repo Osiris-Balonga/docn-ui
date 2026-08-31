@@ -46,7 +46,7 @@ test("browses templates and opens their registry source", async ({ page }) => {
     sourceDialog.getByRole("combobox", { name: "Source file" }),
   ).toHaveCount(0);
   await expect(
-    sourceDialog.getByText("business-card-minimal", { exact: true }),
+    sourceDialog.getByText("business-card-minimal", { exact: true }).first(),
   ).toBeVisible();
   await expect(sourceDialog.getByText("TS", { exact: true })).toBeVisible();
   await expect(
@@ -84,7 +84,9 @@ test("browses templates and opens their registry source", async ({ page }) => {
   });
   await expect(ticketSourceDialog).toBeVisible();
   await expect(
-    ticketSourceDialog.getByText("event-ticket-classic", { exact: true }),
+    ticketSourceDialog
+      .getByText("event-ticket-classic", { exact: true })
+      .first(),
   ).toBeVisible();
   await expect(
     ticketSourceDialog.getByRole("combobox", { name: "Source file" }),
@@ -105,7 +107,7 @@ test("browses templates and opens their registry source", async ({ page }) => {
   });
   await expect(labelSourceDialog).toBeVisible();
   await expect(
-    labelSourceDialog.getByText("label-product", { exact: true }),
+    labelSourceDialog.getByText("label-product", { exact: true }).first(),
   ).toBeVisible();
   await expect(
     labelSourceDialog.getByRole("combobox", { name: "Source file" }),

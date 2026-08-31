@@ -2,9 +2,9 @@
 
 A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
 
-**Status on August 30, 2026: L06 is merged and L07 standalone registry work is in progress.** Exact PDF geometry, local fonts, print boxes, browser generation, PDF.js preview, reusable contracts, three two-sided card compositions, searchable catalog, safe local images, validated editing, stale-result protection, and faithful local export are implemented. The installable shadcn registry is being built next. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L07 evidence](docs/qa/L07.md).
+**Status on August 30, 2026: L00G through L10 are merged and L11 is verified locally.** The complete fifteen-composition V1 catalog now includes business cards, event tickets, thermal receipts, labels, and multipage invoices. Exact PDF geometry, local fonts, print boxes, actual PDF-derived previews, bounded data contracts, deterministic money calculations, and installable source through an additional shadcn registry are implemented. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L11 evidence](docs/qa/L11.md).
 
-[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L07 issue #10](https://github.com/Osiris-Balonga/docn-ui/issues/10) · [L07 evidence](docs/qa/L07.md)
+[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L11 issue #15](https://github.com/Osiris-Balonga/docn-ui/issues/15) · [Invoice guide](docs/guides/INVOICES.md)
 
 ## Local development
 
@@ -53,4 +53,4 @@ This documentation uses a BMAD-inspired structure: product brief, PRD, architect
 
 ## Launch scope
 
-Business cards, event tickets, thermal receipts, labels, and invoices; three compositions per family. Actual PDF preview, data editing, themes, formats, downloads, and source installation. No freeform drag-and-drop editor or user accounts in V1.
+Business cards, event tickets, thermal receipts, labels, and invoices; three compositions per family. The public Charts-style catalog presents actual PDF previews, install-copy actions, and the primary template source. Typed render contracts retain themes, formats, validation, and local PDF generation without adding a freeform editor, user accounts, or a second shadcn configuration.

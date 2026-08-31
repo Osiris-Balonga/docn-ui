@@ -74,6 +74,7 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/index.tsx",
         "packages/documents/src/primitives/measurement.ts",
         "packages/documents/src/primitives/qr-code.ts",
+        "packages/documents/src/primitives/table.tsx",
       ],
     },
     {
@@ -196,9 +197,8 @@ export const registrySourceManifest = {
     {
       name: "docn-receipt-service",
       type: "registry:block",
-      title: "Service receipt",
-      description:
-        "A measured provider receipt with customer and summary fields.",
+      title: "Subscription receipt",
+      description: "A measured SaaS receipt with customer and billing context.",
       dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
       registryDependencies: ["docn-receipt-foundation"],
       files: [
@@ -285,6 +285,72 @@ export const registrySourceManifest = {
         "packages/documents/src/templates/business-cards/business-card-minimal/metadata.ts",
         "packages/documents/src/templates/business-cards/business-card-editorial/metadata.ts",
         "packages/documents/src/templates/business-cards/business-card-studio/metadata.ts",
+      ],
+    },
+    {
+      name: "docn-invoice-foundation",
+      type: "registry:lib",
+      title: "docn-ui invoice foundation",
+      description:
+        "Bounded invoice data, exact calculations, and multipage table layout.",
+      dependencies: [
+        "@react-pdf/renderer@4.9.0",
+        "react@19.2.8",
+        "zod@3.25.76",
+      ],
+      registryDependencies: [
+        "docn-core",
+        "docn-primitives",
+        "docn-render",
+        "docn-themes",
+      ],
+      files: [
+        "packages/documents/src/templates/invoices/plan.ts",
+        "packages/documents/src/templates/invoices/schema.ts",
+        "packages/documents/src/templates/invoices/layout.tsx",
+        "packages/documents/src/templates/invoices/invoice-minimal/metadata.ts",
+        "packages/documents/src/templates/invoices/invoice-business/metadata.ts",
+        "packages/documents/src/templates/invoices/invoice-studio/metadata.ts",
+      ],
+    },
+    {
+      name: "docn-invoice-minimal",
+      type: "registry:block",
+      title: "Minimal invoice",
+      description: "A light invoice with compact parties and an open table.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: ["docn-invoice-foundation"],
+      files: [
+        "packages/documents/src/templates/invoices/invoice-minimal/invoice-minimal.tsx",
+        "packages/documents/src/templates/invoices/invoice-minimal/examples.ts",
+        "packages/documents/src/templates/invoices/invoice-minimal/index.ts",
+      ],
+    },
+    {
+      name: "docn-invoice-business",
+      type: "registry:block",
+      title: "Business invoice",
+      description: "A formal invoice with structured parties and table.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: ["docn-invoice-foundation"],
+      files: [
+        "packages/documents/src/templates/invoices/invoice-business/invoice-business.tsx",
+        "packages/documents/src/templates/invoices/invoice-business/examples.ts",
+        "packages/documents/src/templates/invoices/invoice-business/index.ts",
+      ],
+    },
+    {
+      name: "docn-invoice-studio",
+      type: "registry:block",
+      title: "Subscription invoice",
+      description:
+        "A SaaS-style invoice with billing period and payment references.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: ["docn-invoice-foundation"],
+      files: [
+        "packages/documents/src/templates/invoices/invoice-studio/invoice-studio.tsx",
+        "packages/documents/src/templates/invoices/invoice-studio/examples.ts",
+        "packages/documents/src/templates/invoices/invoice-studio/index.ts",
       ],
     },
     {
