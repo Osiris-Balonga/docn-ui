@@ -24,6 +24,7 @@ Extend the shadcn source-ownership workflow to printable documents and PDFs. Dev
 - A first complete workflow using a business card, followed by other families.
 - A detailed implementation plan in files, steps, and commits; no implementation during the original planning phase.
 - English throughout the project, explicitly including documentation, plans, UI copy, and GitHub content (maintainer instruction, 2026-08-29).
+- A reusable PDF component catalog covering PDFx's component categories, plus barcodes, with real examples, documentation and official shadcn installation (maintainer instruction, 2026-08-31). Further template redesign is paused while L12 delivers these capabilities; see the [component contract](docs/specs/COMPONENT_CATALOG.md).
 
 ## Working assumptions in the plan
 

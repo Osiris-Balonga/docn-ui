@@ -28,8 +28,11 @@ Primary journey: catalog → composition → data → compatible format → them
 | FR-14 | Verified installation in two fresh projects, browser and Node                                                                                                  | L07, L14         |
 | FR-15 | Documentation for components, formats, themes, usage, and template creation                                                                                    | L12              |
 | FR-16 | French/English document data support; English site content                                                                                                     | L04–L12          |
+| FR-17 | Reusable PDF components covering the 24 inspected PDFx categories plus Barcode, with typed APIs, real PDF examples, working detail pages and individual shadcn registry installation | L12 |
 
 A color variation does not count as a new composition. The precise template/format matrix is in the [catalog](specs/TEMPLATE_CATALOG.md). All project prose, including documentation and plans, must be in English; this does not remove document locale support.
+
+Maintainer revision, 2026-08-31: prioritize documentation and reusable components before further template redesign. The [component contract](specs/COMPONENT_CATALOG.md) records the PDFx comparison, current gaps, initial proposed Code 128/EAN-13 barcode scope, and component availability criteria. Coverage means equivalent document-building capability, not PDFx import compatibility or adoption of its CLI. Static forms and signature areas do not imply interactive PDF fields or cryptographic signing.
 
 ## Nonfunctional requirements
 
