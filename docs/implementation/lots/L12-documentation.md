@@ -32,9 +32,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02a — `refactor(pdf): separate shared themes from fixed page geometry`
 
-- [ ] Define shared theme access for fixed and flowing documents; preserve existing PageFrame APIs and geometry.
-- [ ] Split primitive modules without duplicating implementations; keep the existing import facade working.
-- [ ] Define flow-page header/footer space, non-breaking block limits and the public document/frame API before coding dependents.
+- [x] Define shared theme access for fixed and flowing documents; preserve existing PageFrame APIs and geometry.
+- [x] Split primitive modules without duplicating implementations; keep the existing import facade working.
+- [x] Define flow-page header/footer space, non-breaking block limits and the public document/frame API before coding dependents.
 
 **Acceptance:** The same text/layout primitives compose inside fixed and multipage documents without changing the existing template designs.
 

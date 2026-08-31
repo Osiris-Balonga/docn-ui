@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { resolveFormat } from "../core/formats";
 import { assertWithinSafeFrame, createSafeFrame } from "./measurement";
+import { assertFlowBlockFits, createFlowFrame } from "./flow-layout";
 
 function runtimeSources(directory: string): string[] {
   return readdirSync(directory).flatMap((entry) => {
@@ -14,6 +15,61 @@ function runtimeSources(directory: string): string[] {
 }
 
 describe("fixed PDF layout boundaries", () => {
+  it("reserves repeated flow regions and bounds non-breaking blocks", () => {
+    const format = resolveFormat("a4");
+    if (format.kind !== "fixed") throw new Error("Expected a fixed format.");
+    const frame = createFlowFrame(format, {
+      margin: 36,
+      header: { height: 24, gap: 12 },
+      footer: { height: 18, gap: 12 },
+    });
+    expect(frame.body.x).toBe(36);
+    expect(frame.body.y).toBe(72);
+    expect(frame.body.width).toBeCloseTo(523.275590551, 6);
+    expect(frame.body.height).toBeCloseTo(703.889763779, 6);
+    expect(frame.footer.y).toBeCloseTo(787.889763779, 6);
+    expect(() => assertFlowBlockFits(frame.body.height, frame)).not.toThrow();
+    for (const height of [frame.body.height + 1, Infinity, NaN, 0, -1]) {
+      expect(() =>
+        assertFlowBlockFits(height, frame, ["data", "group"]),
+      ).toThrowError(
+        expect.objectContaining({
+          code: "LAYOUT_OVERFLOW",
+          issues: [expect.objectContaining({ path: ["data", "group"] })],
+        }),
+      );
+    }
+  });
+
+  it("rejects unsupported flow formats and invalid or exhausted reservations", () => {
+    const format = resolveFormat("letter");
+    const card = resolveFormat("card-85x55");
+    if (format.kind !== "fixed" || card.kind !== "fixed")
+      throw new Error("Expected fixed formats.");
+    expect(() => createFlowFrame(card)).toThrowError(
+      expect.objectContaining({ code: "UNSUPPORTED_FORMAT" }),
+    );
+    for (const options of [
+      { margin: NaN },
+      { header: { height: -1 } },
+      { footer: { height: 12, gap: Infinity } },
+    ]) {
+      expect(() => createFlowFrame(format, options)).toThrowError(
+        expect.objectContaining({ code: "INVALID_DATA" }),
+      );
+    }
+    for (const options of [
+      { margin: 0 },
+      { margin: 400 },
+      { header: { height: 800 } },
+    ]) {
+      expect(() => createFlowFrame(format, options)).toThrowError(
+        expect.objectContaining({ code: "LAYOUT_OVERFLOW" }),
+      );
+    }
+    expect(createFlowFrame(format).body.height).toBeCloseTo(735.307086614, 6);
+  });
+
   it("derives the safe frame from exact physical dimensions", () => {
     const format = resolveFormat("card-85x55");
     if (format.kind !== "fixed")

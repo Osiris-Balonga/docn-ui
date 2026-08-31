@@ -1,6 +1,6 @@
 # PDF component catalog — PDFx comparison and L12 contract
 
-Date: 2026-08-31. Status: **planned**, not an availability claim. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
+Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and the S02a shared-frame foundation are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
 
 ## Evidence and scope
 
@@ -74,6 +74,16 @@ This comparison does not claim that those capabilities are impossible in PDFx: o
 4. Use one implementation for aliases (`Divider`/`Separator`, `KeyValue`/`FieldPair`) and one table implementation for both composition and data convenience APIs. Do not maintain a second copy for docs or the registry.
 5. Keep all PDF source independent of site DOM, Tailwind and shadcn UI. Site previews must come from actual generated PDFs. Trusted example JSX is compiled project source; never evaluate text submitted by a visitor.
 
+## S02a frame API decision
+
+`PdfThemeProvider` and `usePdfTheme` supply explicit, already validated PDF tokens independently of geometry. A missing provider is an error. `PageFrame` keeps its required theme prop, safe area, absolute content placement and print-profile behavior; existing imports remain valid through `primitives/index.tsx`.
+
+`DocumentFrame` renders a wrapping engine Page directly under the engine Document, not a second Document or an absolutely positioned body. Its initial contract supports resolved portrait A4/Letter trim-sized pages (screen profile), a required theme, an optional uniform margin in points, and optional header/footer regions `{ content, height, gap? }` in points. The default margin is the format safe inset; smaller margins, non-finite/negative dimensions and reservations leaving no body area fail explicitly. Each region is repeated at its reserved absolute position; page padding reserves its height plus gap on every physical page. Body children remain in normal flow. Printed bleed/crop marks continue to use PageFrame or existing family layouts; they are not silently added to DocumentFrame.
+
+`createFlowFrame` exposes body/header/footer bounds for measurement. Region content is trusted, premeasured JSX and must fit its declared height; the frame does not guess text height or silently clip overflow. `assertFlowBlockFits` checks a measured, finite positive non-breaking block height against the complete available body height, including reserved space. A fitting block may move to the next page; an oversized block must be split by its component's explicit policy or rejected as LAYOUT_OVERFLOW, never shrunk or clipped. S02c will compose this contract into KeepTogether/table components and qualify their actual layout.
+
+Primitive modules split by responsibility without duplicating JSX. Pure page-box arithmetic moves to `core/page-geometry.ts`; `render/print-profile.ts` retains its existing export and post-processing API. This keeps geometry independent from PDF post-processing and prepares component-sized dependency closures. S02a updates the existing aggregate registry item to include its extracted files, but does not yet advertise individually installable components.
+
 ## shadcn installation and theme continuity
 
 Follow [ADR 0004](../adr/0004-source-distribution.md) and the [official registry workflow](https://ui.shadcn.com/docs/registry/getting-started). Add component-sized `docn-*` items with their true dependency closures and examples. Preserve `docn-primitives` for current consumers; installing one new primitive must not install unrelated templates, the whole catalog, or site code. Use the existing official CLI, relative internal imports, isolated `~/docn` targets and the consumer's unchanged `components.json`.
@@ -98,4 +108,4 @@ Preparation checks: the published and commit-pinned PDFx inventories were read; 
 
 Implementation evidence belongs in `docs/qa/L12.md` as each story is verified. Use a shared PDF specimen for basic primitives, focused pagination/link/barcode/chart risks, and the existing external consumer orchestration for dependency/configuration isolation. Compare current template geometry/content after the context extraction without restyling their layouts. A component is not complete just because its name appears in the index.
 
-L11 is still in review in [PR #31](https://github.com/Osiris-Balonga/docn-ui/pull/31), with seven successful checks at the inspected baseline. L12 remains planned until an authorized L11 merge is observed. Preparing this contract does not mark L12 started or verified.
+The initial comparison preceded L11's authorized merge. [PR #31](https://github.com/Osiris-Balonga/docn-ui/pull/31) is now merged at `a342433e0902935a454d8ef04a85cb508a765f4a`; L12 implementation is in progress. Story results are recorded in the [L12 QA report](../qa/L12.md). Neither the comparison nor the shared-frame foundation completes the public component catalog.

@@ -296,8 +296,9 @@ describe("isolated registry consumers", () => {
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
     const installedSources = [...browserSources, ...nodeSources];
-    expect(browserSources).toHaveLength(32);
-    expect(nodeSources).toHaveLength(33);
+    // S02a adds one core geometry module and nine split/shared primitive modules.
+    expect(browserSources).toHaveLength(42);
+    expect(nodeSources).toHaveLength(43);
     expect(
       installedSources.filter((file) =>
         /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
