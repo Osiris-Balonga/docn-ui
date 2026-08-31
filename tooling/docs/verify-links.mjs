@@ -34,7 +34,13 @@ async function readDocument(file) {
 }
 
 let linkCount = 0;
-const pages = await htmlFiles(join(output, "docs"));
+const pages = (
+  await Promise.all(
+    ["docs", "components", "formats", "themes"].map((path) =>
+      htmlFiles(join(output, path)),
+    ),
+  )
+).flat();
 assert.ok(
   pages.length > 0,
   "Build the site before checking documentation links.",

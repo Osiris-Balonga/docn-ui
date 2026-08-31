@@ -103,11 +103,11 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02h — `feat(docs): expose PDF primitives formats and theme examples`
 
-- [ ] Index/detail pages for actually available primitives with props, usage, PDF example, source/installation.
-- [ ] Replace inert component names with working detail links; cover the component matrix, including Barcode, in sidebar and search.
-- [ ] Format pages with actual dimensions/compatibility; compare themes on the same document.
-- [ ] Retain the approved shadcn shell, enlarged preview and shared code-block styling, including visually hidden scrollbars and keyboard scrolling.
-- [ ] Generate visuals through the existing pipeline; no test per paragraph or documentation card.
+- [x] Index/detail pages for actually available primitives with props, usage, PDF example, source/installation.
+- [x] Replace inert component names with working detail links; cover the component matrix, including Barcode, in sidebar and search.
+- [x] Format pages with actual dimensions/compatibility; compare themes on the same document.
+- [x] Retain the approved shadcn shell, enlarged preview and shared code-block styling, including visually hidden scrollbars and keyboard scrolling.
+- [x] Generate visuals through the existing pipeline; no test per paragraph or documentation card.
 
 **Acceptance:** components/formats/themes routes are complete, indexable, and consistent with code contracts. Every advertised component has real output and an installable source entry, not a placeholder.
 

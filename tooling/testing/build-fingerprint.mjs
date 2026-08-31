@@ -11,6 +11,7 @@ const inputPathspecs = [
   "apps/www",
   "packages/documents",
   "tooling/registry",
+  "tooling/docs",
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",
