@@ -1,6 +1,6 @@
 import { Image as ReactPdfImage, View } from "@react-pdf/renderer";
 import { assertLocalImage } from "./image-validation";
-import { Text } from "./typography";
+import { Text } from "./text";
 
 export interface ImageProps {
   align?: "start" | "center" | "end";

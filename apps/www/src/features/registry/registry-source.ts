@@ -7,6 +7,10 @@ export interface RegistrySourceFile {
 }
 
 interface RegistryItemPayload {
+  meta?: {
+    sourcePreview?: Array<{ item: string; target: string }>;
+    assetsIncluded?: boolean;
+  };
   files: Array<{
     content: string;
     path: string;
@@ -53,63 +57,6 @@ function localRegistryUrl(value: string, origin: string) {
   return new URL(`${parsed.pathname}${parsed.search}`, origin).href;
 }
 
-export async function loadRegistrySourceClosure({
-  fetchImpl = globalThis.fetch,
-  itemUrl,
-  origin,
-}: {
-  fetchImpl?: typeof fetch;
-  itemUrl: string;
-  origin: string;
-}) {
-  const queue = [localRegistryUrl(itemUrl, origin)];
-  const visitedUrls = new Set<string>();
-  const visitedNames = new Set<string>();
-  const files: RegistrySourceFile[] = [];
-
-  while (queue.length > 0) {
-    const url = queue.shift();
-    if (!url || visitedUrls.has(url)) continue;
-    visitedUrls.add(url);
-    const response = await fetchImpl(url);
-    if (!response.ok)
-      throw new Error(`Registry source returned HTTP ${response.status}.`);
-    const item = parseRegistryItem(await response.json());
-    if (visitedNames.has(item.name)) continue;
-    visitedNames.add(item.name);
-    files.push(...item.files.map((file) => ({ ...file, owner: item.name })));
-    queue.push(
-      ...item.registryDependencies.map((dependency) =>
-        localRegistryUrl(dependency, origin),
-      ),
-    );
-  }
-
-  if (files.length === 0)
-    throw new Error("The registry item contains no source files.");
-  return { files, itemCount: visitedNames.size };
-}
-
-export async function loadRegistryPrimarySource({
-  fetchImpl = globalThis.fetch,
-  itemUrl,
-  origin,
-}: {
-  fetchImpl?: typeof fetch;
-  itemUrl: string;
-  origin: string;
-}) {
-  const response = await fetchImpl(localRegistryUrl(itemUrl, origin));
-  if (!response.ok)
-    throw new Error(`Registry source returned HTTP ${response.status}.`);
-  const item = parseRegistryItem(await response.json());
-  const file =
-    item.files.find((candidate) => candidate.type === "registry:component") ??
-    item.files[0];
-  if (!file) throw new Error("The registry item contains no source files.");
-  return { ...file, owner: item.name } satisfies RegistrySourceFile;
-}
-
 function isPreviewableTemplateFile(file: RegistrySourceFile) {
   return (
     !file.target.endsWith("/index.ts") &&
@@ -128,11 +75,11 @@ function previewFileOrder(file: RegistrySourceFile) {
 }
 
 /**
- * Loads only the template block and its direct family foundation. This keeps
- * the source drawer useful without turning it into a repository browser or
- * exposing transitive primitives as navigable files.
+ * Loads declared component preview files, or a template and its direct family
+ * foundation. Dependency installation and source browsing remain separate:
+ * neither preview exposes an unrestricted transitive repository tree.
  */
-export async function loadRegistryTemplatePreview({
+export async function loadRegistryPreview({
   fetchImpl = globalThis.fetch,
   itemUrl,
   origin,
@@ -145,6 +92,54 @@ export async function loadRegistryTemplatePreview({
   if (!response.ok)
     throw new Error(`Registry source returned HTTP ${response.status}.`);
   const item = parseRegistryItem(await response.json());
+  if (item.meta?.sourcePreview !== undefined) {
+    const preview = item.meta.sourcePreview;
+    if (
+      !Array.isArray(preview) ||
+      preview.length === 0 ||
+      preview.length > 20 ||
+      !preview.every(
+        (entry) =>
+          entry &&
+          /^docn-[a-z0-9-]+$/.test(entry.item) &&
+          /^~\/docn\/[a-zA-Z0-9/_-]+\.(?:ts|tsx)$/.test(entry.target),
+      )
+    )
+      throw new Error("The component source preview is invalid.");
+    const items = new Map([[item.name, item]]);
+    await Promise.all(
+      [...new Set(preview.map((entry) => entry.item))]
+        .filter((name) => name !== item.name)
+        .map(async (name) => {
+          const url = new URL(`${name}.json`, localRegistryUrl(itemUrl, origin))
+            .href;
+          const supportingResponse = await fetchImpl(url);
+          if (!supportingResponse.ok)
+            throw new Error(
+              `Registry source returned HTTP ${supportingResponse.status}.`,
+            );
+          const supporting = parseRegistryItem(await supportingResponse.json());
+          if (supporting.name !== name)
+            throw new Error(
+              "The supporting source item does not match its name.",
+            );
+          items.set(name, supporting);
+        }),
+    );
+    const files = preview.map(({ item: name, target }) => {
+      const file = items
+        .get(name)
+        ?.files.find((candidate) => candidate.target === target);
+      if (!file)
+        throw new Error("A declared component source file is missing.");
+      return { ...file, owner: name };
+    });
+    return {
+      files,
+      itemCount: items.size,
+      assetsIncluded: item.meta?.assetsIncluded === true,
+    };
+  }
   const files = item.files.map((file) => ({ ...file, owner: item.name }));
   const foundationDependency = item.registryDependencies.find((dependency) =>
     /-foundation(?:\.json)?$/.test(new URL(dependency, origin).pathname),
@@ -172,7 +167,11 @@ export async function loadRegistryTemplatePreview({
     .sort((left, right) => previewFileOrder(left) - previewFileOrder(right));
   if (previewFiles.length === 0)
     throw new Error("The registry item contains no previewable source files.");
-  return { files: previewFiles, itemCount: foundationDependency ? 2 : 1 };
+  return {
+    files: previewFiles,
+    itemCount: foundationDependency ? 2 : 1,
+    assetsIncluded: item.meta?.assetsIncluded ?? true,
+  };
 }
 
 export type SourceTokenKind =

@@ -5,7 +5,8 @@ import {
   type FormGroup,
 } from "./printable-data";
 import { usePdfTheme } from "./theme-context";
-import { Heading, Text } from "./typography";
+import { Heading } from "./heading";
+import { Text } from "./text";
 
 export type { FormField, FormGroup } from "./printable-data";
 export interface FormProps {

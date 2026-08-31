@@ -1,6 +1,6 @@
 # PDF component catalog — PDFx comparison and L12 contract
 
-Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and S02a–S02e are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
+Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and S02a–S02g are locally verified; component detail pages and the gallery remain S02h work. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
 
 ## Evidence and scope
 
@@ -147,6 +147,14 @@ Width/height are bounded to 160–540 / 160–700 pt; callers must choose a box 
 One two-page graph specimen will cover all six nominal forms together and the distinct empty/zero/negative/single-sector risks. Tests will check scales/geometry and actual PDF vectors/text, followed by raster inspection. No new dependency or template/site restyling is required. Source remains in the aggregate registry until component-sized entries are exposed in S02g.
 
 ## shadcn installation and theme continuity
+
+### S02g distribution decision
+
+Split grouped JSX modules into component-sized sources while preserving the existing `typography`, `layout`, `containers`, `annotations`, `pagination`, `page-regions` and `index` facades. Aliases such as Divider/Separator and KeyValue/FieldPair remain the same implementation. Registry sources retain one owner and stable `~/docn` targets; legacy aggregate items depend on the new owners. Narrow core contracts and font/asset preparation into explicit supporting items so a basic component never depends on the full rendering pipeline, templates, graph, QR or barcode code.
+
+Each component item declares its primary source and a bounded list of supporting sources for the code view. Validate that list against its installation closure during generation; never traverse the entire registry for preview. Shared tables/graph helpers may be shown when needed to understand the selected component. Template previews keep their existing template/family boundary. Full installation still resolves all required source through the official CLI.
+
+Two compiled, installable examples qualify distinct graphs: a minimal Text document and a flow document combining DataTable, Graph and Barcode. Basic components do not install examples or font assets implicitly; those are explicit opt-in items for a runnable document. Existing shared specimens cover the remaining APIs and will feed the per-component pages in S02h. Reuse the existing two-environment consumer test, assert the light closure before adding the legacy template, render after stopping the registry, and preserve consumer configuration/CSS/owned files without overwrite flags. No dependency or UI redesign is required.
 
 Follow [ADR 0004](../adr/0004-source-distribution.md) and the [official registry workflow](https://ui.shadcn.com/docs/registry/getting-started). Add component-sized `docn-*` items with their true dependency closures and examples. Preserve `docn-primitives` for current consumers; installing one new primitive must not install unrelated templates, the whole catalog, or site code. Use the existing official CLI, relative internal imports, isolated `~/docn` targets and the consumer's unchanged `components.json`.
 

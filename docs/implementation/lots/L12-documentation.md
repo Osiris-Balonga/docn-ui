@@ -92,10 +92,10 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02g — `feat(registry): expose individually installable PDF components`
 
-- [ ] Component-sized official shadcn registry items, dependency closures and typed usage examples; preserve the existing docn-primitives item.
-- [ ] Source views show the selected component and direct relevant files, not an unrestricted repository browser.
-- [ ] Do not pull templates, barcode encoders, site UI, or the full render pipeline into unrelated basic component installations.
-- [ ] Preserve the existing consumer components.json, aliases and owned files; no additional initializer or forced overwrite.
+- [x] Component-sized official shadcn registry items, dependency closures and typed usage examples; preserve the existing docn-primitives item.
+- [x] Source views show the selected component and direct relevant files, not an unrestricted repository browser.
+- [x] Do not pull templates, barcode encoders, site UI, or the full render pipeline into unrelated basic component installations.
+- [x] Preserve the existing consumer components.json, aliases and owned files; no additional initializer or forced overwrite.
 
 **Acceptance:** A basic primitive and a dependency-rich composition install and render outside the monorepo through the official CLI without replacing the consumer's configuration.
 
