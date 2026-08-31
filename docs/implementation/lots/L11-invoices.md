@@ -1,6 +1,6 @@
 # L11 — Multipage invoices and complete catalog
 
-Status: **in review** in PR #31. The post-review catalog refinement is locally qualified at `24761240ed18fd812c965a08e1dfee4947ae83a8`. Branch: `feat/invoice-templates`.
+Status: **merged** through PR #31 at `a342433e0902935a454d8ef04a85cb508a765f4a` on 2026-08-31, following explicit maintainer authorization and seven successful checks at head `98cab3dcb8474227a366b3e0a880325c3e93fbd0`. Branch: `feat/invoice-templates`. No release or site publication is implied.
 
 Dependencies: L10. Requirements: FR-01, FR-12, FR-13, FR-16; NFR-05; G4.
 

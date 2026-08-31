@@ -1,6 +1,6 @@
 # L12 — Documentation, components, formats, and themes
 
-Initial status: **planned**. Branch: `feat/documentation-catalog`.
+Status: **in progress**. Branch: `feat/documentation-catalog`, based on merged L11 commit `a342433e0902935a454d8ef04a85cb508a765f4a`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31.
 
 Dependencies: L11. Requirements: FR-02, FR-13, FR-15, FR-16, FR-17.
 
