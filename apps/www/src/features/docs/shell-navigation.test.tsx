@@ -121,7 +121,7 @@ test("documentation search isolates editor shortcuts, reports no matches, and op
   const reopenedInput = await screen.findByPlaceholderText(
     "Search available pages...",
   );
-  await user.type(reopenedInput, "getting started");
-  await user.click(screen.getByText("Getting started"));
-  expect(routerPush).toHaveBeenCalledWith("/docs/getting-started/");
+  await user.type(reopenedInput, "browser and node");
+  await user.click(screen.getByText("Browser and Node"));
+  expect(routerPush).toHaveBeenCalledWith("/docs/browser-and-node/");
 });

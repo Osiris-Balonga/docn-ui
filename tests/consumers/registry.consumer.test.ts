@@ -13,6 +13,11 @@ import { spawn } from "node:child_process";
 import { chromium } from "@playwright/test";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { afterEach, describe, expect, it } from "vitest";
+import {
+  browserConsumerUsage,
+  nodeConsumerUsage,
+  nodeConsumerBuildConfig,
+} from "../../packages/documents/src/examples/consumer-usage";
 
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
@@ -259,32 +264,6 @@ async function inspectPdf(bytes: Uint8Array) {
   }
 }
 
-const businessCardRequestSource = `{
-  assetIds: [],
-  data: minimalBusinessCardExampleFr,
-  formatId: "card-85x55",
-  locale: "fr",
-  printProfile: { kind: "screen" },
-  protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-  revision: 1,
-  templateId: "business-card-minimal",
-  templateVersion: "1.0.0",
-  themeId: "neutral",
-}`;
-
-const invoiceRequestSource = `{
-  assetIds: [],
-  data: businessInvoiceExample,
-  formatId: "a4",
-  locale: "en",
-  printProfile: { kind: "screen" },
-  protocolVersion: PDF_RENDER_PROTOCOL_VERSION,
-  revision: 1,
-  templateId: "invoice-business",
-  templateVersion: "1.0.0",
-  themeId: "neutral",
-}`;
-
 describe("isolated registry consumers", () => {
   it("installs once per environment and renders after the registry is offline", async () => {
     logs.length = 0;
@@ -348,27 +327,11 @@ describe("isolated registry consumers", () => {
 
     await writeFile(
       resolve(nodeDirectory, "src/node-entry.ts"),
-      `import { writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
-import { PDF_RENDER_PROTOCOL_VERSION } from "../docn/core/contracts";
-import { createNodeAssetResolver } from "../docn/render/assets.node";
-import { renderDocumentInNode } from "../docn/render/node";
-import { createInvoiceBusinessPlan } from "../docn/templates/invoices/invoice-business/invoice-business";
-import { businessInvoiceExample } from "../docn/templates/invoices/invoice-business/examples";
-const { plan } = createInvoiceBusinessPlan(${invoiceRequestSource});
-const bytes = await renderDocumentInNode(plan, createNodeAssetResolver(resolve("assets")));
-await writeFile("node-output.pdf", bytes);
-console.log("node-render-complete", bytes.byteLength);
-`,
+      nodeConsumerUsage,
     );
     await writeFile(
       resolve(nodeDirectory, "vite.config.mjs"),
-      `import { resolve } from "node:path";
-import { defineConfig } from "vite";
-export default defineConfig({
-  build: { outDir: "dist-node", ssr: "src/node-entry.ts", rollupOptions: { output: { entryFileNames: "node-entry.mjs" } } },
-});
-`,
+      nodeConsumerBuildConfig,
     );
 
     await writeFile(
@@ -377,20 +340,7 @@ export default defineConfig({
     );
     await writeFile(
       resolve(browserDirectory, "src/main.ts"),
-      `import { PDF_RENDER_PROTOCOL_VERSION } from "../docn/core/contracts";
-import { createBrowserAssetResolver } from "../docn/render/assets.browser";
-import { renderDocumentInBrowser } from "../docn/render/browser";
-import { createBusinessCardMinimalPlan } from "../docn/templates/business-cards/business-card-minimal/business-card-minimal";
-import { minimalBusinessCardExampleFr } from "../docn/templates/business-cards/business-card-minimal/examples";
-const { plan } = createBusinessCardMinimalPlan(${businessCardRequestSource});
-const bytes = await renderDocumentInBrowser(plan, createBrowserAssetResolver(window.location.origin));
-const link = document.createElement("a");
-link.href = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
-link.download = "browser-output.pdf";
-link.textContent = "Download browser PDF";
-document.body.append(link);
-document.querySelector("#status").textContent = "ready";
-`,
+      browserConsumerUsage,
     );
     await writeFile(
       resolve(browserDirectory, "vite.config.mjs"),

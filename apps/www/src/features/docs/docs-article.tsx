@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { CodeViewport } from "@/components/code-viewport";
+import { CopyCodeButton } from "@/components/copy-code-button";
+import { HighlightedCode } from "@/components/highlighted-code";
 import { cn } from "@/lib/utils";
 import { DocsBreadcrumbs } from "./docs-breadcrumbs";
 
@@ -23,7 +25,7 @@ export function DocsArticle({
   children,
 }: DocsArticleProps) {
   return (
-    <article className="mx-auto max-w-[40rem]">
+    <article className="mx-auto max-w-[40rem] [overflow-wrap:anywhere]">
       {hideBreadcrumb ? null : (
         <DocsBreadcrumbs
           {...(breadcrumb ? { current: breadcrumb } : {})}
@@ -50,17 +52,24 @@ export function DocsArticle({
 export function CodeBlock({
   label,
   children,
+  highlight = true,
 }: {
   label: string;
   children: string;
+  highlight?: boolean;
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card">
-      <div className="border-b bg-muted/50 px-4 py-2 font-mono text-xs text-muted-foreground">
-        {label}
+    <div className="min-w-0 overflow-hidden rounded-lg bg-muted/30">
+      <div className="flex min-h-12 items-center justify-between gap-3 bg-muted/30 pl-4 pr-2 font-mono text-xs text-muted-foreground">
+        <span className="min-w-0 truncate">{label}</span>
+        <CopyCodeButton compact label={`Copy ${label}`} text={children} />
       </div>
-      <CodeViewport>
-        <code>{children}</code>
+      <CodeViewport className="max-h-[36rem]" aria-label={`${label} code`}>
+        {highlight ? (
+          <HighlightedCode code={children} label={`${label} source`} />
+        ) : (
+          <code aria-label={`${label} source`}>{children}</code>
+        )}
       </CodeViewport>
     </div>
   );

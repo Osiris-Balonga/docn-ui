@@ -2,7 +2,7 @@
 
 PDF fonts are binary assets and are not embedded into registry JSON. The `docn-render` item installs a visible Node script at `docn/assets/install.mjs`. Run it explicitly after reviewing the installed source. It does not use a postinstall hook and never overwrites an existing file.
 
-The development commands below assume the registry is served by `corepack pnpm dev` at `http://127.0.0.1:4173`. Published documentation must replace this loopback URL only after an immutable release origin is approved.
+The development commands below assume a static build served by `corepack pnpm preview` at `http://127.0.0.1:4173`. Run `corepack pnpm build` first. The Next.js development server instead defaults to port 3000; a different registry origin requires setting `DOCN_REGISTRY_ORIGIN` before generation/build so dependency URLs match the served registry. Published documentation must replace this loopback URL only after an immutable release origin is approved.
 
 ## Browser project
 
