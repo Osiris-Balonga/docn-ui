@@ -102,6 +102,13 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/signature.tsx",
         "packages/documents/src/primitives/watermark-layout.ts",
         "packages/documents/src/primitives/watermark.tsx",
+        "packages/documents/src/primitives/graph-data.ts",
+        "packages/documents/src/primitives/graph-geometry.ts",
+        "packages/documents/src/primitives/graph-layout.ts",
+        "packages/documents/src/primitives/graph-text.tsx",
+        "packages/documents/src/primitives/graph-cartesian.tsx",
+        "packages/documents/src/primitives/graph-radial.tsx",
+        "packages/documents/src/primitives/graph.tsx",
       ],
     },
     {

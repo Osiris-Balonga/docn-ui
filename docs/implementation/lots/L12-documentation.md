@@ -72,9 +72,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02e — `feat(pdf): add vector graph components`
 
-- [ ] Bar, horizontal bar, line, area, pie and donut from bounded typed data, with labels and legends.
-- [ ] PDF-native vectors, monochrome defaults, no site chart imports or canvas screenshot substitutes.
-- [ ] Define empty/non-finite data, zero ranges, pie/donut negative values, text density and numeric scales before exposing the API.
+- [x] Bar, horizontal bar, line, area, pie and donut from bounded typed data, with labels and legends.
+- [x] PDF-native vectors, monochrome defaults, no site chart imports or canvas screenshot substitutes.
+- [x] Define empty/non-finite data, zero ranges, pie/donut negative values, text density and numeric scales before exposing the API.
 
 **Acceptance:** All six graph forms produce legible real PDFs and invalid inputs fail explicitly.
 

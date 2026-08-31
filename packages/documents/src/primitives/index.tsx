@@ -73,6 +73,12 @@ export { Form, type FormProps, type FormField, type FormGroup } from "./form";
 export { Signature, type SignatureProps, type Signer } from "./signature";
 export { Watermark, type WatermarkProps } from "./watermark";
 export {
+  Graph,
+  type GraphProps,
+  type GraphDatum,
+  type GraphType,
+} from "./graph";
+export {
   createFlowFrame,
   assertFlowBlockFits,
   type FlowFrame,
