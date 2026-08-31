@@ -62,9 +62,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02d — `feat(pdf): add printable form and annotation components`
 
-- [ ] Alert, Badge, Form, Signature and Watermark with neutral defaults and explicit semantic labels.
-- [ ] Printable one/two/three-column fields, single/dual signer areas and controlled repeated watermark placement.
-- [ ] State that these are static document elements, not interactive AcroForms, cryptographic signatures or document protection.
+- [x] Alert, Badge, Form, Signature and Watermark with neutral defaults and explicit semantic labels.
+- [x] Printable one/two/three-column fields, single/dual signer areas and controlled repeated watermark placement.
+- [x] State that these are static document elements, not interactive AcroForms, cryptographic signatures or document protection.
 
 **Acceptance:** The shared specimen shows all five categories without missing labels or overlapping content.
 

@@ -68,6 +68,10 @@ export {
   type DataTableColumn,
 } from "./data-table";
 export { QRCode, type QRCodeProps } from "./qr-code-view";
+export { Alert, Badge, type AlertProps, type BadgeProps } from "./annotations";
+export { Form, type FormProps, type FormField, type FormGroup } from "./form";
+export { Signature, type SignatureProps, type Signer } from "./signature";
+export { Watermark, type WatermarkProps } from "./watermark";
 export {
   createFlowFrame,
   assertFlowBlockFits,

@@ -96,6 +96,12 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/table-data.ts",
         "packages/documents/src/primitives/composable-table.tsx",
         "packages/documents/src/primitives/data-table.tsx",
+        "packages/documents/src/primitives/annotations.tsx",
+        "packages/documents/src/primitives/printable-data.ts",
+        "packages/documents/src/primitives/form.tsx",
+        "packages/documents/src/primitives/signature.tsx",
+        "packages/documents/src/primitives/watermark-layout.ts",
+        "packages/documents/src/primitives/watermark.tsx",
       ],
     },
     {

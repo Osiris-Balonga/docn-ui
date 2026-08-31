@@ -2,6 +2,11 @@ import { Document, View } from "@react-pdf/renderer";
 import { resolveFormat } from "../core/formats";
 import { Card, Section } from "../primitives/containers";
 import { DocumentFrame } from "../primitives/document-frame";
+import { Alert, Badge } from "../primitives/annotations";
+import { Form } from "../primitives/form";
+import { PageBreak } from "../primitives/pagination";
+import { Signature } from "../primitives/signature";
+import { Watermark } from "../primitives/watermark";
 import { Image } from "../primitives/image";
 import { Divider, Row, Stack } from "../primitives/layout";
 import { Link } from "../primitives/link";
@@ -130,6 +135,113 @@ export function createPrimitiveContentPlan(
               </Text>
             </Section>
           </Stack>
+          <PageBreak>
+            <Stack gap="lg">
+              <Stack gap="sm">
+                <Text size="caption" tone="muted">
+                  DOCN-UI / PRINTABLE ANNOTATIONS
+                </Text>
+                <Heading level={1}>Review and sign-off</Heading>
+                <Text>
+                  Static fields and signature lines. Edit the source to add your
+                  own theme.
+                </Text>
+              </Stack>
+              <Row gap="md" align="center">
+                <Badge label="Draft" />
+                <Badge label="Review pending" size="regular" tone="outline" />
+              </Row>
+              <Alert
+                title="Complete before printing"
+                description="Review the populated values and leave the blank fields for handwritten information."
+              />
+              <Form
+                groups={[
+                  {
+                    id: "reference",
+                    title: "Document reference",
+                    fields: [
+                      {
+                        id: "purpose",
+                        label: "Purpose",
+                        value: "Proof approval for the community publication.",
+                      },
+                    ],
+                  },
+                  {
+                    id: "contact",
+                    title: "Contact information",
+                    columns: 2,
+                    fields: [
+                      {
+                        id: "name",
+                        label: "Full name",
+                        value: "Élodie Mbemba",
+                        required: true,
+                      },
+                      {
+                        id: "email",
+                        label: "Email",
+                        value: "elodie@example.com",
+                      },
+                      {
+                        id: "address",
+                        label: "Postal address",
+                        value: "14 avenue des Arts\nBrazzaville",
+                      },
+                      { id: "phone", label: "Telephone" },
+                    ],
+                  },
+                  {
+                    id: "review",
+                    title: "Review details",
+                    columns: 3,
+                    fields: [
+                      {
+                        id: "reference-id",
+                        label: "Reference",
+                        value: "DOC-026",
+                      },
+                      { id: "copies", label: "Copies", value: "25" },
+                      { id: "date", label: "Review date", value: "" },
+                      { id: "notes", label: "Review notes" },
+                    ],
+                  },
+                ]}
+              />
+              <Signature
+                signers={[
+                  {
+                    label: "Prepared by",
+                    name: "Élodie Mbemba",
+                    role: "Editor",
+                    date: "15 January 2026",
+                  },
+                  {
+                    label: "Approved by",
+                    name: "Morgan Lee",
+                    role: "Reviewer",
+                  },
+                ]}
+              />
+              <Signature
+                space={24}
+                signers={[{ label: "Witness signature" }]}
+              />
+              <Signature
+                layout="inline"
+                space={24}
+                signers={[{ label: "Collected by" }]}
+              />
+              <Alert
+                status="Important"
+                title="Static print elements only"
+                description="No interactive form fields, digital signatures or document protection are provided."
+              />
+            </Stack>
+          </PageBreak>
+          <Watermark text="DRAFT" placement="bottom" />
+          <Watermark text="SAMPLE" fontSize={20} repeat={false} />
         </DocumentFrame>
       </Document>
     ),
