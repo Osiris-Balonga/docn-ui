@@ -37,6 +37,8 @@ describe("document registry generation", () => {
       "docn-core",
       "docn-themes",
       "docn-render",
+      "docn-theme-context",
+      "docn-barcode",
       "docn-primitives",
       "docn-event-ticket-foundation",
       "docn-event-ticket-classic",
@@ -137,6 +139,43 @@ describe("document registry generation", () => {
         origin: "http://127.0.0.1:4173/r/dev/",
       }),
     ).toEqual(result);
+  });
+
+  it("isolates the barcode encoder from legacy templates and basic theme context", () => {
+    const items = new Map(
+      registrySourceManifest.items.map((item) => [item.name, item]),
+    );
+    const barcode = resolveItemClosure("docn-barcode", items);
+    expect(barcode).toEqual([
+      "docn-core",
+      "docn-themes",
+      "docn-theme-context",
+      "docn-barcode",
+    ]);
+    const sources = barcode.flatMap((name: string) => items.get(name)!.files);
+    expect(
+      sources.some((file: string) => /templates|render\//.test(file)),
+    ).toBe(false);
+    for (const name of [
+      "docn-primitives",
+      "docn-theme-context",
+      "docn-business-card-minimal",
+      "docn-invoice-business",
+    ]) {
+      const closure = resolveItemClosure(name, items).map((key: string) =>
+        items.get(key)!,
+      );
+      expect(
+        closure.flatMap(
+          (item: { dependencies: string[] }) => item.dependencies,
+        ),
+      ).not.toContain("jsbarcode@3.12.3");
+      expect(
+        closure
+          .flatMap((item: { files: string[] }) => item.files)
+          .some((file: string) => file.includes("barcode")),
+      ).toBe(false);
+    }
   });
 
   it("rewrites import specifiers only and rejects unresolved sources", () => {

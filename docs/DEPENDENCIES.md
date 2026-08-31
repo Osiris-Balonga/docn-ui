@@ -119,3 +119,20 @@ The primitive renders the matrix itself rather than embedding a generated bitmap
 | jsQR | 1.4.0 | Apache-2.0 | Test-only independent decoder applied to the PDF raster; it is not imported by document or website runtime code |
 
 These development dependencies add no browser payload and do not replace the maintained `qrcode` encoder. The test deliberately crosses encoder, React-pdf SVG output, final PDF post-processing, PDF.js rasterization, and an independent decoding implementation. `@napi-rs/canvas` was already present in the lockfile through PDF.js, so the direct declaration adds one small JavaScript package entry and no second native binary family.
+
+## Vector barcodes (L12-S02f)
+
+Qualified before adoption on 2026-08-31 from exact npm tarballs:
+
+| Dependency | Version | License | Reason and impact |
+| --- | --- | --- | --- |
+| jsbarcode | 3.12.3 | MIT, Johan Lindell | Public object-output API encodes Code 128 / EAN-13 without invoking a DOM or canvas renderer. No runtime dependencies. The full public entry measures 64,160 bytes minified / 11,186 bytes gzip with the already locked Rolldown 1.2.6, browser platform, ESM output. |
+| @zxing/library | 0.23.0 | Apache-2.0 | Independent final-PDF raster decoder, root development dependency only. Upstream is maintenance-only; the pinned decoder is a test oracle, not a shipped scanner feature. |
+| ts-custom-error | 3.3.1 | MIT | Decoder transitive dependency, no runtime dependencies. Test-only. |
+| @zxing/text-encoding | 0.9.0 | Unlicense OR Apache-2.0 | Optional decoder transitive dependency, no runtime dependencies. Apache-2.0 option reviewed; test-only. |
+
+Exact tarball license texts and manifests were inspected; ZXing ships its Apache license without a separate NOTICE file. Dependency license/copyright files remain in installed packages; redistribution must preserve their notices. No upstream source is copied into the project. JsBarcode's bundled DOM renderer definitions are not called: only its documented object encoding output is consumed. Private encoder subpaths were avoided. The broader bwip-js candidate was not adopted because this public entry covers the two requested formats within the measured budget; no comparative bwip-js bundle benchmark is claimed. The decoder tarball is 1,802,262 bytes; none of it enters production bundles.
+
+Barcode has a dedicated import/registry entry, not an export from the legacy primitive barrel. The shared theme-context registry item is extracted early from S02g so Barcode can use PDF tokens without depending on the aggregate primitives. Existing template installations retain the same source closure and do not acquire JsBarcode. Component-sized installation of all other primitives remains S02g. No new installer, configuration replacement, server rendering, or package publication is introduced.
+
+Sources: [JsBarcode object output](https://github.com/lindell/JsBarcode#retrieve-the-barcode-values-so-you-can-render-it-any-way-youd-like), [JsBarcode MIT license](https://github.com/lindell/JsBarcode/blob/master/MIT-LICENSE.txt), [ZXing package](https://www.npmjs.com/package/@zxing/library), [ZXing 0.23.0 license](https://github.com/zxing-js/library/blob/v0.23.0/LICENSE). Final component isolation and actual-PDF decoding evidence is recorded in L12 QA after execution.

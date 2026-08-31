@@ -43,6 +43,7 @@
     "@testing-library/user-event": "14.6.6",
     "@types/node": "24.13.3",
     "@vitest/coverage-v8": "4.1.11",
+    "@zxing/library": "0.23.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.3.3",
     "http-server": "14.1.1",

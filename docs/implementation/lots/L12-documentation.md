@@ -82,9 +82,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02f — `feat(pdf): add validated vector barcodes`
 
-- [ ] Qualify a local encoder and independent decoder with exact versions, licenses and measured bundle impact.
-- [ ] Implement the proposed Code 128 and EAN-13 surface with explicit payload/check-digit rules, physical sizes and quiet zones.
-- [ ] Reject impossible density/size combinations and keep optional readable text separate from the machine-readable pattern.
+- [x] Qualify a local encoder and independent decoder with exact versions, licenses and measured bundle impact.
+- [x] Implement the proposed Code 128 and EAN-13 surface with explicit payload/check-digit rules, physical sizes and quiet zones.
+- [x] Reject impossible density/size combinations and keep optional readable text separate from the machine-readable pattern.
 
 **Acceptance:** Both supported formats decode to the expected payload from rasterized final PDFs; unsupported formats and invalid values do not silently render another symbol.
 
