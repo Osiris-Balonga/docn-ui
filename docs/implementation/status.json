@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L12",
+  "currentLot": "L13",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -344,10 +344,10 @@
     {
       "id": "L13",
       "file": "lots/L13-hardening.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L12"],
       "branch": "chore/production-hardening",
-      "baseCommit": null,
+      "baseCommit": "611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270",
       "actualCommits": [],
       "evidence": null,
       "blocker": null

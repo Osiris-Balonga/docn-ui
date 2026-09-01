@@ -1,6 +1,6 @@
 # L13 — Targeted accessibility, security, and performance
 
-Initial status: **planned**. Branch: `chore/production-hardening`.
+Status: **in progress**. Branch: `chore/production-hardening`, based on `dev` commit `611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270`.
 
 Dependencies: L12. Requirements: NFR-01, NFR-02, NFR-04, NFR-07, NFR-10.
 
