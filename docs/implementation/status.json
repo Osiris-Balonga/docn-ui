@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L15",
+  "currentLot": "L16",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -13,11 +13,11 @@
   "externalDecisions": {
     "repository": "Osiris-Balonga/docn-ui",
     "visibility": "public",
-    "author": null,
+    "author": "Emmanuel Osiris Balonga",
     "license": null,
-    "hosting": null,
-    "siteUrl": null,
-    "publicationAuthorized": false,
+    "hosting": "Vercel",
+    "siteUrl": "https://docn-ui.vercel.app",
+    "publicationAuthorized": true,
     "githubSetupAuthorized": true,
     "projectLanguage": "en",
     "conversationLanguage": "fr"
@@ -383,7 +383,7 @@
     {
       "id": "L15",
       "file": "lots/L15-delivery.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
       "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
@@ -394,17 +394,19 @@
         "2574c96e264ba74939539e1d0c3ceb469efc6635"
       ],
       "evidence": "../qa/L15.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
+      "mergedAt": "2026-09-01T22:36:41Z"
     },
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L15"],
       "branch": "release/v1.0.0",
-      "baseCommit": null,
+      "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
       "actualCommits": [],
-      "evidence": null,
+      "evidence": "../qa/L16.md",
       "blocker": null
     }
   ],
