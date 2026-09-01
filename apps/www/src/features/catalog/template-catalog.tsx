@@ -96,7 +96,6 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
 }
 
 function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
-  const thumbnailSrc = `${template.thumbnail.src}?v=${template.thumbnail.sha256.slice(0, 12)}`;
   return (
     <article className="min-w-0">
       <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
@@ -105,14 +104,13 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
       </div>
       <PdfPreviewDialog
         title={template.title}
-        pages={[
-          {
-            src: thumbnailSrc,
-            width: template.thumbnail.width,
-            height: template.thumbnail.height,
-            alt: `${template.title} PDF preview`,
-          },
-        ]}
+        pages={template.pages.map((page) => ({
+          src: `${page.src}?v=${page.sha256.slice(0, 12)}`,
+          width: page.width,
+          height: page.height,
+          alt: `${template.title} PDF preview, page ${page.page}`,
+        }))}
+        downloadHref={`${template.pdf.src}?v=${template.pdf.revision.slice(0, 12)}`}
         triggerClassName="h-72 rounded-xl bg-muted/35 p-5 sm:h-80 sm:p-7"
         previewImageClassName="max-h-full w-auto shadow-lg ring-1 ring-foreground/10"
       />

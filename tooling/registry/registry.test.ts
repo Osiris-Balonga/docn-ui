@@ -12,12 +12,18 @@ import { templateCatalog } from "../../packages/documents/src/catalog/manifest";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 describe("document registry generation", () => {
-  it("builds the component registry with an empty template catalog", async () => {
+  it("builds the component and source-owned template registry", async () => {
     const result = await buildRegistry({
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
     });
-    expect(templateCatalog).toEqual([]);
+    expect(templateCatalog).toHaveLength(4);
+    expect(templateCatalog.map((template) => template.family)).toEqual([
+      "resume",
+      "report",
+      "invoice",
+      "receipt",
+    ]);
     expect(result.items.map((item) => item.name)).toEqual(
       expect.arrayContaining([
         "docn-core",
@@ -28,10 +34,14 @@ describe("document registry generation", () => {
         "docn-primitives",
         "docn-text-example",
         "docn-component-example",
+        "docn-resume-classic",
+        "docn-report-photo",
+        "docn-invoice-stripe",
+        "docn-receipt-order-confirmation",
       ]),
     );
     expect(result.items.some((item) => item.name.includes("invoice"))).toBe(
-      false,
+      true,
     );
     expect(
       result.items.some((item) => item.name.includes("business-card")),

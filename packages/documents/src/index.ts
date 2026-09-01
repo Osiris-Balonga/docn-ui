@@ -17,3 +17,4 @@ export type {
   ContinuousDocumentRenderPlan,
   FixedDocumentRenderPlan,
 } from "./render/runtime";
+export * from "./templates";

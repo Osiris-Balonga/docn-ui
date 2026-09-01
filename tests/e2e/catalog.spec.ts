@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-test("shows empty template families including CVs", async ({ page }) => {
+test("shows the new reference-led templates in their families", async ({
+  page,
+}) => {
   await page.goto("/templates/");
 
   await expect(
@@ -16,6 +18,7 @@ test("shows empty template families including CVs", async ({ page }) => {
     "Labels",
     "Invoices",
     "CVs",
+    "Reports",
   ]) {
     await expect(navigation.getByRole("tab", { name: family })).toBeVisible();
   }
@@ -25,7 +28,22 @@ test("shows empty template families including CVs", async ({ page }) => {
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "CVs" }).click();
-  await expect(page.getByRole("heading", { name: "No CVs yet" })).toBeVisible();
+  await expect(page.locator("article")).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { name: "Classic two-column resume" }),
+  ).toBeVisible();
+  await navigation.getByRole("tab", { name: "Reports" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Photo-led report" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Enlarge Photo-led report preview" })
+    .click();
+  await expect(
+    page
+      .getByRole("dialog", { name: "Photo-led report preview" })
+      .getByRole("button", { name: "View page 2" }),
+  ).toBeVisible();
 });
 test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
   page,
@@ -61,7 +79,9 @@ test("keeps the Home focused and changes documentation navigation only when spac
   ).toBeVisible();
   const source = page.getByLabel("src/main.ts code", { exact: true });
   await expect(source).toHaveCSS("scrollbar-width", "none");
-  await expect(source).toContainText('formatId: "card-85x55"');
+  await expect(source).toContainText(
+    "createBrowserAssetResolver(window.location.origin)",
+  );
   await expect(
     page.getByRole("button", { name: "Copy src/main.ts" }),
   ).toBeVisible();

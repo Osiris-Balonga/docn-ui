@@ -1,5 +1,13 @@
+import { generatedTemplateCatalog } from "./generated-templates";
+
 export type TemplateFamily =
-  "business-card" | "invoice" | "label" | "receipt" | "resume" | "ticket";
+  | "business-card"
+  | "invoice"
+  | "label"
+  | "receipt"
+  | "report"
+  | "resume"
+  | "ticket";
 
 export interface TemplateFamilyDefinition {
   id: TemplateFamily;
@@ -13,6 +21,7 @@ export const templateFamilies = [
   { id: "label", label: "Labels" },
   { id: "invoice", label: "Invoices" },
   { id: "resume", label: "CVs" },
+  { id: "report", label: "Reports" },
 ] as const satisfies readonly TemplateFamilyDefinition[];
 
 export interface CatalogThumbnail {
@@ -34,6 +43,11 @@ export interface TemplateCatalogEntry {
   family: TemplateFamily;
   familyLabel: string;
   id: string;
+  pages: readonly CatalogThumbnail[];
+  pdf: {
+    revision: string;
+    src: string;
+  };
   sides: number;
   slug: string;
   supportedFormatIds: readonly string[];
@@ -44,7 +58,8 @@ export interface TemplateCatalogEntry {
   version: string;
 }
 
-export const templateCatalog: readonly TemplateCatalogEntry[] = [];
+export const templateCatalog: readonly TemplateCatalogEntry[] =
+  generatedTemplateCatalog;
 
 export function getTemplateCatalogEntry(slug: string) {
   return templateCatalog.find((template) => template.slug === slug);

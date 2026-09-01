@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { ViewProps } from "@react-pdf/renderer";
 import {
   Stack,
   type Alignment,
@@ -14,6 +15,8 @@ export interface RowProps {
   gap?: SpacingToken;
   /** Horizontal child distribution. */
   justify?: Justification;
+  /** Optional React PDF style overrides for source-owned compositions. */
+  style?: ViewProps["style"];
 }
 
 export function Row({
@@ -21,6 +24,7 @@ export function Row({
   children,
   gap = "sm",
   justify,
+  style,
 }: RowProps) {
   return (
     <Stack
@@ -28,6 +32,7 @@ export function Row({
       align={align}
       gap={gap}
       {...(justify === undefined ? {} : { justify })}
+      style={style}
     >
       {children}
     </Stack>
