@@ -1,6 +1,6 @@
 # L12 — Documentation, components, formats, and themes
 
-Status: **in review** in PR #40. Final branch: `docs/l12-contribution-seo`, based on `dev` commit `8cdf4837cf36f3134b236b1ad843cc17daf1db0e`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31, then authorized validation and merge of subsequent pull requests on 2026-09-01.
+Status: **merged** through PR #40 at `8491f7d2a15364a3cdd4d376da08096c03896f40`. Final branch: `docs/l12-contribution-seo`, based on `dev` commit `8cdf4837cf36f3134b236b1ad843cc17daf1db0e`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31, then authorized validation and merge of subsequent pull requests on 2026-09-01.
 
 Dependencies: L11. Requirements: FR-02, FR-13, FR-15, FR-16, FR-17.
 
