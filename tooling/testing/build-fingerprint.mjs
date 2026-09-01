@@ -1,5 +1,12 @@
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -27,6 +34,45 @@ function git(...args) {
   if (result.status !== 0)
     throw new Error(String(result.stderr || "Git command failed.").trim());
   return result.stdout;
+}
+
+function collectBuildOutputs(directory) {
+  const files = [];
+  const visit = (current) => {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const path = resolve(current, entry.name);
+      if (entry.isDirectory()) visit(path);
+      else if (entry.isFile()) files.push(path);
+      else throw new Error(`Unsupported static build entry: ${path}`);
+    }
+  };
+  visit(directory);
+  const hash = createHash("sha256");
+  let bytes = 0;
+  for (const path of files.sort()) {
+    const name = relative(directory, path).replaceAll("\\", "/");
+    const contents = readFileSync(path);
+    hash.update(name);
+    hash.update("\0");
+    hash.update(contents);
+    hash.update("\0");
+    bytes += statSync(path).size;
+  }
+  return {
+    outputSha256: hash.digest("hex"),
+    outputFiles: files.length,
+    outputBytes: bytes,
+  };
+}
+
+function buildConfiguration() {
+  return {
+    siteUrl: process.env.SITE_URL?.trim() || "http://127.0.0.1:3000",
+    registryOrigin:
+      process.env.DOCN_REGISTRY_ORIGIN?.trim() ||
+      "http://127.0.0.1:4173/r/dev/",
+    indexing: process.env.DOCN_ALLOW_INDEXING === "true",
+  };
 }
 
 function computeFingerprint() {
@@ -88,11 +134,12 @@ function computeFingerprint() {
       ),
     );
   return {
-    schemaVersion: 3,
+    schemaVersion: 4,
     commit: String(git("rev-parse", "HEAD")).trim(),
     inputMode,
     inputSha256: hash.digest("hex"),
     files: files.length,
+    ...collectBuildOutputs(buildDirectory),
   };
 }
 
@@ -100,13 +147,16 @@ const mode = process.argv[2];
 if (mode !== "write" && mode !== "verify") {
   throw new Error("Use build-fingerprint.mjs write or verify.");
 }
-if (mode === "verify" && !existsSync(buildDirectory))
+if (!existsSync(buildDirectory))
   throw new Error("The static site build is missing at apps/www/out.");
 
 const current = computeFingerprint();
 if (mode === "write") {
   mkdirSync(dirname(fingerprintPath), { recursive: true });
-  writeFileSync(fingerprintPath, `${JSON.stringify(current, null, 2)}\n`);
+  writeFileSync(
+    fingerprintPath,
+    `${JSON.stringify({ ...current, configuration: buildConfiguration() }, null, 2)}\n`,
+  );
   console.log(
     `Recorded ${relative(root, fingerprintPath)} for ${current.commit.slice(0, 12)}.`,
   );
@@ -119,7 +169,13 @@ if (mode === "write") {
     recorded.commit !== current.commit ||
     recorded.inputMode !== current.inputMode ||
     recorded.inputSha256 !== current.inputSha256 ||
-    recorded.files !== current.files
+    recorded.files !== current.files ||
+    recorded.outputSha256 !== current.outputSha256 ||
+    recorded.outputFiles !== current.outputFiles ||
+    recorded.outputBytes !== current.outputBytes ||
+    typeof recorded.configuration?.siteUrl !== "string" ||
+    typeof recorded.configuration?.registryOrigin !== "string" ||
+    typeof recorded.configuration?.indexing !== "boolean"
   )
     throw new Error(
       "The static build fingerprint does not match this checkout.",

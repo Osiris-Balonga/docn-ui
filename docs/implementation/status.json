@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L14",
+  "currentLot": "L15",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -365,7 +365,7 @@
     {
       "id": "L14",
       "file": "lots/L14-qualification.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L13"],
       "branch": "test/v1-qualification",
       "baseCommit": "a2abf5c0894c79a774ac384d593c72710fe96395",
@@ -376,17 +376,24 @@
         "68564f1c463bcf174184f551ca55e8e3be8ca8fa"
       ],
       "evidence": "../qa/L14.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
+      "mergedAt": "2026-09-01T22:07:15Z"
     },
     {
       "id": "L15",
       "file": "lots/L15-delivery.md",
-      "state": "planned",
+      "state": "in_review",
       "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
+      "actualCommits": [
+        "0944db72efe3e33e1d61e4d4750f46078a64ffd4",
+        "6fbc1b84eb2eec7f63898898ba1e835f754a38cc",
+        "a43a218dfbcbb065db19a29c770abd2d2f1524e3",
+        "2574c96e264ba74939539e1d0c3ceb469efc6635"
+      ],
+      "evidence": "../qa/L15.md",
       "blocker": null
     },
     {

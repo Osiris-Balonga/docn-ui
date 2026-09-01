@@ -1,6 +1,6 @@
 # L14 — V1 qualification with proportionate tests
 
-Status: **in review** in [PR #52](https://github.com/Osiris-Balonga/docn-ui/pull/52). Branch: `test/v1-qualification`, based on L13 merge `a2abf5c0894c79a774ac384d593c72710fe96395`.
+Status: **merged** in [PR #52](https://github.com/Osiris-Balonga/docn-ui/pull/52) at merge commit `da10836b00240f4df1919863a6cca07de92a8ee8` on 2026-09-01. Branch: `test/v1-qualification`, based on L13 merge `a2abf5c0894c79a774ac384d593c72710fe96395`.
 
 Dependencies: L13. Requirements: FR-01–FR-16; NFR-01–NFR-10; G5.
 
