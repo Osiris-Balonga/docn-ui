@@ -164,9 +164,12 @@ export const registrySourceManifest = {
         "Validated formats, units and errors; no rendering or imposition.",
       dependencies: ["zod@3.25.76"],
       registryDependencies: [],
-      files: ["contracts.ts", "errors.ts", "formats.ts", "units.ts"].map(
-        (file) => `packages/documents/src/core/${file}`,
-      ),
+      files: [
+        "packages/documents/src/LICENSE",
+        ...["contracts.ts", "errors.ts", "formats.ts", "units.ts"].map(
+          (file) => `packages/documents/src/core/${file}`,
+        ),
+      ],
     },
     {
       name: "docn-page-geometry",

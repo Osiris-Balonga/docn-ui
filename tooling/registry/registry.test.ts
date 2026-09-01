@@ -74,6 +74,16 @@ describe("document registry generation", () => {
     expect(
       result.items.some((item) => item.name.includes("business-card")),
     ).toBe(true);
+    const contracts = result.items.find(
+      (item) => item.name === "docn-contracts",
+    )!;
+    expect(
+      contracts.files.find((file) => file.target === "~/docn/LICENSE"),
+    ).toMatchObject({
+      content: expect.stringContaining(
+        "Copyright (c) 2026 Emmanuel Osiris Balonga",
+      ),
+    });
     expect(
       await buildRegistry({
         root,
@@ -85,6 +95,9 @@ describe("document registry generation", () => {
     const items = new Map(
       registrySourceManifest.items.map((item) => [item.name, item]),
     );
+    for (const item of registrySourceManifest.items) {
+      expect(resolveItemClosure(item.name, items)).toContain("docn-contracts");
+    }
     const barcode = resolveItemClosure("docn-barcode", items);
     expect(barcode).toEqual([
       "docn-contracts",
@@ -102,7 +115,8 @@ describe("document registry generation", () => {
     const textFiles = textClosure.flatMap(
       (item: { files: string[] }) => item.files,
     );
-    expect(textFiles).toHaveLength(8);
+    expect(textFiles).toHaveLength(9);
+    expect(textFiles).toContain("packages/documents/src/LICENSE");
     expect(
       textFiles.some((file: string) =>
         /render\/|templates\/|heading|field-pair|qr-code|barcode|graph|index.tsx/.test(

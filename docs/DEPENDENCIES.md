@@ -16,7 +16,7 @@ Resolved on 2026-08-29 from the npm registry. Versions are exact in manifests an
 | cross-env | 10.1.0 | MIT | Disable Next telemetry in portable scripts; tooling only |
 | http-server | 14.1.1 | MIT | Serve the exported files on loopback with real 404 handling; tooling only |
 
-Node is restricted to the qualified 24.x LTS line. The installed runtime satisfies all declared package engines. `sharp` is the only approved installation build in S01; it is a Next dependency, not a browser dependency. Project license selection remains a maintainer decision; dependency licenses do not license this repository.
+Node is restricted to the qualified 24.x LTS line. The installed runtime satisfies all declared package engines. `sharp` is the only approved installation build in S01; it is a Next dependency, not a browser dependency. The maintainer selected MIT for docn-ui on 2026-09-02; dependency licenses remain separate obligations and do not change the repository license.
 
 Sources: [Next static exports](https://nextjs.org/docs/app/guides/static-exports), [Next installation](https://nextjs.org/docs/app/getting-started/installation), [pnpm settings](https://pnpm.io/settings), and the published npm manifests for the exact versions above.
 
