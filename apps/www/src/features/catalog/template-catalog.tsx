@@ -33,7 +33,7 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
     () => window.location.origin,
     () => "http://127.0.0.1:4173",
   );
-  const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/docn-${template.id}.json`;
+  const installCommand = `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/docn-${template.id}.json`;
 
   async function copyInstallCommand() {
     const success = await copyText(installCommand).catch(() => false);

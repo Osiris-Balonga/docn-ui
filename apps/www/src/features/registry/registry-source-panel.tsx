@@ -192,8 +192,8 @@ export function RegistrySourcePanel({
 
   const selectedFile =
     files.find((file) => file.target === selectedTarget) ?? files[0];
-  const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
-  const assetCommand = `${currentSource?.assetsIncluded === false ? `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/docn-fonts.json\n` : ""}node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
+  const installCommand = `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/${itemName}.json`;
+  const assetCommand = `${currentSource?.assetsIncluded === false ? `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/docn-fonts.json\n` : ""}node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
   const headingId = `registry-source-${itemName}`;
 
   return (

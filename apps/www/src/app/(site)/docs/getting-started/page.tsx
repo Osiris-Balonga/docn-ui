@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CodeBlock, DocsArticle } from "@/features/docs/docs-article";
+import { DocsArticle } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
 import { createPageMetadata } from "@/lib/site-metadata";
 
@@ -14,130 +14,66 @@ export default function GettingStartedPage() {
   return (
     <DocumentationShell
       sections={[
-        { title: "Before you begin", href: "#before-you-begin" },
-        { title: "Add the PDF layer", href: "#add-pdf-layer" },
-        { title: "Your first PDF", href: "#first-pdf" },
-        { title: "Theme boundaries", href: "#theme-boundaries" },
-        { title: "Choose what follows", href: "#next-steps" },
+        { title: "Requirements", href: "#requirements" },
+        { title: "Install and render", href: "#install-and-render" },
+        { title: "Next steps", href: "#next-steps" },
       ]}
     >
       <DocsArticle
         title="Getting started"
         breadcrumb="Getting started"
-        description="Start inside the shadcn project you already use. Add only the PDF source you need, render locally and keep ownership of every installed file."
+        description="Install one PDF document in an existing shadcn project and render it locally."
       >
-        <section aria-labelledby="before-you-begin">
+        <section aria-labelledby="requirements">
           <h2
-            id="before-you-begin"
+            id="requirements"
             className="text-xl font-semibold tracking-tight text-balance"
           >
-            Before you begin
+            Requirements
           </h2>
-          <div className="mt-4 space-y-4 text-muted-foreground">
-            <p>
-              This path assumes a React and TypeScript application with shadcn
-              already initialized. The quickest check is a working{" "}
-              <code>components.json</code> at the application root and at least
-              one shadcn component you can import.
-            </p>
-            <p>
-              If that file does not exist, initialize shadcn for your framework
-              first. Return here when its own component installation works;
-              docn-ui does not replace or repeat that setup.
-            </p>
-          </div>
+          <p className="mt-4 text-muted-foreground">
+            Use a React and TypeScript project with shadcn initialized and a
+            working <code>components.json</code>. If you do not have one, finish
+            the official framework setup first.
+          </p>
           <ExternalGuideLink href="https://ui.shadcn.com/docs/installation">
-            Initialize shadcn in your framework
+            Set up shadcn
           </ExternalGuideLink>
         </section>
-        <section aria-labelledby="add-pdf-layer">
+        <section aria-labelledby="install-and-render">
           <h2
-            id="add-pdf-layer"
+            id="install-and-render"
             className="text-xl font-semibold tracking-tight text-balance"
           >
-            Add the PDF layer, not another app
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            docn-ui is distributed through the official shadcn CLI. The CLI
-            reads your existing components.json, resolves the selected registry
-            item and writes its source into a separate docn directory. It does
-            not overwrite components/ui or introduce a second configuration.
-          </p>
-          <div className="mt-4">
-            <CodeBlock label="The installation model" highlight={false}>
-              {
-                "your shadcn project\n  + one docn-ui registry item\n  + verified local PDF assets\n  = source-owned PDF rendering in the same application"
-              }
-            </CodeBlock>
-          </div>
-          <p className="mt-4 text-muted-foreground">
-            The current registry is a mutable development registry. Use the
-            exact local setup in the installation guide until an immutable
-            public namespace is released.
-          </p>
-          <GuideLink href="/docs/installation/">
-            Connect the registry and install source
-          </GuideLink>
-        </section>
-        <section aria-labelledby="first-pdf">
-          <h2
-            id="first-pdf"
-            className="text-xl font-semibold tracking-tight text-balance"
-          >
-            Render your first PDF
+            Install and render
           </h2>
           <ol className="mt-4 list-decimal space-y-4 pl-5 text-muted-foreground marker:text-foreground">
             <li>
-              Install the small text example or one template from the catalog
-              through the shadcn CLI.
+              <GuideLink href="/docs/installation/">
+                Install the text example
+              </GuideLink>{" "}
+              with the official shadcn CLI.
             </li>
             <li>
               <GuideLink href="/docs/local-assets/">
                 Prepare local assets
-              </GuideLink>{" "}
-              on your own origin or Node filesystem.
+              </GuideLink>
+              .
             </li>
             <li>
               <GuideLink href="/docs/browser-and-node/">
-                Run the verified browser or Node example
+                Render the browser or Node example
               </GuideLink>
-              , confirm that a real PDF is produced, then replace its sample
-              data.
-            </li>
-            <li>
-              Commit the installed source and adapt it like any other shadcn
-              registry item.
+              , then edit the installed source and sample data.
             </li>
           </ol>
-        </section>
-        <section aria-labelledby="theme-boundaries">
-          <h2
-            id="theme-boundaries"
-            className="text-xl font-semibold tracking-tight text-balance"
-          >
-            Keep site and paper themes separate
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            Your site may use shadcn CSS variables, Tailwind classes, dark mode
-            and web fonts. The PDF renderer uses explicit print-safe roles for
-            paper, text, muted text, accent, borders, spacing and registered
-            fonts. Nothing is inherited automatically.
-          </p>
-          <p className="mt-4 text-muted-foreground">
-            Map only deliberate choices such as a qualified brand accent. A
-            white site foreground is not a valid default for text printed on
-            white paper.
-          </p>
-          <GuideLink href="/docs/themes/">
-            Map your design system deliberately
-          </GuideLink>
         </section>
         <section aria-labelledby="next-steps">
           <h2
             id="next-steps"
             className="text-xl font-semibold tracking-tight text-balance"
           >
-            Choose what follows
+            Next steps
           </h2>
           <ul className="mt-4 list-disc space-y-3 pl-5 text-muted-foreground marker:text-foreground">
             <li>
@@ -149,14 +85,9 @@ export default function GettingStartedPage() {
               when you want to compose your own layout.
             </li>
             <li>
-              <GuideLink href="/formats/">Review physical formats</GuideLink>{" "}
-              before changing dimensions or printing.
-            </li>
-            <li>
-              <GuideLink href="/docs/limitations/">
-                Review qualified boundaries
-              </GuideLink>{" "}
-              before production use.
+              <GuideLink href="/docs/themes/">Map document themes</GuideLink>{" "}
+              when you want to reuse selected brand decisions without inheriting
+              the site theme.
             </li>
           </ul>
         </section>

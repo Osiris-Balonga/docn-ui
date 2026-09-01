@@ -5,7 +5,7 @@ The L07 registry is available for local qualification. It is not a published rel
 ## Prerequisites
 
 - Node.js 24.x and pnpm 11.24.0 for the qualified development workflow.
-- A React 19 TypeScript project initialized with shadcn 4.19.0.
+- A React 19 TypeScript project initialized with shadcn 4.19.1.
 - An existing shadcn `components.json` file. Keep its current style, aliases, base, and registry entries; docn-ui does not require `@/*` or a second initialization. The official CLI resolves generated `~/docn/**` targets below the consumer project root, and those files use relative internal imports.
 - A running local docn-ui site. From this repository, `corepack pnpm dev` serves the registry at the origin printed by Next.js.
 
@@ -16,7 +16,7 @@ The registry items declare their exact React-pdf, pdf-lib, Zod, QR, and React de
 Open a template detail page and copy the command shown beside its source. With the default static preview origin, the minimal business card command is:
 
 ```sh
-corepack pnpm dlx shadcn@4.19.0 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
+corepack pnpm dlx shadcn@4.19.1 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
 ```
 
 The detail page reads the same generated item JSON used by the CLI. Its source viewer follows all registry dependencies and exposes every installed file, including the asset utility. Review those files before running the command.
@@ -56,9 +56,9 @@ The installed files belong to the consumer. Edit the template, primitives, theme
 Before updating, inspect the current registry item and the proposed difference:
 
 ```sh
-corepack pnpm dlx shadcn@4.19.0 view http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
-corepack pnpm dlx shadcn@4.19.0 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json --dry-run
-corepack pnpm dlx shadcn@4.19.0 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json --diff
+corepack pnpm dlx shadcn@4.19.1 view http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
+corepack pnpm dlx shadcn@4.19.1 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json --dry-run
+corepack pnpm dlx shadcn@4.19.1 add http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json --diff
 ```
 
 Do not add `--overwrite` to the documented workflow. Resolve source and asset differences explicitly. Immutable release URLs will make compatible updates deliberate; an incompatible source contract will use a new major path.

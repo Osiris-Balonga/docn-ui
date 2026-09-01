@@ -19,7 +19,7 @@ export function ComponentInstall({
     () => "http://127.0.0.1:4173",
   );
   const command = (items: string[]) =>
-    `corepack pnpm dlx shadcn@4.19.0 add ${items.map((item) => `${origin}/r/dev/${item}.json`).join(" ")}`;
+    `corepack pnpm dlx shadcn@4.19.1 add ${items.map((item) => `${origin}/r/dev/${item}.json`).join(" ")}`;
   return (
     <div className="space-y-4">
       <p className="text-muted-foreground">

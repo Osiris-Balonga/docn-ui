@@ -24,7 +24,7 @@ Sources: [Next static exports](https://nextjs.org/docs/app/guides/static-exports
 
 | Dependency | Version | License | Reason and browser impact |
 | --- | --- | --- | --- |
-| shadcn CLI / CSS helpers | 4.19.0 | MIT | Source generation and compile-time Tailwind helpers; dev dependency, no CLI JavaScript in browser |
+| shadcn CLI / CSS helpers | 4.19.1 | MIT | Source generation and compile-time Tailwind helpers; dev dependency, no CLI JavaScript in browser |
 | @base-ui/react | 1.7.0 | MIT | Button and Tooltip primitives; imported through component subpaths |
 | Tailwind CSS / PostCSS plugin | 4.3.3 | MIT | Build-time utility generation; emitted CSS only |
 | class-variance-authority | 0.7.1 | Apache-2.0 | Generated Button variants; small client utility |

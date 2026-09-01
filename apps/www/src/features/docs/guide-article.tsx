@@ -30,7 +30,7 @@ function GuideContentBlock({ block }: { block: GuideBlock }) {
         <CodeBlock
           label="Install source"
           highlight={false}
-        >{`corepack pnpm dlx shadcn@4.19.0 add ${new URL(`${block.item}.json`, registryBase).href}`}</CodeBlock>
+        >{`corepack pnpm dlx shadcn@4.19.1 add ${new URL(`${block.item}.json`, registryBase).href}`}</CodeBlock>
       );
     case "assets":
       return (
