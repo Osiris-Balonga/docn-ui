@@ -12,27 +12,12 @@ import { templateCatalog } from "../../packages/documents/src/catalog/manifest";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 describe("document registry generation", () => {
-  it("builds the real catalog graph with bounded import rewriting", async () => {
+  it("builds the component registry with an empty template catalog", async () => {
     const result = await buildRegistry({
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
     });
-    expect(templateCatalog).toHaveLength(15);
-    expect(new Set(templateCatalog.map((template) => template.id)).size).toBe(
-      15,
-    );
-    expect(
-      templateCatalog.reduce<Record<string, number>>((families, template) => {
-        families[template.family] = (families[template.family] ?? 0) + 1;
-        return families;
-      }, {}),
-    ).toEqual({
-      "business-card": 3,
-      invoice: 3,
-      label: 3,
-      receipt: 3,
-      ticket: 3,
-    });
+    expect(templateCatalog).toEqual([]);
     expect(result.items.map((item) => item.name)).toEqual(
       expect.arrayContaining([
         "docn-core",
@@ -41,100 +26,16 @@ describe("document registry generation", () => {
         "docn-theme-context",
         "docn-barcode",
         "docn-primitives",
-        "docn-event-ticket-foundation",
-        "docn-event-ticket-classic",
-        "docn-event-ticket-conference",
-        "docn-event-ticket-live",
-        "docn-receipt-foundation",
-        "docn-receipt-retail",
-        "docn-receipt-hospitality",
-        "docn-receipt-service",
-        "docn-label-foundation",
-        "docn-label-product",
-        "docn-label-address",
-        "docn-label-inventory",
-        "docn-business-card-foundation",
-        "docn-invoice-foundation",
-        "docn-invoice-minimal",
-        "docn-invoice-business",
-        "docn-invoice-studio",
-        "docn-business-card-minimal",
-        "docn-business-card-editorial",
-        "docn-business-card-studio",
+        "docn-text-example",
+        "docn-component-example",
       ]),
     );
-    for (const template of templateCatalog) {
-      expect(template.thumbnail.fixture).toBeTruthy();
-      expect(template.thumbnail.sha256).toMatch(/^[a-f0-9]{64}$/);
-      expect(
-        result.items.some((item) => item.name === `docn-${template.id}`),
-      ).toBe(true);
-    }
-    const minimal = result.items.find(
-      (item) => item.name === "docn-business-card-minimal",
-    );
-    const composition = minimal?.files.find((file) =>
-      file.path.endsWith("business-card-minimal.tsx"),
-    );
-    const foundation = result.items
-      .find((item) => item.name === "docn-business-card-foundation")
-      ?.files.find((file) => file.path.endsWith("business-cards/plan.ts"));
-    expect(composition?.content).toContain('from "../../../primitives/index"');
-    expect(foundation?.content).toContain('from "../../core/contracts"');
-    expect(foundation?.content).toContain('from "../../core/errors"');
-    expect(foundation?.content).not.toContain('from "../../core/index"');
-    expect(composition?.content).toContain("website.replace(/^https?:\\/\\//");
-    expect(minimal?.registryDependencies).toEqual(
-      expect.arrayContaining([
-        "http://127.0.0.1:4173/r/dev/docn-primitives.json",
-      ]),
-    );
-    const classicTicket = result.items.find(
-      (item) => item.name === "docn-event-ticket-classic",
+    expect(result.items.some((item) => item.name.includes("invoice"))).toBe(
+      false,
     );
     expect(
-      classicTicket?.files.find((file) =>
-        file.path.endsWith("event-ticket-classic.tsx"),
-      )?.content,
-    ).toContain('from "../../../primitives/index"');
-    expect(classicTicket?.registryDependencies).toEqual(
-      expect.arrayContaining([
-        "http://127.0.0.1:4173/r/dev/docn-event-ticket-foundation.json",
-      ]),
-    );
-    const retailReceipt = result.items.find(
-      (item) => item.name === "docn-receipt-retail",
-    );
-    expect(
-      retailReceipt?.files.find((file) =>
-        file.path.endsWith("receipt-retail.tsx"),
-      )?.content,
-    ).toContain('from "../layout"');
-    expect(retailReceipt?.registryDependencies).toEqual([
-      "http://127.0.0.1:4173/r/dev/docn-receipt-foundation.json",
-    ]);
-    const productLabel = result.items.find(
-      (item) => item.name === "docn-label-product",
-    );
-    expect(
-      productLabel?.files.find((file) =>
-        file.path.endsWith("label-product.tsx"),
-      )?.content,
-    ).toContain('from "../plan"');
-    expect(productLabel?.registryDependencies).toEqual([
-      "http://127.0.0.1:4173/r/dev/docn-label-foundation.json",
-    ]);
-    const studioInvoice = result.items.find(
-      (item) => item.name === "docn-invoice-studio",
-    );
-    expect(
-      studioInvoice?.files.find((file) =>
-        file.path.endsWith("invoice-studio.tsx"),
-      )?.content,
-    ).toContain('from "../layout"');
-    expect(studioInvoice?.registryDependencies).toEqual([
-      "http://127.0.0.1:4173/r/dev/docn-invoice-foundation.json",
-    ]);
+      result.items.some((item) => item.name.includes("business-card")),
+    ).toBe(false);
     expect(
       await buildRegistry({
         root,
@@ -142,8 +43,7 @@ describe("document registry generation", () => {
       }),
     ).toEqual(result);
   });
-
-  it("isolates the barcode encoder from legacy templates and basic theme context", () => {
+  it("isolates the barcode encoder from unrelated components and theme context", () => {
     const items = new Map(
       registrySourceManifest.items.map((item) => [item.name, item]),
     );
@@ -197,12 +97,7 @@ describe("document registry generation", () => {
           ),
       ).toBe(false);
     }
-    for (const name of [
-      "docn-primitives",
-      "docn-theme-context",
-      "docn-business-card-minimal",
-      "docn-invoice-business",
-    ]) {
+    for (const name of ["docn-primitives", "docn-theme-context"]) {
       const closure = resolveItemClosure(name, items).map((key: string) =>
         items.get(key)!,
       );
@@ -321,16 +216,5 @@ describe("document registry generation", () => {
         },
       }),
     ).rejects.toThrow("outside docn-text's dependency closure");
-    expect(
-      resolveItemClosure(
-        "docn-business-card-minimal",
-        new Map(
-          registrySourceManifest.items.map((candidate) => [
-            candidate.name,
-            candidate,
-          ]),
-        ),
-      ).at(-1),
-    ).toBe("docn-business-card-minimal");
   });
 });

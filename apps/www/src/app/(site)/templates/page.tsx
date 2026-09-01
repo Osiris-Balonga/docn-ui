@@ -4,7 +4,7 @@ import { TemplateCatalog } from "@/features/catalog/template-catalog";
 export const metadata: Metadata = {
   title: "PDF template catalog — docn-ui",
   description:
-    "Browse print-ready PDF templates, copy their install command, and inspect their complete source.",
+    "Browse source-owned PDF template families built from docn-ui components.",
 };
 
 export default function TemplatesPage() {

@@ -14,10 +14,10 @@ import { chromium } from "@playwright/test";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { afterEach, describe, expect, it } from "vitest";
 import {
+  browserConsumerUsage,
   nodeConsumerUsage,
   nodeConsumerBuildConfig,
 } from "../../packages/documents/src/examples/consumer-usage";
-import { browserComponentUsage, nodeComponentUsage } from "./component-usage";
 
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
@@ -280,7 +280,7 @@ async function inspectPdf(bytes: Uint8Array) {
 }
 
 describe("isolated registry consumers", () => {
-  it("installs distinct component closures and preserves legacy source/configuration", async () => {
+  it("installs distinct component closures and preserves owned configuration", async () => {
     logs.length = 0;
     const temporaryRoot = await mkdtemp(join(tmpdir(), "docn-ui-consumers-"));
     temporaryRoots.push(temporaryRoot);
@@ -356,7 +356,7 @@ describe("isolated registry consumers", () => {
 
     await writeFile(
       resolve(nodeDirectory, "src/node-entry.ts"),
-      nodeComponentUsage,
+      nodeConsumerUsage,
     );
     await writeFile(
       resolve(nodeDirectory, "vite.config.mjs"),
@@ -368,7 +368,7 @@ describe("isolated registry consumers", () => {
     );
     await writeFile(
       resolve(browserDirectory, "src/main.ts"),
-      browserComponentUsage,
+      browserConsumerUsage,
     );
     await writeFile(
       resolve(browserDirectory, "vite.config.mjs"),
@@ -436,43 +436,6 @@ export default defineConfig({ build: { outDir: "dist-browser" } });`,
     );
     expect(browserInspection.view[2]).toBeCloseTo(595.28, 1);
 
-    // A legacy installation joins the existing component sources, without replacing owned code.
-    const originalText = await readFile(
-      resolve(nodeDirectory, "docn/primitives/text.tsx"),
-      "utf8",
-    );
-    const legacyServer = await startStaticServer(
-      resolve(root, "apps/www/public"),
-      4173,
-    );
-    await installItem(nodeDirectory, temporaryRoot, "docn-invoice-business");
-    expect(
-      await readFile(
-        resolve(nodeDirectory, "docn/primitives/text.tsx"),
-        "utf8",
-      ),
-    ).toBe(originalText);
-    await writeFile(
-      resolve(nodeDirectory, "src/node-entry.ts"),
-      nodeConsumerUsage,
-    );
-    await runPnpm(["exec", "tsc", "--noEmit"], nodeDirectory, temporaryRoot);
-    await runPnpm(["exec", "vite", "build"], nodeDirectory, temporaryRoot);
-    await stopServer(legacyServer);
-    await run(
-      process.execPath,
-      ["dist-node/node-entry.mjs"],
-      nodeDirectory,
-      temporaryRoot,
-    );
-    const nodeBytes = new Uint8Array(
-      await readFile(resolve(nodeDirectory, "node-output.pdf")),
-    );
-    const nodeInspection = await inspectPdf(nodeBytes);
-    expect(nodeInspection.pages).toBe(1);
-    expect(nodeInspection.text).toContain("Kivu Advisory Group");
-    expect(nodeInspection.text).toContain("KA-2026-118");
-    expect(nodeInspection.text).toContain("9,628.00 USD");
     for (const [index, directory] of [
       browserDirectory,
       nodeDirectory,
@@ -483,17 +446,12 @@ export default defineConfig({ build: { outDir: "dist-browser" } });`,
         );
     await mkdir(artifacts, { recursive: true });
     await Promise.all([
-      writeFile(resolve(artifacts, "node-consumer.pdf"), nodeBytes),
       writeFile(resolve(artifacts, "browser-consumer.pdf"), browserBytes),
       writeFile(resolve(artifacts, "component-consumer.pdf"), componentBytes),
       writeFile(resolve(artifacts, "run.log"), `${logs.join("\n\n")}\n`),
       writeJson(resolve(artifacts, "install-state.json"), {
         schemaVersion: 1,
-        registryItems: [
-          "docn-text-example",
-          "docn-component-example",
-          "docn-invoice-business",
-        ],
+        registryItems: ["docn-text-example", "docn-component-example"],
         registryOnlineDuringRender: false,
         installedSourceFiles: {
           browser: browserSources.length,
@@ -510,10 +468,6 @@ export default defineConfig({ build: { outDir: "dist-browser" } });`,
           components: {
             bytes: componentBytes.byteLength,
             pages: componentInspection.pages,
-          },
-          legacyInvoice: {
-            bytes: nodeBytes.byteLength,
-            pages: nodeInspection.pages,
           },
         },
       }),

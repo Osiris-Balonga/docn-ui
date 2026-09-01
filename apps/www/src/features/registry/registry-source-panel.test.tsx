@@ -4,27 +4,27 @@ import userEvent from "@testing-library/user-event";
 import { RegistrySourcePanel } from "./registry-source-panel";
 
 const rootItem = {
-  name: "docn-business-card-minimal",
+  name: "docn-component-example",
   registryDependencies: [
-    "http://127.0.0.1:4173/r/dev/docn-business-card-foundation.json",
+    "http://127.0.0.1:4173/r/dev/docn-document-frame.json",
     "http://127.0.0.1:4173/r/dev/docn-primitives.json",
   ],
   files: [
     {
-      path: "packages/documents/src/templates/card.tsx",
-      target: "~/docn/templates/card.tsx",
+      path: "packages/documents/src/examples/card.tsx",
+      target: "~/docn/examples/card.tsx",
       type: "registry:component",
-      content: 'export const Card = "complete source";\n',
+      content: 'export const Card = "composed source";\n',
     },
     {
-      path: "packages/documents/src/templates/examples.ts",
-      target: "~/docn/templates/examples.ts",
+      path: "packages/documents/src/examples/examples.ts",
+      target: "~/docn/examples/examples.ts",
       type: "registry:component",
       content: 'export const example = { name: "Avery" };\n',
     },
     {
-      path: "packages/documents/src/templates/index.ts",
-      target: "~/docn/templates/index.ts",
+      path: "packages/documents/src/examples/index.ts",
+      target: "~/docn/examples/index.ts",
       type: "registry:component",
       content: 'export * from "./card";\n',
     },
@@ -32,26 +32,26 @@ const rootItem = {
 };
 
 const dependencyItem = {
-  name: "docn-business-card-foundation",
+  name: "docn-document-frame",
   registryDependencies: [],
   files: [
     {
-      path: "packages/documents/src/templates/layout.tsx",
-      target: "~/docn/templates/layout.tsx",
+      path: "packages/documents/src/examples/layout.tsx",
+      target: "~/docn/examples/layout.tsx",
       type: "registry:lib",
-      content: "export function CardLayout() { return null; }\n",
+      content: "export function DocumentLayout() { return null; }\n",
     },
     {
-      path: "packages/documents/src/templates/schema.ts",
-      target: "~/docn/templates/schema.ts",
+      path: "packages/documents/src/examples/schema.ts",
+      target: "~/docn/examples/schema.ts",
       type: "registry:lib",
-      content: "export interface CardData { name: string }\n",
+      content: "export interface DocumentData { name: string }\n",
     },
     {
-      path: "packages/documents/src/templates/metadata.ts",
-      target: "~/docn/templates/metadata.ts",
+      path: "packages/documents/src/examples/metadata.ts",
+      target: "~/docn/examples/metadata.ts",
       type: "registry:lib",
-      content: 'export const metadata = { title: "Card" };\n',
+      content: 'export const metadata = { title: "Document" };\n',
     },
   ],
 };
@@ -64,9 +64,9 @@ const primitivesItem = {
 
 function registryFetch(input: string | URL | Request) {
   const url = String(input);
-  const value = url.endsWith("docn-business-card-minimal.json")
+  const value = url.endsWith("docn-component-example.json")
     ? rootItem
-    : url.endsWith("docn-business-card-foundation.json")
+    : url.endsWith("docn-document-frame.json")
       ? dependencyItem
       : url.endsWith("docn-primitives.json")
         ? primitivesItem
@@ -95,7 +95,7 @@ describe("registry source panel", () => {
       configurable: true,
       value: { writeText },
     });
-    render(<RegistrySourcePanel itemName="docn-business-card-minimal" />);
+    render(<RegistrySourcePanel itemName="docn-component-example" />);
 
     expect(
       await screen.findByText("4 files · 2 registry items"),
@@ -104,8 +104,8 @@ describe("registry source panel", () => {
       screen.getByText(/node docn\/assets\/install\.mjs/),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("~/docn/templates/card.tsx source"),
-    ).toHaveTextContent('export const Card = "complete source";');
+      screen.getByLabelText("~/docn/examples/card.tsx source"),
+    ).toHaveTextContent('export const Card = "composed source";');
     await user.click(screen.getByRole("button", { name: "Copy source" }));
     expect(writeText).toHaveBeenCalledWith(rootItem.files[0]!.content);
     expect(screen.getByRole("button", { name: "Copied" })).toBeInTheDocument();
@@ -122,7 +122,7 @@ describe("registry source panel", () => {
       configurable: true,
       value: vi.fn(() => false),
     });
-    render(<RegistrySourcePanel itemName="docn-business-card-minimal" />);
+    render(<RegistrySourcePanel itemName="docn-component-example" />);
 
     await screen.findByText("4 files · 2 registry items");
     await user.click(screen.getByRole("button", { name: "Copy source" }));
@@ -131,12 +131,12 @@ describe("registry source panel", () => {
     ).toBeInTheDocument();
   });
 
-  it("limits the drawer to the template and direct family foundation", async () => {
+  it("limits the drawer to the example and declared direct dependency", async () => {
     const fetchMock = vi.fn(registryFetch);
     vi.stubGlobal("fetch", fetchMock);
     render(
       <RegistrySourcePanel
-        itemName="docn-business-card-minimal"
+        itemName="docn-component-example"
         variant="drawer"
       />,
     );
@@ -146,8 +146,8 @@ describe("registry source panel", () => {
     expect(screen.queryByRole("combobox", { name: "Source file" })).toBeNull();
     expect(screen.queryByText("2 files · 2 registry items")).toBeNull();
     expect(
-      screen.getByLabelText("~/docn/templates/card.tsx source"),
-    ).toHaveTextContent('export const Card = "complete source";');
+      screen.getByLabelText("~/docn/examples/card.tsx source"),
+    ).toHaveTextContent('export const Card = "composed source";');
     expect(screen.getByText("layout.tsx")).toBeInTheDocument();
     expect(screen.getByText("schema.ts")).toBeInTheDocument();
     expect(screen.getByText("examples.ts")).toBeInTheDocument();
@@ -155,8 +155,8 @@ describe("registry source panel", () => {
     expect(screen.queryByText("index.ts")).toBeNull();
     await userEvent.click(screen.getByText("schema.ts"));
     expect(
-      screen.getByLabelText("~/docn/templates/schema.ts source"),
-    ).toHaveTextContent("interface CardData");
+      screen.getByLabelText("~/docn/examples/schema.ts source"),
+    ).toHaveTextContent("interface DocumentData");
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 

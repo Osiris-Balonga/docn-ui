@@ -5,7 +5,9 @@ import Link from "next/link";
 import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
 import {
   templateCatalog,
+  templateFamilies,
   type TemplateCatalogEntry,
+  type TemplateFamily,
 } from "@docn-ui/documents/catalog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -20,17 +22,6 @@ import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 import { PdfPreviewDialog } from "@/features/pdf-preview/pdf-preview-dialog";
 import { copyText } from "@/features/registry/registry-source";
 import { cn } from "@/lib/utils";
-
-const templateFamilies = [
-  { id: "business-card", label: "Business Cards" },
-  { id: "ticket", label: "Event Tickets" },
-  { id: "receipt", label: "Receipts" },
-  { id: "label", label: "Labels" },
-  { id: "invoice", label: "Invoices" },
-] as const satisfies readonly {
-  id: TemplateCatalogEntry["family"];
-  label: string;
-}[];
 
 const subscribeToStaticOrigin = () => () => {};
 
@@ -133,9 +124,9 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const featuredTemplate = templateCatalog.find(
     (template) => template.slug === featuredSlug,
   );
-  const [activeFamily, setActiveFamily] = useState<
-    TemplateCatalogEntry["family"]
-  >(featuredTemplate?.family ?? "business-card");
+  const [activeFamily, setActiveFamily] = useState<TemplateFamily>(
+    featuredTemplate?.family ?? "business-card",
+  );
   const activeTemplates = templateCatalog
     .filter((template) => template.family === activeFamily)
     .sort((left, right) => {
@@ -182,11 +173,23 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
         className="scroll-mt-28 pt-4"
       >
         <h2 className="sr-only">{familyLabel} templates</h2>
-        <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
-          {activeTemplates.map((template) => (
-            <TemplateSpecimen key={template.id} template={template} />
-          ))}
-        </div>
+        {activeTemplates.length > 0 ? (
+          <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+            {activeTemplates.map((template) => (
+              <TemplateSpecimen key={template.id} template={template} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex min-h-64 items-center justify-center rounded-xl bg-muted/25 px-6 py-12 text-center">
+            <div className="max-w-md">
+              <h3 className="text-lg font-medium">No {familyLabel} yet</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                This family is ready for new source-owned PDF templates built
+                from the shared document components.
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );
@@ -197,11 +200,11 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
     <div className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
       <header className="mx-auto flex max-w-3xl flex-col items-center pt-16 text-center sm:pt-24">
         <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Beautiful PDF Templates
+          PDF Templates
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground sm:text-lg">
-          Production-ready PDF components built for real print formats. Browse
-          the previews, copy a template, and adapt the source in your project.
+          New source-owned templates will be added progressively, built from the
+          shared document components and ready to adapt in your project.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <a href="#template-family-panel" className={buttonVariants()}>

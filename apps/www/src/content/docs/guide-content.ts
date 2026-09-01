@@ -51,9 +51,9 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "Run this command from your consumer project. It uses the configured registry build URL, which defaults to port 4173 even if you view this documentation on another port. To host the registry elsewhere, set DOCN_REGISTRY_ORIGIN to its full /r/dev/ URL before building and serve it there. Inspect View Code in the catalog before installing. A template brings its required helpers and pinned dependencies; individual primitive installation is still being developed.",
+          text: "Run this command from your consumer project. It uses the configured registry build URL, which defaults to port 4173 even if you view this documentation on another port. To host the registry elsewhere, set DOCN_REGISTRY_ORIGIN to its full /r/dev/ URL before building and serve it there. Install the composed component example while the template catalog is rebuilt.",
         },
-        { type: "install", item: "docn-business-card-minimal" },
+        { type: "install", item: "docn-component-example" },
         {
           type: "paragraph",
           text: "Your existing components.json remains authoritative. Do not replace it with docn-ui's own site configuration. A future public @docn namespace will be an additional registries entry, not a second initializer. No public namespace or release URL is promised today.",
@@ -136,9 +136,9 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: 'Install the minimal business card and prepare browser assets first. Save the following module as src/main.ts in a Vite/TypeScript consumer with a <p id="status"> element. The imports assume docn/ sits beside src/. This is the same complete source exercised by the external browser installation test.',
+          text: 'Install the Text document example and prepare browser assets first. Save the following module as src/main.ts in a Vite/TypeScript consumer with a <p id="status"> element. The imports assume docn/ sits beside src/. This is the same complete source exercised by the external browser installation test.',
         },
-        { type: "install", item: "docn-business-card-minimal" },
+        { type: "install", item: "docn-text-example" },
         { type: "code", label: "src/main.ts", code: browserConsumerUsage },
         {
           type: "paragraph",
@@ -156,9 +156,9 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "Install the Business invoice and prepare Node assets. Save this source as src/node-entry.ts and compile it with your TypeScript-capable bundler before executing it from the consumer root. The qualification fixture uses a Vite SSR build; Node's native TypeScript execution is not a replacement for compiling the installed TSX document files.",
+          text: "Install the composed component example and prepare Node assets. Save this source as src/node-entry.ts and compile it with your TypeScript-capable bundler before executing it from the consumer root. The qualification fixture uses a Vite SSR build; Node's native TypeScript execution is not a replacement for compiling the installed TSX document files.",
         },
-        { type: "install", item: "docn-invoice-business" },
+        { type: "install", item: "docn-component-example" },
         { type: "code", label: "src/node-entry.ts", code: nodeConsumerUsage },
         {
           type: "code",
@@ -173,7 +173,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
         },
         {
           type: "paragraph",
-          text: "This writes node-output.pdf and reports its byte count. It is independent local Node usage, not a rendering API hosted by docn-ui. Both consumer examples are verified after the test registry has been stopped.",
+          text: "This writes components-output.pdf and reports its byte count. It is independent local Node usage, not a rendering API hosted by docn-ui. Both consumer examples are verified after the test registry has been stopped.",
         },
       ],
     },
