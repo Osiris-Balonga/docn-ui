@@ -27,7 +27,7 @@ French/English document data; Base UI; static Next.js; three themes; fifteen com
 
 ## External information required before publication
 
-Confirmed public Git destination: `Osiris-Balonga/docn-ui`. GitHub setup is required before L01; lack of access no longer permits skipping it. Author/license, site URL, host, and merge/delivery authorization remain separate. Record them in `status.json.externalDecisions`; do not infer a license from public visibility.
+Confirmed public Git destination: `Osiris-Balonga/docn-ui`. GitHub setup is required before L01; lack of access no longer permits skipping it. Emmanuel Osiris Balonga explicitly selected MIT on 2026-09-02; site URL, host, and merge/delivery authorization remain separate decisions recorded in `status.json.externalDecisions`.
 
 ## Recovery
 

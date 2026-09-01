@@ -14,7 +14,7 @@
     "repository": "Osiris-Balonga/docn-ui",
     "visibility": "public",
     "author": "Emmanuel Osiris Balonga",
-    "license": null,
+    "license": "MIT",
     "hosting": "Vercel",
     "siteUrl": "https://docn-ui.vercel.app",
     "publicationAuthorized": true,
@@ -407,7 +407,8 @@
       "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
       "actualCommits": [
         "149c027ba7b4c2927715dba9e3181c0dd06ed718",
-        "bbf88fb5fe41360f7c52f81cff9279ec97e77abd"
+        "bbf88fb5fe41360f7c52f81cff9279ec97e77abd",
+        "8a999444c1b235a6d90ae0e95f6b6b593b62a973"
       ],
       "evidence": "../qa/L16.md",
       "blocker": null

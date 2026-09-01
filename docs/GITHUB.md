@@ -1,6 +1,6 @@
 # GitHub — repository, protections, and tracking
 
-Decision on 2026-08-28: **public `Osiris-Balonga/docn-ui` repository**, requested for an open-source project. The license still needs confirmation; public visibility does not mean a license has been granted. Execute in [L00G](implementation/lots/L00G-github-governance.md), before L01. Actual IDs and results belong in [github.json](implementation/github.json), [status.json](implementation/status.json), and the lot report. All repository and GitHub prose must be in English, including issue bodies, milestones, PRs, and evidence.
+Decision on 2026-08-28: **public `Osiris-Balonga/docn-ui` repository**, requested for an open-source project. The maintainer explicitly selected MIT on 2026-09-02; public visibility before that decision did not grant a license. Execute GitHub governance in [L00G](implementation/lots/L00G-github-governance.md), before L01. Actual IDs and results belong in [github.json](implementation/github.json), [status.json](implementation/status.json), and the lot report. All repository and GitHub prose must be in English, including issue bodies, milestones, PRs, and evidence.
 
 ## 1. Repository and branches
 

@@ -44,13 +44,13 @@ Portable header and cache behavior is defined in `tooling/deployment/static-poli
 
 ## License and attribution
 
-Propose a permissive code license only after confirming the author; do not infer a name from the Windows machine. Every font/image/dependency needs provenance and a license. No PDFx code/assets were copied during planning. Any future reuse must respect its license and retain required notices.
+The maintainer selected MIT on 2026-09-02 for code and documentation copyrighted by Emmanuel Osiris Balonga. The root `LICENSE` is authoritative, and registry installations carry the same notice under `docn/LICENSE`. Font, image, generated-content, and dependency licenses remain separate obligations. No PDFx code/assets were copied during planning. Any future reuse must respect its license and retain required notices.
 
 ## Release v1.0.0
 
 ### Decisions still requiring maintainer authorization
 
-- Code license. The confirmed author is Emmanuel Osiris Balonga.
+- No author or code-license decision remains: Emmanuel Osiris Balonga and MIT are confirmed.
 - Any custom domain or billing action. Vercel and the `docn-ui.vercel.app` beta origin are confirmed.
 - Permission to make the site indexable. Public non-indexed beta publication is authorized.
 - Permission to create the `release-approved` label/apply it to the promotion PR, merge `dev -> main`, deploy, tag and create the GitHub release.

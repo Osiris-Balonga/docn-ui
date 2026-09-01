@@ -1,10 +1,20 @@
 # docn-ui
 
-A catalog of composable PDF components and templates, with a documentation interface built using shadcn/ui.
+A source-owned PDF component and template registry for existing shadcn projects.
 
-**Status on August 30, 2026: L00G through L10 are merged and L11 is verified locally.** The complete fifteen-composition V1 catalog now includes business cards, event tickets, thermal receipts, labels, and multipage invoices. Exact PDF geometry, local fonts, print boxes, actual PDF-derived previews, bounded data contracts, deterministic money calculations, and installable source through an additional shadcn registry are implemented. The project is intended to be open source; the license still needs to be selected. See the [lot status](docs/implementation/status.json) and [L11 evidence](docs/qa/L11.md).
+**Status on September 2, 2026: public beta verified; official v1.0.0 release in progress.** The V1 catalog contains eighteen compositions across invoices, receipts, CVs, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The beta is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license. See the [lot status](docs/implementation/status.json) and [L16 evidence](docs/qa/L16.md).
 
-[docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L11 issue #15](https://github.com/Osiris-Balonga/docn-ui/issues/15) · [Invoice guide](docs/guides/INVOICES.md)
+[Documentation](https://docn-ui.vercel.app/docs/) · [Templates](https://docn-ui.vercel.app/templates/) · [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L16 issue #20](https://github.com/Osiris-Balonga/docn-ui/issues/20)
+
+## Install in an existing shadcn project
+
+Run the official shadcn CLI from the application that already owns `components.json`:
+
+```sh
+corepack pnpm dlx shadcn@4.19.1 add https://docn-ui.vercel.app/r/dev/docn-text-example.json
+```
+
+The command installs inspectable PDF source below `docn/`, preserves the existing shadcn aliases and UI components, and adds only the dependencies required by the selected item. The mutable `/r/dev/` path is for beta evaluation; the official release will provide an immutable versioned registry. Prepare the verified local fonts after installation as described in the [asset guide](docs/guides/REGISTRY_ASSETS.md).
 
 ## Local development
 
@@ -19,7 +29,7 @@ pnpm build
 pnpm preview
 ```
 
-`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. No deployment is configured.
+`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. The public beta is a separately fingerprinted Vercel deployment.
 
 See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs each active lightweight project once. PDF tests remain a separate actual-document scope; browser and consumer suites activate only with the lots that need them.
 
@@ -53,4 +63,8 @@ This documentation uses a BMAD-inspired structure: product brief, PRD, architect
 
 ## Launch scope
 
-Business cards, event tickets, thermal receipts, labels, and invoices; three compositions per family. The public Charts-style catalog presents actual PDF previews, install-copy actions, and the primary template source. Typed render contracts retain themes, formats, validation, and local PDF generation without adding a freeform editor, user accounts, or a second shadcn configuration.
+Invoices, receipts, CVs, reports, badges, and business cards. The public catalog presents actual PDF previews, install-copy actions, and the primary template source. Typed render contracts retain themes, formats, validation, and local PDF generation without adding a freeform editor, user accounts, or a second shadcn configuration.
+
+## License
+
+MIT © 2026 Emmanuel Osiris Balonga. Installed registry source carries the same notice under `docn/LICENSE`; bundled font licenses remain alongside their assets.
