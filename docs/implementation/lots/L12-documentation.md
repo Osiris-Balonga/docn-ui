@@ -115,9 +115,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02i — `feat(docs): document component variants and use cases`
 
-- [ ] Render representative variants for every component instead of a single nominal specimen.
-- [ ] Add source-derived named recipes and prop descriptions to component detail pages.
-- [ ] Close useful PDFx parity gaps without duplicating its API blindly or adding unsupported claims.
+- [x] Render representative variants for every component instead of a single nominal specimen.
+- [x] Add source-derived named recipes and prop descriptions to component detail pages.
+- [x] Close useful PDFx parity gaps without duplicating its API blindly or adding unsupported claims.
 
 **Acceptance:** A developer can see the meaningful variants, copy a focused recipe and understand every public prop without reading the implementation first.
 
