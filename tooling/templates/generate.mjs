@@ -67,6 +67,7 @@ async function build() {
   const assetDefinitions = {
     badgeCreativePortraitSource: ["badge-creative-portrait.png", "image/png"],
     badgeDeveloperPortraitSource: ["badge-developer-portrait.png", "image/png"],
+    badgePatternSource: ["badge-blue-pattern.png", "image/png"],
     invoiceLandscapeSource: ["invoice-landscape.png", "image/png"],
     portraitSource: ["designer-portrait.png", "image/png"],
     productCardDeckSource: ["product-card-deck.png", "image/png"],

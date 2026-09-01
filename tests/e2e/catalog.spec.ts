@@ -65,6 +65,9 @@ test("shows the new reference-led templates in their families", async ({
   ).toBeVisible();
   await navigation.getByRole("tab", { name: "Reports" }).click();
   await expect(page.locator("article")).toHaveCount(3);
+  await expect(page.locator("[data-empty-template-slot]:visible")).toHaveCount(
+    0,
+  );
   await expect(
     page.getByRole("heading", { name: "Product analytics report" }),
   ).toBeVisible();
@@ -74,6 +77,9 @@ test("shows the new reference-led templates in their families", async ({
 
   await navigation.getByRole("tab", { name: "Business Cards" }).click();
   await expect(page.locator("article")).toHaveCount(2);
+  await expect(page.locator("[data-empty-template-slot]:visible")).toHaveCount(
+    1,
+  );
   await page
     .getByRole("button", { name: "Enlarge Coral QR business card preview" })
     .click();

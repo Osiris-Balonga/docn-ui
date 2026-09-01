@@ -34,8 +34,8 @@ export {
 export { ProductAnalyticsReport } from "./reports/product-analytics-report";
 export { MarketplaceRevenueReport } from "./reports/marketplace-revenue-report";
 export { CustomerSupportReport } from "./reports/customer-support-report";
-export { CreativeTeamBadge } from "./badges/creative-team-badge";
-export { DeveloperBadge } from "./badges/developer-badge";
+export { ProfileSidebandBadge } from "./badges/profile-sideband-badge";
+export { QrPortraitBadge } from "./badges/qr-portrait-badge";
 export { CoralQrBusinessCard } from "./business-cards/coral-qr-business-card";
 export { VioletFounderBusinessCard } from "./business-cards/violet-founder-business-card";
 export { PhotoHeaderInvoice } from "./invoices/photo-header-invoice";
@@ -57,8 +57,8 @@ import { cashRegisterReceiptDefinition } from "./receipts/cash-register-receipt"
 import { productAnalyticsReportDefinition } from "./reports/product-analytics-report";
 import { marketplaceRevenueReportDefinition } from "./reports/marketplace-revenue-report";
 import { customerSupportReportDefinition } from "./reports/customer-support-report";
-import { creativeTeamBadgeDefinition } from "./badges/creative-team-badge";
-import { developerBadgeDefinition } from "./badges/developer-badge";
+import { profileSidebandBadgeDefinition } from "./badges/profile-sideband-badge";
+import { qrPortraitBadgeDefinition } from "./badges/qr-portrait-badge";
 import { coralQrBusinessCardDefinition } from "./business-cards/coral-qr-business-card";
 import { violetFounderBusinessCardDefinition } from "./business-cards/violet-founder-business-card";
 import { classicResumeDefinition } from "./resume/classic-resume";
@@ -79,8 +79,8 @@ export const templateDefinitions = [
   productAnalyticsReportDefinition,
   marketplaceRevenueReportDefinition,
   customerSupportReportDefinition,
-  creativeTeamBadgeDefinition,
-  developerBadgeDefinition,
+  profileSidebandBadgeDefinition,
+  qrPortraitBadgeDefinition,
   coralQrBusinessCardDefinition,
   violetFounderBusinessCardDefinition,
 ] as const;

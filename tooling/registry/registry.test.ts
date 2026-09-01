@@ -55,7 +55,7 @@ describe("document registry generation", () => {
         "docn-receipt-order-confirmation",
         "docn-receipt-product-barcode",
         "docn-report-product-analytics",
-        "docn-badge-creative-team",
+        "docn-badge-profile-sideband",
         "docn-business-card-coral-qr",
       ]),
     );

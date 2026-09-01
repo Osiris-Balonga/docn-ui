@@ -6,6 +6,7 @@ import type { FormatId } from "../core/formats";
 export interface TemplateSampleAssets {
   badgeCreativePortraitSource: string;
   badgeDeveloperPortraitSource: string;
+  badgePatternSource: string;
   invoiceLandscapeSource: string;
   portraitSource: string;
   productCardDeckSource: string;

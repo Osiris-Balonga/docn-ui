@@ -20,6 +20,24 @@ const input: GraphProps = {
 };
 describe("vector graph contracts and geometry", () => {
   it("bounds typed data and preserves explicit empty, zero and signed states", () => {
+    expect(
+      resolveGraph({
+        ...input,
+        barRadius: 6,
+        colors: ["#123456", "#abcdef"],
+        legendMarker: "circle",
+        showDataLabels: false,
+        showGridLines: false,
+        showLegend: false,
+      }),
+    ).toMatchObject({
+      barRadius: 6,
+      colors: ["#123456", "#abcdef"],
+      legendMarker: "circle",
+      showDataLabels: false,
+      showGridLines: false,
+      showLegend: false,
+    });
     expect(resolveGraph({ ...input, data: [] }).data).toEqual([]);
     expect(
       resolveGraph({ ...input, data: [{ label: "Jan", value: -1 }] }).data[0]!
@@ -59,6 +77,10 @@ describe("vector graph contracts and geometry", () => {
       },
       ...[0, 159, 541, Infinity].map((width) => ({ width })),
       { height: 701 },
+      { barRadius: -1 },
+      { barRadius: 21 },
+      { colors: ["blue"] },
+      { legendMarker: "triangle" },
     ])
       expect(() =>
         resolveGraph({ ...input, ...patch } as GraphProps),

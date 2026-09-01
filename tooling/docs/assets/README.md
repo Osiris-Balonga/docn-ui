@@ -45,14 +45,15 @@ The following assets were generated specifically for fictional template
 examples. None contains a third-party logo, trademark, watermark or real
 person identity.
 
-| File                            | Prompt intent                                                                           | SHA-256                                                            |
-| ------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `badge-creative-portrait.png`   | Fictional Black male creative director, neutral studio portrait, no text or logos       | `ae54bf9c36deebbbafeb645d5392d4a7be8455c96e4cec21f0c59212867183ee` |
-| `badge-developer-portrait.png`  | Fictional senior engineer with glasses, lavender-gray studio portrait, no text or logos | `9f43070806fbdb2327a916a00e55e6a755a5c5450a5bc0a258aff6126dac4612` |
-| `support-customer-portrait.png` | Fictional customer portrait on a muted teal background, no text or logos                | `64bfb105415e5bb4ac2edc1821679b3eca001bb381f08b458c01d8928e2f87ff` |
-| `invoice-landscape.png`         | Original panoramic mountain meadow at sunrise, no landmarks, text or logos              | `ab75bd2f1f1f2d754fa79f30c36364d41ffbca53795bd0ea0be02093222ee23d` |
-| `product-notebook.png`          | Charcoal workshop notebook and pencil on a clean tabletop, no text or logos             | `811c41e087513b6fa87388c1e7de5be2502ba9679edff938503dd6d2614ab40f` |
-| `product-card-deck.png`         | Pale planning-card deck in a charcoal sleeve, no readable text or logos                 | `ff7e11b9d0d6de572ebe778a2d477434b2889167546399868e303fab3ae493c5` |
+| File                            | Prompt intent                                                                             | SHA-256                                                            |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `badge-creative-portrait.png`   | Fictional Black male creative director, neutral studio portrait, no text or logos         | `ae54bf9c36deebbbafeb645d5392d4a7be8455c96e4cec21f0c59212867183ee` |
+| `badge-developer-portrait.png`  | Fictional senior engineer with glasses, lavender-gray studio portrait, no text or logos   | `9f43070806fbdb2327a916a00e55e6a755a5c5450a5bc0a258aff6126dac4612` |
+| `badge-blue-pattern.png`        | Abstract cobalt and indigo wave pattern for a vertical badge background, no text or logos | `82dfc763e0a44be0cf8893b2563484fc208eb99d3da8362ebf09a840c9a5ebf2` |
+| `support-customer-portrait.png` | Fictional customer portrait on a muted teal background, no text or logos                  | `64bfb105415e5bb4ac2edc1821679b3eca001bb381f08b458c01d8928e2f87ff` |
+| `invoice-landscape.png`         | Original panoramic mountain meadow at sunrise, no landmarks, text or logos                | `ab75bd2f1f1f2d754fa79f30c36364d41ffbca53795bd0ea0be02093222ee23d` |
+| `product-notebook.png`          | Charcoal workshop notebook and pencil on a clean tabletop, no text or logos               | `811c41e087513b6fa87388c1e7de5be2502ba9679edff938503dd6d2614ab40f` |
+| `product-card-deck.png`         | Pale planning-card deck in a charcoal sleeve, no readable text or logos                   | `ff7e11b9d0d6de572ebe778a2d477434b2889167546399868e303fab3ae493c5` |
 
 - Generated with: OpenAI built-in image generation
 - Generated on: 2026-09-01

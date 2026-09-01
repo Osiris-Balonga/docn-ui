@@ -119,6 +119,19 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
   );
 }
 
+function EmptyTemplateSlot({ className }: { className: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      data-empty-template-slot=""
+      className={cn(
+        "h-[22.75rem] rounded-xl border border-dashed border-border/70 bg-transparent sm:h-[24.75rem]",
+        className,
+      )}
+    />
+  );
+}
+
 export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -158,6 +171,9 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const familyLabel = templateFamilies.find(
     (family) => family.id === activeFamily,
   )?.label;
+  const mediumEmptySlots = activeTemplates.length % 2 === 0 ? 0 : 1;
+  const largeEmptySlots =
+    activeTemplates.length % 3 === 0 ? 0 : 3 - (activeTemplates.length % 3);
 
   return (
     <>
@@ -201,6 +217,18 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
           <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             {activeTemplates.map((template) => (
               <TemplateSpecimen key={template.id} template={template} />
+            ))}
+            {Array.from({ length: mediumEmptySlots }, (_, index) => (
+              <EmptyTemplateSlot
+                key={`medium-empty-${index}`}
+                className="hidden md:block xl:hidden"
+              />
+            ))}
+            {Array.from({ length: largeEmptySlots }, (_, index) => (
+              <EmptyTemplateSlot
+                key={`large-empty-${index}`}
+                className="hidden xl:block"
+              />
             ))}
           </div>
         ) : (

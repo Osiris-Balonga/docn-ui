@@ -289,14 +289,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "14f26fc62325df2c9e21a8a940085b435b763649b347b6886e72fac479880820",
+          "2aca1b6cbaa0eebcc4db7febf2ed0b284c3b9e9e8e8bdab0110247481dbefd9c",
         src: "/generated/templates/invoice-photo-header-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "a1b9b9b51c7a7a5510bcc393c4d328656e7ec37aaeb460655fc35bee3ab243a7",
+        "e20451e567bdc5c35c03bf312d77eb73383b05edd15fad3237eb1aec52a17b82",
       src: "/generated/templates/invoice-photo-header.pdf",
     },
     thumbnail: {
@@ -304,7 +304,7 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "14f26fc62325df2c9e21a8a940085b435b763649b347b6886e72fac479880820",
+        "2aca1b6cbaa0eebcc4db7febf2ed0b284c3b9e9e8e8bdab0110247481dbefd9c",
       src: "/generated/templates/invoice-photo-header-1.png",
       width: 1191,
     },
@@ -317,7 +317,7 @@ export const generatedTemplateCatalog = [
     familyLabel: "Receipts",
     description:
       "A product order confirmation with metadata, item imagery and a compact payment summary.",
-    supportedFormatIds: ["a4"],
+    supportedFormatIds: ["receipt-80"],
     supportedThemeIds: ["neutral"],
     tags: ["receipt", "order", "confirmation", "commerce"],
     version: "1.0.0",
@@ -330,27 +330,27 @@ export const generatedTemplateCatalog = [
     pages: [
       {
         fixture: "receipt-order-confirmation-example",
-        height: 1684,
+        height: 1078,
         page: 1,
         sha256:
-          "02f29dfb898ec66ffcc98fec3f89d900b91334c7740a2e25cd9be06d64883896",
+          "c256cfdd743abfcca1361d1e04c3837d17eb4bec603261c5aaffda6dc04ab0fb",
         src: "/generated/templates/receipt-order-confirmation-1.png",
-        width: 1191,
+        width: 454,
       },
     ],
     pdf: {
       revision:
-        "66d920b8c7a54e7d7b2ce1305f97f12f814d38d0ae3001cf8f27a62006a2918c",
+        "43d5a255109aa0b00b6275f871efedc1c83e29112af02bc96d51f995a7c6239a",
       src: "/generated/templates/receipt-order-confirmation.pdf",
     },
     thumbnail: {
       fixture: "receipt-order-confirmation-example",
-      height: 1684,
+      height: 1078,
       page: 1,
       sha256:
-        "02f29dfb898ec66ffcc98fec3f89d900b91334c7740a2e25cd9be06d64883896",
+        "c256cfdd743abfcca1361d1e04c3837d17eb4bec603261c5aaffda6dc04ab0fb",
       src: "/generated/templates/receipt-order-confirmation-1.png",
-      width: 1191,
+      width: 454,
     },
   },
   {
@@ -377,14 +377,14 @@ export const generatedTemplateCatalog = [
         height: 567,
         page: 1,
         sha256:
-          "23feecc18308a656cc779627ee56d6ab6aceb63a4eed628d53b259522bb42841",
+          "074e451b995a6618a9619cc846e178fc6b80559ceeaafc3a90c8f66715e25df3",
         src: "/generated/templates/receipt-product-barcode-1.png",
         width: 454,
       },
     ],
     pdf: {
       revision:
-        "99161bd7b8f08b36f3d4857918abb80e972d7d2df682f37c9004f38a8eb33060",
+        "bd092fb52acd7c2fa8b79c48f643c7e7e0da5372ef0aaf1034af6e0f86abcd7a",
       src: "/generated/templates/receipt-product-barcode.pdf",
     },
     thumbnail: {
@@ -392,7 +392,7 @@ export const generatedTemplateCatalog = [
       height: 567,
       page: 1,
       sha256:
-        "23feecc18308a656cc779627ee56d6ab6aceb63a4eed628d53b259522bb42841",
+        "074e451b995a6618a9619cc846e178fc6b80559ceeaafc3a90c8f66715e25df3",
       src: "/generated/templates/receipt-product-barcode-1.png",
       width: 454,
     },
@@ -421,14 +421,14 @@ export const generatedTemplateCatalog = [
         height: 806,
         page: 1,
         sha256:
-          "49fa9c89577ed364d4364678c94dbeb19fd5e02f4066c2bb78c5a5b6325196d4",
+          "63091f97f51bedcdab8dc5d46053a6e441c90bb72c44d178f720f89fe80ed640",
         src: "/generated/templates/receipt-cash-register-1.png",
         width: 454,
       },
     ],
     pdf: {
       revision:
-        "a8660e721d4104bd6159244e8a321778045132be10783947a9ea19e0a429993a",
+        "d9d512d02f7d9cdefe919852f7b9f9e930ae0706d2a060aaf9aa32560485b987",
       src: "/generated/templates/receipt-cash-register.pdf",
     },
     thumbnail: {
@@ -436,7 +436,7 @@ export const generatedTemplateCatalog = [
       height: 806,
       page: 1,
       sha256:
-        "49fa9c89577ed364d4364678c94dbeb19fd5e02f4066c2bb78c5a5b6325196d4",
+        "63091f97f51bedcdab8dc5d46053a6e441c90bb72c44d178f720f89fe80ed640",
       src: "/generated/templates/receipt-cash-register-1.png",
       width: 454,
     },
@@ -465,14 +465,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "48542803ca5dfffc4c30f6781686ef23f668e2ee664797f610167e3076870cc2",
+          "0b00f31feff35c0a4dbcc05cd5236a569ca731c55624f2ee8b7cd182de5ccd7c",
         src: "/generated/templates/report-product-analytics-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "d85acbc9ba9359dd0a60d90044ebd8db96aab99fe87410105fff88c4f0de52d8",
+        "5b87e0e80745dd99479a7d626f0999fda3c79f60baf205edc825f547a1b8771b",
       src: "/generated/templates/report-product-analytics.pdf",
     },
     thumbnail: {
@@ -480,7 +480,7 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "48542803ca5dfffc4c30f6781686ef23f668e2ee664797f610167e3076870cc2",
+        "0b00f31feff35c0a4dbcc05cd5236a569ca731c55624f2ee8b7cd182de5ccd7c",
       src: "/generated/templates/report-product-analytics-1.png",
       width: 1191,
     },
@@ -509,14 +509,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "3d64b0aa6167699f945540e835c69f09cea9c931208a4e8ae8f1e58d577e731d",
+          "10cbd9032e8d639621ca26be210d7590443c1818fa7980adf2a2f77376c9ff52",
         src: "/generated/templates/report-marketplace-revenue-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "a35feb96f6da7f001e707462e44d543f89de066a69eac23401bd540cd55c5dbd",
+        "3ec1640e9206f57f9ecdba3a55ed858c9ae3fa755c8ebf42867c5bad3987ed6c",
       src: "/generated/templates/report-marketplace-revenue.pdf",
     },
     thumbnail: {
@@ -524,7 +524,7 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "3d64b0aa6167699f945540e835c69f09cea9c931208a4e8ae8f1e58d577e731d",
+        "10cbd9032e8d639621ca26be210d7590443c1818fa7980adf2a2f77376c9ff52",
       src: "/generated/templates/report-marketplace-revenue-1.png",
       width: 1191,
     },
@@ -553,14 +553,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "1695645e2c209eed8b82f98de5652f67c13ae0ae5963b50af33a3b8719e6089e",
+          "f7fea8a4e45e53e138ae993afbb5adcbeacf5f448900ea58b63e1eac4e9e338c",
         src: "/generated/templates/report-customer-support-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "24f66bad0ee53addc1daf5891165c9bf40b7f35f0c032648d1a6497e50d650f6",
+        "2075774c5707a57dcc99b52b158fda4ff3bd2f0063dfbcdce5da5d07de429b9e",
       src: "/generated/templates/report-customer-support.pdf",
     },
     thumbnail: {
@@ -568,22 +568,22 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "1695645e2c209eed8b82f98de5652f67c13ae0ae5963b50af33a3b8719e6089e",
+        "f7fea8a4e45e53e138ae993afbb5adcbeacf5f448900ea58b63e1eac4e9e338c",
       src: "/generated/templates/report-customer-support-1.png",
       width: 1191,
     },
   },
   {
-    id: "badge-creative-team",
-    slug: "badge-creative-team",
-    title: "Creative team badge",
+    id: "badge-profile-sideband",
+    slug: "badge-profile-sideband",
+    title: "Profile sideband badge",
     family: "badge",
     familyLabel: "Badges",
     description:
-      "A portrait employee badge with a lime identity field, large photograph and charcoal name panel.",
+      "A clean portrait employee badge with a black identity sideband and compact credential footer.",
     supportedFormatIds: ["badge-54x86"],
     supportedThemeIds: ["neutral"],
-    tags: ["badge", "employee", "portrait", "creative"],
+    tags: ["badge", "employee", "portrait", "sideband"],
     version: "1.0.0",
     sides: 1,
     capabilities: {
@@ -593,71 +593,80 @@ export const generatedTemplateCatalog = [
     },
     pages: [
       {
-        fixture: "badge-creative-team-example",
+        fixture: "badge-profile-sideband-example",
         height: 486,
         page: 1,
         sha256:
-          "4ccf85a8aba35ac7edcbeb4efa78cb48a4b083d14e560bf634cb9e970d7756e2",
-        src: "/generated/templates/badge-creative-team-1.png",
+          "329ca0638f125d3b2f1ad759afc1f59e44f8beef5f362044ae9e634286f6ccdc",
+        src: "/generated/templates/badge-profile-sideband-1.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "8dc1c65c1f07778ed26c7ffb359dfb8e4b272402b58408de41450ddb020d362b",
-      src: "/generated/templates/badge-creative-team.pdf",
+        "91647682101256b9d2e047da1293a31799ca92d26c454f843c2b5323306c263e",
+      src: "/generated/templates/badge-profile-sideband.pdf",
     },
     thumbnail: {
-      fixture: "badge-creative-team-example",
+      fixture: "badge-profile-sideband-example",
       height: 486,
       page: 1,
       sha256:
-        "4ccf85a8aba35ac7edcbeb4efa78cb48a4b083d14e560bf634cb9e970d7756e2",
-      src: "/generated/templates/badge-creative-team-1.png",
+        "329ca0638f125d3b2f1ad759afc1f59e44f8beef5f362044ae9e634286f6ccdc",
+      src: "/generated/templates/badge-profile-sideband-1.png",
       width: 307,
     },
   },
   {
-    id: "badge-developer",
-    slug: "badge-developer",
-    title: "Developer badge",
+    id: "badge-qr-portrait",
+    slug: "badge-qr-portrait",
+    title: "QR portrait badge",
     family: "badge",
     familyLabel: "Badges",
     description:
-      "A dark technical employee badge with lavender type, role metadata and a framed portrait.",
+      "A two-sided portrait credential with a QR code, light face and original patterned blue variant.",
     supportedFormatIds: ["badge-54x86"],
     supportedThemeIds: ["neutral"],
-    tags: ["badge", "employee", "developer", "portrait"],
+    tags: ["badge", "employee", "portrait", "qr", "two-sided"],
     version: "1.0.0",
-    sides: 1,
+    sides: 2,
     capabilities: {
       logo: false,
       printProfiles: true,
-      qr: false,
+      qr: true,
     },
     pages: [
       {
-        fixture: "badge-developer-example",
+        fixture: "badge-qr-portrait-example",
         height: 486,
         page: 1,
         sha256:
-          "7a80de07ba5c2f544584c99262ff2a4e5de3e11058546b621a3c138b8d10e209",
-        src: "/generated/templates/badge-developer-1.png",
+          "d6e9461b6cd97a47fdaacd21bb87e23a6dbd0688161c8bfa8383c059ef6c2ff1",
+        src: "/generated/templates/badge-qr-portrait-1.png",
+        width: 307,
+      },
+      {
+        fixture: "badge-qr-portrait-example",
+        height: 486,
+        page: 2,
+        sha256:
+          "32b879d35b01ff056487a8be972a4aa76ecfc1beeeda83f470d928a507527aeb",
+        src: "/generated/templates/badge-qr-portrait-2.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "760d49d340118f5e9d43a090764bba6d8f9841e3099b9dc92ed2cdf5b2e050d3",
-      src: "/generated/templates/badge-developer.pdf",
+        "f5f0b8f1e53361afe4cf2a3347c3d10f004a9bff9909928292e15a1c7efb9c30",
+      src: "/generated/templates/badge-qr-portrait.pdf",
     },
     thumbnail: {
-      fixture: "badge-developer-example",
+      fixture: "badge-qr-portrait-example",
       height: 486,
       page: 1,
       sha256:
-        "7a80de07ba5c2f544584c99262ff2a4e5de3e11058546b621a3c138b8d10e209",
-      src: "/generated/templates/badge-developer-1.png",
+        "d6e9461b6cd97a47fdaacd21bb87e23a6dbd0688161c8bfa8383c059ef6c2ff1",
+      src: "/generated/templates/badge-qr-portrait-1.png",
       width: 307,
     },
   },
@@ -685,7 +694,7 @@ export const generatedTemplateCatalog = [
         height: 284,
         page: 1,
         sha256:
-          "7d2f61e2c4bfe61802bf2331de4ba09bf19ce87b25476ffc7504b65771f56aee",
+          "3af0aa29351c3439481a2fdedf24914bd45cd959f6869a0e33d95e41f72f11b3",
         src: "/generated/templates/business-card-coral-qr-1.png",
         width: 511,
       },
@@ -701,7 +710,7 @@ export const generatedTemplateCatalog = [
     ],
     pdf: {
       revision:
-        "c0f36e2664768089ba72ca7a8948fb7886bed038cb53c2747e61abd3cbd60b62",
+        "1c4c896cd7a7a90cbcf62466051af7b519968881fba04ccda61eda9bb610f572",
       src: "/generated/templates/business-card-coral-qr.pdf",
     },
     thumbnail: {
@@ -709,7 +718,7 @@ export const generatedTemplateCatalog = [
       height: 284,
       page: 1,
       sha256:
-        "7d2f61e2c4bfe61802bf2331de4ba09bf19ce87b25476ffc7504b65771f56aee",
+        "3af0aa29351c3439481a2fdedf24914bd45cd959f6869a0e33d95e41f72f11b3",
       src: "/generated/templates/business-card-coral-qr-1.png",
       width: 511,
     },
@@ -738,7 +747,7 @@ export const generatedTemplateCatalog = [
         height: 312,
         page: 1,
         sha256:
-          "699aac0c9242350841ca2850f2b3b1b00f4a5225d22c96a4729fa9d6ad5fd537",
+          "7de20ffb23639c1f998f98e20bdffe9b89ea6c5656207f9686b18dc475e3654e",
         src: "/generated/templates/business-card-violet-founder-1.png",
         width: 482,
       },
@@ -747,14 +756,14 @@ export const generatedTemplateCatalog = [
         height: 312,
         page: 2,
         sha256:
-          "2e8504a85285537a61c0e790e735e12b35a352d3db0ec497331c0be3d53aa1e9",
+          "9d6b6e0d07bb09ca664499af8158889ebb38bdde90558cb2d733d99b727835a4",
         src: "/generated/templates/business-card-violet-founder-2.png",
         width: 482,
       },
     ],
     pdf: {
       revision:
-        "4b00df93dba82bda48880f4e72666c62a93ffa91a1db2a8c7455f395a7eed9b4",
+        "6e3297b05b526bf0526f3f2544db175a4b6c5e47e7195dcfd21d3cdb0808c9aa",
       src: "/generated/templates/business-card-violet-founder.pdf",
     },
     thumbnail: {
@@ -762,7 +771,7 @@ export const generatedTemplateCatalog = [
       height: 312,
       page: 1,
       sha256:
-        "699aac0c9242350841ca2850f2b3b1b00f4a5225d22c96a4729fa9d6ad5fd537",
+        "7de20ffb23639c1f998f98e20bdffe9b89ea6c5656207f9686b18dc475e3654e",
       src: "/generated/templates/business-card-violet-founder-1.png",
       width: 482,
     },

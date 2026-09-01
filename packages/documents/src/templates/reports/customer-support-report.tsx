@@ -1,6 +1,7 @@
-import { Document } from "@react-pdf/renderer";
+import { Circle, Document, G, Line, Path, Svg } from "@react-pdf/renderer";
 import { resolveFormat } from "../../core/formats";
 import { Graph } from "../../primitives/graph";
+import { GraphText } from "../../primitives/graph-text";
 import { Heading } from "../../primitives/heading";
 import { Image } from "../../primitives/image";
 import { PageFrame } from "../../primitives/page-frame";
@@ -52,6 +53,64 @@ const Quote = ({ children }: { children: string }) => (
     </Text>
   </Stack>
 );
+function RoundedDonut({
+  title,
+  values,
+}: {
+  title: string;
+  values: readonly { color: string; value: number }[];
+}) {
+  const radius = 43;
+  const segments = values.map((item, index) => {
+    const consumedBefore = values
+      .slice(0, index)
+      .reduce((total, value) => total + value.value, 0);
+    const consumedAfter = consumedBefore + item.value;
+    return {
+      end: -Math.PI / 2 + (consumedAfter / 100) * Math.PI * 2,
+      index,
+      item,
+      start: -Math.PI / 2 + (consumedBefore / 100) * Math.PI * 2,
+    };
+  });
+  return (
+    <Stack gap="xs" style={{ width: 235 }}>
+      <Text weight="strong">{title}</Text>
+      <Svg width={210} height={150} viewBox="0 0 210 150">
+        {segments.map(({ end, index, item, start }) => {
+          const inset = 0.035;
+          const from = {
+            x: 78 + radius * Math.cos(start + inset),
+            y: 75 + radius * Math.sin(start + inset),
+          };
+          const to = {
+            x: 78 + radius * Math.cos(end - inset),
+            y: 75 + radius * Math.sin(end - inset),
+          };
+          const largeArc = end - start > Math.PI ? 1 : 0;
+          return (
+            <Path
+              key={`${item.value}-${index}`}
+              d={`M ${from.x} ${from.y} A ${radius} ${radius} 0 ${largeArc} 1 ${to.x} ${to.y}`}
+              fill="none"
+              stroke={item.color}
+              strokeWidth={14}
+              strokeLinecap="round"
+            />
+          );
+        })}
+        {values.map((item, index) => (
+          <G key={`legend-${index}`}>
+            <Circle cx={145} cy={50 + index * 18} r={3.5} fill={item.color} />
+            <GraphText x={154} y={53 + index * 18} fill="#4b5563">
+              {`${item.value}%`}
+            </GraphText>
+          </G>
+        ))}
+      </Svg>
+    </Stack>
+  );
+}
 export function CustomerSupportReport(props: CustomerSupportReportProps) {
   const style = resolveTemplateStyle(customerSupportReportStyle, props.style);
   return (
@@ -61,6 +120,34 @@ export function CustomerSupportReport(props: CustomerSupportReportProps) {
         theme={style.theme}
         backgroundColor={style.theme.colors.canvas}
       >
+        <Svg
+          width={540}
+          height={760}
+          style={{ left: 0, position: "absolute", top: 0 }}
+        >
+          {Array.from({ length: 13 }, (_, index) => (
+            <Line
+              key={`v-${index}`}
+              x1={index * 45}
+              x2={index * 45}
+              y1={0}
+              y2={760}
+              stroke="#e1e5ed"
+              strokeWidth={0.45}
+            />
+          ))}
+          {Array.from({ length: 18 }, (_, index) => (
+            <Line
+              key={`h-${index}`}
+              x1={0}
+              x2={540}
+              y1={index * 45}
+              y2={index * 45}
+              stroke="#e1e5ed"
+              strokeWidth={0.45}
+            />
+          ))}
+        </Svg>
         <Stack gap="lg" style={{ padding: 8 }}>
           <Stack gap="sm">
             <Heading level="display" style={{ fontSize: 21 }}>
@@ -82,6 +169,10 @@ export function CustomerSupportReport(props: CustomerSupportReportProps) {
               type="bar"
               width={245}
               height={245}
+              barRadius={11}
+              colors={["#e4e7ed", "#d9dde5", "#123fe8", "#123fe8"]}
+              showGridLines={false}
+              showLegend={false}
               data={[
                 { label: "L", value: 4 },
                 { label: "M", value: 24 },
@@ -111,16 +202,12 @@ export function CustomerSupportReport(props: CustomerSupportReportProps) {
             </Stack>
           </Row>
           <Row gap="md">
-            <Graph
-              title="Response"
-              seriesLabel="Share"
-              type="donut"
-              width={245}
-              height={220}
-              data={[
-                { label: "F", value: 38.1 },
-                { label: "A", value: 33.3 },
-                { label: "S", value: 28.6 },
+            <RoundedDonut
+              title="Response time"
+              values={[
+                { color: "#123fe8", value: 38.1 },
+                { color: "#cfd4dd", value: 33.3 },
+                { color: "#e6e8ed", value: 28.6 },
               ]}
             />
             <Graph
@@ -129,6 +216,10 @@ export function CustomerSupportReport(props: CustomerSupportReportProps) {
               type="bar"
               width={245}
               height={220}
+              barRadius={11}
+              colors={["#d9dde5", "#cfd4dd", "#123fe8"]}
+              showGridLines={false}
+              showLegend={false}
               data={[
                 { label: "L", value: 19 },
                 { label: "A", value: 28.6 },
@@ -137,17 +228,13 @@ export function CustomerSupportReport(props: CustomerSupportReportProps) {
             />
           </Row>
           <Row gap="lg" align="center">
-            <Graph
+            <RoundedDonut
               title="Peer comparison"
-              seriesLabel="Share"
-              type="donut"
-              width={235}
-              height={220}
-              data={[
-                { label: "B", value: 61.9 },
-                { label: "E", value: 19 },
-                { label: "U", value: 14.3 },
-                { label: "W", value: 4.8 },
+              values={[
+                { color: "#123fe8", value: 61.9 },
+                { color: "#d7dbe3", value: 19 },
+                { color: "#eef0f4", value: 14.3 },
+                { color: "#2b2b2b", value: 4.8 },
               ]}
             />
             <Stack gap="sm" style={{ width: 255 }}>

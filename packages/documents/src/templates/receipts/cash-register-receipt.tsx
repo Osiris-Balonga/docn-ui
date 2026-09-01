@@ -1,4 +1,4 @@
-import { Document } from "@react-pdf/renderer";
+import { Document, View } from "@react-pdf/renderer";
 import { Barcode } from "../../primitives/barcode";
 import { ReceiptFrame } from "../../primitives/receipt-frame";
 import { Row } from "../../primitives/row";
@@ -37,9 +37,15 @@ export const cashRegisterReceiptStyle = defineTemplateStyle(
   { dash: "#333333" },
 );
 const Dash = ({ color }: { color: string }) => (
-  <Text style={{ color, letterSpacing: 0.6 }}>
-    --------------------------------
-  </Text>
+  <View
+    style={{
+      borderBottomColor: color,
+      borderBottomStyle: "dashed",
+      borderBottomWidth: 0.8,
+      height: 4,
+      width: "100%",
+    }}
+  />
 );
 export function CashRegisterReceipt(props: CashRegisterReceiptProps) {
   const style = resolveTemplateStyle(cashRegisterReceiptStyle, props.style);
@@ -89,13 +95,15 @@ export function CashRegisterReceipt(props: CashRegisterReceiptProps) {
           >
             THANK YOU
           </Text>
-          <Barcode
-            format="code128"
-            value="ELM-0901-8480"
-            width={150}
-            barHeight={45}
-            showValue={false}
-          />
+          <Row justify="center">
+            <Barcode
+              format="code128"
+              value="ELM-0901-8480"
+              width={150}
+              barHeight={45}
+              showValue={false}
+            />
+          </Row>
         </Stack>
       </ReceiptFrame>
     </Document>

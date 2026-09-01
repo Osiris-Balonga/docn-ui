@@ -41,14 +41,16 @@ export function CartesianGraph({
           : scaleGraphValue(tick, scale, plot.y + plot.height, plot.y);
         return (
           <G key={tick}>
-            <Line
-              x1={horizontal ? position : plot.x}
-              x2={horizontal ? position : plot.x + plot.width}
-              y1={horizontal ? plot.y : position}
-              y2={horizontal ? plot.y + plot.height : position}
-              stroke={tick === 0 ? theme.colors.text : theme.colors.border}
-              strokeWidth={tick === 0 ? 0.7 : 0.35}
-            />
+            {graph.showGridLines || tick === 0 ? (
+              <Line
+                x1={horizontal ? position : plot.x}
+                x2={horizontal ? position : plot.x + plot.width}
+                y1={horizontal ? plot.y : position}
+                y2={horizontal ? plot.y + plot.height : position}
+                stroke={tick === 0 ? theme.colors.text : theme.colors.border}
+                strokeWidth={tick === 0 ? 0.7 : 0.35}
+              />
+            ) : null}
             <GraphText
               x={horizontal ? position : plot.x - 8}
               y={
@@ -72,14 +74,18 @@ export function CartesianGraph({
           <Rect
             key={graph.data[index]!.label}
             {...rectangle}
-            fill={theme.colors.accent}
+            fill={
+              graph.colors[index % graph.colors.length] ?? theme.colors.accent
+            }
+            rx={graph.barRadius}
+            ry={graph.barRadius}
           />
         ))
       ) : (
         <Path
           d={linePath}
           fill="none"
-          stroke={theme.colors.accent}
+          stroke={graph.colors[0] ?? theme.colors.accent}
           strokeWidth={1.3}
         />
       )}
@@ -92,7 +98,7 @@ export function CartesianGraph({
                 cx={point.x}
                 cy={point.y}
                 r={2.1}
-                fill={theme.colors.accent}
+                fill={graph.colors[0] ?? theme.colors.accent}
               />
             ) : null}
             <GraphText
@@ -106,18 +112,20 @@ export function CartesianGraph({
             >
               {datum.label}
             </GraphText>
-            <GraphText
-              x={horizontal ? graph.width - 8 : point.x}
-              y={
-                horizontal
-                  ? point.y + fontSize * 0.35
-                  : point.y +
-                    (datum.value < 0 ? fontSize * 1.7 : -fontSize * 0.8)
-              }
-              textAnchor={horizontal ? "end" : "middle"}
-            >
-              {formatGraphValue(datum.value)}
-            </GraphText>
+            {graph.showDataLabels ? (
+              <GraphText
+                x={horizontal ? graph.width - 8 : point.x}
+                y={
+                  horizontal
+                    ? point.y + fontSize * 0.35
+                    : point.y +
+                      (datum.value < 0 ? fontSize * 1.7 : -fontSize * 0.8)
+                }
+                textAnchor={horizontal ? "end" : "middle"}
+              >
+                {formatGraphValue(datum.value)}
+              </GraphText>
+            ) : null}
           </G>
         );
       })}

@@ -1,7 +1,6 @@
-import { Document, Path, Svg } from "@react-pdf/renderer";
+import { Document, Path, Svg, View } from "@react-pdf/renderer";
 import { resolveFormat } from "../../core/formats";
 import { PageFrame } from "../../primitives/page-frame";
-import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
 import {
@@ -60,40 +59,42 @@ export function VioletFounderBusinessCard(
         theme={style.theme}
         backgroundColor={style.slots.violet}
       >
-        <Row
-          justify="between"
-          align="center"
-          style={{ height: "100%", padding: 8 }}
+        <View
+          style={{ height: "100%", overflow: "hidden", position: "relative" }}
         >
-          <Stack gap="xs">
-            <Text weight="strong" style={{ fontSize: 21 }}>
-              NOVAARC
+          <View style={{ position: "absolute", right: -22, top: -22 }}>
+            <Mark color="#ffffff" size={132} />
+          </View>
+          <Stack gap="xs" style={{ bottom: 7, left: 6, position: "absolute" }}>
+            <Text weight="strong" style={{ fontSize: 27, letterSpacing: -1.2 }}>
+              novaarc
             </Text>
-            <Text style={{ color: "#ffffff" }}>novaarc.example</Text>
+            <Text style={{ color: "#ffffff", fontSize: 5.5 }}>
+              novaarc.example
+            </Text>
           </Stack>
-          <Mark color="#ffffff" size={72} />
-        </Row>
+        </View>
       </PageFrame>
       <PageFrame
         format={format}
         theme={style.theme}
         backgroundColor={style.theme.colors.canvas}
       >
-        <Row
-          justify="between"
-          align="center"
-          style={{ height: "100%", padding: 10 }}
-        >
-          <Stack gap="xs">
-            <Text style={{ fontSize: 12 }}>ROHIT VERMA</Text>
-            <Text tone="muted">Founder</Text>
-            <Stack gap="xs" style={{ marginTop: 20 }}>
-              <Text>+91 67854 236712</Text>
-              <Text>rohit@novaarc.example</Text>
-            </Stack>
+        <View style={{ height: "100%", position: "relative" }}>
+          <View style={{ position: "absolute", right: 6, top: 2 }}>
+            <Mark color={style.slots.violet} size={72} />
+          </View>
+          <Stack gap="xs" style={{ left: 8, position: "absolute", top: 35 }}>
+            <Text style={{ fontSize: 11 }}>ROHIT VERMA</Text>
+            <Text tone="muted" style={{ fontSize: 5.5 }}>
+              Founder
+            </Text>
           </Stack>
-          <Mark color={style.slots.violet} size={60} />
-        </Row>
+          <Stack gap="xs" style={{ bottom: 7, left: 8, position: "absolute" }}>
+            <Text style={{ fontSize: 5.5 }}>+91 67854 236712</Text>
+            <Text style={{ fontSize: 5.5 }}>rohit@novaarc.example</Text>
+          </Stack>
+        </View>
       </PageFrame>
     </Document>
   );

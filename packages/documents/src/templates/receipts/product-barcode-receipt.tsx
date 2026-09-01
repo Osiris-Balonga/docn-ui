@@ -1,4 +1,4 @@
-import { Document, Circle, Svg } from "@react-pdf/renderer";
+import { Document, Path, Rect, Svg } from "@react-pdf/renderer";
 import { Barcode } from "../../primitives/barcode";
 import { ReceiptFrame } from "../../primitives/receipt-frame";
 import { Row } from "../../primitives/row";
@@ -42,14 +42,14 @@ export function ProductBarcodeReceipt(props: ProductBarcodeReceiptProps) {
         <Stack gap="lg">
           <Row justify="between" align="center">
             <Row gap="sm" align="center">
-              <Svg width={20} height={20}>
-                <Circle
-                  cx={10}
-                  cy={10}
-                  r={9}
+              <Svg width={22} height={22} viewBox="0 0 22 22">
+                <Rect
+                  width={22}
+                  height={22}
+                  rx={6}
                   fill={style.theme.colors.accent}
                 />
-                <Circle cx={10} cy={10} r={4} fill="#ffffff" />
+                <Path d="M7 5 V16 H16 V13 H10 V5 Z" fill="#ffffff" />
               </Svg>
               <Stack gap="xs">
                 <Text weight="strong">LUMA SUPPLY</Text>
@@ -99,13 +99,15 @@ export function ProductBarcodeReceipt(props: ProductBarcodeReceiptProps) {
               paddingTop: 12,
             }}
           >
-            <Barcode
-              format="code128"
-              value="LUMA-0419-109800"
-              width={172}
-              barHeight={45}
-              showValue={false}
-            />
+            <Row justify="center">
+              <Barcode
+                format="code128"
+                value="LUMA-0419-109800"
+                width={172}
+                barHeight={45}
+                showValue={false}
+              />
+            </Row>
             <Text align="center" tone="muted" size="caption">
               LUMA-0419-109800
             </Text>

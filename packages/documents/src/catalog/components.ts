@@ -663,7 +663,7 @@ const componentEntries: readonly ComponentCatalogEntry[] = [
     title: "Graph",
     description: "PDF-native charts from bounded categorical data.",
     notes:
-      "Supports bar, horizontal-bar, line, area, pie and donut. One categorical series, monochrome theme defaults, short labels and finite values. Dense labels and unreadable sectors fail explicitly; no canvas screenshots or interactive charts.",
+      "Supports bar, horizontal-bar, line, area, pie and donut. One categorical series, optional per-datum colors, rounded bars, removable grid/value labels, and line/circle/square or hidden legends. Dense labels and unreadable sectors fail explicitly; no canvas screenshots or interactive charts.",
     exampleFile: "packages/documents/src/examples/components/data.tsx",
     exampleExport: "GraphExample",
     height: 1110,

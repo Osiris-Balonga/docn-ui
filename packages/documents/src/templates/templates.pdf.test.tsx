@@ -26,6 +26,7 @@ describe("reference-led templates", () => {
     const assets = {
       badgeCreativePortraitSource: imageSource,
       badgeDeveloperPortraitSource: imageSource,
+      badgePatternSource: imageSource,
       invoiceLandscapeSource: imageSource,
       portraitSource: imageSource,
       productCardDeckSource: imageSource,
@@ -74,20 +75,20 @@ describe("reference-led templates", () => {
       ],
       [
         "report-product-analytics",
-        ["Product Analytics Report", "600.8K", "Users by acquisition channel"],
+        ["Northstar Analytics Report", "600.8K", "Users by Source / Medium"],
       ],
       [
         "report-marketplace-revenue",
-        ["MARKET LENS", "Annual revenue", "$156 billion"],
+        ["MARGIN", "Open marketplace", "$96 billion"],
       ],
       [
         "report-customer-support",
         ["Customer support", "76.2%", "What customers are saying"],
       ],
-      ["badge-creative-team", ["JAMES", "BURNLEY", "KITE STUDIO"]],
-      ["badge-developer", ["Adam", "Johanson", "ORBITSTACK"]],
-      ["business-card-coral-qr", ["REDWOOD", "RAZIB P. FERGUSON"]],
-      ["business-card-violet-founder", ["NOVAARC", "ROHIT VERMA"]],
+      ["badge-profile-sideband", ["Daniel Thompson", "LUMINA", "ID 4925"]],
+      ["badge-qr-portrait", ["Celine", "Rose", "NOVA HEALTH"]],
+      ["business-card-coral-qr", ["REDWOOD", "RAZIB", "P. FERGUSON"]],
+      ["business-card-violet-founder", ["novaarc", "ROHIT VERMA"]],
     ]);
 
     expect(expectedText.size).toBe(templateDefinitions.length);

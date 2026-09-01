@@ -1,8 +1,7 @@
 import { Document } from "@react-pdf/renderer";
-import { resolveFormat } from "../../core/formats";
 import { Heading } from "../../primitives/heading";
 import { Image } from "../../primitives/image";
-import { PageFrame } from "../../primitives/page-frame";
+import { ReceiptFrame } from "../../primitives/receipt-frame";
 import { Row } from "../../primitives/row";
 import { Separator } from "../../primitives/separator";
 import { Stack } from "../../primitives/stack";
@@ -31,11 +30,6 @@ export interface OrderConfirmationProps {
   style?: TemplateStyleOverrides<typeof orderConfirmationStyle.slots>;
 }
 
-const resolvedFormat = resolveFormat("a4");
-if (resolvedFormat.kind !== "fixed")
-  throw new Error("Order confirmation requires A4.");
-const format = resolvedFormat;
-
 export const orderConfirmationStyle = defineTemplateStyle(
   "neutral",
   {
@@ -60,7 +54,7 @@ export const orderConfirmationStyle = defineTemplateStyle(
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <Stack gap="xs" style={{ width: "25%" }}>
+    <Stack gap="xs" style={{ width: "48%" }}>
       <Text tone="muted" style={{ fontSize: 5.8 }}>
         {label}
       </Text>
@@ -75,25 +69,18 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
   const subtotal = "$185.50";
   return (
     <Document title={`Order ${props.orderNumber}`} language="en">
-      <PageFrame
-        format={format}
-        theme={theme}
-        backgroundColor={theme.colors.canvas}
-      >
-        <Stack
-          gap="lg"
-          style={{ gap: 25, paddingHorizontal: 24, paddingTop: 4 }}
-        >
+      <ReceiptFrame widthMm={80} heightMm={190} theme={theme}>
+        <Stack gap="lg" style={{ gap: 15 }}>
           <Row align="center" gap="sm">
             <Image
               alt="North Goods original mark"
               fit="contain"
-              height={21}
+              height={17}
               resolvedSource={props.logoSource}
-              width={21}
+              width={17}
             />
             <Stack gap="xs">
-              <Text weight="strong" style={{ fontSize: 10 }}>
+              <Text weight="strong" style={{ fontSize: 8 }}>
                 NORTH GOODS
               </Text>
               <Text tone="muted" style={{ fontSize: 6 }}>
@@ -102,7 +89,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
             </Stack>
           </Row>
           <Stack gap="sm">
-            <Heading level={2} style={{ fontSize: 15 }}>
+            <Heading level={2} style={{ fontSize: 13 }}>
               Your Order Confirmed!
             </Heading>
             <Text>Hello {props.customerName},</Text>
@@ -113,11 +100,13 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
           </Stack>
 
           <Row
-            gap="md"
+            gap="sm"
             style={{
               borderBottomColor: theme.colors.border,
               borderBottomWidth: 0.5,
+              flexWrap: "wrap",
               paddingBottom: 10,
+              rowGap: 8,
             }}
           >
             <Meta label="Order Date" value={props.orderDate} />
@@ -134,15 +123,15 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
                 style={{
                   borderBottomColor: theme.colors.border,
                   borderBottomWidth: 0.5,
-                  paddingVertical: 16,
+                  paddingVertical: 10,
                 }}
               >
                 <Image
                   alt={product.name}
                   fit="cover"
-                  height={52}
+                  height={36}
                   resolvedSource={product.imageSource}
-                  width={58}
+                  width={40}
                 />
                 <Stack gap="xs" style={{ flexGrow: 1 }}>
                   <Text weight="strong">{product.name}</Text>
@@ -159,7 +148,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
           </Stack>
 
           <Row justify="end">
-            <Stack gap="xs" style={{ width: "44%" }}>
+            <Stack gap="xs" style={{ width: "70%" }}>
               <Row justify="between">
                 <Text tone="muted">Subtotal</Text>
                 <Text>{subtotal}</Text>
@@ -184,7 +173,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
             </Stack>
           </Row>
 
-          <Stack gap="md" style={{ marginTop: 100 }}>
+          <Stack gap="md" style={{ marginTop: 24 }}>
             <Text>
               We’ll send a shipping confirmation email when the items are on
               their way.
@@ -194,27 +183,23 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
               <Text>North Team</Text>
             </Stack>
           </Stack>
+          <Row
+            justify="between"
+            style={{
+              borderTopColor: theme.colors.border,
+              borderTopWidth: 0.5,
+              paddingTop: 8,
+            }}
+          >
+            <Text tone="muted" style={{ fontSize: 5.8 }}>
+              Need help? Visit our Help Center
+            </Text>
+            <Text tone="muted" style={{ fontSize: 5.8 }}>
+              © 2026 North
+            </Text>
+          </Row>
         </Stack>
-        <Row
-          justify="between"
-          style={{
-            borderTopColor: theme.colors.border,
-            borderTopWidth: 0.5,
-            bottom: 8,
-            left: 24,
-            paddingTop: 8,
-            position: "absolute",
-            right: 24,
-          }}
-        >
-          <Text tone="muted" style={{ fontSize: 5.8 }}>
-            Need Help? Visit our Help Center
-          </Text>
-          <Text tone="muted" style={{ fontSize: 5.8 }}>
-            © 2026 North
-          </Text>
-        </Row>
-      </PageFrame>
+      </ReceiptFrame>
     </Document>
   );
 }
@@ -256,7 +241,7 @@ export const orderConfirmationDefinition: TemplateDefinition = {
   familyLabel: "Receipts",
   description:
     "A product order confirmation with metadata, item imagery and a compact payment summary.",
-  supportedFormatIds: ["a4"],
+  supportedFormatIds: ["receipt-80"],
   supportedThemeIds: ["neutral"],
   tags: ["receipt", "order", "confirmation", "commerce"],
   version: "1.0.0",

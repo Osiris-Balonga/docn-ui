@@ -4,25 +4,25 @@ This catalog defines the launch scope. It contains only invoices, receipts, resu
 
 ## Inventory
 
-| ID                             | Family        | Composition and expected distinction                                |
-| ------------------------------ | ------------- | ------------------------------------------------------------------- |
-| `invoice-spacious`             | Invoice       | Spacious service invoice with a compact original wordmark           |
-| `invoice-vertical`             | Invoice       | Editorial invoice with vertical identity and payment area           |
-| `invoice-corporate`            | Invoice       | Corporate header, alternating item table, and structured totals     |
-| `invoice-photo-header`         | Invoice       | Large original landscape image, open details, and restrained totals |
-| `receipt-order-confirmation`   | Receipt       | Order summary with distinct product imagery and shipping metadata   |
-| `receipt-product-barcode`      | Receipt       | Compact product receipt with a barcode footer                       |
-| `receipt-cash-register`        | Receipt       | Narrow monochrome cash-register composition                         |
-| `resume-classic`               | Resume        | Restrained two-column professional resume                           |
-| `resume-accountant`            | Resume        | Dense single-column accountant resume                               |
-| `resume-designer`              | Resume        | Profile-led designer resume with a skill sidebar                    |
-| `report-product-analytics`     | Report        | KPI grid and source trend chart                                     |
-| `report-marketplace-revenue`   | Report        | Focused comparison chart with an explanatory conclusion             |
-| `report-customer-support`      | Report        | Survey dashboard with charts, quotations, and an original portrait  |
-| `badge-creative-team`          | Badge         | Portrait identity badge with strong team color blocking             |
-| `badge-developer`              | Badge         | Dark portrait developer badge with vertical role metadata           |
-| `business-card-coral-qr`       | Business card | Two-page coral and white card with QR contact details               |
-| `business-card-violet-founder` | Business card | Two-page violet and black founder identity card                     |
+| ID                             | Family        | Composition and expected distinction                                 |
+| ------------------------------ | ------------- | -------------------------------------------------------------------- |
+| `invoice-spacious`             | Invoice       | Spacious service invoice with a compact original wordmark            |
+| `invoice-vertical`             | Invoice       | Editorial invoice with vertical identity and payment area            |
+| `invoice-corporate`            | Invoice       | Corporate header, alternating item table, and structured totals      |
+| `invoice-photo-header`         | Invoice       | Large original landscape image, open details, and restrained totals  |
+| `receipt-order-confirmation`   | Receipt       | Order summary with distinct product imagery and shipping metadata    |
+| `receipt-product-barcode`      | Receipt       | Compact product receipt with a barcode footer                        |
+| `receipt-cash-register`        | Receipt       | Narrow monochrome cash-register composition                          |
+| `resume-classic`               | Resume        | Restrained two-column professional resume                            |
+| `resume-accountant`            | Resume        | Dense single-column accountant resume                                |
+| `resume-designer`              | Resume        | Profile-led designer resume with a skill sidebar                     |
+| `report-product-analytics`     | Report        | KPI grid and source trend chart                                      |
+| `report-marketplace-revenue`   | Report        | Focused comparison chart with an explanatory conclusion              |
+| `report-customer-support`      | Report        | Survey dashboard with charts, quotations, and an original portrait   |
+| `badge-profile-sideband`       | Badge         | Portrait identity badge with a black vertical brand sideband         |
+| `badge-qr-portrait`            | Badge         | Two-sided portrait badge with QR code and original patterned variant |
+| `business-card-coral-qr`       | Business card | Two-page coral and white card with QR contact details                |
+| `business-card-violet-founder` | Business card | Two-page violet and black founder identity card                      |
 
 Themes change template-owned tokens, not composition IDs. Every template keeps its own baseline palette and typography so a future theme builder can apply controlled substitutions without altering layout.
 
