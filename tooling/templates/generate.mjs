@@ -65,10 +65,14 @@ async function build() {
   );
   prepareTemplateFonts(resolve(root, "packages/documents/assets"));
   const assetDefinitions = {
+    badgeCreativePortraitSource: ["badge-creative-portrait.png", "image/png"],
+    badgeDeveloperPortraitSource: ["badge-developer-portrait.png", "image/png"],
+    invoiceLandscapeSource: ["invoice-landscape.png", "image/png"],
     portraitSource: ["designer-portrait.png", "image/png"],
-    productSource: ["desk-setup.jpg", "image/jpeg"],
-    stripeLogoSource: ["stripe-wordmark-blurple.png", "image/png"],
+    productCardDeckSource: ["product-card-deck.png", "image/png"],
+    productNotebookSource: ["product-notebook.png", "image/png"],
     studioLogoSource: ["studio-north-mark.png", "image/png"],
+    supportPortraitSource: ["support-customer-portrait.png", "image/png"],
   };
   const assets = Object.fromEntries(
     await Promise.all(

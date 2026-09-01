@@ -348,7 +348,7 @@ export const designerResumeExample = (
     {
       title: "Intern UI/UX Designer",
       meta: "Part Time",
-      location: "Google  ·  Los Angeles",
+      location: "Northline  ·  Los Angeles",
       date: "11 Jun, 2013",
     },
   ],

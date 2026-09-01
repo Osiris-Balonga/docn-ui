@@ -20,9 +20,9 @@ export interface OrderConfirmationProps {
   orderDate: string;
   orderNumber: string;
   payment: string;
-  productImageSource: string;
   products: readonly {
     color: string;
+    imageSource: string;
     name: string;
     price: string;
     quantity: number;
@@ -84,13 +84,23 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
           gap="lg"
           style={{ gap: 25, paddingHorizontal: 24, paddingTop: 4 }}
         >
-          <Image
-            alt="Studio North"
-            fit="contain"
-            height={21}
-            resolvedSource={props.logoSource}
-            width={21}
-          />
+          <Row align="center" gap="sm">
+            <Image
+              alt="North Goods original mark"
+              fit="contain"
+              height={21}
+              resolvedSource={props.logoSource}
+              width={21}
+            />
+            <Stack gap="xs">
+              <Text weight="strong" style={{ fontSize: 10 }}>
+                NORTH GOODS
+              </Text>
+              <Text tone="muted" style={{ fontSize: 6 }}>
+                Workshop stationery
+              </Text>
+            </Stack>
+          </Row>
           <Stack gap="sm">
             <Heading level={2} style={{ fontSize: 15 }}>
               Your Order Confirmed!
@@ -131,7 +141,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
                   alt={product.name}
                   fit="cover"
                   height={52}
-                  resolvedSource={props.productImageSource}
+                  resolvedSource={product.imageSource}
                   width={58}
                 />
                 <Stack gap="xs" style={{ flexGrow: 1 }}>
@@ -210,7 +220,8 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
 }
 
 export const orderConfirmationExample = (
-  productSource: string,
+  notebookSource: string,
+  cardDeckSource: string,
   logoSource: string,
 ): OrderConfirmationProps => ({
   customerName: "Chris",
@@ -219,19 +230,20 @@ export const orderConfirmationExample = (
   orderNumber: "NK483820",
   payment: "Card",
   shippingAddress: "48 Alexander Plaza Apt. 109",
-  productImageSource: productSource,
   products: [
     {
-      name: "Workshop access pass",
+      name: "Workshop notebook",
       quantity: 1,
-      color: "Ink Black",
+      color: "Charcoal",
       price: "$67.50",
+      imageSource: notebookSource,
     },
     {
-      name: "Printed field guide",
+      name: "Planning card deck",
       quantity: 1,
       color: "Light Gray",
       price: "$112.00",
+      imageSource: cardDeckSource,
     },
   ],
 });
@@ -250,9 +262,17 @@ export const orderConfirmationDefinition: TemplateDefinition = {
   version: "1.0.0",
   sides: 1,
   capabilities: { logo: true, printProfiles: false, qr: false },
-  renderSample: ({ productSource, studioLogoSource }: TemplateSampleAssets) => (
+  renderSample: ({
+    productCardDeckSource,
+    productNotebookSource,
+    studioLogoSource,
+  }: TemplateSampleAssets) => (
     <OrderConfirmation
-      {...orderConfirmationExample(productSource, studioLogoSource)}
+      {...orderConfirmationExample(
+        productNotebookSource,
+        productCardDeckSource,
+        studioLogoSource,
+      )}
     />
   ),
 };

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve, posix } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -34,6 +35,7 @@ const inputs = execFileSync(
   .toString()
   .split("\0")
   .filter(Boolean)
+  .filter((file) => existsSync(resolve(root, file)))
   .sort();
 const hash = createHash("sha256");
 for (const file of inputs) {

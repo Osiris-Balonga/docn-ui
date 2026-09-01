@@ -263,7 +263,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
             "The minimal card example uses card-85x55: an 85 × 55 mm trim, with front and back on two pages.",
             "Invoices support A4 (210 × 297 mm) and Letter (215.9 × 279.4 mm). Long content flows across pages with repeated identity and table headers.",
             "Thermal receipts use 58 or 80 mm paper width and measured content height, up to 2,000 mm. They are not narrow A4 pages.",
-            "Label sheets have independent row/column, offset and gutter geometry. Verify the sheet preset and starting cell before printing stock.",
+            "Portrait badges use the 53.98 × 85.6 mm badge preset. Business-card templates use landscape presets and place front and back on consecutive pages.",
           ],
         },
       ],
@@ -444,7 +444,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
           items: [
             "Shared input limits include 256 KiB JSON, depth 8, bounded strings and 512 UTF-8 bytes for a QR payload; physical code density can impose a lower limit.",
             "Permitted user images are validated PNG/JPEG, up to two files, 5 MiB and 16 megapixels each. Imported SVG, HTML, external PDFs and arbitrary image URLs are outside the public input contract.",
-            "Invoices/receipts allow at most 200 lines, label exports 100 labels, documents 50 pages and final output 20 MiB. A receipt also has a 2,000 mm height limit.",
+            "Invoices and receipts allow at most 200 lines, documents 50 pages and final output 20 MiB. A receipt also has a 2,000 mm height limit.",
             "The site's render coordinator has a 15-second timeout. Standalone consumer calls must provide their own scheduling, timeout/recovery and resource cleanup.",
           ],
         },

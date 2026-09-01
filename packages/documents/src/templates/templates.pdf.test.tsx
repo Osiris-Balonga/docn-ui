@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url";
 import { createCanvas } from "@napi-rs/canvas";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { beforeAll, describe, expect, it } from "vitest";
+import { resolveFormat } from "../core/formats";
 import { templateDefinitions } from "./index";
 import { prepareTemplateFonts, renderTemplateDefinition } from "./render";
 
@@ -23,10 +24,14 @@ describe("reference-led templates", () => {
     context.fillRect(380, 72, 190, 124);
     const imageSource = canvas.toDataURL("image/png");
     const assets = {
+      badgeCreativePortraitSource: imageSource,
+      badgeDeveloperPortraitSource: imageSource,
+      invoiceLandscapeSource: imageSource,
       portraitSource: imageSource,
-      productSource: imageSource,
-      stripeLogoSource: imageSource,
+      productCardDeckSource: imageSource,
+      productNotebookSource: imageSource,
       studioLogoSource: imageSource,
+      supportPortraitSource: imageSource,
     };
     const expectedText = new Map([
       ["resume-classic", ["Your name", "EXPERIENCE", "LANGUAGES"]],
@@ -43,19 +48,49 @@ describe("reference-led templates", () => {
         ["Markus", "Professional Summary", "Technical Skills"],
       ],
       [
-        "invoice-stripe",
-        ["Invoice", "$48.99 due", "Pay with ACH or wire transfer"],
+        "invoice-spacious",
+        ["NORTHLINE", "$48.99 due", "Pay with ACH or wire transfer"],
       ],
       [
         "invoice-vertical",
         ["Margarita Perez", "Copywriting for 1 Blog", "QUESTIONS?"],
       ],
-      ["invoice-corporate", ["GLOBEX", "Stationary Designs", "GRAND TOTAL"]],
+      [
+        "invoice-corporate",
+        ["MERIDIAN WORKS", "Stationary Designs", "GRAND TOTAL"],
+      ],
+      ["invoice-photo-header", ["INVOICE", "Solt Wagner", "$575.00"]],
       [
         "receipt-order-confirmation",
-        ["Your Order Confirmed!", "Workshop access pass", "$203.25"],
+        ["Your Order Confirmed!", "Workshop notebook", "$203.25"],
       ],
+      [
+        "receipt-product-barcode",
+        ["LUMA SUPPLY", "Protective reader case", "$1,098.00"],
+      ],
+      [
+        "receipt-cash-register",
+        ["CASH RECEIPT", "Stone-ground flour", "THANK YOU"],
+      ],
+      [
+        "report-product-analytics",
+        ["Product Analytics Report", "600.8K", "Users by acquisition channel"],
+      ],
+      [
+        "report-marketplace-revenue",
+        ["MARKET LENS", "Annual revenue", "$156 billion"],
+      ],
+      [
+        "report-customer-support",
+        ["Customer support", "76.2%", "What customers are saying"],
+      ],
+      ["badge-creative-team", ["JAMES", "BURNLEY", "KITE STUDIO"]],
+      ["badge-developer", ["Adam", "Johanson", "ORBITSTACK"]],
+      ["business-card-coral-qr", ["REDWOOD", "RAZIB P. FERGUSON"]],
+      ["business-card-violet-founder", ["NOVAARC", "ROHIT VERMA"]],
     ]);
+
+    expect(expectedText.size).toBe(templateDefinitions.length);
 
     for (const definition of templateDefinitions) {
       const bytes = new Uint8Array(
@@ -75,8 +110,19 @@ describe("reference-led templates", () => {
           pageNumber++
         ) {
           const page = await document.getPage(pageNumber);
-          expect(page.view[2]).toBeCloseTo(595.28, 1);
-          expect(page.view[3]).toBeCloseTo(841.89, 1);
+          const formatId = definition.supportedFormatIds[0];
+          if (!formatId) throw new Error(`${definition.id} has no format.`);
+          const expectedFormat = resolveFormat(formatId);
+          if (expectedFormat.kind === "fixed") {
+            expect(page.view[2]).toBeCloseTo(expectedFormat.trim.widthPt, 1);
+            expect(page.view[3]).toBeCloseTo(expectedFormat.trim.heightPt, 1);
+          } else {
+            expect(page.view[2]).toBeCloseTo(expectedFormat.widthPt, 1);
+            expect(page.view[3]).toBeGreaterThan(0);
+            expect(page.view[3]).toBeLessThanOrEqual(
+              expectedFormat.maxHeightPt,
+            );
+          }
           const content = await page.getTextContent();
           pages.push(
             content.items

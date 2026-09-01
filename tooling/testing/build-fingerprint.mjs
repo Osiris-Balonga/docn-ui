@@ -47,6 +47,7 @@ function computeFingerprint() {
         !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
         !/\.(test|spec)\.[^/]+$/.test(file),
     )
+    .filter((file) => existsSync(resolve(root, file)))
     .sort();
   const hash = createHash("sha256");
   for (const file of files) {

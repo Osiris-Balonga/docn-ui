@@ -1,13 +1,7 @@
 import { generatedTemplateCatalog } from "./generated-templates";
 
 export type TemplateFamily =
-  | "business-card"
-  | "invoice"
-  | "label"
-  | "receipt"
-  | "report"
-  | "resume"
-  | "ticket";
+  "badge" | "business-card" | "invoice" | "receipt" | "report" | "resume";
 
 export interface TemplateFamilyDefinition {
   id: TemplateFamily;
@@ -19,9 +13,8 @@ export const templateFamilies = [
   { id: "receipt", label: "Receipts" },
   { id: "resume", label: "CVs" },
   { id: "report", label: "Reports" },
+  { id: "badge", label: "Badges" },
   { id: "business-card", label: "Business Cards" },
-  { id: "ticket", label: "Event Tickets" },
-  { id: "label", label: "Labels" },
 ] as const satisfies readonly TemplateFamilyDefinition[];
 
 export interface CatalogThumbnail {

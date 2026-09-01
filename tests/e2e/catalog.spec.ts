@@ -13,24 +13,30 @@ test("shows the new reference-led templates in their families", async ({
   });
   for (const family of [
     "Business Cards",
-    "Event Tickets",
     "Receipts",
-    "Labels",
     "Invoices",
     "CVs",
     "Reports",
+    "Badges",
   ]) {
     await expect(navigation.getByRole("tab", { name: family })).toBeVisible();
   }
-  await expect(page.locator("article")).toHaveCount(3);
   await expect(
-    page.getByRole("heading", { name: "Stripe-style invoice" }),
+    navigation.getByRole("tab", { name: "Event Tickets" }),
+  ).toHaveCount(0);
+  await expect(navigation.getByRole("tab", { name: "Labels" })).toHaveCount(0);
+  await expect(page.locator("article")).toHaveCount(4);
+  await expect(
+    page.getByRole("heading", { name: "Spacious service invoice" }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Vertical studio invoice" }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Corporate table invoice" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Photo header invoice" }),
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "Receipts" }).click();
@@ -58,9 +64,32 @@ test("shows the new reference-led templates in their families", async ({
     page.getByRole("heading", { name: "Green designer resume" }),
   ).toBeVisible();
   await navigation.getByRole("tab", { name: "Reports" }).click();
+  await expect(page.locator("article")).toHaveCount(3);
   await expect(
-    page.getByRole("heading", { name: "No Reports yet" }),
+    page.getByRole("heading", { name: "Product analytics report" }),
   ).toBeVisible();
+
+  await navigation.getByRole("tab", { name: "Badges" }).click();
+  await expect(page.locator("article")).toHaveCount(2);
+
+  await navigation.getByRole("tab", { name: "Business Cards" }).click();
+  await expect(page.locator("article")).toHaveCount(2);
+  await page
+    .getByRole("button", { name: "Enlarge Coral QR business card preview" })
+    .click();
+  const cardPreview = page.getByRole("dialog", {
+    name: "Coral QR business card preview",
+  });
+  await expect(
+    cardPreview.getByRole("button", { name: "View page 2" }),
+  ).toBeVisible();
+
+  await page.goto("/templates/?family=ticket");
+  await expect(page).toHaveURL(/family=invoice/);
+  await expect(page.getByRole("tab", { name: "Invoices" })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
 });
 test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
   page,

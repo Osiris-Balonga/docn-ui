@@ -18,8 +18,8 @@ interface PrintOrder {
 }
 const orders: readonly PrintOrder[] = [
   { id: "cards", label: "Business cards", copies: 80 },
-  { id: "tickets", label: "Event tickets", copies: 120 },
-  { id: "labels", label: "Product labels", copies: 60 },
+  { id: "badges", label: "Team badges", copies: 120 },
+  { id: "reports", label: "Annual reports", copies: 60 },
 ];
 const columns: readonly DataTableColumn<PrintOrder>[] = [
   { key: "label", label: "Document", width: 70, cell: (row) => row.label },

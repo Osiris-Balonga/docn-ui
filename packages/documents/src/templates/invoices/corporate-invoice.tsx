@@ -51,12 +51,12 @@ export const corporateInvoiceStyle = defineTemplateStyle(
     },
     typeScale: { caption: 7, body: 9, label: 10, heading: 16, display: 28 },
   },
-  { signatureFont: "Noto Serif", tableStripe: "#f0f2f3" },
+  { signatureFont: "Noto Serif", tableBand: "#f0f2f3" },
 );
 
 const pageInset = -28.35;
 
-function GlobexMark({ invertedText }: { invertedText: string }) {
+function MeridianMark({ invertedText }: { invertedText: string }) {
   return (
     <Svg width={46} height={39} viewBox="0 0 46 39">
       <Path
@@ -98,7 +98,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
   const style = resolveTemplateStyle(corporateInvoiceStyle, props.style);
   const { theme } = style;
   const ink = theme.colors.accent;
-  const stripe = style.slots.tableStripe;
+  const band = style.slots.tableBand;
   return (
     <Document title={`Invoice ${props.invoiceNumber}`} language="en">
       <PageFrame
@@ -127,7 +127,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
           />
 
           <Stack gap="xs" style={{ left: 42, position: "absolute", top: 37 }}>
-            <GlobexMark invertedText={theme.colors.invertedText} />
+            <MeridianMark invertedText={theme.colors.invertedText} />
             <Heading
               tone="inverted"
               level={2}
@@ -254,7 +254,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
                 align="center"
                 style={{
                   backgroundColor:
-                    index % 2 === 0 ? stripe : theme.colors.surface,
+                    index % 2 === 0 ? band : theme.colors.surface,
                   height: 36,
                   paddingHorizontal: 10,
                 }}
@@ -314,7 +314,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
             <Row
               justify="between"
               style={{
-                backgroundColor: stripe,
+                backgroundColor: band,
                 paddingHorizontal: 9,
                 paddingVertical: 10,
               }}
@@ -362,7 +362,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
           </Text>
           <View
             style={{
-              backgroundColor: stripe,
+              backgroundColor: band,
               bottom: 0,
               height: 23,
               left: 0,
@@ -381,7 +381,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
 }
 
 export const corporateInvoiceExample: CorporateInvoiceProps = {
-  companyName: "GLOBEX",
+  companyName: "MERIDIAN WORKS",
   companyTagline: "IDEA FOR INVOICE",
   invoiceNumber: "#123456",
   date: "01/01/2020",
@@ -392,7 +392,7 @@ export const corporateInvoiceExample: CorporateInvoiceProps = {
     "New York, 22601",
     "dominicwilliams@gmail.com",
   ],
-  companyEmail: "globex@gmail.com",
+  companyEmail: "billing@meridianworks.example",
   items: [
     {
       description: "Web Designs",
@@ -430,7 +430,7 @@ export const corporateInvoiceExample: CorporateInvoiceProps = {
   subtotal: "$ 1200",
   tax: "$ 120",
   total: "$ 1320",
-  companyUrl: "www.globex.com",
+  companyUrl: "meridianworks.example",
 };
 
 export const corporateInvoiceDefinition: TemplateDefinition = {
@@ -440,7 +440,7 @@ export const corporateInvoiceDefinition: TemplateDefinition = {
   family: "invoice",
   familyLabel: "Invoices",
   description:
-    "A formal corporate invoice with a dark identity header, striped item table and signed totals block.",
+    "A formal corporate invoice with a dark identity header, alternating item table and signed totals block.",
   supportedFormatIds: ["a4"],
   supportedThemeIds: ["neutral"],
   tags: ["invoice", "corporate", "table", "services"],

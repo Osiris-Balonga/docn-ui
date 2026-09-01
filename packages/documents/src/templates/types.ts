@@ -4,10 +4,14 @@ import type { ThemeId } from "../core/contracts";
 import type { FormatId } from "../core/formats";
 
 export interface TemplateSampleAssets {
+  badgeCreativePortraitSource: string;
+  badgeDeveloperPortraitSource: string;
+  invoiceLandscapeSource: string;
   portraitSource: string;
-  productSource: string;
-  stripeLogoSource: string;
+  productCardDeckSource: string;
+  productNotebookSource: string;
   studioLogoSource: string;
+  supportPortraitSource: string;
 }
 
 export interface TemplateDefinition {
@@ -17,7 +21,8 @@ export interface TemplateDefinition {
     qr: boolean;
   };
   description: string;
-  family: "invoice" | "receipt" | "report" | "resume";
+  family:
+    "badge" | "business-card" | "invoice" | "receipt" | "report" | "resume";
   familyLabel: string;
   id: string;
   renderSample(assets: TemplateSampleAssets): ReactElement<DocumentProps>;

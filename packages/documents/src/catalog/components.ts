@@ -182,8 +182,8 @@ const componentRecipes: Partial<Record<string, readonly ComponentRecipe[]>> = {
       exampleExport: "PageFrameCardExample",
     },
     {
-      title: "Event-ticket page",
-      description: "Reuse the same frame contract for a 150 × 70 mm ticket.",
+      title: "Wide-format page",
+      description: "Reuse the same frame contract for a wide physical page.",
       exampleExport: "PageFrameTicketExample",
     },
   ],
@@ -483,7 +483,7 @@ const componentEntries: readonly ComponentCatalogEntry[] = [
     title: "Link",
     description: "Selectable links inside a PDF document.",
     notes:
-      "Use validated https/http, mailto, tel or explicit internal destinations. Links default to blue; text and theme-accent tones are available. Reader support varies; links do not make tickets secure.",
+      "Use validated https/http, mailto, tel or explicit internal destinations. Links default to blue; text and theme-accent tones are available. Reader support varies; links do not make a document secure.",
     exampleFile: "packages/documents/src/examples/components/content.tsx",
     exampleExport: "LinkExample",
     height: 220,

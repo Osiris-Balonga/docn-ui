@@ -6,6 +6,124 @@ import {
 export const DEVELOPMENT_REGISTRY_VERSION = "dev";
 export const PINNED_SHADCN_VERSION = "4.19.0";
 
+const receiptFrameItem = {
+  name: "docn-receipt-frame",
+  type: "registry:lib",
+  title: "Receipt frame",
+  description:
+    "A physical roll-receipt sample frame with a qualified local PDF theme.",
+  dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+  registryDependencies: ["docn-contracts", "docn-themes", "docn-theme-context"],
+  files: ["packages/documents/src/primitives/receipt-frame.tsx"],
+};
+
+const newTemplateItems = [
+  [
+    "docn-invoice-photo-header",
+    "Photo header invoice",
+    "invoices/photo-header-invoice.tsx",
+    ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-receipt-product-barcode",
+    "Product barcode receipt",
+    "receipts/product-barcode-receipt.tsx",
+    [
+      "docn-receipt-frame",
+      "docn-barcode",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-receipt-cash-register",
+    "Cash register receipt",
+    "receipts/cash-register-receipt.tsx",
+    [
+      "docn-receipt-frame",
+      "docn-barcode",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-report-product-analytics",
+    "Product analytics report",
+    "reports/product-analytics-report.tsx",
+    [
+      "docn-page-frame",
+      "docn-graph",
+      "docn-heading",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-report-marketplace-revenue",
+    "Marketplace revenue report",
+    "reports/marketplace-revenue-report.tsx",
+    ["docn-page-frame", "docn-graph", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-report-customer-support",
+    "Customer support report",
+    "reports/customer-support-report.tsx",
+    [
+      "docn-page-frame",
+      "docn-graph",
+      "docn-heading",
+      "docn-image",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-badge-creative-team",
+    "Creative team badge",
+    "badges/creative-team-badge.tsx",
+    ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-badge-developer",
+    "Developer badge",
+    "badges/developer-badge.tsx",
+    ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-business-card-coral-qr",
+    "Coral QR business card",
+    "business-cards/coral-qr-business-card.tsx",
+    ["docn-page-frame", "docn-qr-code", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-business-card-violet-founder",
+    "Violet founder business card",
+    "business-cards/violet-founder-business-card.tsx",
+    ["docn-page-frame", "docn-text", "docn-row", "docn-stack"],
+  ],
+].map(([name, title, relativeFile, primitiveDependencies]) => {
+  const file = `packages/documents/src/templates/${relativeFile}`;
+  return {
+    name,
+    type: "registry:block",
+    title,
+    description: `A source-owned ${String(title).toLowerCase()} composition.`,
+    dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+    devDependencies: ["@types/react@19.2.18"],
+    registryDependencies: [
+      "docn-template-types",
+      "docn-template-style",
+      ...primitiveDependencies,
+    ],
+    files: [file],
+    preview: [file],
+  };
+});
+
 export const registrySourceManifest = {
   name: "docn-ui",
   homepage: "https://github.com/Osiris-Balonga/docn-ui",
@@ -185,9 +303,9 @@ export const registrySourceManifest = {
       preview: ["packages/documents/src/templates/resume/designer-resume.tsx"],
     },
     {
-      name: "docn-invoice-stripe",
+      name: "docn-invoice-spacious",
       type: "registry:block",
-      title: "Stripe-style invoice",
+      title: "Spacious service invoice",
       description: "A source-owned spacious service invoice composition.",
       dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
       devDependencies: ["@types/react@19.2.18"],
@@ -203,8 +321,10 @@ export const registrySourceManifest = {
         "docn-divider",
         "docn-image",
       ],
-      files: ["packages/documents/src/templates/invoices/stripe-invoice.tsx"],
-      preview: ["packages/documents/src/templates/invoices/stripe-invoice.tsx"],
+      files: ["packages/documents/src/templates/invoices/spacious-invoice.tsx"],
+      preview: [
+        "packages/documents/src/templates/invoices/spacious-invoice.tsx",
+      ],
     },
     {
       name: "docn-receipt-order-confirmation",
@@ -318,6 +438,7 @@ export const registrySourceManifest = {
       registryDependencies: [
         "docn-core",
         "docn-render",
+        "docn-receipt-frame",
         ...componentRegistryItems
           .filter((item) => item.name !== "docn-barcode")
           .map((item) => item.name),
@@ -332,5 +453,7 @@ export const registrySourceManifest = {
         "page-regions.tsx",
       ].map((file) => `packages/documents/src/primitives/${file}`),
     },
+    receiptFrameItem,
+    ...newTemplateItems,
   ],
 };

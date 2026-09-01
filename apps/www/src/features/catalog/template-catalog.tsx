@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useState, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
 import {
   templateCatalog,
@@ -120,6 +120,7 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
 }
 
 export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const featuredTemplate = templateCatalog.find(
     (template) => template.slug === featuredSlug,
@@ -128,11 +129,25 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
     templateCatalog.some((template) => template.family === family.id),
   );
   const requestedFamily = searchParams.get("family");
-  const activeFamily: TemplateFamily = templateFamilies.some(
+  const requestedFamilyIsAvailable = templateFamilies.some(
     (family) => family.id === requestedFamily,
-  )
+  );
+  const activeFamily: TemplateFamily = requestedFamilyIsAvailable
     ? (requestedFamily as TemplateFamily)
     : (featuredTemplate?.family ?? firstAvailableFamily?.id ?? "business-card");
+  const searchParamsString = searchParams.toString();
+  useEffect(() => {
+    if (!requestedFamily || requestedFamilyIsAvailable) return;
+    const canonicalParams = new URLSearchParams(searchParamsString);
+    canonicalParams.set("family", activeFamily);
+    router.replace(`?${canonicalParams.toString()}`, { scroll: false });
+  }, [
+    activeFamily,
+    requestedFamily,
+    requestedFamilyIsAvailable,
+    router,
+    searchParamsString,
+  ]);
   const activeTemplates = templateCatalog
     .filter((template) => template.family === activeFamily)
     .sort((left, right) => {

@@ -12,6 +12,9 @@ template remains the source of truth for its visual identity.
 - Shared PDF primitives consume the resolved template theme through
   `PageFrame`; templates do not fork or restyle the primitives globally.
 
-Brand assets are explicit component inputs. A template must use an actual local
-image asset for a logo or photograph instead of approximating it with a letter,
-emoji or improvised drawing.
+Brand assets are explicit component inputs. Shipped samples use only original
+project-owned marks, generated fictional imagery, or locally documented assets
+with redistribution rights. Third-party names, logos, product identities and
+trademarks are never copied from visual references. Logo marks may be crisp
+PDF-native vector compositions; photographs must remain validated local image
+inputs rather than improvised drawings, letters or emoji.

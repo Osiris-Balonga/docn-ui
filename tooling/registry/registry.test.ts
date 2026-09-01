@@ -17,16 +17,23 @@ describe("document registry generation", () => {
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
     });
-    expect(templateCatalog).toHaveLength(7);
-    expect(templateCatalog.map((template) => template.family)).toEqual([
-      "resume",
-      "resume",
-      "resume",
-      "invoice",
-      "invoice",
-      "invoice",
-      "receipt",
-    ]);
+    expect(templateCatalog).toHaveLength(17);
+    expect(
+      templateCatalog.reduce<Record<string, number>>((counts, template) => {
+        counts[template.family] = (counts[template.family] ?? 0) + 1;
+        return counts;
+      }, {}),
+    ).toEqual({
+      badge: 2,
+      "business-card": 2,
+      invoice: 4,
+      receipt: 3,
+      report: 3,
+      resume: 3,
+    });
+    expect(
+      templateCatalog.filter((template) => template.family === "business-card"),
+    ).toEqual(expect.arrayContaining([expect.objectContaining({ sides: 2 })]));
     expect(result.items.map((item) => item.name)).toEqual(
       expect.arrayContaining([
         "docn-core",
@@ -41,10 +48,15 @@ describe("document registry generation", () => {
         "docn-resume-classic",
         "docn-resume-accountant",
         "docn-resume-designer",
-        "docn-invoice-stripe",
+        "docn-invoice-spacious",
         "docn-invoice-vertical",
         "docn-invoice-corporate",
+        "docn-invoice-photo-header",
         "docn-receipt-order-confirmation",
+        "docn-receipt-product-barcode",
+        "docn-report-product-analytics",
+        "docn-badge-creative-team",
+        "docn-business-card-coral-qr",
       ]),
     );
     expect(result.items.some((item) => item.name.includes("invoice"))).toBe(
@@ -52,7 +64,7 @@ describe("document registry generation", () => {
     );
     expect(
       result.items.some((item) => item.name.includes("business-card")),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       await buildRegistry({
         root,

@@ -14,7 +14,7 @@ import {
 } from "../style-policy";
 import type { TemplateDefinition, TemplateSampleAssets } from "../types";
 
-export interface StripeInvoiceProps {
+export interface SpaciousInvoiceProps {
   amountDue: string;
   customer: readonly string[];
   dueDate: string;
@@ -27,18 +27,18 @@ export interface StripeInvoiceProps {
   }[];
   logoSource: string;
   seller: string;
-  style?: TemplateStyleOverrides<typeof stripeInvoiceStyle.slots>;
+  style?: TemplateStyleOverrides<typeof spaciousInvoiceStyle.slots>;
 }
 
 const resolvedFormat = resolveFormat("a4");
 if (resolvedFormat.kind !== "fixed") throw new Error("Invoice requires A4.");
 const format = resolvedFormat;
 
-export const stripeInvoiceStyle = defineTemplateStyle(
+export const spaciousInvoiceStyle = defineTemplateStyle(
   "neutral",
   {
     colors: {
-      accent: "#635bff",
+      accent: "#1948cc",
       border: "#e5e5e5",
       canvas: "#ffffff",
       surface: "#ffffff",
@@ -80,8 +80,8 @@ function SummaryRow({
   );
 }
 
-export function StripeInvoice(props: StripeInvoiceProps) {
-  const style = resolveTemplateStyle(stripeInvoiceStyle, props.style);
+export function SpaciousInvoice(props: SpaciousInvoiceProps) {
+  const style = resolveTemplateStyle(spaciousInvoiceStyle, props.style);
   const { theme } = style;
   return (
     <Document title={`Invoice ${props.invoiceNumber}`} language="en">
@@ -98,13 +98,21 @@ export function StripeInvoice(props: StripeInvoiceProps) {
             <Heading level="display" style={{ fontSize: 24 }}>
               Invoice
             </Heading>
-            <Image
-              alt="Stripe"
-              fit="contain"
-              height={29}
-              resolvedSource={props.logoSource}
-              width={70}
-            />
+            <Row align="center" gap="sm">
+              <Image
+                alt="Northline original mark"
+                fit="contain"
+                height={24}
+                resolvedSource={props.logoSource}
+                width={24}
+              />
+              <Text
+                weight="strong"
+                style={{ color: theme.colors.accent, fontSize: 12 }}
+              >
+                NORTHLINE
+              </Text>
+            </Row>
           </Row>
 
           <Stack gap="xs">
@@ -225,9 +233,9 @@ export function StripeInvoice(props: StripeInvoiceProps) {
   );
 }
 
-export const stripeInvoiceExample = (
+export const spaciousInvoiceExample = (
   logoSource: string,
-): StripeInvoiceProps => ({
+): SpaciousInvoiceProps => ({
   invoiceNumber: "26B34523-DRAFT",
   dueDate: "February 5, 2026",
   seller: "Source Studio",
@@ -244,21 +252,21 @@ export const stripeInvoiceExample = (
   ],
 });
 
-export const stripeInvoiceDefinition: TemplateDefinition = {
-  id: "invoice-stripe",
-  slug: "invoice-stripe",
-  title: "Stripe-style invoice",
+export const spaciousInvoiceDefinition: TemplateDefinition = {
+  id: "invoice-spacious",
+  slug: "invoice-spacious",
+  title: "Spacious service invoice",
   family: "invoice",
   familyLabel: "Invoices",
   description:
     "A spacious service invoice with clear due amount, line items and bank instructions.",
   supportedFormatIds: ["a4"],
   supportedThemeIds: ["neutral"],
-  tags: ["invoice", "billing", "stripe-style", "payment"],
+  tags: ["invoice", "billing", "spacious", "payment"],
   version: "1.0.0",
   sides: 1,
   capabilities: { logo: true, printProfiles: false, qr: false },
-  renderSample: ({ stripeLogoSource }: TemplateSampleAssets) => (
-    <StripeInvoice {...stripeInvoiceExample(stripeLogoSource)} />
+  renderSample: ({ studioLogoSource }: TemplateSampleAssets) => (
+    <SpaciousInvoice {...spaciousInvoiceExample(studioLogoSource)} />
   ),
 };

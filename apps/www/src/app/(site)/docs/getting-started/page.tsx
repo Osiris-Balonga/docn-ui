@@ -30,8 +30,8 @@ export default function GettingStartedPage() {
             What is ready
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Fifteen templates cover business cards, event tickets, thermal
-            receipts, labels and invoices. The catalog shows actual PDF-derived
+            Seventeen templates cover invoices, receipts, resumes, reports,
+            badges and business cards. The catalog shows actual PDF-derived
             previews and the relevant source files. Edit data, fonts and layouts
             in your code; there is no template customization form to configure
             first.
