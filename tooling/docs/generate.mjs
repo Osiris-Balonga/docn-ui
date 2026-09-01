@@ -94,16 +94,12 @@ try {
   );
   prepareExampleFonts(resolve(root, "packages/documents/assets"));
   const api = createApiReader(root);
-  const sample = createCanvas(420, 210);
-  const context = sample.getContext("2d");
-  context.fillStyle = "#eeeeee";
-  context.fillRect(0, 0, 420, 210);
-  context.fillStyle = "#171717";
-  context.fillRect(24, 24, 162, 162);
-  context.fillStyle = "#888888";
-  context.fillRect(210, 24, 186, 69);
-  context.fillRect(210, 117, 186, 69);
-  const imageSource = sample.toDataURL("image/png");
+  const imageSource = `data:image/jpeg;base64,${(
+    await readFile(resolve(root, "tooling/docs/assets/desk-setup.jpg"))
+  ).toString("base64")}`;
+  const logoSource = `data:image/png;base64,${(
+    await readFile(resolve(root, "tooling/docs/assets/studio-north-mark.png"))
+  ).toString("base64")}`;
   const outputs = [];
   await mkdir(resolve(publicRoot, "generated/docs"), { recursive: true });
   await mkdir(resolve(root, ".artifacts/docs"), { recursive: true });
@@ -116,6 +112,7 @@ try {
       name,
       height,
       imageSource,
+      logoSource,
       themeId,
     });
     const pdf = `/generated/docs/${id}.pdf`;
@@ -168,6 +165,15 @@ try {
       entry.exampleFile,
       entry.exampleExport,
     );
+    const recipes = await Promise.all(
+      (entry.recipes ?? []).map(async (recipe) => ({
+        title: recipe.title,
+        description: recipe.description,
+        code: (
+          await readExampleSource(root, entry.exampleFile, recipe.exampleExport)
+        ).code,
+      })),
+    );
     const exampleItems = [
       ...new Set(
         example.imports
@@ -190,6 +196,7 @@ try {
       ...entry,
       api: api(item),
       usage: example.code,
+      recipes,
       exampleItems,
       ...(await render(entry.slug, entry.exampleExport, entry.height)),
     });

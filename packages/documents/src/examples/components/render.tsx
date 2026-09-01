@@ -20,18 +20,23 @@ export async function renderComponentExample({
   name,
   height,
   imageSource,
+  logoSource,
   themeId = "neutral",
 }: {
   name: string;
   height: number;
   imageSource: string;
+  logoSource: string;
   themeId?: ThemeId;
 }) {
   const Example = examples[name as keyof typeof examples] as
-    ComponentType<{ source: string }> | undefined;
+    ComponentType<{ source: string; logoSource: string }> | undefined;
   if (!Example) throw new Error(`Missing example: ${name}`);
   const theme = getPdfTheme(themeId);
-  const content: ReactNode = createElement(Example, { source: imageSource });
+  const content: ReactNode = createElement(Example, {
+    source: imageSource,
+    logoSource,
+  });
   const fixedDate = new Date("2026-01-15T12:00:00.000Z");
   return renderToBuffer(
     <Document

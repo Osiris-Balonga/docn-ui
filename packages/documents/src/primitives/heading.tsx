@@ -3,10 +3,15 @@ import type { TextAlign } from "./text";
 import { assertDestinationId } from "./link-validation";
 import { usePdfTheme } from "./theme-context";
 export interface HeadingProps {
+  /** Selectable heading text. */
   children: string;
+  /** Semantic hierarchy mapped to the qualified PDF type scale. */
   level?: "display" | "heading" | 1 | 2 | 3 | 4 | 5 | 6;
+  /** Horizontal text alignment. */
   align?: TextAlign;
+  /** Optional internal PDF destination identifier. */
   id?: string;
+  /** Default or inverted theme text color. */
   tone?: "default" | "inverted";
 }
 

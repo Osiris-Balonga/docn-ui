@@ -10,6 +10,7 @@ import { Text } from "./text";
 
 export type { FormField, FormGroup } from "./printable-data";
 export interface FormProps {
+  /** One to twelve printable field groups. */
   groups: readonly FormGroup[];
 }
 

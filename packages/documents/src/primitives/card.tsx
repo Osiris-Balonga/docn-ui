@@ -3,6 +3,7 @@ import type { SpacingToken } from "./stack";
 import { Section, type SectionProps } from "./section";
 import { usePdfTheme } from "./theme-context";
 export interface CardProps extends SectionProps {
+  /** Theme spacing token applied inside the frame. */
   padding?: SpacingToken;
 }
 

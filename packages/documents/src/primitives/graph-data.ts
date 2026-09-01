@@ -3,15 +3,23 @@ import { DocumentValidationError } from "../core/errors";
 export type GraphType =
   "bar" | "horizontal-bar" | "line" | "area" | "pie" | "donut";
 export interface GraphDatum {
+  /** Unique short categorical label. */
   label: string;
+  /** Finite bounded numeric value. */
   value: number;
 }
 export interface GraphProps {
+  /** PDF-native chart geometry. */
   type: GraphType;
+  /** Short chart heading. */
   title: string;
+  /** Human-readable label for the single data series. */
   seriesLabel: string;
+  /** Bounded categorical entries. */
   data: readonly GraphDatum[];
+  /** Chart width from 160 to 540 PDF points. */
   width?: number;
+  /** Chart height from 160 to 700 PDF points. */
   height?: number;
 }
 export type ResolvedGraph = Required<GraphProps>;

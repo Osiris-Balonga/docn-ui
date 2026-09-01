@@ -64,6 +64,9 @@ export function createApiReader(root) {
           ),
           required: !(prop.flags & ts.SymbolFlags.Optional),
           default: defaults.get(prop.name) ?? null,
+          description: ts.displayPartsToString(
+            prop.getDocumentationComment(checker),
+          ),
         })),
       };
     });

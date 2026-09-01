@@ -3,8 +3,11 @@ import { assertPrintText } from "./printable-data";
 import { Text } from "./text";
 import { usePdfTheme } from "./theme-context";
 export interface AlertProps {
+  /** Main callout heading. */
   title: string;
+  /** Optional supporting explanation. */
   description?: string;
+  /** Explicit printed semantic label, defaulting to Note. */
   status?: string;
 }
 

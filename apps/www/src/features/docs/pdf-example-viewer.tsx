@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +11,7 @@ import {
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
+import { PdfPreviewDialog } from "@/features/pdf-preview/pdf-preview-dialog";
 import type { PdfExample } from "./catalog-data";
 
 export function PdfExampleViewer({
@@ -112,52 +105,27 @@ export function PdfExampleViewer({
         </div>
       </div>
       <TabsContent value="preview" className="space-y-3">
-        <Dialog>
-          <div className="rounded-lg bg-muted/30 p-4 sm:p-6">
-            {failed ? (
-              <p className="py-12 text-center text-sm text-muted-foreground">
-                Preview unavailable. Download the PDF to view this example.
-              </p>
-            ) : (
-              <DialogTrigger
-                className="flex min-h-44 w-full items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={`Enlarge ${title} preview`}
-              >
-                <Image
-                  src={current.src}
-                  alt={`${title} PDF example, page ${page + 1}`}
-                  width={current.width}
-                  height={current.height}
-                  className="h-auto max-h-80 w-auto max-w-full object-contain"
-                  onError={() => setFailed(true)}
-                />
-              </DialogTrigger>
-            )}
-          </div>
-          <DialogContent className="h-[92svh] max-w-[94vw]! grid-rows-[auto_minmax(0,1fr)_auto] motion-reduce:animate-none sm:max-w-[72rem]!">
-            <div className="pr-12">
-              <DialogTitle>{title} preview</DialogTitle>
-              <DialogDescription className="mt-2">
-                Actual PDF output. Scroll to inspect the full page.
-              </DialogDescription>
-            </div>
-            <div
-              tabIndex={0}
-              role="region"
-              aria-label="Enlarged PDF page"
-              className="scrollbar-hidden min-h-0 overflow-auto rounded-md bg-muted/30 p-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Image
-                src={current.src}
-                alt={`${title} PDF example, page ${page + 1}`}
-                width={current.width}
-                height={current.height}
-                className="mx-auto h-auto w-full max-w-[52rem]"
-              />
-            </div>
-            <div>{pagination}</div>
-          </DialogContent>
-        </Dialog>
+        <div className="rounded-lg bg-muted/30 p-4 sm:p-6">
+          {failed ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              Preview unavailable. Download the PDF to view this example.
+            </p>
+          ) : (
+            <PdfPreviewDialog
+              title={title}
+              pages={example.pages.map((preview, index) => ({
+                ...preview,
+                alt: `${title} PDF example, page ${index + 1}`,
+              }))}
+              activePage={page}
+              onActivePageChange={setPage}
+              downloadHref={example.pdf}
+              triggerClassName="min-h-44"
+              previewImageClassName="max-h-80 w-auto"
+              onPreviewError={() => setFailed(true)}
+            />
+          )}
+        </div>
         {pagination}
         <details className="text-sm text-muted-foreground">
           <summary className="cursor-pointer py-2 outline-none focus-visible:underline">

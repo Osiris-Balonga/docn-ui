@@ -4,6 +4,7 @@ import { assertDestinationId, validateLink } from "./link-validation";
 import { assertListItems, type ListItem } from "./list-data";
 import { FieldPair, KeyValue } from "./typography";
 import { Divider, Separator } from "./layout";
+import { assertSeparatorProps } from "./separator";
 import {
   assertFormGroups,
   assertSignature,
@@ -107,6 +108,19 @@ describe("content primitive contracts", () => {
         body,
       ),
     ).not.toThrow();
+    const diagonal = getWatermarkLayout(
+      { text: "CONFIDENTIAL", fontSize: 72, rotation: -38 },
+      body,
+    );
+    expect(diagonal.width).toBe(body.width);
+    expect(diagonal.x).toBe(body.x);
+    expect(diagonal.height).toBe(144);
+    expect(() =>
+      getWatermarkLayout(
+        { text: "CONFIDENTIAL", fontSize: 72, rotation: -90 },
+        body,
+      ),
+    ).not.toThrow();
     for (const input of [
       { text: "" },
       { text: "A".repeat(25) },
@@ -115,11 +129,12 @@ describe("content primitive contracts", () => {
       { text: "DRAFT", placement: "outside" },
       { text: "DRAFT", repeat: "yes" },
       ...[0, 0.21, NaN].map((opacity) => ({ text: "DRAFT", opacity })),
-      ...[11, 49, Infinity].map((fontSize) => ({ text: "DRAFT", fontSize })),
+      ...[11, 97, Infinity].map((fontSize) => ({ text: "DRAFT", fontSize })),
+      ...[-91, 91, Infinity].map((rotation) => ({ text: "DRAFT", rotation })),
     ])
       expect(() => getWatermarkLayout(input as WatermarkProps, body)).toThrow();
     expect(() =>
-      getWatermarkLayout({ text: "DRAFT" }, { ...body, width: 100 }),
+      getWatermarkLayout({ text: "DRAFT" }, { ...body, width: 80 }),
     ).toThrow(/envelope/);
     expect(() =>
       getWatermarkLayout({ text: "DRAFT" }, { ...body, height: 50 }),
@@ -129,6 +144,25 @@ describe("content primitive contracts", () => {
   it("keeps aliases on one implementation", () => {
     expect(KeyValue).toBe(FieldPair);
     expect(Divider).toBe(Separator);
+  });
+
+  it("bounds labeled and partial divider variants", () => {
+    for (const input of [
+      {},
+      { label: "OR" },
+      { width: 240 },
+      { width: "60%" as const },
+    ])
+      expect(() => assertSeparatorProps(input)).not.toThrow();
+    for (const input of [
+      { label: "" },
+      { label: "two\nlines" },
+      { label: "a".repeat(49) },
+      { width: 23 },
+      { width: Infinity },
+      { width: "101%" as `${number}%` },
+    ])
+      expect(() => assertSeparatorProps(input)).toThrow();
   });
 
   it("allows explicit readable destinations and rejects unsafe or ambiguous links", () => {
@@ -221,5 +255,12 @@ describe("content primitive contracts", () => {
       expect(() => assertLocalImage("blob:null/local", size, 35)).toThrow();
       expect(() => assertLocalImage("blob:null/local", 70, size)).toThrow();
     }
+    for (const radius of [-1, 18, NaN, Infinity])
+      expect(() =>
+        assertLocalImage("blob:null/local", 70, 35, radius),
+      ).toThrow();
+    expect(() =>
+      assertLocalImage("blob:null/local", 70, 35, 17.5),
+    ).not.toThrow();
   });
 });

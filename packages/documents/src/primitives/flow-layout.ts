@@ -3,7 +3,9 @@ import type { ResolvedFixedFormat } from "../core/formats";
 import { createSafeFrame, type LayoutBounds } from "./measurement";
 
 export interface FlowRegionSpace {
+  /** Reserved region height in PDF points. */
   height: number;
+  /** Gap between the reserved region and flowing body. */
   gap?: number;
 }
 

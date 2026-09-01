@@ -61,7 +61,7 @@ export function DocsSearch() {
         ref={triggerRef}
         type="button"
         variant="secondary"
-        className="hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 md:flex md:w-48 lg:w-40 xl:w-64 dark:bg-card"
+        className="hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 sm:flex sm:w-36 md:w-48 lg:w-40 xl:w-64 dark:bg-card"
         onClick={() => setOpen(true)}
         aria-label="Search documentation"
       >

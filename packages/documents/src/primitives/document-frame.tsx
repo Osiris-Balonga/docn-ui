@@ -8,15 +8,22 @@ import { FlowFrameContext } from "./flow-context";
 import { PdfThemeProvider } from "./theme-context";
 
 export interface FlowRegion extends FlowRegionSpace {
+  /** Repeated header or footer content. */
   content: ReactNode;
 }
 
 export interface DocumentFrameProps {
+  /** Flowing content that may paginate. */
   children: ReactNode;
+  /** Resolved A4 or Letter physical format. */
   format: ResolvedFixedFormat;
+  /** Qualified PDF theme used by the frame and child primitives. */
   theme: PdfTheme;
+  /** Optional uniform page margin in PDF points. */
   margin?: number;
+  /** Optional repeated header with reserved height and gap. */
   header?: FlowRegion;
+  /** Optional repeated footer with reserved height and gap. */
   footer?: FlowRegion;
 }
 

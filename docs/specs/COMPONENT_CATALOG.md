@@ -8,38 +8,38 @@ The reference is [PDFx by akii09](https://github.com/akii09/pdfx), not the unrel
 
 The comparison also inspected PDFx's public prop references for [Heading](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/heading.constant.ts), [Text](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/text.constant.ts), [Form](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/form.constant.ts), [Graph](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/graph.constant.ts), [List](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/list.constant.ts), [Signature](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/signature.constant.ts), and [QRCode](https://github.com/akii09/pdfx/blob/4b5c8dfb4b65ad63481a59300b31c3ee97181b4f/apps/www/src/constants/qrcode.constant.ts). Inventory coverage is not API or visual parity: each component needs its own typed contract and examples before it is advertised.
 
-Local baseline: `a9a5dc582575c90c216817c78570c65892b5eb8f` on `feat/invoice-templates`. [Primitive sources](../../packages/documents/src/primitives/index.tsx) expose nine JSX components and three [flow-table helpers](../../packages/documents/src/primitives/table.tsx). The [site index](../../apps/www/src/app/(site)/components/page.tsx) lists nine names as non-interactive text; no component detail routes exist. The [registry manifest](../../tooling/registry/source-manifest.mjs) installs primitives as one `docn-primitives` item. Thus, source existence does not yet mean that a developer can discover and install an individual component from its documentation.
+Local baseline: `a9a5dc582575c90c216817c78570c65892b5eb8f` on `feat/invoice-templates`. [Primitive sources](../../packages/documents/src/primitives/index.tsx) expose nine JSX components and three [flow-table helpers](../../packages/documents/src/primitives/table.tsx). The [site index](<../../apps/www/src/app/(site)/components/page.tsx>) lists nine names as non-interactive text; no component detail routes exist. The [registry manifest](../../tooling/registry/source-manifest.mjs) installs primitives as one `docn-primitives` item. Thus, source existence does not yet mean that a developer can discover and install an individual component from its documentation.
 
 ## Coverage matrix
 
 "Existing" below means a related implementation exists, not that all PDFx options are supported. No item in this matrix is a completed L12 deliverable yet.
 
-| PDFx component | docn-ui baseline | Required L12 outcome |
-| --- | --- | --- |
-| Alert | Missing | Titled callout, explicit status text, optional supporting content; neutral default. |
-| Badge | Missing | Compact status label, size and tone options; no reliance on color alone. |
-| Card | Missing | Composable content container with optional heading and controlled padding. |
-| DataTable | Missing | Typed columns and rows built on the same table primitives, not a second layout engine. |
-| Divider | Existing `Separator` | Document horizontal separation; retain `Separator` and expose a discoverable `Divider` alias without duplicate implementation. |
-| Form | Missing | Printable labeled fields and grouped one/two/three-column layouts; blank or populated values. Not interactive AcroForms. |
-| Graph | Missing | Bar, horizontal bar, line, area, pie, and donut; PDF-native vector output, labels and legends. |
-| Heading | Existing, two named sizes | Level hierarchy, alignment and safe style controls; keep existing `display`/`heading` usages working. |
-| KeepTogether | Only inline `wrap={false}` usage | Explicit bounded grouping for flowing pages, with documented oversized-content behavior. |
-| KeyValue | Existing vertical `FieldPair` | Horizontal/vertical label-value layout; keep `FieldPair` compatible and share implementation. |
-| Link | Missing | PDF link annotations and readable text; validated HTTP(S), mailto, tel, or explicit internal destinations. |
-| List | Missing | Bullets, numbering, nesting, descriptive entries and static check states; bounded depth and length. |
-| PageBreak | Engine behavior only | Explicit page break for flowing content, documented separately from a fixed-format frame. |
-| PageFooter | Invoice-specific inline layout | Reusable inline/repeated footer with reserved space, optional contact information and page numbering. |
-| PageHeader | Invoice-specific inline layout | Reusable inline/repeated header with optional resolved logo and reserved space. |
-| PageNumber | Invoice-specific render callback | Current/total page numbering resolved after pagination, with configurable text. |
-| Image | Existing resolved-source image | Controlled fit, size, caption and alignment using permitted local assets; no arbitrary user URL fetch. |
-| QRCode | Existing vector QR and density validation | Document and expose the existing implementation; retain the four-module quiet zone and final-PDF decoding checks. |
-| Section | Missing | Logical content group with heading and spacing; no universal layout component with dozens of flags. |
-| Signature | Missing | One/two signer areas and inline signature field; optional name/date/role. Not a digital signature. |
-| Stack | Existing vertical stack; separate `Row` | Document vertical/horizontal composition and token-based spacing, preserving both existing APIs. |
-| Table | Partial `FlowTableHeader/Row/Cell` | Composable table surface, headers/cells, alignment and predictable pagination; preserve existing invoice helpers. |
-| Text | Existing string-only text | Paragraph and inline typography, alignment and available font weights; explicit font/style limits. |
-| Watermark | Missing | Restrained text overlay with opacity, placement and repeat behavior; not document protection. |
+| PDFx component | docn-ui baseline                          | Required L12 outcome                                                                                                           |
+| -------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Alert          | Missing                                   | Titled callout, explicit status text, optional supporting content; neutral default.                                            |
+| Badge          | Missing                                   | Compact status label, size and tone options; no reliance on color alone.                                                       |
+| Card           | Missing                                   | Composable content container with optional heading and controlled padding.                                                     |
+| DataTable      | Missing                                   | Typed columns and rows built on the same table primitives, not a second layout engine.                                         |
+| Divider        | Existing `Separator`                      | Document horizontal separation; retain `Separator` and expose a discoverable `Divider` alias without duplicate implementation. |
+| Form           | Missing                                   | Printable labeled fields and grouped one/two/three-column layouts; blank or populated values. Not interactive AcroForms.       |
+| Graph          | Missing                                   | Bar, horizontal bar, line, area, pie, and donut; PDF-native vector output, labels and legends.                                 |
+| Heading        | Existing, two named sizes                 | Level hierarchy, alignment and safe style controls; keep existing `display`/`heading` usages working.                          |
+| KeepTogether   | Only inline `wrap={false}` usage          | Explicit bounded grouping for flowing pages, with documented oversized-content behavior.                                       |
+| KeyValue       | Existing vertical `FieldPair`             | Horizontal/vertical label-value layout; keep `FieldPair` compatible and share implementation.                                  |
+| Link           | Missing                                   | PDF link annotations and readable text; validated HTTP(S), mailto, tel, or explicit internal destinations.                     |
+| List           | Missing                                   | Bullets, numbering, nesting, descriptive entries and static check states; bounded depth and length.                            |
+| PageBreak      | Engine behavior only                      | Explicit page break for flowing content, documented separately from a fixed-format frame.                                      |
+| PageFooter     | Invoice-specific inline layout            | Reusable inline/repeated footer with reserved space, optional contact information and page numbering.                          |
+| PageHeader     | Invoice-specific inline layout            | Reusable inline/repeated header with optional resolved logo and reserved space.                                                |
+| PageNumber     | Invoice-specific render callback          | Current/total page numbering resolved after pagination, with configurable text.                                                |
+| Image          | Existing resolved-source image            | Controlled fit, size, caption and alignment using permitted local assets; no arbitrary user URL fetch.                         |
+| QRCode         | Existing vector QR and density validation | Document and expose the existing implementation; retain the four-module quiet zone and final-PDF decoding checks.              |
+| Section        | Missing                                   | Logical content group with heading and spacing; no universal layout component with dozens of flags.                            |
+| Signature      | Missing                                   | One/two signer areas and inline signature field; optional name/date/role. Not a digital signature.                             |
+| Stack          | Existing vertical stack; separate `Row`   | Document vertical/horizontal composition and token-based spacing, preserving both existing APIs.                               |
+| Table          | Partial `FlowTableHeader/Row/Cell`        | Composable table surface, headers/cells, alignment and predictable pagination; preserve existing invoice helpers.              |
+| Text           | Existing string-only text                 | Paragraph and inline typography, alignment and available font weights; explicit font/style limits.                             |
+| Watermark      | Missing                                   | Restrained text overlay with opacity, placement and repeat behavior; not document protection.                                  |
 
 Seven categories have an existing counterpart, one has partial table helpers, and sixteen lack a reusable public component. That count deliberately does not treat template-local headers and footers as finished primitives.
 
@@ -130,7 +130,7 @@ The shared multipage specimen will qualify repeated headers/footers, final numbe
 
 `Signature` accepts one or two signers with a required label and optional name, role and date. Stacked areas reserve a configurable 24–96 pt writing space (default 40 pt) above the signature line. Inline mode supports exactly one signer. Names are printed text, not reproduced handwriting; no cryptographic signature, identity verification or legal validity is implied. The signer group is non-breaking and must fit its containing frame.
 
-`Watermark` is a direct child of DocumentFrame, not a nested flow block. It uses the reserved body rectangle, never the header/footer. Its horizontal text is placed at the top, center (default) or bottom of that rectangle, with opacity 0.02–0.2 (default 0.08), font size 12–48 pt (default 32), and repeat enabled by default. With repeat disabled it appears only on the first page of that frame, regardless of preceding frames. A conservative width/height envelope rejects labels that cannot fit without shrinking or clipping. The first surface accepts 1–24 printable Latin characters; rotated marks, images, arbitrary Unicode shaping and fixed-format PageFrame placement are not yet qualified. Place it after body content for a visible overlay. Watermarks are annotations of intent, not document protection; printed contrast still requires review.
+`Watermark` is a direct child of DocumentFrame, not a nested flow block. It uses the reserved body rectangle, never the header/footer. Its text is placed at the top, center (default) or bottom of that rectangle, with opacity 0.02–0.2 (default 0.08), font size 12–96 pt (default 32), rotation from -60 to 60 degrees (default 0), and repeat enabled by default. With repeat disabled it appears only on the first page of that frame, regardless of preceding frames. A conservative width/height envelope rejects labels that cannot fit without shrinking or clipping and uses the body diagonal only when validating a rotated label. The surface accepts 1–24 printable Latin characters; image marks, arbitrary Unicode shaping and fixed-format PageFrame placement are not qualified. Place it after body content for a visible overlay. Watermarks are annotations of intent, not document protection; printed contrast still requires review.
 
 The existing shared content specimen will gain printable forms/annotations and a second page to verify repeated versus first-page-only watermarks. No new dependency, template restyling or site shell change is required. The aggregate registry remains compatible; individually installable items and public examples arrive in S02g/S02h.
 

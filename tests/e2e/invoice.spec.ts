@@ -36,14 +36,16 @@ test("discovers the complete invoice family and its installable source", async (
     .getByRole("button", { name: "Enlarge Subscription invoice preview" })
     .click();
   const previewDialog = page.getByRole("dialog", {
-    name: "Subscription invoice",
+    name: "Subscription invoice preview",
   });
-  await expect(
-    previewDialog.getByAltText("Enlarged Subscription invoice PDF preview"),
-  ).toBeVisible();
-  await expect(
-    previewDialog.getByAltText("Enlarged Subscription invoice PDF preview"),
-  ).toHaveAttribute("src", subscriptionPreviewSource ?? "");
+  const detailedPreview = previewDialog.getByAltText(
+    "Subscription invoice PDF preview",
+  );
+  await expect(detailedPreview).toBeVisible();
+  await expect(detailedPreview).toHaveAttribute(
+    "src",
+    subscriptionPreviewSource ?? "",
+  );
   await previewDialog.getByRole("button", { name: "Close" }).click();
 
   await page

@@ -23,6 +23,20 @@ test("browses templates and opens their registry source", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
+  const minimalPreview = page.getByRole("button", {
+    name: "Enlarge Minimal business card preview",
+  });
+  await minimalPreview.hover();
+  await expect(minimalPreview.getByText("Open preview")).toBeVisible();
+  await minimalPreview.click();
+  const templatePreview = page.getByRole("dialog", {
+    name: "Minimal business card preview",
+  });
+  await expect(
+    templatePreview.getByRole("region", { name: "Detailed PDF preview" }),
+  ).toBeVisible();
+  await expect(templatePreview.getByText("Download PDF")).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
   await page
     .getByRole("button", {
@@ -197,6 +211,9 @@ test("keeps the Home focused and changes documentation navigation only when spac
 
   await page.setViewportSize({ width: 700, height: 900 });
   await expect(
+    page.getByRole("button", { name: "Search documentation" }),
+  ).toBeVisible();
+  await expect(
     page.getByRole("button", { name: "Open site navigation" }),
   ).toHaveCount(1);
   await expect(
@@ -259,9 +276,41 @@ test("browses component examples source formats and themes", async ({
     )
     .toBeGreaterThan(0);
   const enlarge = page.getByRole("button", { name: "Enlarge Barcode preview" });
+  await enlarge.hover();
+  await expect(enlarge.getByText("Open preview")).toBeVisible();
   await enlarge.click();
   const overlay = page.getByRole("dialog", { name: "Barcode preview" });
   await expect(overlay).toBeVisible();
+  await expect(
+    overlay.getByRole("region", { name: "Detailed PDF preview" }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      overlay.evaluate((element) =>
+        Math.round(element.getBoundingClientRect().right - window.innerWidth),
+      ),
+    )
+    .toBe(0);
+  await expect
+    .poll(() =>
+      page
+        .locator('[data-slot="dialog-overlay"]')
+        .evaluate((element) =>
+          Math.round(element.getBoundingClientRect().right - window.innerWidth),
+        ),
+    )
+    .toBe(0);
+  const zoomIn = overlay.getByRole("button", { name: "Zoom in" });
+  for (let step = 0; step < 15; step += 1) await zoomIn.click();
+  await expect(overlay.getByText("250%", { exact: true })).toBeVisible();
+  await expect(zoomIn).toBeDisabled();
+  await expect
+    .poll(() =>
+      overlay
+        .getByRole("region", { name: "Detailed PDF preview" })
+        .evaluate((element) => element.scrollWidth > element.clientWidth),
+    )
+    .toBe(true);
   await page.keyboard.press("Escape");
   await expect(enlarge).toBeFocused();
   await page.getByRole("tab", { name: "Code", exact: true }).click();
@@ -289,6 +338,45 @@ test("browses component examples source formats and themes", async ({
   ).toContainText("barHeight");
   await page.screenshot({ path: testInfo.outputPath("component-desktop.png") });
 
+  await page.goto("/components/divider/");
+  await expect(page.getByRole("heading", { name: "Examples" })).toBeVisible();
+  await expect(page.getByText("Solid, dashed and dotted rules")).toBeVisible();
+  await expect(
+    page.getByLabel("divider-example-2.tsx code").filter({
+      hasText: 'label="OR"',
+    }),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("table", { name: "Divider properties" }),
+  ).toContainText("PDF-native border style.");
+
+  await page.goto("/components/data-table/");
+  await expect(page.getByText("Typed production rows")).toBeVisible();
+  await expect(page.getByText("Empty dataset", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("table", { name: "DataTable properties" }),
+  ).toContainText("Typed column definitions and cell mapping functions.");
+  await page.getByRole("tab", { name: "Code", exact: true }).click();
+  await expect(page.getByLabel("data-table-example.tsx code")).toContainText(
+    'tone="accent"',
+  );
+
+  await page.goto("/components/image/");
+  await expect(page.getByText("Square photograph")).toBeVisible();
+  await expect(page.getByText("Covered photograph")).toBeVisible();
+  await expect(page.getByText("Rounded photograph")).toBeVisible();
+
+  await page.goto("/components/graph/");
+  await expect(page.getByText("Cartesian charts")).toBeVisible();
+  await expect(page.getByText("Circular charts")).toBeVisible();
+
+  await page.goto("/components/watermark/");
+  await expect(
+    page.getByRole("heading", { name: "Full-page diagonal mark" }),
+  ).toBeVisible();
+  await expect(page.getByText("Full-page horizontal mark")).toBeVisible();
+  await expect(page.getByText("Full-page vertical mark")).toBeVisible();
+
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByPlaceholder("Search available pages...").fill("PageBreak");
   await page.getByRole("option", { name: /PageBreak/ }).click();
@@ -298,13 +386,13 @@ test("browses component examples source formats and themes", async ({
   await expect(page.getByRole("tabpanel")).toContainText("Second page");
   await page.getByRole("button", { name: "Enlarge PageBreak preview" }).click();
   const pageOverlay = page.getByRole("dialog", { name: "PageBreak preview" });
-  const scroll = pageOverlay.getByRole("region", { name: "Enlarged PDF page" });
+  const scroll = pageOverlay.getByRole("region", {
+    name: "Detailed PDF preview",
+  });
   await expect(scroll).toHaveCSS("scrollbar-width", "none");
-  await scroll.focus();
-  await page.keyboard.press("ArrowDown");
-  await expect
-    .poll(() => scroll.evaluate((element) => element.scrollTop))
-    .toBeGreaterThan(0);
+  const secondPage = pageOverlay.getByRole("button", { name: "View page 2" });
+  await secondPage.click();
+  await expect(secondPage).toHaveAttribute("aria-current", "page");
   await page.screenshot({ path: testInfo.outputPath("page-enlarged.png") });
   await page.keyboard.press("Escape");
 

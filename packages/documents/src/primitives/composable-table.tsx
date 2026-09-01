@@ -26,7 +26,9 @@ function useTableColumns() {
 }
 
 export interface TableProps {
+  /** Ordered column definitions whose widths total 100 percent. */
   columns: readonly TableColumn[];
+  /** Direct measured TableRow children. */
   children: ReactNode;
 }
 export function Table({ columns, children }: TableProps) {
@@ -40,7 +42,9 @@ export function Table({ columns, children }: TableProps) {
 }
 
 export interface TableCellProps {
+  /** Column key matching the cell's position in the row. */
   column: string;
+  /** Selectable string or numeric value. */
   children: TableValue;
 }
 export function TableCell({ column, children }: TableCellProps) {
@@ -72,7 +76,9 @@ export function TableCell({ column, children }: TableCellProps) {
 }
 
 export interface TableRowProps {
+  /** Exactly one ordered TableCell for every column. */
   children: ReactNode;
+  /** Qualified row height in PDF points. */
   measuredHeight: number;
 }
 export function TableRow({ children, measuredHeight }: TableRowProps) {
@@ -111,10 +117,18 @@ export function TableRow({ children, measuredHeight }: TableRowProps) {
 }
 
 export interface TableHeaderProps {
+  /** Ordered column labels, widths and alignments. */
   columns: readonly TableColumn[];
+  /** Qualified header height in PDF points. */
   measuredHeight: number;
+  /** Theme-aware header treatment. Accent uses inverted text. */
+  tone?: "surface" | "accent";
 }
-export function TableHeader({ columns, measuredHeight }: TableHeaderProps) {
+export function TableHeader({
+  columns,
+  measuredHeight,
+  tone = "surface",
+}: TableHeaderProps) {
   const theme = usePdfTheme();
   const frame = useFlowFrame();
   assertTableColumns(columns);
@@ -133,8 +147,10 @@ export function TableHeader({ columns, measuredHeight }: TableHeaderProps) {
         ...column,
         width: `${column.width}%`,
       }))}
-      color={theme.colors.text}
-      backgroundColor={theme.colors.surface}
+      color={tone === "accent" ? theme.colors.invertedText : theme.colors.text}
+      backgroundColor={
+        tone === "accent" ? theme.colors.accent : theme.colors.surface
+      }
       borderColor={theme.colors.border}
       textStyle={{
         fontFamily: theme.fonts.body,

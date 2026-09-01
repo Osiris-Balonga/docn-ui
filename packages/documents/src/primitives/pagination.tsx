@@ -1,5 +1,5 @@
 export { KeepTogether, type KeepTogetherProps } from "./keep-together";
-export { PageBreak } from "./page-break";
+export { PageBreak, type PageBreakProps } from "./page-break";
 export {
   PageNumber,
   assertPageNumberFormat,

@@ -2,10 +2,15 @@ import { Rect, Svg } from "@react-pdf/renderer";
 import { createPrintableQrGeometry } from "./qr-code";
 
 export interface QRCodeProps {
+  /** Opaque background painted through the protected quiet zone. */
   backgroundColor?: string;
+  /** High-contrast module color. */
   color?: string;
+  /** Smallest permitted module width in PDF points. */
   minimumModuleSize?: number;
+  /** Validated text encoded in the symbol. */
   payload: string;
+  /** Total square size in PDF points, including the quiet zone. */
   size: number;
 }
 

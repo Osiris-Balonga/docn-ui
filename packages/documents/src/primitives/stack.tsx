@@ -7,10 +7,15 @@ export type Alignment = "center" | "end" | "start" | "stretch";
 export type Justification = "start" | "center" | "end" | "between";
 
 export interface StackProps {
+  /** PDF content arranged by the stack. */
   children: ReactNode;
+  /** Theme spacing token between direct children. */
   gap?: SpacingToken;
+  /** Vertical flow by default, or an explicit horizontal row. */
   direction?: "vertical" | "horizontal";
+  /** Cross-axis child alignment. */
   align?: Alignment;
+  /** Main-axis child distribution. */
   justify?: Justification;
 }
 

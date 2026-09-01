@@ -3,7 +3,9 @@ import { DocumentValidationError } from "../core/errors";
 import { usePdfTheme } from "./theme-context";
 import type { TextAlign } from "./text";
 export interface PageNumberProps {
+  /** Printed string containing {page} and optional {pages} placeholders. */
   format?: string;
+  /** Horizontal alignment inside the available region. */
   align?: TextAlign;
 }
 

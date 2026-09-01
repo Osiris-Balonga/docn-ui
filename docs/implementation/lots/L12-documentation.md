@@ -113,6 +113,16 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 **Targeted verification:** Inventory/link checks and one documentation navigation smoke check; targeted visual review.
 
+### L12-S02i — `feat(docs): document component variants and use cases`
+
+- [x] Render representative variants for every component instead of a single nominal specimen.
+- [x] Add source-derived named recipes and prop descriptions to component detail pages.
+- [x] Close useful PDFx parity gaps without duplicating its API blindly or adding unsupported claims.
+
+**Acceptance:** A developer can see the meaningful variants, copy a focused recipe and understand every public prop without reading the implementation first.
+
+**Targeted verification:** Focused component/PDF tests for changed behavior, generated documentation, static links and one responsive component-detail journey; no Cartesian product of variants.
+
 ### L12-S03 — `docs(contributing): define template contribution and review workflow`
 
 - [ ] Template contribution guide: schema/metadata/composition/fixture/registry/preview and a test in the appropriate scope.
