@@ -299,7 +299,7 @@
     {
       "id": "L12",
       "file": "lots/L12-documentation.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L11"],
       "branch": "docs/l12-contribution-seo",
       "baseCommit": "8cdf4837cf36f3134b236b1ad843cc17daf1db0e",
@@ -332,7 +332,8 @@
         "54bcaea7d1c62d7b253178be213850ef89867390",
         "6b84c374305eef7daf5d145c60eea6cf60a20215",
         "dce3332f9442c1d75e026cdf4ef628e0a0bad69f",
-        "6cfdc872a8d0ab98c1ea3d75c96ea3fddca2acb5"
+        "6cfdc872a8d0ab98c1ea3d75c96ea3fddca2acb5",
+        "ed900469b6843e05a7276ed3da97aac40d6a00a3"
       ],
       "evidence": "../qa/L12.md",
       "blocker": null
