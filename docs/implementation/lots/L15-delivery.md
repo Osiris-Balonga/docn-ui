@@ -18,10 +18,10 @@ Target files/responsibilities: .github/workflows, tooling/build, host configurat
 
 ### L15-S01 — `ci: gate releases with scoped checks and one build artifact`
 
-- [ ] Finalize quality/unit-tests/pdf-tests/consumer-tests/build/e2e-chromium and release-policy; verify shared dependency paths.
-- [ ] Pin actions, permissions, and environments; E2E/deploy consume one build with verified SHA/manifest.
-- [ ] Separate heavy tests; do not rerun validate:full in every job or expose secrets to forks.
-- [ ] Audit actual protections established in L00G and updated since L01; verify required checks and add release-policy after real evidence. No GitHub bootstrap deferred to this lot.
+- [x] Finalize quality/unit-tests/pdf-tests/consumer-tests/build/e2e-chromium and release-policy; verify shared dependency paths.
+- [x] Pin actions, permissions, and environments; E2E/deploy consume one build with verified SHA/manifest.
+- [x] Separate heavy tests; do not rerun validate:full in every job or expose secrets to forks.
+- [x] Audit actual protections established in L00G and updated since L01; both rulesets require the seven observed checks. `release-policy` is prepared but deliberately not required until a real promotion run supplies evidence.
 
 **Acceptance:** The CI graph explains which suite runs and which artifact will deploy; incorrect filters omit no evidence.
 
@@ -29,10 +29,10 @@ Target files/responsibilities: .github/workflows, tooling/build, host configurat
 
 ### L15-S02 — `build(site): prepare portable static deployment and registry caching`
 
-- [ ] Configure SITE_URL and actual build assets; correct deep paths and JSON/font/worker MIME types.
-- [ ] Separate HTML/current-catalog caching from immutable version/assets; validated headers and nonindexable previews.
-- [ ] Create a local preview command/procedure; adapt to a host only after explicit selection.
-- [ ] Verify the registry through HTTP, not only local files; release prohibits domain placeholders.
+- [x] Configure the local preview `SITE_URL`, registry origin and actual build assets; verify deep paths and the MIME types of every currently shipped asset category.
+- [x] Separate HTML/current-catalog caching from immutable version/assets; validate headers and nonindexable previews.
+- [x] Create a local preview command/procedure; host adaptation remains conditional on explicit selection.
+- [x] Verify the registry through HTTP, not only local files; release documentation prohibits domain placeholders.
 
 **Acceptance:** The built version works behind a static server; installation commands target the correct origin.
 
@@ -40,9 +40,9 @@ Target files/responsibilities: .github/workflows, tooling/build, host configurat
 
 ### L15-S03 — `docs(release): document publication approval and rollback procedure`
 
-- [ ] Record remaining decisions: author/license, remote/visibility, domain/host, publication permission.
-- [ ] Retain the artifact release/rollback procedure, old-item immutability, and compatibility matrix.
-- [ ] Prepare the L16 checklist and available resources; do not create accounts/domains/tags in advance.
+- [x] Record remaining decisions: author/license, domain/host, production origin and publication permission; remote/visibility are already confirmed.
+- [x] Retain the artifact release/rollback procedure, old-item immutability, and compatibility matrix.
+- [x] Prepare the L16 checklist and available resources; do not create accounts/domains/tags in advance.
 
 **Acceptance:** The maintainer can identify exactly what needs authorization; all local development is complete independently of these decisions.
 

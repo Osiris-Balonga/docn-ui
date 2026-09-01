@@ -41,7 +41,7 @@ Use `pull_request_target` to read policy from the trusted base. If checkout is n
 
 Policy: `dev` accepts planned prefixes (`feat/`, `fix/`, `chore/`, `docs/`, `test/`, `ci/`, `build/`, `refactor/`, `release/`), including forks; `main -> dev` is limited to the repository itself. Missing input, unknown bases, and forbidden sources explicitly fail. For `main`, also compare `head.repo.id` and `base.repo.id` with the current repository.
 
-An existing workflow omitted from required checks does not protect merges. Check names must be unique; verify their PR association and GitHub Actions origin with a real PR. The check alone does not prove release authorization; human approval remains separate.
+An existing workflow omitted from required checks does not protect merges. Check names must be unique; verify their PR association and GitHub Actions origin with a real PR. The check alone does not prove release authorization; human approval remains separate. L15 adds a second `release-policy` job only for `main` promotion PRs. That job reads its tested policy from `github.workflow_sha` (the protected default-branch workflow revision), fetches the live `dev` ref through the read-only API, and requires an exact head SHA plus the maintainer-controlled `release-approved` label. Label changes retrigger the workflow. Do not require this context in `protect-main` until its first real GitHub Actions run has been observed.
 
 ## 4. Bootstrap without rewriting history
 
@@ -54,7 +54,7 @@ An existing workflow omitted from required checks does not protect merges. Check
 
 ## 5. Progressive CI and required checks
 
-L00G: only `branch-policy`. L01 adds `quality`, `unit-tests` (the three lightweight scopes once), and `build`, then requires them after a successful real run. L02, L06, and L07 add PDF, E2E, and consumers respectively. L15 verifies everything and adds `release-policy` for promotions; it does not defer initial protections to project completion.
+L00G: only `branch-policy`. L01 adds `quality`, `unit-tests` (the active lightweight scopes once), and `build`, then requires them after a successful real run. L02, L06, and L07 add PDF, E2E, and consumers respectively. L15 verifies everything and adds `release-policy` for promotions; it does not defer initial protections to project completion.
 
 For conditional heavy suites, a stable summary check verifies success or explicit non-applicability; do not require a workflow that disappears due to `paths-ignore`. Release runs all scopes. CI must not run both `validate:full` and all its subcommands. Update rules after reading actual check names and source apps, never based on fabricated results.
 

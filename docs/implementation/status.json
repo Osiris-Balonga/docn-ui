@@ -387,8 +387,12 @@
       "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
       "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
-      "actualCommits": [],
-      "evidence": null,
+      "actualCommits": [
+        "0944db72efe3e33e1d61e4d4750f46078a64ffd4",
+        "6fbc1b84eb2eec7f63898898ba1e835f754a38cc",
+        "a43a218dfbcbb065db19a29c770abd2d2f1524e3"
+      ],
+      "evidence": "../qa/L15.md",
       "blocker": null
     },
     {
