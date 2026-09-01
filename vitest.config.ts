@@ -66,15 +66,6 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: "integration",
-          environment: "node",
-          include: ["{apps,packages,tooling}/**/*.integration.test.{ts,tsx}"],
-          exclude,
-        },
-      },
-      {
-        extends: true,
-        test: {
           name: "consumers",
           environment: "node",
           include: ["tests/consumers/**/*.consumer.test.ts"],

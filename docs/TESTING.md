@@ -12,15 +12,14 @@ No target test count or global coverage threshold that encourages filler. Covera
 
 ## 2. Exclusive file assignment
 
-| Scope         | Files                                        | Environment and responsibility                                     |
-| ------------- | -------------------------------------------- | ------------------------------------------------------------------ |
-| `unit`        | `*.test.ts`, excluding suffixes below        | Node; geometry, money, schemas, pure transitions, registry graph   |
-| `components`  | `*.test.tsx`, excluding specialized suffixes | jsdom; interactions and semantics of application UI compositions   |
-| `integration` | `*.integration.test.{ts,tsx}`                | Real combined modules; explicitly simulated heavy boundary effects |
-| `pdf`         | `*.pdf.test.{ts,tsx}`                        | Node; actual PDF engine, content, pages, geometry, QR decoding     |
-| `consumers`   | `tests/consumers/**/*.consumer.test.ts`      | Node/process; real CLI in external projects, assets, rendering     |
-| `e2e`         | `tests/e2e/**/*.spec.ts`                     | Chromium; built site, real workers and exports                     |
-| `visual`      | Explicit list `tests/visual/cases.*`         | Selected PDF rasterizations and approved comparisons               |
+| Scope        | Files                                        | Environment and responsibility                                   |
+| ------------ | -------------------------------------------- | ---------------------------------------------------------------- |
+| `unit`       | `*.test.ts`, excluding suffixes below        | Node; geometry, money, schemas, pure transitions, registry graph |
+| `components` | `*.test.tsx`, excluding specialized suffixes | jsdom; interactions and semantics of application UI compositions |
+| `pdf`        | `*.pdf.test.{ts,tsx}`                        | Node; actual PDF engine, content, pages, geometry, QR decoding   |
+| `consumers`  | `tests/consumers/**/*.consumer.test.ts`      | Node/process; real CLI in external projects, assets, rendering   |
+| `e2e`        | `tests/e2e/**/*.spec.ts`                     | Chromium; built site, real workers and exports                   |
+| `visual`     | Explicit list `tests/visual/cases.*`         | Selected PDF rasterizations and approved comparisons             |
 
 Unit/components globs exclude integration/pdf/consumer. Each file belongs to exactly one project. Vitest does not collect browser tests. UI tests do not import the real PDF engine; PDF tests do not mount the site.
 
@@ -28,36 +27,35 @@ Unit/components globs exclude integration/pdf/consumer. Each file belongs to exa
 
 ### Activation status through L07-S04
 
-`unit`, `components`, and `integration` are configured with exclusive globs and all three scopes are active. Components contains site composition and editor suites. Integration contains the worker-queue suite. Unit contains document contracts, layout utilities, themes/assets, QR behavior, and the registry graph/transformation suite. `passWithNoTests` remains false, and the shared lightweight command selects all three projects and collects each existing file once.
+`unit` and `components` are configured with exclusive globs and both scopes are active. Components contains current site compositions; unit contains document contracts, layout utilities, themes/assets, QR behavior, and the registry graph/transformation suite. No integration-pattern file remains after the public editor's removal, so L14 removed the empty project and command instead of reporting a silent scope. `passWithNoTests` remains false, and the shared lightweight command selects both projects and collects each existing file once.
 
-The `pdf` scope is active with one real feasibility suite covering renderer output, dimensions, text, sides, page boxes, pagination, four receipt outputs, and a physical-limit error. Its five cases represent distinct engine risks and share the same fixtures and readers. The `integration` scope injects a small worker port for latest-revision replacement, a worker error, and destruction; it does not duplicate PDF geometry. E2E, registry verification, asset verification, and consumers are active. The single consumer scenario installs one card closure into two temporary projects outside the workspace, then renders through Node and Chromium after the registry is stopped. Visual and bundle verification are not implemented yet. Their file conventions are reserved and excluded from the lightweight projects. Do not add empty successful placeholder scripts.
+The `pdf` scope is active with real feasibility, primitive and template suites covering renderer output, dimensions, text, sides, page boxes, pagination, receipts and physical limits. E2E, registry verification, asset verification, and consumers are active. The single consumer scenario installs distinct closures into temporary projects outside the workspace, then renders through Node and Chromium after the registry is stopped. Visual activation occurs in L14 with selected family references. Do not add empty successful placeholder scripts.
 
-Available now: `test`, the three lightweight scoped commands, `test:pdf`, `test:consumers`, `test:e2e`, `test:watch`, `test:coverage`, `test:all`, `quality`, `validate`, `validate:full`, `generate:registry`, `verify:registry`, and `verify:assets`. Unit coverage targets formats/contracts, themes/assets, image envelopes, fixed-frame measurement/boundaries, registry graph/import transformations, and asset installation boundaries. Components cover current site compositions and registry source/copy behavior. The PDF scope contains the shared feasibility, primitive and template files. One E2E file uses Playwright Chromium against the fingerprinted static export for catalog, documentation, preview and responsive journeys. The consumer scope contains one orchestral case for the two qualified environments. The earlier public editor and its worker journey were removed from the V1 catalog; historical evidence remains labeled in its lot report, not presented as current site coverage. `test:all --list` prints activation without executing tests. The sequential orchestrator reads the actual package scripts; adding a heavy command activates it automatically. A root build generates and validates the registry and its local binary assets, then records the source SHA and input hash. `test:all` reuses that build only when the fingerprint verifies, while standalone E2E creates its own isolated build.
+Available now: `test`, the two lightweight scoped commands, `test:pdf`, `test:consumers`, `test:e2e`, `test:watch`, `test:coverage`, `test:all`, `quality`, `validate`, `validate:full`, `generate:registry`, `verify:registry`, and `verify:assets`. Unit coverage targets formats/contracts, themes/assets, image envelopes, fixed-frame measurement/boundaries, registry graph/import transformations, and asset installation boundaries. Components cover current site compositions and registry source/copy behavior. The PDF scope contains the shared feasibility, primitive and template files. One E2E file uses Playwright Chromium against the fingerprinted static export for catalog, documentation, preview and responsive journeys. The consumer scope contains one orchestral case for the two qualified environments. The earlier public editor and its worker journey were removed from the V1 catalog; historical evidence remains labeled in its lot report, not presented as current site coverage. `test:all --list` prints activation without executing tests. The sequential orchestrator reads the actual package scripts; adding a heavy command activates it automatically. A root build generates and validates the registry and its local binary assets, then records the source SHA and input hash. `test:all` reuses that build only when the fingerprint verifies, while standalone E2E creates its own isolated build.
 
 `quality` runs code/config formatting, lint, and types without tests or builds. `format` / `format:check` target TS/TSX/MJS/JSON/YAML/CSS, respect `.prettierignore`, and leave historical Markdown formatting and the generated lockfile intact. Markdown remains subject to link/content review. Tests use at most two workers and no retries; no coverage percentage gate is imposed.
 
 Implement these scripts in L01, then activate each scope with its first real suite. An unimplemented scope is unavailable, not replaced by a script returning success.
 
-| Command                 | Exclusive execution                                                                                                           |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm test:unit`        | `vitest run --project unit`                                                                                                   |
-| `pnpm test:components`  | `vitest run --project components`                                                                                             |
-| `pnpm test:integration` | `vitest run --project integration`                                                                                            |
-| `pnpm test`             | These three lightweight projects, once each, then exit                                                                        |
-| `pnpm test:watch`       | The same three projects in watch mode; documented filtering with `--project`                                                  |
-| `pnpm test:coverage`    | The same three projects, one run with a combined report                                                                       |
-| `pnpm test:pdf`         | `vitest run --project pdf`, actual PDFs only                                                                                  |
-| `pnpm test:consumers`   | Isolated consumers project, installations and external processes                                                              |
-| `pnpm test:e2e`         | Playwright Chromium, site journeys only                                                                                       |
-| `pnpm test:visual`      | Selected PDF references, not E2E journeys                                                                                     |
-| `pnpm test:all`         | Sequential orchestrator: test, pdf, consumers, e2e, visual; no duplicate collection                                           |
-| `pnpm validate`         | Formatting, lint, types, and `pnpm test`; fast daily check                                                                    |
-| `pnpm validate:full`    | Formatting, lint, types, and `test:all`; build prepared/reused once                                                           |
-| `pnpm build`            | Asset/registry verification, then static build; no hidden tests                                                               |
-| `pnpm verify:registry`  | Schema/graph/paths/imports of the generated registry; no installation                                                         |
-| `pnpm verify:assets`    | Presence, licenses, checksums; no browser tests                                                                               |
-| `pnpm verify:docs`      | Local documentation links, fragments, static targets and page headings from the existing build; no rebuild or remote requests |
-| `pnpm verify:bundle`    | File sizes from the existing build                                                                                            |
+| Command                | Exclusive execution                                                                                                           |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm test:unit`       | `vitest run --project unit`                                                                                                   |
+| `pnpm test:components` | `vitest run --project components`                                                                                             |
+| `pnpm test`            | Both lightweight projects, once each, then exit                                                                               |
+| `pnpm test:watch`      | The same two projects in watch mode; documented filtering with `--project`                                                    |
+| `pnpm test:coverage`   | The same two projects, one run with a combined report                                                                         |
+| `pnpm test:pdf`        | `vitest run --project pdf`, actual PDFs only                                                                                  |
+| `pnpm test:consumers`  | Isolated consumers project, installations and external processes                                                              |
+| `pnpm test:e2e`        | Playwright Chromium, site journeys only                                                                                       |
+| `pnpm test:visual`     | Selected PDF references, not E2E journeys                                                                                     |
+| `pnpm test:all`        | Sequential orchestrator: test, pdf, consumers, e2e, visual; no duplicate collection                                           |
+| `pnpm validate`        | Formatting, lint, types, and `pnpm test`; fast daily check                                                                    |
+| `pnpm validate:full`   | Formatting, lint, types, and `test:all`; build prepared/reused once                                                           |
+| `pnpm build`           | Asset/registry verification, then static build; no hidden tests                                                               |
+| `pnpm verify:registry` | Schema/graph/paths/imports of the generated registry; no installation                                                         |
+| `pnpm verify:assets`   | Presence, licenses, checksums; no browser tests                                                                               |
+| `pnpm verify:docs`     | Local documentation links, fragments, static targets and page headings from the existing build; no rebuild or remote requests |
+| `pnpm verify:bundle`   | File sizes from the existing build                                                                                            |
 
 The difference from DrawMotion is intentional: `validate` is lightweight here; `validate:full` is the complete gate check. Do not use `validate` alone as release evidence. `test:all` must include every activated scope, not a hidden selection. L01 documents the available commands; later lots add their scopes to the aggregator when activated.
 
