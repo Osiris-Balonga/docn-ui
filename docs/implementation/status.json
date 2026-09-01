@@ -299,7 +299,7 @@
     {
       "id": "L12",
       "file": "lots/L12-documentation.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L11"],
       "branch": "docs/l12-contribution-seo",
       "baseCommit": "8cdf4837cf36f3134b236b1ad843cc17daf1db0e",
@@ -333,10 +333,13 @@
         "6b84c374305eef7daf5d145c60eea6cf60a20215",
         "dce3332f9442c1d75e026cdf4ef628e0a0bad69f",
         "6cfdc872a8d0ab98c1ea3d75c96ea3fddca2acb5",
-        "ed900469b6843e05a7276ed3da97aac40d6a00a3"
+        "ed900469b6843e05a7276ed3da97aac40d6a00a3",
+        "1cd9b873d46705514a61df91388f286d8990b0f0"
       ],
       "evidence": "../qa/L12.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "8491f7d2a15364a3cdd4d376da08096c03896f40",
+      "mergedAt": "2026-09-01T18:25:48Z"
     },
     {
       "id": "L13",
