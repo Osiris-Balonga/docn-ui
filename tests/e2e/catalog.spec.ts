@@ -197,6 +197,9 @@ test("keeps the Home focused and changes documentation navigation only when spac
 
   await page.setViewportSize({ width: 700, height: 900 });
   await expect(
+    page.getByRole("button", { name: "Search documentation" }),
+  ).toBeVisible();
+  await expect(
     page.getByRole("button", { name: "Open site navigation" }),
   ).toHaveCount(1);
   await expect(
@@ -262,6 +265,14 @@ test("browses component examples source formats and themes", async ({
   await enlarge.click();
   const overlay = page.getByRole("dialog", { name: "Barcode preview" });
   await expect(overlay).toBeVisible();
+  await expect(
+    overlay.getByRole("complementary", { name: "PDF pages" }),
+  ).toBeVisible();
+  await expect(
+    overlay.getByRole("region", { name: "Detailed PDF preview" }),
+  ).toBeVisible();
+  await overlay.getByRole("button", { name: "Zoom in" }).click();
+  await expect(overlay.getByText("110%", { exact: true })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(enlarge).toBeFocused();
   await page.getByRole("tab", { name: "Code", exact: true }).click();
@@ -307,17 +318,24 @@ test("browses component examples source formats and themes", async ({
   await expect(
     page.getByRole("table", { name: "DataTable properties" }),
   ).toContainText("Typed column definitions and cell mapping functions.");
+  await page.getByRole("tab", { name: "Code", exact: true }).click();
+  await expect(page.getByLabel("data-table-example.tsx code")).toContainText(
+    'tone="accent"',
+  );
 
   await page.goto("/components/image/");
-  await expect(page.getByText("Contained photograph")).toBeVisible();
+  await expect(page.getByText("Square photograph")).toBeVisible();
   await expect(page.getByText("Covered photograph")).toBeVisible();
+  await expect(page.getByText("Rounded photograph")).toBeVisible();
 
   await page.goto("/components/graph/");
   await expect(page.getByText("Cartesian charts")).toBeVisible();
   await expect(page.getByText("Circular charts")).toBeVisible();
 
   await page.goto("/components/watermark/");
-  await expect(page.getByText("Repeated review mark")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Full-page diagonal mark" }),
+  ).toBeVisible();
   await expect(page.getByText("Single-page placement")).toBeVisible();
 
   await page.getByRole("button", { name: "Search documentation" }).click();
@@ -329,7 +347,9 @@ test("browses component examples source formats and themes", async ({
   await expect(page.getByRole("tabpanel")).toContainText("Second page");
   await page.getByRole("button", { name: "Enlarge PageBreak preview" }).click();
   const pageOverlay = page.getByRole("dialog", { name: "PageBreak preview" });
-  const scroll = pageOverlay.getByRole("region", { name: "Enlarged PDF page" });
+  const scroll = pageOverlay.getByRole("region", {
+    name: "Detailed PDF preview",
+  });
   await expect(scroll).toHaveCSS("scrollbar-width", "none");
   await scroll.focus();
   await page.keyboard.press("ArrowDown");
