@@ -68,7 +68,7 @@ const mode = process.argv[2];
 if (mode !== "write" && mode !== "verify") {
   throw new Error("Use build-fingerprint.mjs write or verify.");
 }
-if (!existsSync(buildDirectory))
+if (mode === "verify" && !existsSync(buildDirectory))
   throw new Error("The static site build is missing at apps/www/out.");
 
 const current = computeFingerprint();

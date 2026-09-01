@@ -5,6 +5,26 @@ import { RegistrySourcePanel } from "./registry-source-panel";
 
 const rootItem = {
   name: "docn-component-example",
+  meta: {
+    sourcePreview: [
+      {
+        item: "docn-component-example",
+        target: "~/docn/examples/card.tsx",
+      },
+      {
+        item: "docn-document-frame",
+        target: "~/docn/examples/layout.tsx",
+      },
+      {
+        item: "docn-document-frame",
+        target: "~/docn/examples/schema.ts",
+      },
+      {
+        item: "docn-component-example",
+        target: "~/docn/examples/examples.ts",
+      },
+    ],
+  },
   registryDependencies: [
     "http://127.0.0.1:4173/r/dev/docn-document-frame.json",
     "http://127.0.0.1:4173/r/dev/docn-primitives.json",

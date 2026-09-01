@@ -426,7 +426,7 @@ export default defineConfig({ build: { outDir: "dist-browser" } });`,
     expect(componentInspection.text).toContain("DOCUMENT");
     expect(componentInspection.text).toContain("COPIES");
     expect(componentInspection.text).toContain("Business cards");
-    expect(componentInspection.text).toContain("Product labels");
+    expect(componentInspection.text).toContain("Team badges");
     expect(componentInspection.text).toContain("Copies by document");
     expect(componentInspection.text).toContain("DOCN-2026-0042");
     expect(componentInspection.text).toContain("Page 1 of 1");
