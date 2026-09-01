@@ -122,8 +122,11 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const featuredTemplate = templateCatalog.find(
     (template) => template.slug === featuredSlug,
   );
+  const firstAvailableFamily = templateFamilies.find((family) =>
+    templateCatalog.some((template) => template.family === family.id),
+  );
   const [activeFamily, setActiveFamily] = useState<TemplateFamily>(
-    featuredTemplate?.family ?? "business-card",
+    featuredTemplate?.family ?? firstAvailableFamily?.id ?? "business-card",
   );
   const activeTemplates = templateCatalog
     .filter((template) => template.family === activeFamily)

@@ -22,9 +22,9 @@ test("shows the new reference-led templates in their families", async ({
   ]) {
     await expect(navigation.getByRole("tab", { name: family })).toBeVisible();
   }
-  await expect(page.locator("article")).toHaveCount(0);
+  await expect(page.locator("article")).toHaveCount(1);
   await expect(
-    page.getByRole("heading", { name: "No Business Cards yet" }),
+    page.getByRole("heading", { name: "Stripe-style invoice" }),
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "CVs" }).click();

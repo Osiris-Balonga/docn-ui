@@ -15,13 +15,13 @@ export interface TemplateFamilyDefinition {
 }
 
 export const templateFamilies = [
-  { id: "business-card", label: "Business Cards" },
-  { id: "ticket", label: "Event Tickets" },
-  { id: "receipt", label: "Receipts" },
-  { id: "label", label: "Labels" },
   { id: "invoice", label: "Invoices" },
+  { id: "receipt", label: "Receipts" },
   { id: "resume", label: "CVs" },
   { id: "report", label: "Reports" },
+  { id: "business-card", label: "Business Cards" },
+  { id: "ticket", label: "Event Tickets" },
+  { id: "label", label: "Labels" },
 ] as const satisfies readonly TemplateFamilyDefinition[];
 
 export interface CatalogThumbnail {
