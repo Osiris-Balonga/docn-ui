@@ -168,6 +168,15 @@ try {
       entry.exampleFile,
       entry.exampleExport,
     );
+    const recipes = await Promise.all(
+      (entry.recipes ?? []).map(async (recipe) => ({
+        title: recipe.title,
+        description: recipe.description,
+        code: (
+          await readExampleSource(root, entry.exampleFile, recipe.exampleExport)
+        ).code,
+      })),
+    );
     const exampleItems = [
       ...new Set(
         example.imports
@@ -190,6 +199,7 @@ try {
       ...entry,
       api: api(item),
       usage: example.code,
+      recipes,
       exampleItems,
       ...(await render(entry.slug, entry.exampleExport, entry.height)),
     });

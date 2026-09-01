@@ -4,6 +4,7 @@ import { assertDestinationId, validateLink } from "./link-validation";
 import { assertListItems, type ListItem } from "./list-data";
 import { FieldPair, KeyValue } from "./typography";
 import { Divider, Separator } from "./layout";
+import { assertSeparatorProps } from "./separator";
 import {
   assertFormGroups,
   assertSignature,
@@ -129,6 +130,25 @@ describe("content primitive contracts", () => {
   it("keeps aliases on one implementation", () => {
     expect(KeyValue).toBe(FieldPair);
     expect(Divider).toBe(Separator);
+  });
+
+  it("bounds labeled and partial divider variants", () => {
+    for (const input of [
+      {},
+      { label: "OR" },
+      { width: 240 },
+      { width: "60%" as const },
+    ])
+      expect(() => assertSeparatorProps(input)).not.toThrow();
+    for (const input of [
+      { label: "" },
+      { label: "two\nlines" },
+      { label: "a".repeat(49) },
+      { width: 23 },
+      { width: Infinity },
+      { width: "101%" as `${number}%` },
+    ])
+      expect(() => assertSeparatorProps(input)).toThrow();
   });
 
   it("allows explicit readable destinations and rejects unsafe or ambiguous links", () => {

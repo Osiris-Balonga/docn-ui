@@ -65,12 +65,36 @@ export function RowExample() {
 }
 export function DividerExample() {
   return (
-    <Stack gap="lg">
-      <Text>Document preparation</Text>
+    <Stack gap="md">
+      <Text weight="strong">Line styles</Text>
       <Divider />
-      <Text tone="muted">Review before printing.</Text>
+      <Divider variant="dashed" />
+      <Divider variant="dotted" />
+      <Text weight="strong">Labels and emphasis</Text>
+      <Divider label="OR" />
+      <Divider label="APPROVED" tone="accent" thickness="medium" />
+      <Text weight="strong">Spacing and width</Text>
+      <Divider spacing="xs" width="60%" thickness="thick" />
     </Stack>
   );
+}
+
+export function DividerLineStylesExample() {
+  return (
+    <Stack gap="md">
+      <Divider />
+      <Divider variant="dashed" />
+      <Divider variant="dotted" />
+    </Stack>
+  );
+}
+
+export function DividerLabelExample() {
+  return <Divider label="OR" />;
+}
+
+export function DividerEmphasisExample() {
+  return <Divider tone="accent" thickness="medium" width="60%" />;
 }
 export function SectionExample() {
   return (

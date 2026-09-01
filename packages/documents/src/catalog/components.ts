@@ -6,6 +6,11 @@ export interface ComponentCatalogEntry {
   exampleFile: string;
   exampleExport: string;
   height: number;
+  recipes?: readonly {
+    title: string;
+    description: string;
+    exampleExport: string;
+  }[];
 }
 
 export const componentCatalog: readonly ComponentCatalogEntry[] = [
@@ -64,10 +69,30 @@ export const componentCatalog: readonly ComponentCatalogEntry[] = [
     title: "Divider",
     description: "A quiet rule between related sections.",
     notes:
-      "Divider and Separator are the same implementation. Uses the current theme border and spacing.",
+      "Divider and Separator are the same implementation. Line styles remain PDF-native; tones resolve through the active document theme rather than site CSS.",
     exampleFile: "packages/documents/src/examples/components/content.tsx",
     exampleExport: "DividerExample",
-    height: 150,
+    height: 260,
+    recipes: [
+      {
+        title: "Solid, dashed and dotted rules",
+        description:
+          "Choose a PDF-native line style without changing the surrounding layout.",
+        exampleExport: "DividerLineStylesExample",
+      },
+      {
+        title: "Centered label",
+        description:
+          "Split the rule around a short semantic label such as OR or a section marker.",
+        exampleExport: "DividerLabelExample",
+      },
+      {
+        title: "Emphasized partial rule",
+        description:
+          "Combine a theme tone, explicit thickness and bounded width for hierarchy.",
+        exampleExport: "DividerEmphasisExample",
+      },
+    ],
   },
   {
     slug: "section",

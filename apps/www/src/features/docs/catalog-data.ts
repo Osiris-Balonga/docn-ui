@@ -10,7 +10,8 @@ export interface PdfExample {
   pdf: string;
   pages: { src: string; width: number; height: number; text: string }[];
 }
-export interface ComponentReference extends ComponentCatalogEntry, PdfExample {
+export interface ComponentReference
+  extends Omit<ComponentCatalogEntry, "recipes">, PdfExample {
   usage: string;
   exampleItems: string[];
   api: {
@@ -20,8 +21,10 @@ export interface ComponentReference extends ComponentCatalogEntry, PdfExample {
       type: string;
       required: boolean;
       default: string | null;
+      description: string;
     }[];
   }[];
+  recipes: { title: string; description: string; code: string }[];
 }
 interface DocumentationCatalog {
   components: ComponentReference[];

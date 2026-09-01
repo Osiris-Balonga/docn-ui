@@ -289,6 +289,18 @@ test("browses component examples source formats and themes", async ({
   ).toContainText("barHeight");
   await page.screenshot({ path: testInfo.outputPath("component-desktop.png") });
 
+  await page.goto("/components/divider/");
+  await expect(page.getByRole("heading", { name: "Examples" })).toBeVisible();
+  await expect(page.getByText("Solid, dashed and dotted rules")).toBeVisible();
+  await expect(
+    page.getByLabel("divider-example.tsx code").filter({
+      hasText: 'label="OR"',
+    }),
+  ).toHaveCount(1);
+  await expect(
+    page.getByRole("table", { name: "Divider properties" }),
+  ).toContainText("PDF-native border style.");
+
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByPlaceholder("Search available pages...").fill("PageBreak");
   await page.getByRole("option", { name: /PageBreak/ }).click();

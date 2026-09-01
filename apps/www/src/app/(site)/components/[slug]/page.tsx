@@ -24,16 +24,6 @@ export async function generateMetadata({
     description: entry?.description,
   };
 }
-const sections = [
-  "Preview",
-  "Installation",
-  "Usage",
-  "API reference",
-  "Notes",
-].map((title) => ({
-  title,
-  href: `#${title.toLowerCase().replaceAll(" ", "-")}`,
-}));
 const heading = "mb-4 scroll-m-24 text-xl font-semibold tracking-tight";
 
 export default async function ComponentPage({
@@ -45,6 +35,17 @@ export default async function ComponentPage({
   const { components } = await readDocumentationCatalog();
   const entry = components.find((entry) => entry.slug === slug);
   if (!entry) notFound();
+  const sections = [
+    "Preview",
+    ...(entry.recipes.length ? ["Examples"] : []),
+    "Installation",
+    "Usage",
+    "API reference",
+    "Notes",
+  ].map((title) => ({
+    title,
+    href: `#${title.toLowerCase().replaceAll(" ", "-")}`,
+  }));
   return (
     <DocumentationShell sections={sections}>
       <DocsArticle
@@ -65,6 +66,26 @@ export default async function ComponentPage({
             }
           />
         </section>
+        {entry.recipes.length ? (
+          <section aria-labelledby="examples">
+            <h2 id="examples" className={heading}>
+              Examples
+            </h2>
+            <div className="space-y-10">
+              {entry.recipes.map((recipe) => (
+                <div key={recipe.title}>
+                  <h3 className="mb-2 text-base font-medium">{recipe.title}</h3>
+                  <p className="mb-4 max-w-[70ch] text-sm leading-6 text-muted-foreground">
+                    {recipe.description}
+                  </p>
+                  <CodeBlock label={`${slug}-example.tsx`}>
+                    {recipe.code}
+                  </CodeBlock>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
         <section aria-labelledby="installation">
           <h2 id="installation" className={heading}>
             Installation
@@ -111,47 +132,56 @@ export default async function ComponentPage({
               {entry.api.length > 1 ? (
                 <h3 className="mb-3 font-medium">{api.name}</h3>
               ) : null}
-              <table className="w-full table-fixed text-left text-sm leading-6">
-                <caption className="sr-only">{api.name} properties</caption>
-                <thead className="text-muted-foreground">
-                  <tr>
-                    <th className="w-1/3 py-3 pr-4 font-medium" scope="col">
-                      Prop
-                    </th>
-                    <th className="py-3 font-medium" scope="col">
-                      Type / default
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {api.props.map((prop) => (
-                    <tr key={prop.name} className="border-t border-border/60">
-                      <th
-                        scope="row"
-                        className="py-3 pr-4 align-top font-mono font-normal"
-                      >
-                        {prop.name}
-                        {prop.required ? (
-                          <span
-                            className="ml-1 font-sans text-muted-foreground"
-                            aria-label="required"
-                          >
-                            *
-                          </span>
-                        ) : null}
+              <div className="scrollbar-hidden overflow-x-auto">
+                <table className="w-full min-w-[42rem] table-fixed text-left text-sm leading-6">
+                  <caption className="sr-only">{api.name} properties</caption>
+                  <thead className="text-muted-foreground">
+                    <tr>
+                      <th className="w-1/4 py-3 pr-4 font-medium" scope="col">
+                        Prop
                       </th>
-                      <td className="py-3">
-                        <code className="text-xs">{prop.type}</code>
-                        {prop.default ? (
-                          <p className="mt-1 text-muted-foreground">
-                            Default: <code>{prop.default}</code>
-                          </p>
-                        ) : null}
-                      </td>
+                      <th className="w-2/5 py-3 pr-4 font-medium" scope="col">
+                        Type / default
+                      </th>
+                      <th className="py-3 font-medium" scope="col">
+                        Description
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {api.props.map((prop) => (
+                      <tr key={prop.name} className="border-t border-border/60">
+                        <th
+                          scope="row"
+                          className="py-3 pr-4 align-top font-mono font-normal"
+                        >
+                          {prop.name}
+                          {prop.required ? (
+                            <span
+                              className="ml-1 font-sans text-muted-foreground"
+                              aria-label="required"
+                            >
+                              *
+                            </span>
+                          ) : null}
+                        </th>
+                        <td className="py-3 pr-4 align-top">
+                          <code className="text-xs">{prop.type}</code>
+                          {prop.default ? (
+                            <p className="mt-1 text-muted-foreground">
+                              Default: <code>{prop.default}</code>
+                            </p>
+                          ) : null}
+                        </td>
+                        <td className="py-3 align-top text-muted-foreground">
+                          {prop.description ||
+                            "See the component notes and source contract."}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
           <p className="text-xs text-muted-foreground">
