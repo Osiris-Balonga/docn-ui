@@ -30,9 +30,11 @@ The `release-policy` workflow is present but must not be added to the `main` rul
 
 ## Hosting
 
-Technical default: portable static build (`apps/www/out`). The host remains unconfirmed; Vercel, a static server, or another host are possible. Do not configure a provider simply because a plugin is available.
+Technical default: portable static build (`apps/www/out`). The maintainer selected Vercel for the public site and authorized a non-indexed beta at `https://docn-ui.vercel.app`. `vercel.json` pins the repository's package manager, exports the monorepo output, and maps the portable security/cache policy to provider headers. This beta authorization does not select a code license or authorize an official v1.0.0 tag/release.
 
 L15 provides a local preview because no destination is authorized. Run `pnpm build:preview`, then `pnpm preview:verify`; `pnpm preview` keeps the verified build available at `http://127.0.0.1:4173`. The build fingerprint records its source inputs, complete static-output digest, file/byte counts, `SITE_URL`, registry origin and indexing mode. `SITE_URL` controls canonical URLs and sitemap output. Previews are not indexed.
+
+For the authorized beta, configure the Vercel production build with `SITE_URL=https://docn-ui.vercel.app`, `DOCN_REGISTRY_ORIGIN=https://docn-ui.vercel.app/r/dev/`, and `DOCN_ALLOW_INDEXING=false`. Build locally with `vercel build --prod`, deploy the resulting `.vercel/output` with `vercel deploy --prebuilt --prod --skip-domain`, and verify the generated HTTPS URL before `vercel promote`. After promotion, repeat the probes against the stable alias and perform one installation from its public development registry. Never promote a build whose fingerprint does not match the reviewed source SHA.
 
 Static builds emit a canonical URL and sitemap entry for every public page. Without `SITE_URL`, canonicals use the loopback development origin and the complete site emits `noindex, nofollow` plus `Disallow: /`. A publication candidate becomes indexable only when it has an authorized `SITE_URL` and `DOCN_ALLOW_INDEXING=true`. Generated preview assets and development registry paths remain excluded from crawlers. Do not enable indexing merely to test a preview deployment.
 
@@ -48,9 +50,9 @@ Propose a permissive code license only after confirming the author; do not infer
 
 ### Decisions still requiring maintainer authorization
 
-- Author identity and code license.
-- Hosting provider, production origin/domain and any account or billing action.
-- Permission to publish the site and make it indexable.
+- Code license. The confirmed author is Emmanuel Osiris Balonga.
+- Any custom domain or billing action. Vercel and the `docn-ui.vercel.app` beta origin are confirmed.
+- Permission to make the site indexable. Public non-indexed beta publication is authorized.
 - Permission to create the `release-approved` label/apply it to the promotion PR, merge `dev -> main`, deploy, tag and create the GitHub release.
 
 Repository visibility is already public, but that grants none of the decisions above. No npm publication is planned for V1.

@@ -1,0 +1,16 @@
+.git/
+.vercel/
+.env*
+node_modules/
+**/node_modules/
+.artifacts/
+tmp/
+.codex-remote-attachments/
+apps/www/.next/
+apps/www/out/
+apps/www/public/generated/
+apps/www/public/r/
+coverage/
+playwright-report/
+test-results/
+*.log
