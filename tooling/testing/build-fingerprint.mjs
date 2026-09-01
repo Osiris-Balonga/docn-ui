@@ -30,34 +30,59 @@ function git(...args) {
 }
 
 function computeFingerprint() {
-  const files = git(
+  const includeInput = (file) =>
+    !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
+    !/\.(test|spec)\.[^/]+$/.test(file);
+  const tracked = git("ls-files", "--stage", "-z", "--", ...inputPathspecs)
+    .toString("utf8")
+    .split("\0")
+    .filter(Boolean)
+    .map((entry) => {
+      const match = /^(\d+) ([0-9a-f]+) \d\t(.+)$/.exec(entry);
+      if (!match) throw new Error("A tracked build input is invalid.");
+      return { object: match[2], path: match[3] };
+    })
+    .filter(({ path }) => includeInput(path));
+  const untracked = git(
     "ls-files",
-    "-z",
-    "--cached",
     "--others",
     "--exclude-standard",
+    "-z",
     "--",
     ...inputPathspecs,
   )
     .toString("utf8")
     .split("\0")
     .filter(Boolean)
-    .filter(
-      (file) =>
-        !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
-        !/\.(test|spec)\.[^/]+$/.test(file),
-    )
-    .filter((file) => existsSync(resolve(root, file)))
-    .sort();
+    .filter(includeInput)
+    .filter((file) => existsSync(resolve(root, file)));
+  const files = [...tracked.map(({ path }) => path), ...untracked].sort();
   const hash = createHash("sha256");
-  for (const file of files) {
+  for (const { object, path } of tracked.sort((left, right) =>
+    left.path.localeCompare(right.path),
+  )) {
+    hash.update(path);
+    hash.update("\0");
+    hash.update(object);
+    hash.update("\0");
+  }
+  for (const file of untracked.sort()) {
     hash.update(file);
     hash.update("\0");
     hash.update(readFileSync(resolve(root, file)));
     hash.update("\0");
   }
+  const worktreeDiff = git(
+    "diff",
+    "--binary",
+    "--no-ext-diff",
+    "HEAD",
+    "--",
+    ...tracked.map(({ path }) => path),
+  );
+  hash.update(worktreeDiff);
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     commit: String(git("rev-parse", "HEAD")).trim(),
     inputSha256: hash.digest("hex"),
     files: files.length,
