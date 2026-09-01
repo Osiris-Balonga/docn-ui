@@ -8,6 +8,7 @@
     "./browser": "./src/render/browser.ts",
     "./catalog": "./src/catalog/index.ts",
     "./core": "./src/core/index.ts",
+    "./examples/consumer-usage": "./src/examples/consumer-usage.ts",
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
     "./node": "./src/render/node.ts",
     "./primitives": "./src/primitives/index.tsx",

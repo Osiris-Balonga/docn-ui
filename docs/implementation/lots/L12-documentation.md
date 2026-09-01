@@ -1,6 +1,6 @@
 # L12 — Documentation, components, formats, and themes
 
-Initial status: **planned**. Branch: `feat/documentation-catalog`.
+Status: **in progress**. Branch: `feat/documentation-catalog`, based on merged L11 commit `a342433e0902935a454d8ef04a85cb508a765f4a`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31.
 
 Dependencies: L11. Requirements: FR-02, FR-13, FR-15, FR-16, FR-17.
 
@@ -20,11 +20,11 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S01 — `feat(docs): document installation and independent PDF usage`
 
-- [ ] Guides for installation, local assets, browser/Node, themes, formats, data/locale, and updating owned source.
-- [ ] Import examples from verified consumer fixtures; avoid a second manually maintained example implementation.
-- [ ] Limitation pages: fonts/scripts, printing, accessible PDFs, unsecured QR, uncertified invoices.
-- [ ] Distinguish existing shadcn configuration reuse from explicit PDF-safe theme/font mapping; do not promise automatic CSS or arbitrary-font inheritance.
-- [ ] Trusted local MDX only; never interpret user content as MDX.
+- [x] Guides for installation, local assets, browser/Node, themes, formats, data/locale, and updating owned source.
+- [x] Import examples from verified consumer fixtures; avoid a second manually maintained example implementation.
+- [x] Limitation pages: fonts/scripts, printing, accessible PDFs, unsecured QR, uncertified invoices.
+- [x] Distinguish existing shadcn configuration reuse from explicit PDF-safe theme/font mapping; do not promise automatic CSS or arbitrary-font inheritance.
+- [x] Trusted, versioned local content only; never interpret user content as MDX. S01 uses typed static content compiled with Next.js, avoiding an unnecessary MDX parser dependency. A future MDX migration must retain this trust boundary.
 
 **Acceptance:** A developer can follow prerequisites without monorepo knowledge and understand limitations before exporting.
 

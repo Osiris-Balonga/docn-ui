@@ -14,7 +14,7 @@ Status: target architecture with the L02 PDF feasibility gate and L04 document f
 | Validation      | Zod                                                            | Data schemas and structured messages                                                    |
 | QR              | Maintained encoder to qualify, vector rendering                | Readability, no third-party request                                                     |
 | Verification    | Vitest, Testing Library, Playwright, axe, PDF inspection tools | Behavior and actual artifacts                                                           |
-| Documentation   | Local MDX, controlled components                               | Versioned content, no CMS                                                               |
+| Documentation   | Typed local content and controlled React components            | Versioned static content, no CMS or runtime MDX parser; L12-S01 refinement               |
 | Distribution    | Additional shadcn registry                                     | Reuse the official CLI and the consumer's existing configuration; no proprietary V1 CLI |
 
 Exact compatible versions are recorded in [DEPENDENCIES.md](DEPENDENCIES.md); do not infer major versions from this document. L02 validated webpack worker bundling, local font/worker resolution, renderer geometry, page boxes, pagination, and two-pass roll height before generalization. The `pdfjs-dist` viewer and `@react-pdf/renderer` generator are separate libraries; do not confuse them with the viewer wrapper named `react-pdf`.
@@ -29,7 +29,7 @@ apps/www/
   src/features/playground/    # forms, state, rendering coordination
   src/features/pdf-viewer/    # PDF.js, text layer, navigation, zoom
   src/features/docs/          # navigation, code, MDX components
-  src/content/docs/           # internal MDX guides
+  src/content/docs/           # typed, trusted static guides
   src/lib/catalog/            # lightweight index without PDF engine imports
   src/workers/                # browser rendering and protocol
   src/styles/                 # site tokens

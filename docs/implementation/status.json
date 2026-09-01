@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L11",
+  "currentLot": "L12",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -268,7 +268,7 @@
     {
       "id": "L11",
       "file": "lots/L11-invoices.md",
-      "state": "in_review",
+      "state": "merged",
       "dependsOn": ["L10"],
       "branch": "feat/invoice-templates",
       "baseCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
@@ -288,20 +288,26 @@
         "24761240ed18fd812c965a08e1dfee4947ae83a8",
         "af1785f48aaad6d354b9743bbcbeb9b52d70a55d",
         "96c166a944e2c56c5c253b82a9ac8071e9290349",
-        "a9a5dc582575c90c216817c78570c65892b5eb8f"
+        "a9a5dc582575c90c216817c78570c65892b5eb8f",
+        "98cab3dcb8474227a366b3e0a880325c3e93fbd0"
       ],
       "evidence": "../qa/L11.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "a342433e0902935a454d8ef04a85cb508a765f4a",
+      "mergedAt": "2026-08-31T08:57:32Z"
     },
     {
       "id": "L12",
       "file": "lots/L12-documentation.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L11"],
       "branch": "feat/documentation-catalog",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "baseCommit": "a342433e0902935a454d8ef04a85cb508a765f4a",
+      "actualCommits": [
+        "901907af6a08f40d32e40a7f0dc7b63cac1c3e52",
+        "6c8563b8a10de329d0aac10a85f9d509699dffbc"
+      ],
+      "evidence": "../qa/L12.md",
       "blocker": null
     },
     {

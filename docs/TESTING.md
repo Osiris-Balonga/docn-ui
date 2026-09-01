@@ -56,6 +56,7 @@ Implement these scripts in L01, then activate each scope with its first real sui
 | `pnpm build` | Asset/registry verification, then static build; no hidden tests |
 | `pnpm verify:registry` | Schema/graph/paths/imports of the generated registry; no installation |
 | `pnpm verify:assets` | Presence, licenses, checksums; no browser tests |
+| `pnpm verify:docs` | Local documentation links, fragments, static targets and page headings from the existing build; no rebuild or remote requests |
 | `pnpm verify:bundle` | File sizes from the existing build |
 
 The difference from DrawMotion is intentional: `validate` is lightweight here; `validate:full` is the complete gate check. Do not use `validate` alone as release evidence. `test:all` must include every activated scope, not a hidden selection. L01 documents the available commands; later lots add their scopes to the aggregator when activated.

@@ -1,71 +1,92 @@
-import { CodeBlock, DocsArticle } from "@/features/docs/docs-article";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { DocsArticle } from "@/features/docs/docs-article";
+import { DocumentationShell } from "@/features/docs/documentation-shell";
+
+export const metadata: Metadata = {
+  title: "Getting started — docn-ui",
+  description:
+    "Choose a template, install its source and render independently with local assets.",
+};
 
 export default function GettingStartedPage() {
   return (
-    <DocsArticle
-      title="Getting started"
-      breadcrumb="Getting started"
-      description="Use the local development registry to inspect, install, and customize a qualified PDF template. Public release URLs are not available yet."
+    <DocumentationShell
+      sections={[
+        { title: "What is ready", href: "#ready-foundations" },
+        { title: "Your first document", href: "#first-document" },
+      ]}
     >
-      <section aria-labelledby="ready-foundations">
-        <h2
-          id="ready-foundations"
-          className="text-2xl font-semibold tracking-tight"
-        >
-          What is ready
-        </h2>
-        <p className="mt-4 text-muted-foreground">
-          The project generates PDFs locally in the browser, renders them with a
-          local worker, and preserves physical dimensions, fonts, print boxes,
-          and deterministic pagination. The business-card templates now expose
-          their complete versioned source and dependency closure on each detail
-          page. Business cards, event tickets, and measured 58/80 mm thermal
-          receipts are available in the template catalog.
-        </p>
-      </section>
-      <section aria-labelledby="thermal-printing">
-        <h2
-          id="thermal-printing"
-          className="text-2xl font-semibold tracking-tight"
-        >
-          Print thermal receipts at actual size
-        </h2>
-        <p className="mt-4 text-muted-foreground">
-          Receipt presets use the full 58 or 80 mm paper width. A printer may
-          reserve narrower hardware margins, so verify its printable width and
-          run a short test. Print at 100% / actual size with fit-to-page
-          disabled. The PDF remains one continuous page and reports an explicit
-          error above the 2,000 mm height limit; it never substitutes an A4 or
-          multipage invoice.
-        </p>
-      </section>
-      <section aria-labelledby="development-installation">
-        <h2
-          id="development-installation"
-          className="text-2xl font-semibold tracking-tight"
-        >
-          Install from the development registry
-        </h2>
-        <p className="mt-4 text-muted-foreground">
-          Use a React 19 TypeScript project that already has a shadcn
-          <code> components.json</code>. Keep its current aliases and style.
-          Start this repository locally, then copy the origin-aware command from
-          a template detail page. The default static preview command for the
-          minimal card is:
-        </p>
-        <div className="mt-5">
-          <CodeBlock label="Install source">
-            corepack pnpm dlx shadcn@4.19.0 add
-            http://127.0.0.1:4173/r/dev/docn-business-card-minimal.json
-          </CodeBlock>
-        </div>
-        <p className="mt-4 text-sm leading-6 text-muted-foreground">
-          Review the displayed files before installation. Run the adjacent asset
-          command afterwards, and never add an overwrite flag to the documented
-          update workflow. The local <code>/r/dev/</code> path is mutable until
-          an immutable public release is approved.
-        </p>
-      </section>
-    </DocsArticle>
+      <DocsArticle
+        title="Getting started"
+        breadcrumb="Getting started"
+        description="Start with your existing shadcn project. PDF source lives in your codebase, without a separate initializer or a hosted rendering service."
+      >
+        <section aria-labelledby="ready-foundations">
+          <h2
+            id="ready-foundations"
+            className="text-xl font-semibold tracking-tight"
+          >
+            What is ready
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            Fifteen templates cover business cards, event tickets, thermal
+            receipts, labels and invoices. The catalog shows actual PDF-derived
+            previews and the relevant source files. Edit data, fonts and layouts
+            in your code; there is no template customization form to configure
+            first.
+          </p>
+          <p className="mt-4 text-muted-foreground">
+            Complete template installation is qualified through the official
+            shadcn CLI. Individual component detail pages and component-sized
+            installation are being built in L12. Development registry paths are
+            mutable; no immutable public release is available yet.
+          </p>
+        </section>
+        <section aria-labelledby="first-document">
+          <h2
+            id="first-document"
+            className="text-xl font-semibold tracking-tight"
+          >
+            Your first document
+          </h2>
+          <ol className="mt-4 list-decimal space-y-4 pl-5">
+            <li>
+              <GuideLink href="/docs/installation/">Install source</GuideLink>{" "}
+              into the project that already holds your components.json.
+            </li>
+            <li>
+              <GuideLink href="/docs/local-assets/">
+                Prepare local assets
+              </GuideLink>{" "}
+              for browser or Node rendering.
+            </li>
+            <li>
+              <GuideLink href="/docs/browser-and-node/">
+                Run the verified example
+              </GuideLink>
+              , then replace its data with your own.
+            </li>
+            <li>
+              <GuideLink href="/docs/limitations/">
+                Review the limitations
+              </GuideLink>{" "}
+              and inspect an actual-size print before production use.
+            </li>
+          </ol>
+        </section>
+      </DocsArticle>
+    </DocumentationShell>
+  );
+}
+
+function GuideLink({ href, children }: { href: string; children: string }) {
+  return (
+    <Link
+      href={href}
+      className="font-medium underline underline-offset-4 outline-none focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/50"
+    >
+      {children}
+    </Link>
   );
 }

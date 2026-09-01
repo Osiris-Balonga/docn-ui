@@ -1,17 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import {
-  Check,
-  ChevronDown,
-  Copy,
-  FileCode2,
-  Files,
-  Folder,
-  Terminal,
-} from "lucide-react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { ChevronDown, FileCode2, Files, Folder, Terminal } from "lucide-react";
 import { CodeViewport } from "@/components/code-viewport";
-import { Button } from "@/components/ui/button";
+import { HighlightedCode } from "@/components/highlighted-code";
+import { CopyCodeButton as CopyAction } from "@/components/copy-code-button";
 import {
   Select,
   SelectContent,
@@ -20,73 +13,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  copyText,
   loadRegistrySourceClosure,
   loadRegistryTemplatePreview,
-  tokenizeSource,
   type RegistrySourceFile,
-  type SourceTokenKind,
 } from "./registry-source";
 import { cn } from "@/lib/utils";
 
-const tokenClasses: Record<SourceTokenKind, string> = {
-  comment: "text-muted-foreground italic",
-  keyword: "text-sky-700 dark:text-sky-300",
-  number: "text-amber-700 dark:text-amber-300",
-  plain: "text-foreground",
-  string: "text-emerald-700 dark:text-emerald-300",
-};
-
 const subscribeToStaticOrigin = () => () => {};
-
-function CopyAction({
-  compact = false,
-  label,
-  text,
-}: {
-  compact?: boolean;
-  label: string;
-  text: string;
-}) {
-  const [status, setStatus] = useState<"copied" | "idle" | "manual">("idle");
-
-  async function handleCopy() {
-    try {
-      setStatus((await copyText(text)) ? "copied" : "manual");
-    } catch {
-      setStatus("manual");
-    }
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      <Button
-        size={compact ? "icon" : "sm"}
-        variant="outline"
-        className={cn("min-h-10", compact && "size-10")}
-        onClick={handleCopy}
-        aria-label={
-          compact ? (status === "copied" ? "Copied" : label) : undefined
-        }
-      >
-        {status === "copied" ? (
-          <Check aria-hidden="true" />
-        ) : (
-          <Copy aria-hidden="true" />
-        )}
-        {compact ? null : status === "copied" ? "Copied" : label}
-      </Button>
-      <span
-        className={cn("text-xs text-muted-foreground", compact && "sr-only")}
-        aria-live="polite"
-      >
-        {status === "manual"
-          ? "Clipboard unavailable — select and copy manually."
-          : ""}
-      </span>
-    </div>
-  );
-}
 
 function sourceDisplayName(target: string) {
   return (
@@ -247,10 +180,6 @@ export function RegistrySourcePanel({
 
   const selectedFile =
     files.find((file) => file.target === selectedTarget) ?? files[0];
-  const highlighted = useMemo(
-    () => (selectedFile ? tokenizeSource(selectedFile.content) : []),
-    [selectedFile],
-  );
   const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
   const assetCommand = `node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
   const headingId = `registry-source-${itemName}`;
@@ -374,16 +303,10 @@ export function RegistrySourcePanel({
               <CodeViewport
                 className={cn(drawer ? "min-h-0 flex-1" : "max-h-[42rem]")}
               >
-                <code aria-label={`${selectedFile.target} source`}>
-                  {highlighted.map((token, index) => (
-                    <span
-                      className={tokenClasses[token.kind]}
-                      key={`${index}-${token.value.slice(0, 8)}`}
-                    >
-                      {token.value}
-                    </span>
-                  ))}
-                </code>
+                <HighlightedCode
+                  code={selectedFile.content}
+                  label={`${selectedFile.target} source`}
+                />
               </CodeViewport>
             </div>
           </div>

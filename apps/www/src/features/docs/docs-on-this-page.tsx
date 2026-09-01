@@ -19,9 +19,14 @@ const pageSections: Record<string, readonly { title: string; href: string }[]> =
     ],
   };
 
-export function DocsOnThisPage() {
+export function DocsOnThisPage({
+  sections: providedSections,
+}: {
+  sections?: readonly { title: string; href: string }[];
+}) {
   const pathname = usePathname();
-  const sections = pageSections[pathname] ?? [];
+  const sections =
+    providedSections ?? pageSections[`${pathname.replace(/\/$/, "")}/`] ?? [];
 
   if (sections.length === 0) return null;
 

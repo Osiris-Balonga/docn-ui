@@ -6,6 +6,12 @@ export type KnownPage = {
 };
 
 export const knownPages: readonly KnownPage[] = [
+  ...guideIndex.map((guide) => ({
+    title: guide.title,
+    description: guide.description,
+    href: `/docs/${guide.slug}/`,
+    section: "Documentation" as const,
+  })),
   {
     title: "Home",
     description: "Project status and qualified PDF foundations",
@@ -37,3 +43,4 @@ export const knownPages: readonly KnownPage[] = [
     section: "Documentation",
   },
 ] as const;
+import { guideIndex } from "@/content/docs/guide-index";

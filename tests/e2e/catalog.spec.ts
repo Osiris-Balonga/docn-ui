@@ -149,7 +149,7 @@ test("keeps direct template URLs in the gallery without a playground", async ({
 
 test("keeps the Home focused and changes documentation navigation only when space requires it", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.setViewportSize({ width: 1015, height: 900 });
   await page.goto("/");
 
@@ -172,6 +172,29 @@ test("keeps the Home focused and changes documentation navigation only when spac
     page.getByRole("navigation", { name: "Documentation" }),
   ).toBeVisible();
 
+  await page
+    .getByRole("region", { name: "Available guides" })
+    .getByRole("link", { name: "Browser and Node", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser and Node", exact: true }),
+  ).toBeVisible();
+  const source = page.getByLabel("src/main.ts code", { exact: true });
+  await expect(source).toHaveCSS("scrollbar-width", "none");
+  await expect(source).toContainText('formatId: "card-85x55"');
+  await expect(
+    page.getByRole("button", { name: "Copy src/main.ts" }),
+  ).toBeVisible();
+  await source.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect
+    .poll(() => source.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
+  await expect(page.locator("body")).toHaveJSProperty(
+    "scrollWidth",
+    await page.locator("body").evaluate((element) => element.clientWidth),
+  );
+
   await page.setViewportSize({ width: 700, height: 900 });
   await expect(
     page.getByRole("button", { name: "Open site navigation" }),
@@ -185,6 +208,25 @@ test("keeps the Home focused and changes documentation navigation only when spac
   await expect(
     menu.getByRole("navigation", { name: "Documentation" }),
   ).toBeVisible();
+  await menu.getByRole("link", { name: "Local assets", exact: true }).click();
+  await expect(menu).toBeHidden();
+  await expect(
+    page.getByRole("heading", { name: "Local assets", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("main")).toContainText("--target browser");
+
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("body")).toHaveJSProperty(
+    "scrollWidth",
+    await page.locator("body").evaluate((element) => element.clientWidth),
+  );
+  await expect(
+    page.getByRole("button", { name: "Open site navigation" }),
+  ).toHaveCount(1);
+  await page.screenshot({
+    path: testInfo.outputPath("documentation-mobile.png"),
+  });
 });
 
 test("presents the component index with the shadcn documentation hierarchy", async ({
