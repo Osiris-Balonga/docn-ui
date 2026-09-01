@@ -66,6 +66,7 @@ jobs:
           run_install: false
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:pdf
+      - run: pnpm test:visual
 
   consumer-tests:
     name: consumer-tests
@@ -84,7 +85,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           git diff --name-only "$BASE_SHA" "$HEAD_SHA" > /tmp/docn-ui-changed-files.txt
-          if grep -Eq '^(\.github/workflows/ci\.yml|package\.json|pnpm-lock\.yaml|vitest\.config\.ts|packages/documents/(assets|src)/|tests/consumers/|tooling/(assets|registry)/)' /tmp/docn-ui-changed-files.txt; then
+          if grep -Eq '^(\.github/workflows/ci\.yml|\.node-version|package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig\.base\.json|vitest\.config\.ts|packages/documents/(assets|src)/|tests/consumers/|tooling/(assets|docs/assets|registry|templates)/)' /tmp/docn-ui-changed-files.txt; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "run=false" >> "$GITHUB_OUTPUT"

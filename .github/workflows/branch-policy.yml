@@ -3,7 +3,16 @@ name: Branch policy
 on:
   pull_request_target:
     branches: [dev, main]
-    types: [opened, reopened, synchronize, edited, ready_for_review]
+    types:
+      [
+        opened,
+        reopened,
+        synchronize,
+        edited,
+        labeled,
+        unlabeled,
+        ready_for_review,
+      ]
 
 permissions:
   contents: read
@@ -26,3 +35,20 @@ jobs:
           sparse-checkout: tooling/github
       - name: Check target branch and source repository
         run: node tooling/github/check-branch-policy.mjs
+
+  release-policy:
+    name: release-policy
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read policy from the trusted workflow commit only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          sparse-checkout: tooling/github
+      - name: Check live candidate and explicit release authorization
+        run: node tooling/github/check-release-policy.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
