@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "pnpm generate:templates && pnpm generate:registry && pnpm --filter @docn-ui/www dev",
-    "build": "pnpm generate:templates && pnpm generate:registry && pnpm --filter @docn-ui/www build && node tooling/testing/build-fingerprint.mjs write",
+    "build": "corepack pnpm@11.24.0 generate:templates && corepack pnpm@11.24.0 generate:registry && corepack pnpm@11.24.0 --filter @docn-ui/www build && node tooling/testing/build-fingerprint.mjs write",
     "build:preview": "node tooling/deployment/build-preview.mjs",
     "generate:templates": "node tooling/templates/generate.mjs",
     "verify:templates": "node tooling/templates/generate.mjs --check",
