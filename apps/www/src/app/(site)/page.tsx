@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { createPageMetadata } from "@/lib/site-metadata";
 import { cn } from "@/lib/utils";
+
+export const metadata = createPageMetadata({
+  title: "docn-ui — PDF templates, in your codebase",
+  description:
+    "Install source-owned PDF templates, edit them locally and render in the browser.",
+  path: "/",
+});
 
 export default function HomePage() {
   return (

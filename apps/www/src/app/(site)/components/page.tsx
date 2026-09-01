@@ -2,12 +2,14 @@ import Link from "next/link";
 import { componentCatalog } from "@docn-ui/documents/catalog/components";
 import { DocsArticle } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Components — docn-ui",
   description:
     "Explore PDF components, real previews, source code and typed props.",
-};
+  path: "/components/",
+});
 
 function ComponentLink({
   slug,

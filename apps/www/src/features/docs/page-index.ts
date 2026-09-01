@@ -1,3 +1,6 @@
+import { guideIndex } from "@/content/docs/guide-index";
+import { componentCatalog } from "@docn-ui/documents/catalog/components";
+
 export type KnownPage = {
   title: string;
   description: string;
@@ -61,5 +64,3 @@ export const knownPages: readonly KnownPage[] = [
     section: "Documentation",
   },
 ] as const;
-import { guideIndex } from "@/content/docs/guide-index";
-import { componentCatalog } from "@docn-ui/documents/catalog/components";

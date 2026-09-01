@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { DocsArticle } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Getting started — docn-ui",
   description:
     "Choose a template, install its source and render independently with local assets.",
-};
+  path: "/docs/getting-started/",
+});
 
 export default function GettingStartedPage() {
   return (

@@ -5,6 +5,7 @@ import { componentCatalog } from "../../packages/documents/src/catalog/component
 import { componentRegistryItems } from "../registry/component-items.mjs";
 import { knownPages } from "../../apps/www/src/features/docs/page-index";
 import { docsNavigation } from "../../apps/www/src/features/docs/navigation";
+import { guideIndex } from "../../apps/www/src/content/docs/guide-index";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
@@ -16,6 +17,15 @@ test("every public component has one registry item, searchable route and sidebar
   const navigation = docsNavigation.flatMap((group) => group.items);
   for (const { slug } of componentCatalog) {
     const href = `/components/${slug}/`;
+    expect(knownPages.filter((page) => page.href === href)).toHaveLength(1);
+    expect(navigation.filter((page) => page.href === href)).toHaveLength(1);
+  }
+});
+
+test("every guide has one searchable route and sidebar link", () => {
+  const navigation = docsNavigation.flatMap((group) => group.items);
+  for (const guide of guideIndex) {
+    const href = `/docs/${guide.slug}/`;
     expect(knownPages.filter((page) => page.href === href)).toHaveLength(1);
     expect(navigation.filter((page) => page.href === href)).toHaveLength(1);
   }

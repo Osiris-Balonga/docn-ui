@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { findGuide, guideIndex } from "@/content/docs/guide-index";
 import { GuideArticle } from "@/features/docs/guide-article";
+import { createPageMetadata } from "@/lib/site-metadata";
 
 export const dynamicParams = false;
 
@@ -16,7 +17,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const guide = findGuide((await params).slug);
   if (!guide) notFound();
-  return { title: `${guide.title} — docn-ui`, description: guide.description };
+  return createPageMetadata({
+    title: `${guide.title} — docn-ui`,
+    description: guide.description,
+    path: `/docs/${guide.slug}/`,
+  });
 }
 
 export default async function GuidePage({

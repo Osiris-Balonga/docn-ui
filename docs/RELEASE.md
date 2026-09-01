@@ -32,6 +32,8 @@ Technical default: portable static build (`apps/www/out`). The host remains unco
 
 L15 provides a preview if the destination is authorized; otherwise provide a procedure and clearly labeled local HTTP validation. `SITE_URL` controls canonical URLs, sitemap, and registry; a release build rejects placeholder URLs. Previews are not indexed.
 
+Static builds emit a canonical URL and sitemap entry for every public page. Without `SITE_URL`, canonicals use the loopback development origin and the complete site emits `noindex, nofollow` plus `Disallow: /`. A publication candidate becomes indexable only when it has an authorized `SITE_URL` and `DOCN_ALLOW_INDEXING=true`. Generated preview assets and development registry paths remain excluded from crawlers. Do not enable indexing merely to test a preview deployment.
+
 Long cache lifetimes for hashed assets and immutable versioned registry files; current HTML/catalog can be revalidated. Registry JSON/public archives needed by consumers are accessible without a session; configure CORS where documented use requires it, not as general permission for exfiltration.
 
 Headers: correct MIME types, `nosniff`, Referrer-Policy, CSP derived from the actual build, local worker-src/font-src. Measure needs for `blob:` and Next inline scripts; do not use blanket `unsafe-*` allowances for convenience. The host applies static-export headers. Publication requires TLS.
