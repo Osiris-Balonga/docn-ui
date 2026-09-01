@@ -32,7 +32,7 @@ Target files/responsibilities: Existing PDF/E2E/consumers/visual suites; docs/qa
 - [ ] Review the fifteen-composition contact sheet; targeted visual references, at least one per family, extra variants only when necessary.
 - [ ] Stabilize rasterizer/fonts/runner; human-approved differences, no threshold increases to hide defects.
 - [ ] Explicitly activate `test:visual` and add it to `test:all`; selected PDF references, no E2E journeys rerun under a different label.
-- [ ] Extend both consumers to distinct card/invoice/sheet dependency closures; do not reinstall every variant.
+- [ ] Extend both consumers to distinct business-card, invoice, and reusable-component dependency closures; labels/sheets remain outside the maintainer-approved V1 families.
 - [ ] Keep generated PDFs/reports out of Git; selected references and fingerprints in dedicated locations.
 
 **Acceptance:** Designs are actually reviewed; installation covers new dependencies without a scenario explosion.

@@ -30,6 +30,7 @@
     "test:pdf": "vitest run --project pdf",
     "test:consumers": "pnpm generate:registry && vitest run --project consumers",
     "test:e2e": "playwright test",
+    "test:visual": "vitest run --project visual",
     "test:watch": "vitest --project unit --project components",
     "test:coverage": "vitest run --project unit --project components --coverage",
     "test:all": "node tooling/testing/run-all.mjs",

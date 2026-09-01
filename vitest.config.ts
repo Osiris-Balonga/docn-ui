@@ -66,6 +66,19 @@ export default defineConfig({
       {
         extends: true,
         test: {
+          name: "visual",
+          environment: "node",
+          include: ["tests/visual/**/*.visual.test.ts"],
+          exclude: exclude.filter(
+            (pattern) => !pattern.includes("tests/visual"),
+          ),
+          maxWorkers: 1,
+          retry: 0,
+        },
+      },
+      {
+        extends: true,
+        test: {
           name: "consumers",
           environment: "node",
           include: ["tests/consumers/**/*.consumer.test.ts"],

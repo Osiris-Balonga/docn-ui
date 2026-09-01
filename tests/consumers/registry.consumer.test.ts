@@ -310,13 +310,19 @@ describe("isolated registry consumers", () => {
     );
 
     await installItem(browserDirectory, temporaryRoot, "docn-text-example");
+    await installItem(
+      browserDirectory,
+      temporaryRoot,
+      "docn-business-card-violet-founder",
+    );
     await installItem(nodeDirectory, temporaryRoot, "docn-component-example");
+    await installItem(nodeDirectory, temporaryRoot, "docn-invoice-corporate");
     await prepareAssets(browserDirectory, temporaryRoot, "browser");
     await prepareAssets(nodeDirectory, temporaryRoot, "node");
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
-    expect(browserSources).toHaveLength(16);
-    expect(nodeSources).toHaveLength(38);
+    expect(browserSources).toHaveLength(26);
+    expect(nodeSources).toHaveLength(43);
     for (const [directory, sources] of [
       [browserDirectory, browserSources],
       [nodeDirectory, nodeSources],
@@ -333,9 +339,7 @@ describe("isolated registry consumers", () => {
       ])
         expect(manifest.dependencies[dependency]).toBeUndefined();
       expect(
-        sources.some((file) =>
-          /[\\/]templates[\\/]|[\\/]primitives[\\/]index.tsx$/.test(file),
-        ),
+        sources.some((file) => /[\\/]primitives[\\/]index.tsx$/.test(file)),
       ).toBe(false);
       for (const file of sources) {
         const content = await readFile(file, "utf8");
@@ -353,6 +357,23 @@ describe("isolated registry consumers", () => {
         /barcode|graph|data-table|heading|field-pair/.test(file),
       ),
     ).toBe(false);
+    expect(
+      browserSources.filter((file) => /[\\/]templates[\\/]/.test(file)),
+    ).toEqual([
+      resolve(
+        browserDirectory,
+        "docn/templates/business-cards/violet-founder-business-card.tsx",
+      ),
+      resolve(browserDirectory, "docn/templates/style-policy.ts"),
+      resolve(browserDirectory, "docn/templates/types.ts"),
+    ]);
+    expect(
+      nodeSources.filter((file) => /[\\/]templates[\\/]/.test(file)),
+    ).toEqual([
+      resolve(nodeDirectory, "docn/templates/invoices/corporate-invoice.tsx"),
+      resolve(nodeDirectory, "docn/templates/style-policy.ts"),
+      resolve(nodeDirectory, "docn/templates/types.ts"),
+    ]);
 
     await writeFile(
       resolve(nodeDirectory, "src/node-entry.ts"),
@@ -451,7 +472,12 @@ export default defineConfig({ build: { outDir: "dist-browser" } });`,
       writeFile(resolve(artifacts, "run.log"), `${logs.join("\n\n")}\n`),
       writeJson(resolve(artifacts, "install-state.json"), {
         schemaVersion: 1,
-        registryItems: ["docn-text-example", "docn-component-example"],
+        registryItems: [
+          "docn-text-example",
+          "docn-business-card-violet-founder",
+          "docn-component-example",
+          "docn-invoice-corporate",
+        ],
         registryOnlineDuringRender: false,
         installedSourceFiles: {
           browser: browserSources.length,
