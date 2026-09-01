@@ -23,6 +23,20 @@ test("browses templates and opens their registry source", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByText("Customize", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Download PDF", { exact: true })).toHaveCount(0);
+  const minimalPreview = page.getByRole("button", {
+    name: "Enlarge Minimal business card preview",
+  });
+  await minimalPreview.hover();
+  await expect(minimalPreview.getByText("Open preview")).toBeVisible();
+  await minimalPreview.click();
+  const templatePreview = page.getByRole("dialog", {
+    name: "Minimal business card preview",
+  });
+  await expect(
+    templatePreview.getByRole("region", { name: "Detailed PDF preview" }),
+  ).toBeVisible();
+  await expect(templatePreview.getByText("Download PDF")).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
   await page
     .getByRole("button", {
@@ -262,12 +276,11 @@ test("browses component examples source formats and themes", async ({
     )
     .toBeGreaterThan(0);
   const enlarge = page.getByRole("button", { name: "Enlarge Barcode preview" });
+  await enlarge.hover();
+  await expect(enlarge.getByText("Open preview")).toBeVisible();
   await enlarge.click();
   const overlay = page.getByRole("dialog", { name: "Barcode preview" });
   await expect(overlay).toBeVisible();
-  await expect(
-    overlay.getByRole("complementary", { name: "PDF pages" }),
-  ).toBeVisible();
   await expect(
     overlay.getByRole("region", { name: "Detailed PDF preview" }),
   ).toBeVisible();
@@ -336,7 +349,8 @@ test("browses component examples source formats and themes", async ({
   await expect(
     page.getByRole("heading", { name: "Full-page diagonal mark" }),
   ).toBeVisible();
-  await expect(page.getByText("Single-page placement")).toBeVisible();
+  await expect(page.getByText("Full-page horizontal mark")).toBeVisible();
+  await expect(page.getByText("Full-page vertical mark")).toBeVisible();
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByPlaceholder("Search available pages...").fill("PageBreak");
@@ -351,11 +365,9 @@ test("browses component examples source formats and themes", async ({
     name: "Detailed PDF preview",
   });
   await expect(scroll).toHaveCSS("scrollbar-width", "none");
-  await scroll.focus();
-  await page.keyboard.press("ArrowDown");
-  await expect
-    .poll(() => scroll.evaluate((element) => element.scrollTop))
-    .toBeGreaterThan(0);
+  const secondPage = pageOverlay.getByRole("button", { name: "View page 2" });
+  await secondPage.click();
+  await expect(secondPage).toHaveAttribute("aria-current", "page");
   await page.screenshot({ path: testInfo.outputPath("page-enlarged.png") });
   await page.keyboard.press("Escape");
 
