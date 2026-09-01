@@ -321,8 +321,8 @@ describe("isolated registry consumers", () => {
     await prepareAssets(nodeDirectory, temporaryRoot, "node");
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
-    expect(browserSources).toHaveLength(26);
-    expect(nodeSources).toHaveLength(43);
+    expect(browserSources).toHaveLength(27);
+    expect(nodeSources).toHaveLength(44);
     for (const [directory, sources] of [
       [browserDirectory, browserSources],
       [nodeDirectory, nodeSources],
@@ -341,6 +341,13 @@ describe("isolated registry consumers", () => {
       expect(
         sources.some((file) => /[\\/]primitives[\\/]index.tsx$/.test(file)),
       ).toBe(false);
+      const installedLicense = sources.find((file) =>
+        /[\\/]docn[\\/]LICENSE$/.test(file),
+      );
+      expect(installedLicense).toBeDefined();
+      expect(await readFile(installedLicense!, "utf8")).toContain(
+        "Copyright (c) 2026 Emmanuel Osiris Balonga",
+      );
       for (const file of sources) {
         const content = await readFile(file, "utf8");
         expect(content).not.toContain(root);
