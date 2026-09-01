@@ -236,7 +236,8 @@ describe("content primitive contracts", () => {
       "blob:http://127.0.0.1:3000/local-image",
       "blob:null/local-image",
       "blob:nodedata:local-image",
-      "data:image/png;base64,aGVsbG8=",
+      "data:image/png;base64,iVBORw0KGgo=",
+      "data:image/jpeg;base64,/9j/4AAQSkY=",
     ]) {
       expect(() => assertLocalImage(source, 70, 35)).not.toThrow();
     }
@@ -247,6 +248,8 @@ describe("content primitive contracts", () => {
       "data:image/svg+xml;base64,AAAA",
       "data:image/png;base64,",
       "data:image/png;base64,???=",
+      "data:image/png;base64,aGVsbG8=",
+      "data:image/jpeg;base64,iVBORw0KGgo=",
       "data:image/png;base64," + "A".repeat(7_000_000),
     ]) {
       expect(() => assertLocalImage(source, 70, 35)).toThrow();

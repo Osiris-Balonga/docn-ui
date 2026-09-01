@@ -18,7 +18,7 @@
     "verify:assets": "node tooling/assets/verify-assets.mjs",
     "verify:docs": "node tooling/docs/verify-links.mjs",
     "generate:docs": "node tooling/docs/generate.mjs",
-    "preview": "http-server apps/www/out -a 127.0.0.1 -p 4173 -c-1",
+    "preview": "node tooling/testing/serve-static.mjs apps/www/out 127.0.0.1 4173",
     "typecheck": "pnpm -r typecheck && tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,json,yml,yaml,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,mjs,json,yml,yaml,css}\"",

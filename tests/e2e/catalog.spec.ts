@@ -3,7 +3,14 @@ import { expect, test } from "@playwright/test";
 test("shows the new reference-led templates in their families", async ({
   page,
 }) => {
-  await page.goto("/templates/");
+  const response = await page.goto("/templates/");
+  expect(response?.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(response?.headers()["referrer-policy"]).toBe(
+    "strict-origin-when-cross-origin",
+  );
+  expect(response?.headers()["content-security-policy"]).toContain(
+    "worker-src 'self' blob:",
+  );
 
   await expect(
     page.getByRole("heading", { name: "PDF Templates" }),
