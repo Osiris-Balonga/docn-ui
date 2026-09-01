@@ -405,7 +405,10 @@
       "dependsOn": ["L15"],
       "branch": "release/v1.0.0",
       "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
-      "actualCommits": ["149c027ba7b4c2927715dba9e3181c0dd06ed718"],
+      "actualCommits": [
+        "149c027ba7b4c2927715dba9e3181c0dd06ed718",
+        "bbf88fb5fe41360f7c52f81cff9279ec97e77abd"
+      ],
       "evidence": "../qa/L16.md",
       "blocker": null
     }

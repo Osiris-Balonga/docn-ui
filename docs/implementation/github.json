@@ -691,7 +691,20 @@
       "issueId": "I_kwDOUHjPN88AAAABOuNP_g",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/20",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVt4",
-      "pullRequest": null,
+      "pullRequest": {
+        "number": 54,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/54",
+        "mergeCommit": "21c16a2ec5dfd487a257d6947e2e8e8108162a5c",
+        "mergedAt": "2026-09-01T23:01:54Z"
+      },
+      "followUpPullRequests": [
+        {
+          "number": 55,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/55",
+          "mergeCommit": "c7c16b4326013d820aebe4d519faaf10fc491f10",
+          "mergedAt": "2026-09-01T23:09:33Z"
+        }
+      ],
       "initialized": true
     }
   },
