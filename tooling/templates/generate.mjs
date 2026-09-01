@@ -64,14 +64,26 @@ async function build() {
     "/packages/documents/src/templates/render.tsx",
   );
   prepareTemplateFonts(resolve(root, "packages/documents/assets"));
-  const imageBytes = await readFile(
-    resolve(root, "tooling/docs/assets/desk-setup.jpg"),
+  const assetDefinitions = {
+    portraitSource: ["designer-portrait.png", "image/png"],
+    productSource: ["desk-setup.jpg", "image/jpeg"],
+    stripeLogoSource: ["stripe-wordmark-blurple.png", "image/png"],
+    studioLogoSource: ["studio-north-mark.png", "image/png"],
+  };
+  const assets = Object.fromEntries(
+    await Promise.all(
+      Object.entries(assetDefinitions).map(async ([key, [file, mime]]) => {
+        const bytes = await readFile(
+          resolve(root, "tooling/docs/assets", file),
+        );
+        return [key, `data:${mime};base64,${bytes.toString("base64")}`];
+      }),
+    ),
   );
-  const imageSource = `data:image/jpeg;base64,${imageBytes.toString("base64")}`;
   const outputs = [];
   for (const definition of templateDefinitions) {
     const pdfBytes = await normalizeGeneratedPdf(
-      new Uint8Array(await renderTemplateDefinition(definition, imageSource)),
+      new Uint8Array(await renderTemplateDefinition(definition, assets)),
     );
     const pdfName = `${definition.id}.pdf`;
     await persistPdf(resolve(outputRoot, pdfName), pdfBytes);

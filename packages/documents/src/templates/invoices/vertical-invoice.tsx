@@ -5,7 +5,11 @@ import { QRCode } from "../../primitives/qr-code-view";
 import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
 import type { TemplateDefinition } from "../types";
 
 export interface VerticalInvoiceProps {
@@ -18,6 +22,7 @@ export interface VerticalInvoiceProps {
   paymentName: string;
   payUrl: string;
   sellerName: string;
+  style?: TemplateStyleOverrides<typeof verticalInvoiceStyle.slots>;
   total: string;
 }
 
@@ -25,25 +30,29 @@ const resolvedFormat = resolveFormat("a4");
 if (resolvedFormat.kind !== "fixed") throw new Error("Invoice requires A4.");
 const format = resolvedFormat;
 
-const navy = "#08275f";
-const cream = "#f4f0e7";
-const ochre = "#9a713d";
-const theme: PdfTheme = {
-  ...getPdfTheme("neutral"),
-  colors: {
-    ...getPdfTheme("neutral").colors,
-    accent: navy,
-    canvas: cream,
-    surface: cream,
-    text: navy,
-    mutedText: navy,
+export const verticalInvoiceStyle = defineTemplateStyle(
+  "neutral",
+  {
+    colors: {
+      accent: "#08275f",
+      canvas: "#f4f0e7",
+      surface: "#f4f0e7",
+      text: "#08275f",
+      mutedText: "#08275f",
+    },
+    typeScale: { caption: 8, body: 10, label: 11, heading: 16, display: 28 },
   },
-  typeScale: { caption: 8, body: 10, label: 11, heading: 16, display: 28 },
-};
+  { secondaryAccent: "#9a713d" },
+);
 
 const pageInset = -28.35;
 
 export function VerticalInvoice(props: VerticalInvoiceProps) {
+  const style = resolveTemplateStyle(verticalInvoiceStyle, props.style);
+  const { theme } = style;
+  const navy = theme.colors.accent;
+  const cream = theme.colors.canvas;
+  const ochre = style.slots.secondaryAccent;
   return (
     <Document title={`Invoice ${props.invoiceNumber}`} language="en">
       <PageFrame format={format} theme={theme} backgroundColor={cream}>

@@ -8,6 +8,10 @@ import { assetManifest } from "../assets/manifest";
 import { createBrowserAssetResolver } from "../render/assets.browser";
 import { createNodeAssetResolver } from "../render/assets.node";
 import { getPdfTheme, themes } from "./themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+} from "../templates/style-policy";
 
 vi.mock("react", async (importOriginal) => ({
   ...(await importOriginal<typeof import("react")>()),
@@ -36,6 +40,24 @@ describe("portable PDF themes and declared assets", () => {
         issues: [expect.objectContaining({ path: ["themeId"] })],
       }),
     );
+  });
+
+  it("keeps template defaults source-owned while resolving scoped overrides", () => {
+    const base = defineTemplateStyle(
+      "neutral",
+      { colors: { accent: "#635bff" } },
+      { accentSoft: "#eeeeff" },
+    );
+    const resolved = resolveTemplateStyle(base, {
+      colors: { accent: "#0f766e" },
+      fonts: { heading: "Noto Serif" },
+      slots: { accentSoft: "#ccfbf1" },
+    });
+    expect(base.theme.colors.accent).toBe("#635bff");
+    expect(base.slots.accentSoft).toBe("#eeeeff");
+    expect(resolved.theme.colors.accent).toBe("#0f766e");
+    expect(resolved.theme.fonts.heading).toBe("Noto Serif");
+    expect(resolved.slots.accentSoft).toBe("#ccfbf1");
   });
 
   it("resolves only manifest IDs to controlled browser and Node sources", () => {

@@ -3,6 +3,7 @@ import { PDFDocument } from "pdf-lib";
 import { createNodeAssetResolver } from "../render/assets.node";
 import { registerDocumentFonts } from "../render/fonts";
 import type { TemplateDefinition } from "./types";
+import type { TemplateSampleAssets } from "./types";
 
 export function prepareTemplateFonts(assetRoot: string) {
   registerDocumentFonts(createNodeAssetResolver(assetRoot));
@@ -10,9 +11,9 @@ export function prepareTemplateFonts(assetRoot: string) {
 
 export function renderTemplateDefinition(
   definition: TemplateDefinition,
-  imageSource: string,
+  assets: TemplateSampleAssets,
 ) {
-  return renderToBuffer(definition.renderSample({ imageSource }));
+  return renderToBuffer(definition.renderSample(assets));
 }
 
 export async function normalizeGeneratedPdf(input: Uint8Array) {

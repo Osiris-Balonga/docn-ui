@@ -59,15 +59,7 @@ test("shows the new reference-led templates in their families", async ({
   ).toBeVisible();
   await navigation.getByRole("tab", { name: "Reports" }).click();
   await expect(
-    page.getByRole("heading", { name: "Photo-led report" }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Enlarge Photo-led report preview" })
-    .click();
-  await expect(
-    page
-      .getByRole("dialog", { name: "Photo-led report preview" })
-      .getByRole("button", { name: "View page 2" }),
+    page.getByRole("heading", { name: "No Reports yet" }),
   ).toBeVisible();
 });
 test("keeps the Home focused and changes documentation navigation only when space requires it", async ({

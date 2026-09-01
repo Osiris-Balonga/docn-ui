@@ -116,6 +116,17 @@ export const registrySourceManifest = {
       files: ["packages/documents/src/templates/types.ts"],
     },
     {
+      name: "docn-template-style",
+      type: "registry:lib",
+      title: "Template style policy",
+      description:
+        "Source-owned template colors and fonts with scoped overrides for future builders.",
+      dependencies: ["react@19.2.8", "zod@3.25.76"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: ["docn-template-types", "docn-themes"],
+      files: ["packages/documents/src/templates/style-policy.ts"],
+    },
+    {
       name: "docn-resume-classic",
       type: "registry:block",
       title: "Classic two-column resume",
@@ -124,6 +135,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-heading",
         "docn-text",
@@ -142,6 +154,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-text",
         "docn-row",
@@ -161,31 +174,15 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-text",
         "docn-row",
         "docn-stack",
+        "docn-image",
       ],
       files: ["packages/documents/src/templates/resume/designer-resume.tsx"],
       preview: ["packages/documents/src/templates/resume/designer-resume.tsx"],
-    },
-    {
-      name: "docn-report-photo",
-      type: "registry:block",
-      title: "Photo-led report",
-      description: "A source-owned two-page editorial report composition.",
-      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
-      devDependencies: ["@types/react@19.2.18"],
-      registryDependencies: [
-        "docn-template-types",
-        "docn-page-frame",
-        "docn-heading",
-        "docn-text",
-        "docn-stack",
-        "docn-image",
-      ],
-      files: ["packages/documents/src/templates/reports/photo-report.tsx"],
-      preview: ["packages/documents/src/templates/reports/photo-report.tsx"],
     },
     {
       name: "docn-invoice-stripe",
@@ -196,6 +193,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-heading",
         "docn-text",
@@ -203,6 +201,7 @@ export const registrySourceManifest = {
         "docn-stack",
         "docn-link",
         "docn-divider",
+        "docn-image",
       ],
       files: ["packages/documents/src/templates/invoices/stripe-invoice.tsx"],
       preview: ["packages/documents/src/templates/invoices/stripe-invoice.tsx"],
@@ -216,6 +215,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-heading",
         "docn-text",
@@ -240,6 +240,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-text",
         "docn-row",
@@ -260,6 +261,7 @@ export const registrySourceManifest = {
       devDependencies: ["@types/react@19.2.18"],
       registryDependencies: [
         "docn-template-types",
+        "docn-template-style",
         "docn-page-frame",
         "docn-heading",
         "docn-text",

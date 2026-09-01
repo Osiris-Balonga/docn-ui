@@ -26,10 +26,11 @@ Slugs are known at build time; provide an explicit 404. No placeholder navigatio
 - Documentation sidebar on desktop; `Sheet` on mobile. Breadcrumbs and a table of contents only where useful.
 - Reading width of 65–75 characters, with a wider catalog area. Template view uses two columns from 1024 px: 320–380 px settings and a flexible preview; below that, stack sections or tabs.
 - Gallery thumbnails are rasterized from PDFs at their actual proportions. Do not force cards and receipts into the same A4 ratio; use neutral space around each format.
-- Catalog specimens use a monochrome base theme so consumers can apply their own fonts, accent, and logo without first removing docn-ui branding. Third-party brands are research references, never bundled template identities.
+- Catalog specimens preserve each source-owned template's base colors, fonts and explicit local assets. Site colors never leak into PDF output. A future theme builder may override the scoped style tokens without changing template layout; see [Template styling policy](docs/TEMPLATE-STYLING.md).
+- Third-party identity assets are bundled only when a template explicitly reproduces that branded reference, the asset comes from the brand's official media kit, and its source and usage terms are recorded locally.
 - Selecting a specimen opens a larger generated-PDF overlay for close inspection without adding an editor to the catalog.
 - Detail page: name, family, dimensions, page/side count, actions. `Preview` and `Code` tabs; a separate Data, Format, Theme, Print settings group.
-- A template title does not include its theme: these are separate choices.
+- A template title does not include an applied theme: its intrinsic base style and any later user-selected override remain separate choices.
 
 ## shadcn/ui
 

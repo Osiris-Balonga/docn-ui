@@ -5,7 +5,11 @@ import { PageFrame } from "../../primitives/page-frame";
 import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
 import type { TemplateDefinition } from "../types";
 
 interface ResumeEntry {
@@ -24,6 +28,7 @@ export interface ClassicResumeProps {
   projects: readonly ResumeEntry[];
   skills: readonly string[];
   summary: string;
+  style?: TemplateStyleOverrides<typeof classicResumeStyle.slots>;
 }
 
 const resolvedFormat = resolveFormat("a4");
@@ -31,36 +36,56 @@ if (resolvedFormat.kind !== "fixed")
   throw new Error("Classic resume requires A4.");
 const format = resolvedFormat;
 
-const theme: PdfTheme = {
-  ...getPdfTheme("editorial"),
-  colors: {
-    ...getPdfTheme("editorial").colors,
-    accent: "#0869b2",
-    canvas: "#ffffff",
-    surface: "#ffffff",
-    text: "#111111",
-    mutedText: "#676767",
+export const classicResumeStyle = defineTemplateStyle(
+  "editorial",
+  {
+    colors: {
+      accent: "#0869b2",
+      canvas: "#ffffff",
+      surface: "#ffffff",
+      text: "#111111",
+      mutedText: "#676767",
+    },
+    typeScale: {
+      caption: 6.5,
+      body: 7.2,
+      label: 8.5,
+      heading: 13,
+      display: 28,
+    },
   },
-  typeScale: { caption: 6.5, body: 7.2, label: 8.5, heading: 13, display: 28 },
-};
+  { editorialFont: "Noto Serif" },
+);
 
-function SectionTitle({ children }: { children: string }) {
+function SectionTitle({
+  accent,
+  children,
+}: {
+  accent: string;
+  children: string;
+}) {
   return (
     <Text
       weight="strong"
-      style={{ color: theme.colors.accent, fontSize: 7, letterSpacing: 0.25 }}
+      style={{ color: accent, fontSize: 7, letterSpacing: 0.25 }}
     >
       {children.toUpperCase()}
     </Text>
   );
 }
 
-function Entry({ description, meta, title }: ResumeEntry) {
+function Entry({
+  bodyFont,
+  description,
+  headingFont,
+  meta,
+  title,
+}: ResumeEntry & { bodyFont: string; headingFont: string }) {
   return (
     <Stack gap="xs" style={{ gap: 4 }}>
       <Text
         weight="strong"
-        style={{ fontFamily: "Noto Serif", fontSize: 8.3, lineHeight: 1.2 }}
+        style={{ fontFamily: headingFont, fontSize: 8.3, lineHeight: 1.2 }}
       >
         {title}
       </Text>
@@ -76,22 +101,26 @@ function Entry({ description, meta, title }: ResumeEntry) {
           {meta}
         </Text>
       ) : null}
-      <Text
-        style={{ fontFamily: "Noto Serif", fontSize: 6.8, lineHeight: 1.38 }}
-      >
+      <Text style={{ fontFamily: bodyFont, fontSize: 6.8, lineHeight: 1.38 }}>
         {description}
       </Text>
     </Stack>
   );
 }
 
-function TextList({ items }: { items: readonly string[] }) {
+function TextList({
+  bodyFont,
+  items,
+}: {
+  bodyFont: string;
+  items: readonly string[];
+}) {
   return (
     <Stack gap="sm" style={{ gap: 9 }}>
       {items.map((item) => (
         <Text
           key={item}
-          style={{ fontFamily: "Noto Serif", fontSize: 6.8, lineHeight: 1.35 }}
+          style={{ fontFamily: bodyFont, fontSize: 6.8, lineHeight: 1.35 }}
         >
           {item}
         </Text>
@@ -101,9 +130,15 @@ function TextList({ items }: { items: readonly string[] }) {
 }
 
 export function ClassicResume(props: ClassicResumeProps) {
+  const style = resolveTemplateStyle(classicResumeStyle, props.style);
+  const { theme } = style;
   return (
     <Document title={`${props.name} resume`} language="en">
-      <PageFrame format={format} theme={theme} backgroundColor="#ffffff">
+      <PageFrame
+        format={format}
+        theme={theme}
+        backgroundColor={theme.colors.canvas}
+      >
         <Stack
           gap="lg"
           style={{ gap: 28, paddingHorizontal: 19, paddingTop: 3 }}
@@ -113,7 +148,7 @@ export function ClassicResume(props: ClassicResumeProps) {
               <Heading
                 level="display"
                 style={{
-                  fontFamily: "Noto Serif",
+                  fontFamily: style.slots.editorialFont,
                   fontSize: 27,
                   lineHeight: 1,
                 }}
@@ -122,7 +157,7 @@ export function ClassicResume(props: ClassicResumeProps) {
               </Heading>
               <Text
                 tone="muted"
-                style={{ fontFamily: "Noto Serif", fontSize: 6.4 }}
+                style={{ fontFamily: style.slots.editorialFont, fontSize: 6.4 }}
               >
                 {props.summary}
               </Text>
@@ -131,7 +166,10 @@ export function ClassicResume(props: ClassicResumeProps) {
               {props.contact.map((line) => (
                 <Text
                   key={line}
-                  style={{ fontFamily: "Noto Serif", fontSize: 6.5 }}
+                  style={{
+                    fontFamily: style.slots.editorialFont,
+                    fontSize: 6.5,
+                  }}
                 >
                   {line}
                 </Text>
@@ -142,36 +180,70 @@ export function ClassicResume(props: ClassicResumeProps) {
           <Row gap="lg" style={{ alignItems: "flex-start" }}>
             <Stack gap="xl" style={{ gap: 34, width: "63%" }}>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Experience</SectionTitle>
+                <SectionTitle accent={theme.colors.accent}>
+                  Experience
+                </SectionTitle>
                 {props.experience.map((entry) => (
-                  <Entry key={entry.title} {...entry} />
+                  <Entry
+                    key={entry.title}
+                    {...entry}
+                    bodyFont={style.slots.editorialFont}
+                    headingFont={style.slots.editorialFont}
+                  />
                 ))}
               </Stack>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Education</SectionTitle>
+                <SectionTitle accent={theme.colors.accent}>
+                  Education
+                </SectionTitle>
                 {props.education.map((entry) => (
-                  <Entry key={entry.title} {...entry} />
+                  <Entry
+                    key={entry.title}
+                    {...entry}
+                    bodyFont={style.slots.editorialFont}
+                    headingFont={style.slots.editorialFont}
+                  />
                 ))}
               </Stack>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Projects</SectionTitle>
+                <SectionTitle accent={theme.colors.accent}>
+                  Projects
+                </SectionTitle>
                 {props.projects.map((entry) => (
-                  <Entry key={entry.title} {...entry} />
+                  <Entry
+                    key={entry.title}
+                    {...entry}
+                    bodyFont={style.slots.editorialFont}
+                    headingFont={style.slots.editorialFont}
+                  />
                 ))}
               </Stack>
             </Stack>
             <Stack gap="xl" style={{ gap: 40, width: "29%" }}>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Skills</SectionTitle>
-                <TextList items={props.skills} />
+                <SectionTitle accent={theme.colors.accent}>Skills</SectionTitle>
+                <TextList
+                  bodyFont={style.slots.editorialFont}
+                  items={props.skills}
+                />
               </Stack>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Highlights</SectionTitle>
-                <TextList items={props.highlights} />
+                <SectionTitle accent={theme.colors.accent}>
+                  Highlights
+                </SectionTitle>
+                <TextList
+                  bodyFont={style.slots.editorialFont}
+                  items={props.highlights}
+                />
               </Stack>
               <Stack gap="md" style={{ gap: 12 }}>
-                <SectionTitle>Languages</SectionTitle>
-                <TextList items={props.languages} />
+                <SectionTitle accent={theme.colors.accent}>
+                  Languages
+                </SectionTitle>
+                <TextList
+                  bodyFont={style.slots.editorialFont}
+                  items={props.languages}
+                />
               </Stack>
             </Stack>
           </Row>

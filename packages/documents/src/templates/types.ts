@@ -4,7 +4,10 @@ import type { ThemeId } from "../core/contracts";
 import type { FormatId } from "../core/formats";
 
 export interface TemplateSampleAssets {
-  imageSource: string;
+  portraitSource: string;
+  productSource: string;
+  stripeLogoSource: string;
+  studioLogoSource: string;
 }
 
 export interface TemplateDefinition {

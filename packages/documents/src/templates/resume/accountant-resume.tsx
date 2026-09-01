@@ -4,7 +4,11 @@ import { PageFrame } from "../../primitives/page-frame";
 import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
 import type { TemplateDefinition } from "../types";
 
 interface ResumeItem {
@@ -21,6 +25,7 @@ export interface AccountantResumeProps {
   name: string;
   role: string;
   skills: readonly string[];
+  style?: TemplateStyleOverrides<typeof accountantResumeStyle.slots>;
 }
 
 const resolvedFormat = resolveFormat("a4");
@@ -28,19 +33,21 @@ if (resolvedFormat.kind !== "fixed")
   throw new Error("Accountant resume requires A4.");
 const format = resolvedFormat;
 
-const theme: PdfTheme = {
-  ...getPdfTheme("neutral"),
-  colors: {
-    ...getPdfTheme("neutral").colors,
-    canvas: "#ffffff",
-    surface: "#ffffff",
-    text: "#171717",
-    mutedText: "#5f5f5f",
+export const accountantResumeStyle = defineTemplateStyle(
+  "neutral",
+  {
+    colors: {
+      canvas: "#ffffff",
+      surface: "#ffffff",
+      text: "#171717",
+      mutedText: "#5f5f5f",
+    },
   },
-};
+  { footer: "#6d6d6d", rule: "#303030" },
+);
 
-function Rule() {
-  return <View style={{ borderTop: "0.7 solid #303030", width: "100%" }} />;
+function Rule({ color }: { color: string }) {
+  return <View style={{ borderTop: `0.7 solid ${color}`, width: "100%" }} />;
 }
 
 function SectionTitle({ children }: { children: string }) {
@@ -54,7 +61,13 @@ function SectionTitle({ children }: { children: string }) {
   );
 }
 
-function ContactIcon({ type }: { type: "email" | "location" | "phone" }) {
+function ContactIcon({
+  color,
+  type,
+}: {
+  color: string;
+  type: "email" | "location" | "phone";
+}) {
   const path =
     type === "phone"
       ? "M3 1.8 5.7 1 7.1 4.2 5.5 5.4c.9 2 2.5 3.6 4.6 4.6l1.3-1.6 3.2 1.5-.8 2.8c-.3.8-1 1.3-1.9 1.2C6.4 13 2.1 8.8 1.2 3.5 1 2.7 1.7 2 3 1.8Z"
@@ -65,8 +78,8 @@ function ContactIcon({ type }: { type: "email" | "location" | "phone" }) {
     <Svg width={11} height={11} viewBox="0 0 16 16">
       <Path
         d={path}
-        fill={type === "location" ? "#171717" : "none"}
-        stroke="#171717"
+        fill={type === "location" ? color : "none"}
+        stroke={color}
         strokeWidth={1.2}
       />
     </Svg>
@@ -88,9 +101,15 @@ function Entry({ description, meta, title }: ResumeItem) {
 }
 
 export function AccountantResume(props: AccountantResumeProps) {
+  const style = resolveTemplateStyle(accountantResumeStyle, props.style);
+  const { theme } = style;
   return (
     <Document title={`${props.name} resume`} language="en">
-      <PageFrame format={format} theme={theme} backgroundColor="#ffffff">
+      <PageFrame
+        format={format}
+        theme={theme}
+        backgroundColor={theme.colors.canvas}
+      >
         <Stack
           style={{
             gap: 17,
@@ -112,6 +131,7 @@ export function AccountantResume(props: AccountantResumeProps) {
             {props.contact.map((item, index) => (
               <Row key={item} style={{ alignItems: "center", gap: 7 }}>
                 <ContactIcon
+                  color={theme.colors.text}
                   type={
                     index === 0 ? "phone" : index === 1 ? "email" : "location"
                   }
@@ -122,7 +142,7 @@ export function AccountantResume(props: AccountantResumeProps) {
               </Row>
             ))}
           </Row>
-          <Rule />
+          <Rule color={style.slots.rule} />
 
           <Stack style={{ gap: 10 }}>
             <SectionTitle>About me</SectionTitle>
@@ -130,7 +150,7 @@ export function AccountantResume(props: AccountantResumeProps) {
               {props.about}
             </Text>
           </Stack>
-          <Rule />
+          <Rule color={style.slots.rule} />
 
           <Stack style={{ gap: 12 }}>
             <SectionTitle>Education</SectionTitle>
@@ -138,7 +158,7 @@ export function AccountantResume(props: AccountantResumeProps) {
               <Entry key={`${entry.meta}-${entry.title}`} {...entry} />
             ))}
           </Stack>
-          <Rule />
+          <Rule color={style.slots.rule} />
 
           <Stack style={{ gap: 12 }}>
             <SectionTitle>Work experience</SectionTitle>
@@ -146,7 +166,7 @@ export function AccountantResume(props: AccountantResumeProps) {
               <Entry key={`${entry.meta}-${entry.title}`} {...entry} />
             ))}
           </Stack>
-          <Rule />
+          <Rule color={style.slots.rule} />
 
           <Stack style={{ gap: 10 }}>
             <SectionTitle>Skills</SectionTitle>
@@ -165,7 +185,7 @@ export function AccountantResume(props: AccountantResumeProps) {
         </Stack>
         <View
           style={{
-            backgroundColor: "#6d6d6d",
+            backgroundColor: style.slots.footer,
             bottom: -28.35,
             height: 18,
             left: -28.35,

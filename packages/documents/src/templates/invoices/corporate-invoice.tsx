@@ -5,7 +5,11 @@ import { PageFrame } from "../../primitives/page-frame";
 import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
 import type { TemplateDefinition } from "../types";
 
 export interface CorporateInvoiceProps {
@@ -26,6 +30,7 @@ export interface CorporateInvoiceProps {
     total: string;
   }[];
   subtotal: string;
+  style?: TemplateStyleOverrides<typeof corporateInvoiceStyle.slots>;
   tax: string;
   total: string;
 }
@@ -34,30 +39,30 @@ const resolvedFormat = resolveFormat("a4");
 if (resolvedFormat.kind !== "fixed") throw new Error("Invoice requires A4.");
 const format = resolvedFormat;
 
-const ink = "#243542";
-const stripe = "#f0f2f3";
-const theme: PdfTheme = {
-  ...getPdfTheme("neutral"),
-  colors: {
-    ...getPdfTheme("neutral").colors,
-    accent: ink,
-    canvas: "#ffffff",
-    surface: "#ffffff",
-    text: "#151515",
-    mutedText: "#4a4a4a",
+export const corporateInvoiceStyle = defineTemplateStyle(
+  "neutral",
+  {
+    colors: {
+      accent: "#243542",
+      canvas: "#ffffff",
+      surface: "#ffffff",
+      text: "#151515",
+      mutedText: "#4a4a4a",
+    },
+    typeScale: { caption: 7, body: 9, label: 10, heading: 16, display: 28 },
   },
-  typeScale: { caption: 7, body: 9, label: 10, heading: 16, display: 28 },
-};
+  { signatureFont: "Noto Serif", tableStripe: "#f0f2f3" },
+);
 
 const pageInset = -28.35;
 
-function GlobexMark() {
+function GlobexMark({ invertedText }: { invertedText: string }) {
   return (
     <Svg width={46} height={39} viewBox="0 0 46 39">
       <Path
         d="M3 5 L18 1 L18 30 L3 34 Z M23 3 L42 0 L42 27 L23 34 Z M18 9 L23 7"
         fill="none"
-        stroke="#ffffff"
+        stroke={invertedText}
         strokeWidth={2.6}
       />
     </Svg>
@@ -90,9 +95,17 @@ function TableCell({
 }
 
 export function CorporateInvoice(props: CorporateInvoiceProps) {
+  const style = resolveTemplateStyle(corporateInvoiceStyle, props.style);
+  const { theme } = style;
+  const ink = theme.colors.accent;
+  const stripe = style.slots.tableStripe;
   return (
     <Document title={`Invoice ${props.invoiceNumber}`} language="en">
-      <PageFrame format={format} theme={theme} backgroundColor="#ffffff">
+      <PageFrame
+        format={format}
+        theme={theme}
+        backgroundColor={theme.colors.canvas}
+      >
         <View
           style={{
             height: 841.89,
@@ -114,7 +127,7 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
           />
 
           <Stack gap="xs" style={{ left: 42, position: "absolute", top: 37 }}>
-            <GlobexMark />
+            <GlobexMark invertedText={theme.colors.invertedText} />
             <Heading
               tone="inverted"
               level={2}
@@ -240,7 +253,8 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
                 key={item.description}
                 align="center"
                 style={{
-                  backgroundColor: index % 2 === 0 ? stripe : "#ffffff",
+                  backgroundColor:
+                    index % 2 === 0 ? stripe : theme.colors.surface,
                   height: 36,
                   paddingHorizontal: 10,
                 }}
@@ -325,7 +339,9 @@ export function CorporateInvoice(props: CorporateInvoiceProps) {
               <Text style={{ fontSize: 8.5 }}>{props.total}</Text>
             </Row>
             <Stack align="end" gap="xs" style={{ marginTop: 24 }}>
-              <Text style={{ fontFamily: "Noto Serif", fontSize: 14 }}>
+              <Text
+                style={{ fontFamily: style.slots.signatureFont, fontSize: 14 }}
+              >
                 Anderson
               </Text>
               <Text style={{ fontSize: 7.5 }}>Authorized Signature</Text>

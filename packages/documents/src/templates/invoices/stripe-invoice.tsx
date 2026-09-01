@@ -1,13 +1,18 @@
-import { Document, View } from "@react-pdf/renderer";
+import { Document } from "@react-pdf/renderer";
 import { resolveFormat } from "../../core/formats";
 import { Heading } from "../../primitives/heading";
+import { Image } from "../../primitives/image";
 import { Link } from "../../primitives/link";
 import { PageFrame } from "../../primitives/page-frame";
 import { Row } from "../../primitives/row";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
-import type { TemplateDefinition } from "../types";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
+import type { TemplateDefinition, TemplateSampleAssets } from "../types";
 
 export interface StripeInvoiceProps {
   amountDue: string;
@@ -20,31 +25,38 @@ export interface StripeInvoiceProps {
     quantity: string;
     unitPrice: string;
   }[];
+  logoSource: string;
   seller: string;
+  style?: TemplateStyleOverrides<typeof stripeInvoiceStyle.slots>;
 }
 
 const resolvedFormat = resolveFormat("a4");
 if (resolvedFormat.kind !== "fixed") throw new Error("Invoice requires A4.");
 const format = resolvedFormat;
 
-const theme: PdfTheme = {
-  ...getPdfTheme("neutral"),
-  colors: {
-    ...getPdfTheme("neutral").colors,
-    accent: "#635bff",
-    canvas: "#ffffff",
-    surface: "#ffffff",
-    text: "#111111",
-    mutedText: "#5f6368",
+export const stripeInvoiceStyle = defineTemplateStyle(
+  "neutral",
+  {
+    colors: {
+      accent: "#635bff",
+      border: "#e5e5e5",
+      canvas: "#ffffff",
+      surface: "#ffffff",
+      text: "#111111",
+      mutedText: "#5f6368",
+    },
+    typeScale: { caption: 7, body: 9.5, label: 10.5, heading: 18, display: 25 },
   },
-  typeScale: { caption: 7, body: 9.5, label: 10.5, heading: 18, display: 25 },
-};
+  { tableRule: "#111111" },
+);
 
 function SummaryRow({
   label,
   value,
   strong = false,
+  borderColor,
 }: {
+  borderColor: string;
   label: string;
   value: string;
   strong?: boolean;
@@ -53,7 +65,7 @@ function SummaryRow({
     <Row
       justify="between"
       style={{
-        borderTopColor: "#e5e5e5",
+        borderTopColor: borderColor,
         borderTopWidth: 0.5,
         paddingVertical: 7,
       }}
@@ -69,19 +81,15 @@ function SummaryRow({
 }
 
 export function StripeInvoice(props: StripeInvoiceProps) {
+  const style = resolveTemplateStyle(stripeInvoiceStyle, props.style);
+  const { theme } = style;
   return (
     <Document title={`Invoice ${props.invoiceNumber}`} language="en">
-      <PageFrame format={format} theme={theme} backgroundColor="#ffffff">
-        <View
-          style={{
-            position: "absolute",
-            left: -28,
-            right: -28,
-            top: -28,
-            borderTopColor: theme.colors.accent,
-            borderTopWidth: 3,
-          }}
-        />
+      <PageFrame
+        format={format}
+        theme={theme}
+        backgroundColor={theme.colors.canvas}
+      >
         <Stack
           gap="xl"
           style={{ gap: 29, paddingHorizontal: 20, paddingTop: 12 }}
@@ -90,24 +98,13 @@ export function StripeInvoice(props: StripeInvoiceProps) {
             <Heading level="display" style={{ fontSize: 24 }}>
               Invoice
             </Heading>
-            <View
-              style={{
-                alignItems: "center",
-                backgroundColor: theme.colors.accent,
-                borderRadius: 22,
-                height: 44,
-                justifyContent: "center",
-                width: 44,
-              }}
-            >
-              <Text
-                weight="strong"
-                tone="inverted"
-                style={{ fontSize: 26, lineHeight: 1 }}
-              >
-                S
-              </Text>
-            </View>
+            <Image
+              alt="Stripe"
+              fit="contain"
+              height={29}
+              resolvedSource={props.logoSource}
+              width={70}
+            />
           </Row>
 
           <Stack gap="xs">
@@ -148,7 +145,7 @@ export function StripeInvoice(props: StripeInvoiceProps) {
           <Stack gap="xs" style={{ paddingTop: 4 }}>
             <Row
               style={{
-                borderBottomColor: "#111111",
+                borderBottomColor: style.slots.tableRule,
                 borderBottomWidth: 0.75,
                 paddingBottom: 6,
               }}
@@ -178,9 +175,22 @@ export function StripeInvoice(props: StripeInvoiceProps) {
             ))}
             <Row justify="end">
               <Stack gap="xs" style={{ width: "48%" }}>
-                <SummaryRow label="Subtotal" value={props.amountDue} />
-                <SummaryRow label="Total" value={props.amountDue} />
-                <SummaryRow label="Amount due" value={props.amountDue} strong />
+                <SummaryRow
+                  borderColor={theme.colors.border}
+                  label="Subtotal"
+                  value={props.amountDue}
+                />
+                <SummaryRow
+                  borderColor={theme.colors.border}
+                  label="Total"
+                  value={props.amountDue}
+                />
+                <SummaryRow
+                  borderColor={theme.colors.border}
+                  label="Amount due"
+                  value={props.amountDue}
+                  strong
+                />
               </Stack>
             </Row>
           </Stack>
@@ -188,7 +198,7 @@ export function StripeInvoice(props: StripeInvoiceProps) {
           <Stack
             gap="sm"
             style={{
-              borderTopColor: "#e5e5e5",
+              borderTopColor: theme.colors.border,
               borderTopWidth: 0.5,
               marginTop: 88,
               paddingTop: 18,
@@ -215,12 +225,15 @@ export function StripeInvoice(props: StripeInvoiceProps) {
   );
 }
 
-export const stripeInvoiceExample: StripeInvoiceProps = {
+export const stripeInvoiceExample = (
+  logoSource: string,
+): StripeInvoiceProps => ({
   invoiceNumber: "26B34523-DRAFT",
   dueDate: "February 5, 2026",
   seller: "Source Studio",
   customer: ["Jane Diaz", "jane.diaz@example.com"],
   amountDue: "$48.99",
+  logoSource,
   lines: [
     {
       description: "Design system review",
@@ -229,7 +242,7 @@ export const stripeInvoiceExample: StripeInvoiceProps = {
       amount: "$48.99",
     },
   ],
-};
+});
 
 export const stripeInvoiceDefinition: TemplateDefinition = {
   id: "invoice-stripe",
@@ -245,5 +258,7 @@ export const stripeInvoiceDefinition: TemplateDefinition = {
   version: "1.0.0",
   sides: 1,
   capabilities: { logo: true, printProfiles: false, qr: false },
-  renderSample: () => <StripeInvoice {...stripeInvoiceExample} />,
+  renderSample: ({ stripeLogoSource }: TemplateSampleAssets) => (
+    <StripeInvoice {...stripeInvoiceExample(stripeLogoSource)} />
+  ),
 };

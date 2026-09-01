@@ -22,6 +22,12 @@ describe("reference-led templates", () => {
     context.fillStyle = "#a3a3a3";
     context.fillRect(380, 72, 190, 124);
     const imageSource = canvas.toDataURL("image/png");
+    const assets = {
+      portraitSource: imageSource,
+      productSource: imageSource,
+      stripeLogoSource: imageSource,
+      studioLogoSource: imageSource,
+    };
     const expectedText = new Map([
       ["resume-classic", ["Your name", "EXPERIENCE", "LANGUAGES"]],
       [
@@ -35,10 +41,6 @@ describe("reference-led templates", () => {
       [
         "resume-designer",
         ["Markus", "Professional Summary", "Technical Skills"],
-      ],
-      [
-        "report-photo",
-        ["REPORT TITLE", "Introduction", "Insert your heading here"],
       ],
       [
         "invoice-stripe",
@@ -57,7 +59,7 @@ describe("reference-led templates", () => {
 
     for (const definition of templateDefinitions) {
       const bytes = new Uint8Array(
-        await renderTemplateDefinition(definition, imageSource),
+        await renderTemplateDefinition(definition, assets),
       );
       const loadingTask = getDocument({
         data: bytes.slice(),

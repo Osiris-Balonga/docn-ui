@@ -7,11 +7,16 @@ import { Row } from "../../primitives/row";
 import { Separator } from "../../primitives/separator";
 import { Stack } from "../../primitives/stack";
 import { Text } from "../../primitives/text";
-import { getPdfTheme, type PdfTheme } from "../../themes/themes";
+import {
+  defineTemplateStyle,
+  resolveTemplateStyle,
+  type TemplateStyleOverrides,
+} from "../style-policy";
 import type { TemplateDefinition, TemplateSampleAssets } from "../types";
 
 export interface OrderConfirmationProps {
   customerName: string;
+  logoSource: string;
   orderDate: string;
   orderNumber: string;
   payment: string;
@@ -23,6 +28,7 @@ export interface OrderConfirmationProps {
     quantity: number;
   }[];
   shippingAddress: string;
+  style?: TemplateStyleOverrides<typeof orderConfirmationStyle.slots>;
 }
 
 const resolvedFormat = resolveFormat("a4");
@@ -30,18 +36,27 @@ if (resolvedFormat.kind !== "fixed")
   throw new Error("Order confirmation requires A4.");
 const format = resolvedFormat;
 
-const theme: PdfTheme = {
-  ...getPdfTheme("neutral"),
-  colors: {
-    ...getPdfTheme("neutral").colors,
-    accent: "#111111",
-    canvas: "#ffffff",
-    surface: "#ffffff",
-    text: "#111111",
-    mutedText: "#777777",
+export const orderConfirmationStyle = defineTemplateStyle(
+  "neutral",
+  {
+    colors: {
+      accent: "#111111",
+      border: "#eeeeee",
+      canvas: "#ffffff",
+      surface: "#ffffff",
+      text: "#111111",
+      mutedText: "#777777",
+    },
+    typeScale: {
+      caption: 6.2,
+      body: 7.5,
+      label: 8.5,
+      heading: 15,
+      display: 21,
+    },
   },
-  typeScale: { caption: 6.2, body: 7.5, label: 8.5, heading: 15, display: 21 },
-};
+  { discount: "#1f8f55" },
+);
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
@@ -55,17 +70,27 @@ function Meta({ label, value }: { label: string; value: string }) {
 }
 
 export function OrderConfirmation(props: OrderConfirmationProps) {
+  const style = resolveTemplateStyle(orderConfirmationStyle, props.style);
+  const { theme } = style;
   const subtotal = "$185.50";
   return (
     <Document title={`Order ${props.orderNumber}`} language="en">
-      <PageFrame format={format} theme={theme} backgroundColor="#ffffff">
+      <PageFrame
+        format={format}
+        theme={theme}
+        backgroundColor={theme.colors.canvas}
+      >
         <Stack
           gap="lg"
           style={{ gap: 25, paddingHorizontal: 24, paddingTop: 4 }}
         >
-          <Text weight="strong" style={{ fontSize: 21, letterSpacing: -1.2 }}>
-            N
-          </Text>
+          <Image
+            alt="Studio North"
+            fit="contain"
+            height={21}
+            resolvedSource={props.logoSource}
+            width={21}
+          />
           <Stack gap="sm">
             <Heading level={2} style={{ fontSize: 15 }}>
               Your Order Confirmed!
@@ -80,7 +105,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
           <Row
             gap="md"
             style={{
-              borderBottomColor: "#eeeeee",
+              borderBottomColor: theme.colors.border,
               borderBottomWidth: 0.5,
               paddingBottom: 10,
             }}
@@ -97,7 +122,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
                 key={product.name}
                 align="center"
                 style={{
-                  borderBottomColor: "#eeeeee",
+                  borderBottomColor: theme.colors.border,
                   borderBottomWidth: 0.5,
                   paddingVertical: 16,
                 }}
@@ -139,7 +164,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
               </Row>
               <Row justify="between">
                 <Text tone="muted">Discount</Text>
-                <Text style={{ color: "#1f8f55" }}>-$2.00</Text>
+                <Text style={{ color: style.slots.discount }}>-$2.00</Text>
               </Row>
               <Separator spacing="xs" />
               <Row justify="between">
@@ -163,7 +188,7 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
         <Row
           justify="between"
           style={{
-            borderTopColor: "#eeeeee",
+            borderTopColor: theme.colors.border,
             borderTopWidth: 0.5,
             bottom: 8,
             left: 24,
@@ -185,14 +210,16 @@ export function OrderConfirmation(props: OrderConfirmationProps) {
 }
 
 export const orderConfirmationExample = (
-  imageSource: string,
+  productSource: string,
+  logoSource: string,
 ): OrderConfirmationProps => ({
   customerName: "Chris",
+  logoSource,
   orderDate: "12 Jan, 2026",
   orderNumber: "NK483820",
   payment: "Card",
   shippingAddress: "48 Alexander Plaza Apt. 109",
-  productImageSource: imageSource,
+  productImageSource: productSource,
   products: [
     {
       name: "Workshop access pass",
@@ -223,7 +250,9 @@ export const orderConfirmationDefinition: TemplateDefinition = {
   version: "1.0.0",
   sides: 1,
   capabilities: { logo: true, printProfiles: false, qr: false },
-  renderSample: ({ imageSource }: TemplateSampleAssets) => (
-    <OrderConfirmation {...orderConfirmationExample(imageSource)} />
+  renderSample: ({ productSource, studioLogoSource }: TemplateSampleAssets) => (
+    <OrderConfirmation
+      {...orderConfirmationExample(productSource, studioLogoSource)}
+    />
   ),
 };

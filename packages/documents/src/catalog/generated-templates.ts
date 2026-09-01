@@ -113,14 +113,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "8247d58fd1ed52a3476289415ec1d48e5ea9cf104869a220a7e32695fd48f2c6",
+          "d769bf8b7972fa4eb943a5223fca65272da5e882744a9f67ee16b0e32e93a46f",
         src: "/generated/templates/resume-designer-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "34ca2e29c7b3b52e64ad2998644cf25762698219f0bf517da81c017ef6bae1b5",
+        "b1789bc6bec2b682a87a6353f366b62dfcfc5b7f2693e270f8231bdd761e516d",
       src: "/generated/templates/resume-designer.pdf",
     },
     thumbnail: {
@@ -128,61 +128,8 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "8247d58fd1ed52a3476289415ec1d48e5ea9cf104869a220a7e32695fd48f2c6",
+        "d769bf8b7972fa4eb943a5223fca65272da5e882744a9f67ee16b0e32e93a46f",
       src: "/generated/templates/resume-designer-1.png",
-      width: 1191,
-    },
-  },
-  {
-    id: "report-photo",
-    slug: "report-photo",
-    title: "Photo-led report",
-    family: "report",
-    familyLabel: "Reports",
-    description:
-      "A two-page editorial report with a large cover image and restrained continuation page.",
-    supportedFormatIds: ["a4"],
-    supportedThemeIds: ["neutral"],
-    tags: ["report", "editorial", "photo", "multipage"],
-    version: "1.0.0",
-    sides: 2,
-    capabilities: {
-      logo: false,
-      printProfiles: false,
-      qr: false,
-    },
-    pages: [
-      {
-        fixture: "report-photo-example",
-        height: 1684,
-        page: 1,
-        sha256:
-          "5d13e772ca42b6bd9b9379ddcdefe779383b8bbf62e51d5621563c99f2fddda7",
-        src: "/generated/templates/report-photo-1.png",
-        width: 1191,
-      },
-      {
-        fixture: "report-photo-example",
-        height: 1684,
-        page: 2,
-        sha256:
-          "ce5e6bbeeabd8669be3afcb7070a3e19872a0e76e66c7396d3d75156b097746a",
-        src: "/generated/templates/report-photo-2.png",
-        width: 1191,
-      },
-    ],
-    pdf: {
-      revision:
-        "3a0d8227ae10ed0b2d28054aec5d15efb997681a00199cd145671826b95cfe84",
-      src: "/generated/templates/report-photo.pdf",
-    },
-    thumbnail: {
-      fixture: "report-photo-example",
-      height: 1684,
-      page: 1,
-      sha256:
-        "5d13e772ca42b6bd9b9379ddcdefe779383b8bbf62e51d5621563c99f2fddda7",
-      src: "/generated/templates/report-photo-1.png",
       width: 1191,
     },
   },
@@ -210,14 +157,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "c1113639ac95647616a87defac10684422ff9fca33d107a6b22b5cd9c0a9bf1c",
+          "c4214d67c4e9aa7c192075cd6552446fef8e9a3a33d13b858a5a287b1fa87d2d",
         src: "/generated/templates/invoice-stripe-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "2297d1f2f509172094f8c8a8494d105f779328077d7392f59f60e927245c4109",
+        "d0f6797ddc639a3fcfef3e7aad34d3f57e6d5d43392efe74803f7f0617941d4c",
       src: "/generated/templates/invoice-stripe.pdf",
     },
     thumbnail: {
@@ -225,7 +172,7 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "c1113639ac95647616a87defac10684422ff9fca33d107a6b22b5cd9c0a9bf1c",
+        "c4214d67c4e9aa7c192075cd6552446fef8e9a3a33d13b858a5a287b1fa87d2d",
       src: "/generated/templates/invoice-stripe-1.png",
       width: 1191,
     },
@@ -342,14 +289,14 @@ export const generatedTemplateCatalog = [
         height: 1684,
         page: 1,
         sha256:
-          "d6463180bb758553a268a08d5794d5a82f104d7bd10ab3e6c16d4902aa180553",
+          "504aac35ce268de3bc7c3252d1efcbb3b63bd9dbf3b68220149d8d62313fd5bc",
         src: "/generated/templates/receipt-order-confirmation-1.png",
         width: 1191,
       },
     ],
     pdf: {
       revision:
-        "a06c69f51b69c2dd2adf51e14f3f4517885a3d1b91bee032c1a0e0198456ea10",
+        "9faf2b07663d7d47b68addbb277b35c2259216efc2454124c1eca6d89c0483f1",
       src: "/generated/templates/receipt-order-confirmation.pdf",
     },
     thumbnail: {
@@ -357,7 +304,7 @@ export const generatedTemplateCatalog = [
       height: 1684,
       page: 1,
       sha256:
-        "d6463180bb758553a268a08d5794d5a82f104d7bd10ab3e6c16d4902aa180553",
+        "504aac35ce268de3bc7c3252d1efcbb3b63bd9dbf3b68220149d8d62313fd5bc",
       src: "/generated/templates/receipt-order-confirmation-1.png",
       width: 1191,
     },
