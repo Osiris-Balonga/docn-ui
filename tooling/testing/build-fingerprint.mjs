@@ -65,6 +65,16 @@ function collectBuildOutputs(directory) {
   };
 }
 
+function buildConfiguration() {
+  return {
+    siteUrl: process.env.SITE_URL?.trim() || "http://127.0.0.1:3000",
+    registryOrigin:
+      process.env.DOCN_REGISTRY_ORIGIN?.trim() ||
+      "http://127.0.0.1:4173/r/dev/",
+    indexing: process.env.DOCN_ALLOW_INDEXING === "true",
+  };
+}
+
 function computeFingerprint() {
   const inputMode = process.env.CI === "true" ? "commit" : "workspace";
   const includeInput = (file) =>
@@ -143,7 +153,10 @@ if (!existsSync(buildDirectory))
 const current = computeFingerprint();
 if (mode === "write") {
   mkdirSync(dirname(fingerprintPath), { recursive: true });
-  writeFileSync(fingerprintPath, `${JSON.stringify(current, null, 2)}\n`);
+  writeFileSync(
+    fingerprintPath,
+    `${JSON.stringify({ ...current, configuration: buildConfiguration() }, null, 2)}\n`,
+  );
   console.log(
     `Recorded ${relative(root, fingerprintPath)} for ${current.commit.slice(0, 12)}.`,
   );
@@ -159,7 +172,10 @@ if (mode === "write") {
     recorded.files !== current.files ||
     recorded.outputSha256 !== current.outputSha256 ||
     recorded.outputFiles !== current.outputFiles ||
-    recorded.outputBytes !== current.outputBytes
+    recorded.outputBytes !== current.outputBytes ||
+    typeof recorded.configuration?.siteUrl !== "string" ||
+    typeof recorded.configuration?.registryOrigin !== "string" ||
+    typeof recorded.configuration?.indexing !== "boolean"
   )
     throw new Error(
       "The static build fingerprint does not match this checkout.",
