@@ -253,9 +253,13 @@ export function LinkExample() {
     <Stack gap="md">
       <Link href="https://example.com">Visit the project website</Link>
       <Link href="mailto:hello@example.com">hello@example.com</Link>
-      <Link href="tel:+33184201242">+33 1 84 20 12 42</Link>
+      <Link href="tel:+33184201242" tone="accent">
+        Accent-colored contact link
+      </Link>
       <Text id="delivery-notes">Delivery notes destination</Text>
-      <Link href="#delivery-notes">Jump to delivery notes</Link>
+      <Link href="#delivery-notes" tone="text">
+        Text-colored internal link
+      </Link>
     </Stack>
   );
 }
@@ -330,7 +334,10 @@ export function ListChecklistExample() {
 export function ImageExample({ source }: { source: string }) {
   return (
     <Stack gap="lg">
-      <ImageContainedExample source={source} />
+      <Row gap="xl" align="center">
+        <ImageSquareExample source={source} />
+        <ImageRoundedExample source={source} />
+      </Row>
       <ImageCoveredExample source={source} />
     </Stack>
   );
@@ -339,25 +346,41 @@ export function ImageContainedExample({ source }: { source: string }) {
   return (
     <Image
       resolvedSource={source}
-      width={220}
-      height={105}
+      width={108}
+      height={108}
       fit="contain"
-      align="center"
+      align="start"
       alt="A real desk and computer workspace"
-      caption="Contain preserves the complete photograph."
+      caption="Square contain"
     />
   );
+}
+export function ImageSquareExample({ source }: { source: string }) {
+  return <ImageContainedExample source={source} />;
 }
 export function ImageCoveredExample({ source }: { source: string }) {
   return (
     <Image
       resolvedSource={source}
-      width={220}
-      height={70}
+      width={260}
+      height={84}
       fit="cover"
-      align="end"
+      align="center"
       alt="A cropped desk and computer workspace"
-      caption="Cover fills a shorter landscape frame."
+      caption="Landscape cover"
+    />
+  );
+}
+export function ImageRoundedExample({ source }: { source: string }) {
+  return (
+    <Image
+      resolvedSource={source}
+      width={108}
+      height={108}
+      fit="cover"
+      borderRadius={54}
+      alt="A circular crop of a desk and computer workspace"
+      caption="Circular crop"
     />
   );
 }

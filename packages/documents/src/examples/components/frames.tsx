@@ -149,7 +149,7 @@ export function PageNumberTotalExample() {
 export function PageNumberCompactExample() {
   return <PageNumber format="{page} / {pages}" align="center" />;
 }
-export function PageHeaderExample({ source }: { source: string }) {
+export function PageHeaderExample({ logoSource }: { logoSource: string }) {
   if (format.kind !== "fixed") throw new Error("Expected a fixed page.");
   return (
     <DocumentFrame
@@ -162,10 +162,10 @@ export function PageHeaderExample({ source }: { source: string }) {
         content: (
           <PageHeader
             logo={{
-              resolvedSource: source,
-              alt: "Studio workspace",
-              width: 42,
-              height: 24,
+              resolvedSource: logoSource,
+              alt: "Penpot logo",
+              width: 58,
+              height: 18,
             }}
           >
             <Heading>Studio North</Heading>
@@ -180,8 +180,8 @@ export function PageHeaderExample({ source }: { source: string }) {
     </DocumentFrame>
   );
 }
-export function PageHeaderLogoExample({ source }: { source: string }) {
-  return <PageHeaderExample source={source} />;
+export function PageHeaderLogoExample({ logoSource }: { logoSource: string }) {
+  return <PageHeaderExample logoSource={logoSource} />;
 }
 export function PageFooterExample() {
   if (format.kind !== "fixed") throw new Error("Expected a fixed page.");
@@ -236,7 +236,13 @@ export function WatermarkExample() {
       <DocumentFrame format={format} theme={theme} margin={36}>
         <Heading>Review copy</Heading>
         <Text>A centered mark repeats on every page by default.</Text>
-        <Watermark text="DRAFT" placement="center" opacity={0.12} />
+        <Watermark
+          text="CONFIDENTIAL"
+          placement="center"
+          fontSize={72}
+          opacity={0.1}
+          rotation={-38}
+        />
       </DocumentFrame>
       <DocumentFrame format={format} theme={theme} margin={36}>
         <Heading>Internal copy</Heading>
@@ -267,7 +273,13 @@ export function WatermarkRepeatedExample() {
   return (
     <DocumentFrame format={format} theme={theme} margin={36}>
       <Heading>Review copy</Heading>
-      <Watermark text="DRAFT" repeat />
+      <Watermark
+        text="CONFIDENTIAL"
+        fontSize={72}
+        opacity={0.1}
+        rotation={-38}
+        repeat
+      />
     </DocumentFrame>
   );
 }

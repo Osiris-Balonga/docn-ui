@@ -11,6 +11,8 @@ export interface ImageProps {
   fit?: "contain" | "cover";
   /** Alternative text exposed to the PDF renderer. */
   alt: string;
+  /** Optional corner radius in PDF points, up to half the shortest side. */
+  borderRadius?: number;
   /** Explicit image-box height in PDF points. */
   height: number;
   /** Resolved permitted local data or blob source. */
@@ -25,14 +27,20 @@ export function Image({
   resolvedSource,
   width,
   align,
+  borderRadius,
   caption,
   fit = "contain",
 }: ImageProps) {
-  assertLocalImage(resolvedSource, width, height);
+  assertLocalImage(resolvedSource, width, height, borderRadius);
   const image = (
     <ReactPdfImage
       src={{ uri: resolvedSource }}
-      style={{ height, objectFit: fit, width }}
+      style={{
+        height,
+        objectFit: fit,
+        width,
+        ...(borderRadius === undefined ? {} : { borderRadius }),
+      }}
       aria-label={alt}
     />
   );

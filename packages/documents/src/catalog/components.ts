@@ -144,16 +144,22 @@ const componentRecipes: Partial<Record<string, readonly ComponentRecipe[]>> = {
   ],
   image: [
     {
-      title: "Contained photograph",
+      title: "Square photograph",
       description:
-        "Preserve the complete permitted local image inside explicit dimensions.",
-      exampleExport: "ImageContainedExample",
+        "Preserve a permitted local photograph inside an explicit square box.",
+      exampleExport: "ImageSquareExample",
     },
     {
       title: "Covered photograph",
       description:
         "Crop a real local photograph to fill a shorter landscape frame.",
       exampleExport: "ImageCoveredExample",
+    },
+    {
+      title: "Rounded photograph",
+      description:
+        "Crop a permitted local photograph into a circle with a bounded radius.",
+      exampleExport: "ImageRoundedExample",
     },
   ],
   "qr-code": [
@@ -320,8 +326,9 @@ const componentRecipes: Partial<Record<string, readonly ComponentRecipe[]>> = {
   ],
   watermark: [
     {
-      title: "Repeated review mark",
-      description: "Repeat a centered low-opacity label across flowing pages.",
+      title: "Full-page diagonal mark",
+      description:
+        "Repeat a large, low-opacity diagonal label across flowing pages.",
       exampleExport: "WatermarkRepeatedExample",
     },
     {
@@ -469,7 +476,7 @@ const componentEntries: readonly ComponentCatalogEntry[] = [
     title: "Link",
     description: "Selectable links inside a PDF document.",
     notes:
-      "Use validated https/http, mailto, tel or explicit internal destinations. Reader support varies; links do not make tickets secure.",
+      "Use validated https/http, mailto, tel or explicit internal destinations. Links default to blue; text and theme-accent tones are available. Reader support varies; links do not make tickets secure.",
     exampleFile: "packages/documents/src/examples/components/content.tsx",
     exampleExport: "LinkExample",
     height: 220,
@@ -492,7 +499,7 @@ const componentEntries: readonly ComponentCatalogEntry[] = [
       "Provide a resolved data or blob source, dimensions in points and alternative text. Arbitrary remote URLs are rejected. The sample source is supplied by the preview renderer.",
     exampleFile: "packages/documents/src/examples/components/content.tsx",
     exampleExport: "ImageExample",
-    height: 300,
+    height: 390,
   },
   {
     slug: "qr-code",
@@ -639,7 +646,7 @@ const componentEntries: readonly ComponentCatalogEntry[] = [
     title: "Watermark",
     description: "A controlled text mark behind document content.",
     notes:
-      "Place directly inside DocumentFrame, after body content. Defaults: center, 0.08 opacity, 32 pt, repeated. Short horizontal Latin labels only; not document protection.",
+      "Place directly inside DocumentFrame, after body content. Defaults: center, 0.08 opacity, 32 pt, repeated. Rotation and larger display sizes support familiar full-page diagonal marks; this is not document protection.",
     exampleFile: "packages/documents/src/examples/components/frames.tsx",
     exampleExport: "WatermarkExample",
     height: 0,

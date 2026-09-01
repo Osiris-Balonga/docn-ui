@@ -11,12 +11,13 @@ export function Watermark({
   placement = "center",
   opacity = 0.08,
   fontSize = 32,
+  rotation = 0,
   repeat = true,
 }: WatermarkProps) {
   const theme = usePdfTheme();
   const { body } = useFlowFrame();
   const bounds = getWatermarkLayout(
-    { text, placement, opacity, fontSize, repeat },
+    { text, placement, opacity, fontSize, rotation, repeat },
     body,
   );
   return (
@@ -34,6 +35,7 @@ export function Watermark({
         fontSize,
         color: theme.colors.text,
         opacity,
+        transform: `rotate(${rotation}deg)`,
       }}
       render={({ subPageNumber }) =>
         repeat || subPageNumber === 1 ? text : null

@@ -121,8 +121,14 @@ export interface TableHeaderProps {
   columns: readonly TableColumn[];
   /** Qualified header height in PDF points. */
   measuredHeight: number;
+  /** Theme-aware header treatment. Accent uses inverted text. */
+  tone?: "surface" | "accent";
 }
-export function TableHeader({ columns, measuredHeight }: TableHeaderProps) {
+export function TableHeader({
+  columns,
+  measuredHeight,
+  tone = "surface",
+}: TableHeaderProps) {
   const theme = usePdfTheme();
   const frame = useFlowFrame();
   assertTableColumns(columns);
@@ -141,8 +147,10 @@ export function TableHeader({ columns, measuredHeight }: TableHeaderProps) {
         ...column,
         width: `${column.width}%`,
       }))}
-      color={theme.colors.text}
-      backgroundColor={theme.colors.surface}
+      color={tone === "accent" ? theme.colors.invertedText : theme.colors.text}
+      backgroundColor={
+        tone === "accent" ? theme.colors.accent : theme.colors.surface
+      }
       borderColor={theme.colors.border}
       textStyle={{
         fontFamily: theme.fonts.body,

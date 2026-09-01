@@ -74,23 +74,85 @@ export function TableQuotationExample() {
 interface PrintRow {
   id: string;
   document: string;
+  format: string;
+  owner: string;
+  status: string;
+  due: string;
   copies: number;
 }
 const dataBaseColumns = [
-  { key: "document", label: "Document", width: 70 },
-  { key: "copies", label: "Copies", width: 30, align: "right" },
+  { key: "id", label: "Job", width: 12 },
+  { key: "document", label: "Document", width: 22 },
+  { key: "format", label: "Format", width: 10 },
+  { key: "owner", label: "Owner", width: 16 },
+  { key: "status", label: "Status", width: 14 },
+  { key: "due", label: "Due", width: 14 },
+  { key: "copies", label: "Copies", width: 12, align: "right" },
 ] as const;
 const dataColumns: readonly DataTableColumn<PrintRow>[] = [
-  { ...dataBaseColumns[0], cell: (row) => row.document },
-  { ...dataBaseColumns[1], cell: (row) => row.copies },
+  { ...dataBaseColumns[0], cell: (row) => row.id },
+  { ...dataBaseColumns[1], cell: (row) => row.document },
+  { ...dataBaseColumns[2], cell: (row) => row.format },
+  { ...dataBaseColumns[3], cell: (row) => row.owner },
+  { ...dataBaseColumns[4], cell: (row) => row.status },
+  { ...dataBaseColumns[5], cell: (row) => row.due },
+  { ...dataBaseColumns[6], cell: (row) => row.copies },
 ];
 const printRows: readonly PrintRow[] = [
-  { id: "cards", document: "Business cards", copies: 80 },
-  { id: "tickets", document: "Event tickets", copies: 120 },
-  { id: "labels", document: "Product labels", copies: 60 },
-  { id: "receipts", document: "Service receipts", copies: 240 },
-  { id: "invoices", document: "Invoices", copies: 36 },
-  { id: "passes", document: "Event passes", copies: 180 },
+  {
+    id: "P-042",
+    document: "Business cards",
+    format: "85×55",
+    owner: "Élodie",
+    status: "Ready",
+    due: "15 Jan",
+    copies: 80,
+  },
+  {
+    id: "P-043",
+    document: "Event tickets",
+    format: "150×70",
+    owner: "Malik",
+    status: "Review",
+    due: "16 Jan",
+    copies: 120,
+  },
+  {
+    id: "P-044",
+    document: "Product labels",
+    format: "A6",
+    owner: "Ana",
+    status: "Queued",
+    due: "16 Jan",
+    copies: 60,
+  },
+  {
+    id: "P-045",
+    document: "Receipts",
+    format: "80mm",
+    owner: "Jonas",
+    status: "Ready",
+    due: "17 Jan",
+    copies: 240,
+  },
+  {
+    id: "P-046",
+    document: "Invoices",
+    format: "A4",
+    owner: "Sofia",
+    status: "Draft",
+    due: "18 Jan",
+    copies: 36,
+  },
+  {
+    id: "P-047",
+    document: "Event passes",
+    format: "A6",
+    owner: "Noah",
+    status: "Queued",
+    due: "19 Jan",
+    copies: 180,
+  },
 ];
 
 export function DataTableExample() {
@@ -106,7 +168,7 @@ export function DataTableExample() {
         <Text tone="muted">
           DataTable maps a typed dataset through one reusable column definition.
         </Text>
-        <TableHeader columns={dataColumns} measuredHeight={24} />
+        <TableHeader columns={dataColumns} measuredHeight={28} tone="accent" />
         <DataTable
           columns={dataColumns}
           data={printRows}
@@ -138,7 +200,7 @@ export function DataTableEmptyExample() {
       margin={36}
     >
       <Heading>Archived jobs</Heading>
-      <TableHeader columns={dataColumns} measuredHeight={24} />
+      <TableHeader columns={dataColumns} measuredHeight={28} tone="accent" />
       <DataTable
         columns={dataColumns}
         data={[]}

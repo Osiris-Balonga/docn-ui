@@ -5,6 +5,7 @@ export function assertLocalImage(
   source: string,
   width: number,
   height: number,
+  borderRadius?: number,
 ): void {
   if (![width, height].every((value) => Number.isFinite(value) && value > 0))
     throw new DocumentValidationError([
@@ -12,6 +13,20 @@ export function assertLocalImage(
         code: "INVALID_DATA",
         message: "Image dimensions must be finite positive points.",
         path: ["image", "size"],
+      },
+    ]);
+  if (
+    borderRadius !== undefined &&
+    (!Number.isFinite(borderRadius) ||
+      borderRadius < 0 ||
+      borderRadius > Math.min(width, height) / 2)
+  )
+    throw new DocumentValidationError([
+      {
+        code: "INVALID_DATA",
+        message:
+          "Image border radius must be a finite value no larger than half the shortest side.",
+        path: ["image", "borderRadius"],
       },
     ]);
   const reject = () =>

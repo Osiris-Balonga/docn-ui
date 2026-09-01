@@ -9,15 +9,27 @@ export interface LinkProps {
   href: string;
   /** Whether to print an underline below the label. */
   underline?: boolean;
+  /** Link blue by default, with theme text and accent alternatives. */
+  tone?: "link" | "text" | "accent";
 }
 
-export function Link({ children, href, underline = true }: LinkProps) {
+export function Link({
+  children,
+  href,
+  underline = true,
+  tone = "link",
+}: LinkProps) {
   const theme = usePdfTheme();
   return (
     <ReactPdfLink
       src={validateLink(href, children)}
       style={{
-        color: theme.colors.text,
+        color:
+          tone === "link"
+            ? "#2563eb"
+            : tone === "accent"
+              ? theme.colors.accent
+              : theme.colors.text,
         fontFamily: theme.fonts.body,
         fontSize: theme.typeScale.body,
         lineHeight: 1.35,
