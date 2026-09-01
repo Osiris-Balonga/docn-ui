@@ -643,7 +643,10 @@
       "issueId": "I_kwDOUHjPN88AAAABOuNEsw",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/16",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVmY",
-      "pullRequest": null,
+      "pullRequest": {
+        "number": 38,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/38"
+      },
       "initialized": true
     },
     "L13": {

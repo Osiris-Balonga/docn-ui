@@ -301,7 +301,7 @@
       "file": "lots/L12-documentation.md",
       "state": "in_progress",
       "dependsOn": ["L11"],
-      "branch": "feat/documentation-catalog",
+      "branch": "feat/l12-component-variants",
       "baseCommit": "a342433e0902935a454d8ef04a85cb508a765f4a",
       "actualCommits": [
         "901907af6a08f40d32e40a7f0dc7b63cac1c3e52",
@@ -326,7 +326,10 @@
         "3f16d7e13b2a21a9d85304723c74dbbbc9de7d05",
         "02c2ee20c9be42def15b5c4aa9fb20b40e3ce65c",
         "a1093eb519d5f5ff59732726a701d4a9c1cb7817",
-        "727bcd722d931f85d7a8fdd87e0d00bc7300a211"
+        "727bcd722d931f85d7a8fdd87e0d00bc7300a211",
+        "77caee0b73d0e5f65a6b2aa2e83faf86cf570873",
+        "c0ea41f54b530452cfefa06ff3a700106bb3f2dd",
+        "54bcaea7d1c62d7b253178be213850ef89867390"
       ],
       "evidence": "../qa/L12.md",
       "blocker": null
