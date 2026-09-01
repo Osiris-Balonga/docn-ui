@@ -143,6 +143,94 @@ export const generatedTemplateCatalog = [
     },
   },
   {
+    id: "invoice-vertical",
+    slug: "invoice-vertical",
+    title: "Vertical studio invoice",
+    family: "invoice",
+    familyLabel: "Invoices",
+    description:
+      "A cream editorial invoice with a vertical identity rail, compact services table and QR payment block.",
+    supportedFormatIds: ["a4"],
+    supportedThemeIds: ["neutral"],
+    tags: ["invoice", "editorial", "services", "qr-payment"],
+    version: "1.0.0",
+    sides: 1,
+    capabilities: {
+      logo: false,
+      printProfiles: false,
+      qr: true,
+    },
+    pages: [
+      {
+        fixture: "invoice-vertical-example",
+        height: 1684,
+        page: 1,
+        sha256:
+          "164d036ccb2b0a2cd5708724964d87f90c8068164024ad1616dd6d46abbe0852",
+        src: "/generated/templates/invoice-vertical-1.png",
+        width: 1191,
+      },
+    ],
+    pdf: {
+      revision:
+        "ff29fd0bba8bbe064d389a4fb3daa206cc529cf3c1b325b0392d0a5c9315152d",
+      src: "/generated/templates/invoice-vertical.pdf",
+    },
+    thumbnail: {
+      fixture: "invoice-vertical-example",
+      height: 1684,
+      page: 1,
+      sha256:
+        "164d036ccb2b0a2cd5708724964d87f90c8068164024ad1616dd6d46abbe0852",
+      src: "/generated/templates/invoice-vertical-1.png",
+      width: 1191,
+    },
+  },
+  {
+    id: "invoice-corporate",
+    slug: "invoice-corporate",
+    title: "Corporate table invoice",
+    family: "invoice",
+    familyLabel: "Invoices",
+    description:
+      "A formal corporate invoice with a dark identity header, striped item table and signed totals block.",
+    supportedFormatIds: ["a4"],
+    supportedThemeIds: ["neutral"],
+    tags: ["invoice", "corporate", "table", "services"],
+    version: "1.0.0",
+    sides: 1,
+    capabilities: {
+      logo: true,
+      printProfiles: false,
+      qr: false,
+    },
+    pages: [
+      {
+        fixture: "invoice-corporate-example",
+        height: 1684,
+        page: 1,
+        sha256:
+          "d6b5ae8f068f997c53016039189c413a8ac8a5bdbe5621e2c6ef8ce6f55b42dc",
+        src: "/generated/templates/invoice-corporate-1.png",
+        width: 1191,
+      },
+    ],
+    pdf: {
+      revision:
+        "fbf5d286e3a0502c61629823f6807e28d50df785267ffbe00776b5c38acd6e93",
+      src: "/generated/templates/invoice-corporate.pdf",
+    },
+    thumbnail: {
+      fixture: "invoice-corporate-example",
+      height: 1684,
+      page: 1,
+      sha256:
+        "d6b5ae8f068f997c53016039189c413a8ac8a5bdbe5621e2c6ef8ce6f55b42dc",
+      src: "/generated/templates/invoice-corporate-1.png",
+      width: 1191,
+    },
+  },
+  {
     id: "receipt-order-confirmation",
     slug: "receipt-order-confirmation",
     title: "Order confirmation",

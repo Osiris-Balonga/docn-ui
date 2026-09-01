@@ -33,6 +33,11 @@ describe("reference-led templates", () => {
         ["Invoice", "$48.99 due", "Pay with ACH or wire transfer"],
       ],
       [
+        "invoice-vertical",
+        ["Margarita Perez", "Copywriting for 1 Blog", "QUESTIONS?"],
+      ],
+      ["invoice-corporate", ["GLOBEX", "Stationary Designs", "GRAND TOTAL"]],
+      [
         "receipt-order-confirmation",
         ["Your Order Confirmed!", "Workshop access pass", "$203.25"],
       ],

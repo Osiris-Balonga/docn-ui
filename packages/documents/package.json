@@ -19,6 +19,8 @@
     "./templates/resume-classic": "./src/templates/resume/classic-resume.tsx",
     "./templates/report-photo": "./src/templates/reports/photo-report.tsx",
     "./templates/invoice-stripe": "./src/templates/invoices/stripe-invoice.tsx",
+    "./templates/invoice-vertical": "./src/templates/invoices/vertical-invoice.tsx",
+    "./templates/invoice-corporate": "./src/templates/invoices/corporate-invoice.tsx",
     "./templates/receipt-order-confirmation": "./src/templates/receipts/order-confirmation.tsx",
     "./primitives/text": "./src/primitives/text.tsx",
     "./primitives/heading": "./src/primitives/heading.tsx",

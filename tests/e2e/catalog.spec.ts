@@ -22,8 +22,15 @@ test("shows the new reference-led templates in their families", async ({
   ]) {
     await expect(navigation.getByRole("tab", { name: family })).toBeVisible();
   }
+  await expect(page.locator("article")).toHaveCount(3);
   await expect(
     page.getByRole("heading", { name: "Stripe-style invoice" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Vertical studio invoice" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Corporate table invoice" }),
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "Receipts" }).click();

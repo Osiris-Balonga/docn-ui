@@ -196,6 +196,48 @@ export const registrySourceManifest = {
       ],
     },
     {
+      name: "docn-invoice-vertical",
+      type: "registry:block",
+      title: "Vertical studio invoice",
+      description: "A source-owned editorial invoice with QR payment.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-page-frame",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+        "docn-qr-code",
+      ],
+      files: ["packages/documents/src/templates/invoices/vertical-invoice.tsx"],
+      preview: [
+        "packages/documents/src/templates/invoices/vertical-invoice.tsx",
+      ],
+    },
+    {
+      name: "docn-invoice-corporate",
+      type: "registry:block",
+      title: "Corporate table invoice",
+      description: "A source-owned corporate table invoice composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-page-frame",
+        "docn-heading",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+      ],
+      files: [
+        "packages/documents/src/templates/invoices/corporate-invoice.tsx",
+      ],
+      preview: [
+        "packages/documents/src/templates/invoices/corporate-invoice.tsx",
+      ],
+    },
+    {
       name: "docn-text-example",
       type: "registry:block",
       title: "Text document example",
