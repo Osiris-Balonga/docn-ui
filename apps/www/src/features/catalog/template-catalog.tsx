@@ -1,6 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import {
+  type KeyboardEvent,
+  Suspense,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
@@ -175,6 +181,32 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const largeEmptySlots =
     activeTemplates.length % 3 === 0 ? 0 : 3 - (activeTemplates.length % 3);
 
+  function selectAdjacentFamily(event: KeyboardEvent<HTMLAnchorElement>) {
+    const currentIndex = templateFamilies.findIndex(
+      (family) => family.id === activeFamily,
+    );
+    let nextIndex: number | undefined;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown")
+      nextIndex = (currentIndex + 1) % templateFamilies.length;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp")
+      nextIndex =
+        (currentIndex - 1 + templateFamilies.length) % templateFamilies.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = templateFamilies.length - 1;
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    const nextFamily = templateFamilies[nextIndex];
+    if (!nextFamily) return;
+    const nextParams = new URLSearchParams(searchParamsString);
+    nextParams.set("family", nextFamily.id);
+    router.push(`?${nextParams.toString()}`, { scroll: false });
+    const tabs = event.currentTarget
+      .closest('[role="tablist"]')
+      ?.querySelectorAll<HTMLAnchorElement>('[role="tab"]');
+    tabs?.[nextIndex]?.focus();
+  }
+
   return (
     <>
       <nav
@@ -191,8 +223,10 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
                 }).toString()}`}
                 scroll={false}
                 role="tab"
+                tabIndex={activeFamily === family.id ? 0 : -1}
                 aria-controls="template-family-panel"
                 aria-selected={activeFamily === family.id}
+                onKeyDown={selectAdjacentFamily}
                 className={cn(
                   "flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
                   activeFamily === family.id

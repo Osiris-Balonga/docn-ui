@@ -39,8 +39,11 @@ test("shows the new reference-led templates in their families", async ({
     page.getByRole("heading", { name: "Photo header invoice" }),
   ).toBeVisible();
 
-  await navigation.getByRole("tab", { name: "Receipts" }).click();
+  await navigation.getByRole("tab", { name: "Invoices" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(navigation.getByRole("tab", { name: "Receipts" })).toBeFocused();
   await expect(page).toHaveURL(/family=receipt/);
+
   await expect(
     page.getByRole("heading", { name: "Order confirmation" }),
   ).toBeVisible();
@@ -102,6 +105,12 @@ test("shows the new reference-led templates in their families", async ({
   });
   await expect(
     cardPreview.getByRole("button", { name: "View page 2" }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  await expect(
+    cardPreview.getByRole("link", {
+      name: "Download Coral QR business card PDF",
+    }),
   ).toBeVisible();
 
   await page.goto("/templates/?family=ticket");

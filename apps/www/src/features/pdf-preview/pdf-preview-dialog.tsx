@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
+import { DownloadIcon, MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -126,7 +126,7 @@ export function PdfPreviewDialog({
               {page + 1} / {pages.length}
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-1">
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             <Button
               type="button"
               variant="ghost"
@@ -163,13 +163,15 @@ export function PdfPreviewDialog({
               <a
                 href={downloadHref}
                 download
+                aria-label={`Download ${title} PDF`}
                 className={buttonVariants({
                   variant: "ghost",
                   className:
-                    "hidden h-9 text-white hover:bg-white/10 hover:text-white sm:inline-flex",
+                    "h-9 px-2.5 text-white hover:bg-white/10 hover:text-white sm:px-3",
                 })}
               >
-                Download PDF
+                <DownloadIcon aria-hidden="true" />
+                <span className="hidden sm:inline">Download PDF</span>
               </a>
             ) : null}
             <DialogClose
@@ -187,6 +189,10 @@ export function PdfPreviewDialog({
             </DialogClose>
           </div>
         </header>
+
+        <p className="sr-only" aria-live="polite">
+          Showing page {page + 1} of {pages.length} at {zoom}% zoom.
+        </p>
 
         <div
           className={cn(
