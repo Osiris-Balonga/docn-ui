@@ -1,6 +1,6 @@
 # L15 — Final CI and deployment preparation
 
-Initial status: **planned**. Branch: `ci/release-delivery`.
+Status: **in progress**. Branch: `ci/release-delivery`, based on L14 merge `da10836b00240f4df1919863a6cca07de92a8ee8`.
 
 Dependencies: L14. Requirements: NFR-06, NFR-09, NFR-10.
 
