@@ -30,6 +30,7 @@ function git(...args) {
 }
 
 function computeFingerprint() {
+  const inputMode = process.env.CI === "true" ? "commit" : "workspace";
   const includeInput = (file) =>
     !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
     !/\.(test|spec)\.[^/]+$/.test(file);
@@ -43,19 +44,22 @@ function computeFingerprint() {
       return { object: match[2], path: match[3] };
     })
     .filter(({ path }) => includeInput(path));
-  const untracked = git(
-    "ls-files",
-    "--others",
-    "--exclude-standard",
-    "-z",
-    "--",
-    ...inputPathspecs,
-  )
-    .toString("utf8")
-    .split("\0")
-    .filter(Boolean)
-    .filter(includeInput)
-    .filter((file) => existsSync(resolve(root, file)));
+  const untracked =
+    inputMode === "workspace"
+      ? git(
+          "ls-files",
+          "--others",
+          "--exclude-standard",
+          "-z",
+          "--",
+          ...inputPathspecs,
+        )
+          .toString("utf8")
+          .split("\0")
+          .filter(Boolean)
+          .filter(includeInput)
+          .filter((file) => existsSync(resolve(root, file)))
+      : [];
   const files = [...tracked.map(({ path }) => path), ...untracked].sort();
   const hash = createHash("sha256");
   for (const { object, path } of tracked.sort((left, right) =>
@@ -72,18 +76,21 @@ function computeFingerprint() {
     hash.update(readFileSync(resolve(root, file)));
     hash.update("\0");
   }
-  const worktreeDiff = git(
-    "diff",
-    "--binary",
-    "--no-ext-diff",
-    "HEAD",
-    "--",
-    ...tracked.map(({ path }) => path),
-  );
-  hash.update(worktreeDiff);
+  if (inputMode === "workspace")
+    hash.update(
+      git(
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "HEAD",
+        "--",
+        ...tracked.map(({ path }) => path),
+      ),
+    );
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     commit: String(git("rev-parse", "HEAD")).trim(),
+    inputMode,
     inputSha256: hash.digest("hex"),
     files: files.length,
   };
@@ -110,6 +117,7 @@ if (mode === "write") {
   if (
     recorded.schemaVersion !== current.schemaVersion ||
     recorded.commit !== current.commit ||
+    recorded.inputMode !== current.inputMode ||
     recorded.inputSha256 !== current.inputSha256 ||
     recorded.files !== current.files
   )
