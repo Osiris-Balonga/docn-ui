@@ -1,6 +1,6 @@
 # PDF component catalog — PDFx comparison and L12 contract
 
-Date: 2026-08-31. Status: **planned**, not an availability claim. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
+Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and the S02a shared-frame foundation are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
 
 ## Evidence and scope
 
@@ -74,6 +74,30 @@ This comparison does not claim that those capabilities are impossible in PDFx: o
 4. Use one implementation for aliases (`Divider`/`Separator`, `KeyValue`/`FieldPair`) and one table implementation for both composition and data convenience APIs. Do not maintain a second copy for docs or the registry.
 5. Keep all PDF source independent of site DOM, Tailwind and shadcn UI. Site previews must come from actual generated PDFs. Trusted example JSX is compiled project source; never evaluate text submitted by a visitor.
 
+## S02a frame API decision
+
+`PdfThemeProvider` and `usePdfTheme` supply explicit, already validated PDF tokens independently of geometry. A missing provider is an error. `PageFrame` keeps its required theme prop, safe area, absolute content placement and print-profile behavior; existing imports remain valid through `primitives/index.tsx`.
+
+`DocumentFrame` renders a wrapping engine Page directly under the engine Document, not a second Document or an absolutely positioned body. Its initial contract supports resolved portrait A4/Letter trim-sized pages (screen profile), a required theme, an optional uniform margin in points, and optional header/footer regions `{ content, height, gap? }` in points. The default margin is the format safe inset; smaller margins, non-finite/negative dimensions and reservations leaving no body area fail explicitly. Each region is repeated at its reserved absolute position; page padding reserves its height plus gap on every physical page. Body children remain in normal flow. Printed bleed/crop marks continue to use PageFrame or existing family layouts; they are not silently added to DocumentFrame.
+
+`createFlowFrame` exposes body/header/footer bounds for measurement. Region content is trusted, premeasured JSX and must fit its declared height; the frame does not guess text height or silently clip overflow. `assertFlowBlockFits` checks a measured, finite positive non-breaking block height against the complete available body height, including reserved space. A fitting block may move to the next page; an oversized block must be split by its component's explicit policy or rejected as LAYOUT_OVERFLOW, never shrunk or clipped. S02c will compose this contract into KeepTogether/table components and qualify their actual layout.
+
+Primitive modules split by responsibility without duplicating JSX. Pure page-box arithmetic moves to `core/page-geometry.ts`; `render/print-profile.ts` retains its existing export and post-processing API. This keeps geometry independent from PDF post-processing and prepares component-sized dependency closures. S02a updates the existing aggregate registry item to include its extracted files, but does not yet advertise individually installable components.
+
+## S02b content API decision
+
+These are source-owned PDF APIs, not drop-in PDFx props. Existing calls and default template geometry remain unchanged. All styling comes from the explicit PDF theme, not browser styles; only the qualified regular/strong font weights are exposed.
+
+- `Text` accepts strings, numbers and trusted inline Text/Link composition, token sizes, `align`, `weight`, `tone` and an optional destination `id`. `Heading` retains `display`/`heading` and adds levels 1–6, mapped to display/heading/label/body/caption/caption tokens, plus alignment and destination IDs. Levels describe visual hierarchy, not a PDF/UA tagging guarantee. Neither component truncates text or accepts unregistered fonts/italic styles.
+- `Stack` adds horizontal/vertical direction, cross-axis alignment and main-axis justification. `Row` shares that implementation with its existing horizontal/start/small-gap defaults. `Divider` is exactly `Separator`; `KeyValue` is exactly `FieldPair`, with vertical (legacy default) or horizontal orientation. Horizontal values flex and wrap instead of imposing an arbitrary fixed label width.
+- `Section` groups children with an optional title and token gap. `Card` adds token padding and a neutral themed surface/border. These are flow containers, not fixed-height clipping boxes or automatic keep-together blocks.
+- `Link` emits the engine's native annotation. Its required readable string label and `href` are bounded to 2,000 characters. Only explicit HTTP(S), single-address mailto, plain international/local tel and `#destination` references are accepted. Control characters, credentials, protocol-relative URLs and executable/file/data schemes are rejected. Destinations use `[A-Za-z][A-Za-z0-9_.:-]{0,127}`; authors must define unique, existing IDs. External navigation is never performed during generation.
+- `Image` retains `alt`, `width`, `height`, `resolvedSource`; adds `fit` (contain/cover), start/center/end alignment and optional caption. Dimensions must be finite positive points. Sources must be prevalidated local PNG/JPEG base64 data URLs (at most 5 MiB decoded) or caller-owned blob URLs, never remote/file paths. The existing import boundary remains responsible for decoding, the 16-megapixel limit and blob revocation. The primitive cannot infer byte/pixel limits from an opaque blob URL. Caption/alignment use a natural-height wrapper; the legacy image-only call does not add a wrapper.
+- `List` accepts immutable `{ text, description?, checked?, children? }` items and a bullet/numbered/check marker. It permits at most 100 items in total, depth 3 and 2,000 characters per text field; malformed/cyclic/oversized input fails explicitly. Numbering restarts at each nested group. Check marks are static vector graphics, not interactive form controls. Flow remains breakable; advanced pagination is S02c.
+- `QRCode` keeps its existing vector renderer, payload limit, minimum module size and four-module quiet zone. This story does not add another encoder or alter scanner qualification.
+
+The combined typed example is compiled project source, not visitor-supplied JSX. It qualifies actual selectable text, external/internal link annotations, a local image, nested lists and QR composition in one PDF. Component-sized registry entries and public gallery routes remain S02g/S02h work.
+
 ## shadcn installation and theme continuity
 
 Follow [ADR 0004](../adr/0004-source-distribution.md) and the [official registry workflow](https://ui.shadcn.com/docs/registry/getting-started). Add component-sized `docn-*` items with their true dependency closures and examples. Preserve `docn-primitives` for current consumers; installing one new primitive must not install unrelated templates, the whole catalog, or site code. Use the existing official CLI, relative internal imports, isolated `~/docn` targets and the consumer's unchanged `components.json`.
@@ -98,4 +122,4 @@ Preparation checks: the published and commit-pinned PDFx inventories were read; 
 
 Implementation evidence belongs in `docs/qa/L12.md` as each story is verified. Use a shared PDF specimen for basic primitives, focused pagination/link/barcode/chart risks, and the existing external consumer orchestration for dependency/configuration isolation. Compare current template geometry/content after the context extraction without restyling their layouts. A component is not complete just because its name appears in the index.
 
-L11 is still in review in [PR #31](https://github.com/Osiris-Balonga/docn-ui/pull/31), with seven successful checks at the inspected baseline. L12 remains planned until an authorized L11 merge is observed. Preparing this contract does not mark L12 started or verified.
+The initial comparison preceded L11's authorized merge. [PR #31](https://github.com/Osiris-Balonga/docn-ui/pull/31) is now merged at `a342433e0902935a454d8ef04a85cb508a765f4a`; L12 implementation is in progress. Story results are recorded in the [L12 QA report](../qa/L12.md). Neither the comparison nor the shared-frame foundation completes the public component catalog.

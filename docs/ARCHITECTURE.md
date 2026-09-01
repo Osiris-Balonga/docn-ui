@@ -59,6 +59,8 @@ Start with two workspaces only. `packages/documents` stays private on npm: it or
 
 `core` depends on neither React nor the browser. `themes` depends on `core`. `primitives` depends on `core/themes` and the engine. `templates` depends on those layers, never on the site. `render` adapts templates to the browser or Node. The site imports lightweight metadata and explicitly loads template code on demand.
 
+L12-S02a separates `PdfThemeProvider` from page geometry. Fixed `PageFrame` and wrapping `DocumentFrame` share the same typography/layout modules; geometry-specific flow access remains separate. The compatibility barrel preserves existing template imports. Pure print geometry lives in `core/page-geometry.ts`, while PDF box post-processing remains in `render/print-profile.ts`. See the [frame API contract](specs/COMPONENT_CATALOG.md#s02a-frame-api-decision) for reserved regions, supported formats and non-breaking content limits.
+
 The registry build reads these same sources. It maintains no second implementation in `apps/www`. The generated files install in an isolated root-level `docn` source tree and use relative imports within that tree, so they neither replace shadcn UI files nor require the consumer to adopt docn-ui's import prefix. The consumer's `components.json` remains the only shadcn project configuration. Form interfaces live in the site with shared JSON metadata; they are not inserted into distributed PDF sources. Current source entry points and dependency boundaries are recorded in [`packages/documents/README.md`](../packages/documents/README.md); the feasibility entry is internal evidence and is not distributable template code.
 
 ## Rendering flow

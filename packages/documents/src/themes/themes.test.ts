@@ -1,13 +1,29 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { isAbsolute } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { useContext } from "react";
+import { usePdfTheme } from "../primitives/theme-context";
 import { assetManifest } from "../assets/manifest";
 import { createBrowserAssetResolver } from "../render/assets.browser";
 import { createNodeAssetResolver } from "../render/assets.node";
 import { getPdfTheme, themes } from "./themes";
 
+vi.mock("react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("react")>()),
+  useContext: vi.fn(),
+}));
+
 describe("portable PDF themes and declared assets", () => {
+  it("requires explicit theme context without depending on fixed page geometry", () => {
+    vi.mocked(useContext).mockReturnValueOnce(null);
+    expect(() => usePdfTheme()).toThrow(
+      "PDF primitives require PageFrame, DocumentFrame or PdfThemeProvider.",
+    );
+    const theme = getPdfTheme("editorial");
+    vi.mocked(useContext).mockReturnValueOnce(theme);
+    expect(usePdfTheme()).toBe(theme);
+  });
   it("keeps all theme values bounded and engine-compatible", () => {
     expect(Object.keys(themes)).toEqual(["neutral", "editorial", "bold"]);
     const serialized = JSON.stringify(themes);
