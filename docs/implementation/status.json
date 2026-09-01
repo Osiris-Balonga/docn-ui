@@ -383,14 +383,15 @@
     {
       "id": "L15",
       "file": "lots/L15-delivery.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
       "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
       "actualCommits": [
         "0944db72efe3e33e1d61e4d4750f46078a64ffd4",
         "6fbc1b84eb2eec7f63898898ba1e835f754a38cc",
-        "a43a218dfbcbb065db19a29c770abd2d2f1524e3"
+        "a43a218dfbcbb065db19a29c770abd2d2f1524e3",
+        "2574c96e264ba74939539e1d0c3ceb469efc6635"
       ],
       "evidence": "../qa/L15.md",
       "blocker": null
