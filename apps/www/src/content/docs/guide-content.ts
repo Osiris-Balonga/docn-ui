@@ -27,16 +27,12 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "docn-ui extends an existing React and TypeScript shadcn project. Confirm that components.json exists and that the official CLI can add a normal shadcn component before installing PDF source. Keep the project's selected base, style, aliases, Tailwind setup and components/ui directory.",
+          text: "Use an existing React and TypeScript project with shadcn initialized and a working components.json. docn-ui keeps its selected base, style, aliases, Tailwind setup and components/ui directory unchanged.",
         },
         {
           type: "link",
-          text: "Initialize shadcn first if your project is not ready",
+          text: "Set up shadcn first",
           href: "https://ui.shadcn.com/docs/installation",
-        },
-        {
-          type: "paragraph",
-          text: "docn-ui does not run a second initializer. The official shadcn CLI reads the same components.json and installs PDF-only source under a separate root-level docn directory. Internal docn imports are relative, so a consumer using a different source alias does not need to adopt @/*.",
         },
       ],
     },
@@ -46,7 +42,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "No immutable public namespace is released yet. For the qualified development flow, serve a docn-ui checkout locally and leave it running while the shadcn CLI installs from a second terminal in your application. Qualification currently uses Node 24.18.0, pnpm 11.24.0, shadcn 4.19.0 and React 19.2.8.",
+          text: "Until the public namespace is released, serve a docn-ui checkout locally and leave it running while the shadcn CLI installs from a second terminal. This flow is qualified with Node 24.18.0, pnpm 11.24.0, shadcn 4.19.1 and React 19.2.8.",
         },
         {
           type: "code",
@@ -62,12 +58,12 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "Run the command from the application that owns components.json. Start with the small text example to verify installation and rendering before choosing a full template. The URL defaults to the local registry on port 4173; set DOCN_REGISTRY_ORIGIN to another complete /r/dev/ origin before building only when you deliberately host that development registry elsewhere.",
+          text: "Run the command from the application that owns components.json. Start with the text example before choosing a full template. The URL defaults to the local registry on port 4173; set DOCN_REGISTRY_ORIGIN before building only when the development registry uses another complete /r/dev/ origin.",
         },
         { type: "install", item: "docn-text-example" },
         {
           type: "paragraph",
-          text: "Inspect the files written under docn/ and commit them like any shadcn registry source. Your existing components.json remains authoritative; do not replace it with docn-ui's site configuration. A future public @docn namespace will be an additional registry entry, not another project initializer.",
+          text: "Inspect and commit the files written under docn/. Your existing components.json remains authoritative.",
         },
       ],
     },
@@ -77,7 +73,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "Source installation does not silently download binary fonts. Review the asset manifest and run the browser or Node installer from your application. Then render the verified example once before replacing its data or composing a larger document. Missing assets are an error, not a reason to silently substitute a font.",
+          text: "Review the asset manifest and run the browser or Node installer from your application. Then render the example once before replacing its data or composing a larger document. Missing assets produce an error instead of a silent font substitution.",
         },
         {
           type: "link",
