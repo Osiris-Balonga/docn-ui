@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { Suspense, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
 import {
   templateCatalog,
@@ -119,15 +120,19 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
 }
 
 export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
+  const searchParams = useSearchParams();
   const featuredTemplate = templateCatalog.find(
     (template) => template.slug === featuredSlug,
   );
   const firstAvailableFamily = templateFamilies.find((family) =>
     templateCatalog.some((template) => template.family === family.id),
   );
-  const [activeFamily, setActiveFamily] = useState<TemplateFamily>(
-    featuredTemplate?.family ?? firstAvailableFamily?.id ?? "business-card",
-  );
+  const requestedFamily = searchParams.get("family");
+  const activeFamily: TemplateFamily = templateFamilies.some(
+    (family) => family.id === requestedFamily,
+  )
+    ? (requestedFamily as TemplateFamily)
+    : (featuredTemplate?.family ?? firstAvailableFamily?.id ?? "business-card");
   const activeTemplates = templateCatalog
     .filter((template) => template.family === activeFamily)
     .sort((left, right) => {
@@ -148,12 +153,15 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
         <ul className="flex min-w-max items-center gap-5" role="tablist">
           {templateFamilies.map((family) => (
             <li key={family.id}>
-              <button
-                type="button"
+              <Link
+                href={`?${new URLSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  family: family.id,
+                }).toString()}`}
+                scroll={false}
                 role="tab"
                 aria-controls="template-family-panel"
                 aria-selected={activeFamily === family.id}
-                onClick={() => setActiveFamily(family.id)}
                 className={cn(
                   "flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
                   activeFamily === family.id
@@ -162,7 +170,7 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
                 )}
               >
                 {family.label}
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
@@ -220,7 +228,11 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
         </div>
       </header>
 
-      <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
+      <Suspense
+        fallback={<div className="mt-14 min-h-96" aria-hidden="true" />}
+      >
+        <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
+      </Suspense>
     </div>
   );
 }

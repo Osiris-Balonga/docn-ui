@@ -218,7 +218,11 @@ try {
     ...format,
     templates: templateCatalog
       .filter((entry) => entry.supportedFormatIds.includes(format.id))
-      .map((entry) => ({ title: entry.title, slug: entry.slug })),
+      .map((entry) => ({
+        family: entry.family,
+        title: entry.title,
+        slug: entry.slug,
+      })),
   }));
   await writeFile(
     indexPath,

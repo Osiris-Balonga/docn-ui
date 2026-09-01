@@ -22,9 +22,21 @@ test("shows the new reference-led templates in their families", async ({
   ]) {
     await expect(navigation.getByRole("tab", { name: family })).toBeVisible();
   }
-  await expect(page.locator("article")).toHaveCount(1);
   await expect(
     page.getByRole("heading", { name: "Stripe-style invoice" }),
+  ).toBeVisible();
+
+  await navigation.getByRole("tab", { name: "Receipts" }).click();
+  await expect(page).toHaveURL(/family=receipt/);
+  await expect(
+    page.getByRole("heading", { name: "Order confirmation" }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    navigation.getByRole("tab", { name: "Receipts" }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(
+    page.getByRole("heading", { name: "Order confirmation" }),
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "CVs" }).click();
