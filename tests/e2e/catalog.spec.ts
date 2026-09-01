@@ -284,8 +284,33 @@ test("browses component examples source formats and themes", async ({
   await expect(
     overlay.getByRole("region", { name: "Detailed PDF preview" }),
   ).toBeVisible();
-  await overlay.getByRole("button", { name: "Zoom in" }).click();
-  await expect(overlay.getByText("110%", { exact: true })).toBeVisible();
+  await expect
+    .poll(() =>
+      overlay.evaluate((element) =>
+        Math.round(element.getBoundingClientRect().right - window.innerWidth),
+      ),
+    )
+    .toBe(0);
+  await expect
+    .poll(() =>
+      page
+        .locator('[data-slot="dialog-overlay"]')
+        .evaluate((element) =>
+          Math.round(element.getBoundingClientRect().right - window.innerWidth),
+        ),
+    )
+    .toBe(0);
+  const zoomIn = overlay.getByRole("button", { name: "Zoom in" });
+  for (let step = 0; step < 15; step += 1) await zoomIn.click();
+  await expect(overlay.getByText("250%", { exact: true })).toBeVisible();
+  await expect(zoomIn).toBeDisabled();
+  await expect
+    .poll(() =>
+      overlay
+        .getByRole("region", { name: "Detailed PDF preview" })
+        .evaluate((element) => element.scrollWidth > element.clientWidth),
+    )
+    .toBe(true);
   await page.keyboard.press("Escape");
   await expect(enlarge).toBeFocused();
   await page.getByRole("tab", { name: "Code", exact: true }).click();

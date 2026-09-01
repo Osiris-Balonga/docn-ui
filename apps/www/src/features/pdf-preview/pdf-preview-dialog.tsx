@@ -14,6 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
+const MIN_ZOOM = 50;
+const MAX_ZOOM = 250;
+const ZOOM_STEP = 10;
+
 export interface PdfPreviewPage {
   src: string;
   width: number;
@@ -95,8 +99,8 @@ export function PdfPreviewDialog({
 
       <DialogContent
         showCloseButton={false}
-        overlayClassName="bg-black/70 supports-backdrop-filter:backdrop-blur-sm"
-        className="inset-0! top-0! left-0! z-50 grid h-svh max-w-none! translate-x-0! translate-y-0! grid-rows-[4rem_minmax(0,1fr)_4rem] gap-0 overflow-hidden rounded-none bg-transparent p-0 text-white ring-0 motion-reduce:animate-none"
+        overlayClassName="right-auto! w-[100dvw]! bg-black/70 supports-backdrop-filter:backdrop-blur-sm"
+        className="inset-0! top-0! right-auto! left-0! z-50 grid h-[100dvh] w-[100dvw]! max-w-none! translate-x-0! translate-y-0! grid-rows-[4rem_minmax(0,1fr)_4rem] gap-0 overflow-hidden rounded-none bg-transparent p-0 text-white ring-0 motion-reduce:animate-none"
         onKeyDown={(event) => {
           if (pages.length < 2) return;
           if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
@@ -128,8 +132,10 @@ export function PdfPreviewDialog({
               variant="ghost"
               size="icon"
               className="size-9 text-white hover:bg-white/10 hover:text-white"
-              disabled={zoom === 50}
-              onClick={() => setZoom((value) => Math.max(50, value - 10))}
+              disabled={zoom === MIN_ZOOM}
+              onClick={() =>
+                setZoom((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP))
+              }
               aria-label="Zoom out"
             >
               <MinusIcon aria-hidden="true" />
@@ -145,8 +151,10 @@ export function PdfPreviewDialog({
               variant="ghost"
               size="icon"
               className="size-9 text-white hover:bg-white/10 hover:text-white"
-              disabled={zoom === 150}
-              onClick={() => setZoom((value) => Math.min(150, value + 10))}
+              disabled={zoom === MAX_ZOOM}
+              onClick={() =>
+                setZoom((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP))
+              }
               aria-label="Zoom in"
             >
               <PlusIcon aria-hidden="true" />
@@ -228,7 +236,7 @@ export function PdfPreviewDialog({
           >
             <div className="flex min-h-full items-start justify-center">
               <div
-                className="origin-top transition-transform duration-200 motion-reduce:transition-none"
+                className="origin-top-left transition-transform duration-200 motion-reduce:transition-none"
                 style={{ transform: `scale(${zoom / 100})` }}
               >
                 <Image
