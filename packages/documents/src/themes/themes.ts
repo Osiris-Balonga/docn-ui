@@ -56,6 +56,13 @@ const pdfThemeSchema = z
 
 export type PdfTheme = z.infer<typeof pdfThemeSchema>;
 
+export interface PdfThemeOverrides {
+  colors?: Partial<PdfTheme["colors"]>;
+  fonts?: Partial<PdfTheme["fonts"]>;
+  spacing?: Partial<PdfTheme["spacing"]>;
+  typeScale?: Partial<PdfTheme["typeScale"]>;
+}
+
 const themeInputs: Record<ThemeId, unknown> = {
   neutral: {
     id: "neutral",
@@ -191,5 +198,19 @@ export function getPdfTheme(
   return validateTheme({
     ...theme,
     colors: { ...theme.colors, accent: accentColor },
+  });
+}
+
+export function createPdfTheme(
+  themeId: ThemeId,
+  overrides: PdfThemeOverrides = {},
+): PdfTheme {
+  const base = getPdfTheme(themeId);
+  return validateTheme({
+    ...base,
+    colors: { ...base.colors, ...overrides.colors },
+    fonts: { ...base.fonts, ...overrides.fonts },
+    spacing: { ...base.spacing, ...overrides.spacing },
+    typeScale: { ...base.typeScale, ...overrides.typeScale },
   });
 }

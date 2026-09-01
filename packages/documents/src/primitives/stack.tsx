@@ -1,4 +1,4 @@
-import { View } from "@react-pdf/renderer";
+import { View, type ViewProps } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 import type { PdfTheme } from "../themes/themes";
 import { usePdfTheme } from "./theme-context";
@@ -17,6 +17,8 @@ export interface StackProps {
   align?: Alignment;
   /** Main-axis child distribution. */
   justify?: Justification;
+  /** Optional React PDF style overrides for source-owned compositions. */
+  style?: ViewProps["style"];
 }
 
 export function Stack({
@@ -25,38 +27,42 @@ export function Stack({
   direction = "vertical",
   align,
   justify,
+  style,
 }: StackProps) {
   const theme = usePdfTheme();
   return (
     <View
-      style={{
-        gap: theme.spacing[gap],
-        ...(direction === "horizontal"
-          ? { flexDirection: "row" as const }
-          : {}),
-        ...(align === undefined
-          ? {}
-          : {
-              alignItems:
-                align === "start"
-                  ? ("flex-start" as const)
-                  : align === "end"
-                    ? ("flex-end" as const)
-                    : align,
-            }),
-        ...(justify === undefined
-          ? {}
-          : {
-              justifyContent:
-                justify === "start"
-                  ? ("flex-start" as const)
-                  : justify === "end"
-                    ? ("flex-end" as const)
-                    : justify === "between"
-                      ? ("space-between" as const)
-                      : ("center" as const),
-            }),
-      }}
+      style={[
+        {
+          gap: theme.spacing[gap],
+          ...(direction === "horizontal"
+            ? { flexDirection: "row" as const }
+            : {}),
+          ...(align === undefined
+            ? {}
+            : {
+                alignItems:
+                  align === "start"
+                    ? ("flex-start" as const)
+                    : align === "end"
+                      ? ("flex-end" as const)
+                      : align,
+              }),
+          ...(justify === undefined
+            ? {}
+            : {
+                justifyContent:
+                  justify === "start"
+                    ? ("flex-start" as const)
+                    : justify === "end"
+                      ? ("flex-end" as const)
+                      : justify === "between"
+                        ? ("space-between" as const)
+                        : ("center" as const),
+              }),
+        },
+        style,
+      ]}
     >
       {children}
     </View>

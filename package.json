@@ -9,8 +9,10 @@
     "pnpm": "11.24.0"
   },
   "scripts": {
-    "dev": "pnpm generate:registry && pnpm --filter @docn-ui/www dev",
-    "build": "pnpm generate:registry && pnpm --filter @docn-ui/www build && node tooling/testing/build-fingerprint.mjs write",
+    "dev": "pnpm generate:templates && pnpm generate:registry && pnpm --filter @docn-ui/www dev",
+    "build": "pnpm generate:templates && pnpm generate:registry && node tooling/testing/build-fingerprint.mjs write && pnpm --filter @docn-ui/www build",
+    "generate:templates": "node tooling/templates/generate.mjs",
+    "verify:templates": "node tooling/templates/generate.mjs --check",
     "generate:registry": "node tooling/registry/generate.mjs",
     "verify:registry": "node tooling/registry/generate.mjs --check",
     "verify:assets": "node tooling/assets/verify-assets.mjs",

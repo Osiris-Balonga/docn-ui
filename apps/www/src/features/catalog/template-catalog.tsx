@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
 import {
   templateCatalog,
+  templateFamilies,
   type TemplateCatalogEntry,
+  type TemplateFamily,
 } from "@docn-ui/documents/catalog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -20,17 +23,6 @@ import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 import { PdfPreviewDialog } from "@/features/pdf-preview/pdf-preview-dialog";
 import { copyText } from "@/features/registry/registry-source";
 import { cn } from "@/lib/utils";
-
-const templateFamilies = [
-  { id: "business-card", label: "Business Cards" },
-  { id: "ticket", label: "Event Tickets" },
-  { id: "receipt", label: "Receipts" },
-  { id: "label", label: "Labels" },
-  { id: "invoice", label: "Invoices" },
-] as const satisfies readonly {
-  id: TemplateCatalogEntry["family"];
-  label: string;
-}[];
 
 const subscribeToStaticOrigin = () => () => {};
 
@@ -105,7 +97,6 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
 }
 
 function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
-  const thumbnailSrc = `${template.thumbnail.src}?v=${template.thumbnail.sha256.slice(0, 12)}`;
   return (
     <article className="min-w-0">
       <div className="flex h-11 items-center justify-between gap-3 px-1 py-1.5 sm:px-3">
@@ -114,14 +105,13 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
       </div>
       <PdfPreviewDialog
         title={template.title}
-        pages={[
-          {
-            src: thumbnailSrc,
-            width: template.thumbnail.width,
-            height: template.thumbnail.height,
-            alt: `${template.title} PDF preview`,
-          },
-        ]}
+        pages={template.pages.map((page) => ({
+          src: `${page.src}?v=${page.sha256.slice(0, 12)}`,
+          width: page.width,
+          height: page.height,
+          alt: `${template.title} PDF preview, page ${page.page}`,
+        }))}
+        downloadHref={`${template.pdf.src}?v=${template.pdf.revision.slice(0, 12)}`}
         triggerClassName="h-72 rounded-xl bg-muted/35 p-5 sm:h-80 sm:p-7"
         previewImageClassName="max-h-full w-auto shadow-lg ring-1 ring-foreground/10"
       />
@@ -129,13 +119,48 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
   );
 }
 
+function EmptyTemplateSlot({ className }: { className: string }) {
+  return (
+    <div
+      aria-hidden="true"
+      data-empty-template-slot=""
+      className={cn("min-w-0", className)}
+    >
+      <div className="h-11" />
+      <div className="h-72 rounded-xl border border-dashed border-border/70 bg-transparent sm:h-80" />
+    </div>
+  );
+}
+
 export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const featuredTemplate = templateCatalog.find(
     (template) => template.slug === featuredSlug,
   );
-  const [activeFamily, setActiveFamily] = useState<
-    TemplateCatalogEntry["family"]
-  >(featuredTemplate?.family ?? "business-card");
+  const firstAvailableFamily = templateFamilies.find((family) =>
+    templateCatalog.some((template) => template.family === family.id),
+  );
+  const requestedFamily = searchParams.get("family");
+  const requestedFamilyIsAvailable = templateFamilies.some(
+    (family) => family.id === requestedFamily,
+  );
+  const activeFamily: TemplateFamily = requestedFamilyIsAvailable
+    ? (requestedFamily as TemplateFamily)
+    : (featuredTemplate?.family ?? firstAvailableFamily?.id ?? "business-card");
+  const searchParamsString = searchParams.toString();
+  useEffect(() => {
+    if (!requestedFamily || requestedFamilyIsAvailable) return;
+    const canonicalParams = new URLSearchParams(searchParamsString);
+    canonicalParams.set("family", activeFamily);
+    router.replace(`?${canonicalParams.toString()}`, { scroll: false });
+  }, [
+    activeFamily,
+    requestedFamily,
+    requestedFamilyIsAvailable,
+    router,
+    searchParamsString,
+  ]);
   const activeTemplates = templateCatalog
     .filter((template) => template.family === activeFamily)
     .sort((left, right) => {
@@ -146,6 +171,9 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
   const familyLabel = templateFamilies.find(
     (family) => family.id === activeFamily,
   )?.label;
+  const mediumEmptySlots = activeTemplates.length % 2 === 0 ? 0 : 1;
+  const largeEmptySlots =
+    activeTemplates.length % 3 === 0 ? 0 : 3 - (activeTemplates.length % 3);
 
   return (
     <>
@@ -156,12 +184,15 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
         <ul className="flex min-w-max items-center gap-5" role="tablist">
           {templateFamilies.map((family) => (
             <li key={family.id}>
-              <button
-                type="button"
+              <Link
+                href={`?${new URLSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  family: family.id,
+                }).toString()}`}
+                scroll={false}
                 role="tab"
                 aria-controls="template-family-panel"
                 aria-selected={activeFamily === family.id}
-                onClick={() => setActiveFamily(family.id)}
                 className={cn(
                   "flex h-11 items-center rounded-sm text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/50",
                   activeFamily === family.id
@@ -170,7 +201,7 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
                 )}
               >
                 {family.label}
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
@@ -182,11 +213,35 @@ export function TemplateGallery({ featuredSlug }: { featuredSlug?: string }) {
         className="scroll-mt-28 pt-4"
       >
         <h2 className="sr-only">{familyLabel} templates</h2>
-        <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
-          {activeTemplates.map((template) => (
-            <TemplateSpecimen key={template.id} template={template} />
-          ))}
-        </div>
+        {activeTemplates.length > 0 ? (
+          <div className="grid gap-x-5 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+            {activeTemplates.map((template) => (
+              <TemplateSpecimen key={template.id} template={template} />
+            ))}
+            {Array.from({ length: mediumEmptySlots }, (_, index) => (
+              <EmptyTemplateSlot
+                key={`medium-empty-${index}`}
+                className="hidden md:block xl:hidden"
+              />
+            ))}
+            {Array.from({ length: largeEmptySlots }, (_, index) => (
+              <EmptyTemplateSlot
+                key={`large-empty-${index}`}
+                className="hidden xl:block"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex min-h-64 items-center justify-center rounded-xl bg-muted/25 px-6 py-12 text-center">
+            <div className="max-w-md">
+              <h3 className="text-lg font-medium">No {familyLabel} yet</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                This family is ready for new source-owned PDF templates built
+                from the shared document components.
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </>
   );
@@ -197,11 +252,11 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
     <div className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6">
       <header className="mx-auto flex max-w-3xl flex-col items-center pt-16 text-center sm:pt-24">
         <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Beautiful PDF Templates
+          PDF Templates
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-pretty text-muted-foreground sm:text-lg">
-          Production-ready PDF components built for real print formats. Browse
-          the previews, copy a template, and adapt the source in your project.
+          New source-owned templates will be added progressively, built from the
+          shared document components and ready to adapt in your project.
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <a href="#template-family-panel" className={buttonVariants()}>
@@ -216,7 +271,11 @@ export function TemplateCatalog({ featuredSlug }: { featuredSlug?: string }) {
         </div>
       </header>
 
-      <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
+      <Suspense
+        fallback={<div className="mt-14 min-h-96" aria-hidden="true" />}
+      >
+        <TemplateGallery {...(featuredSlug ? { featuredSlug } : {})} />
+      </Suspense>
     </div>
   );
 }

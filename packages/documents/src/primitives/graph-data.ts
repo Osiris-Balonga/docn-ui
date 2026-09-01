@@ -21,8 +21,29 @@ export interface GraphProps {
   width?: number;
   /** Chart height from 160 to 700 PDF points. */
   height?: number;
+  /** Rounded corner radius for Cartesian bars, from 0 to 20 points. */
+  barRadius?: number;
+  /** Optional per-datum colors, repeated when fewer colors than entries. */
+  colors?: readonly string[];
+  /** Show Cartesian grid lines. */
+  showGridLines?: boolean;
+  /** Show the series or circular legend. */
+  showLegend?: boolean;
+  /** Shape used before a visible series legend. */
+  legendMarker?: "circle" | "line" | "square";
+  /** Show numeric values and circular leader labels. */
+  showDataLabels?: boolean;
 }
-export type ResolvedGraph = Required<GraphProps>;
+export interface ResolvedGraph extends GraphProps {
+  barRadius: number;
+  colors: readonly string[];
+  height: number;
+  legendMarker: "circle" | "line" | "square";
+  showDataLabels: boolean;
+  showGridLines: boolean;
+  showLegend: boolean;
+  width: number;
+}
 
 export function graphError(
   message: string,
@@ -50,6 +71,12 @@ export function isCircularGraph(type: GraphType) {
 export function resolveGraph({
   width = 250,
   height = 215,
+  barRadius = 0,
+  colors = [],
+  showDataLabels = true,
+  showGridLines = true,
+  showLegend = true,
+  legendMarker = "line",
   ...input
 }: GraphProps): ResolvedGraph {
   if (
@@ -69,6 +96,18 @@ export function resolveGraph({
     height > 700
   )
     graphError("Graph dimensions must be 160–540 by 160–700 points.", "size");
+  if (!Number.isFinite(barRadius) || barRadius < 0 || barRadius > 20)
+    graphError("Bar radius must be between 0 and 20 points.", "barRadius");
+  if (!Array.isArray(colors) || colors.length > 12)
+    graphError("Expected at most 12 graph colors.", "colors");
+  for (const color of colors)
+    if (typeof color !== "string" || !/^#[0-9a-f]{6}$/i.test(color))
+      graphError(
+        "Graph colors must use six-digit hexadecimal values.",
+        "colors",
+      );
+  if (!["circle", "line", "square"].includes(legendMarker))
+    graphError("Unsupported legend marker.", "legendMarker");
   const circular = isCircularGraph(input.type);
   const maximum = circular ? 8 : 12;
   if (!Array.isArray(input.data) || input.data.length > maximum)
@@ -96,7 +135,17 @@ export function resolveGraph({
     if (circular && datum.value < 0)
       graphError("Pie and donut values cannot be negative.", "data.value");
   }
-  return { ...input, width, height };
+  return {
+    ...input,
+    barRadius,
+    colors,
+    height,
+    legendMarker,
+    showDataLabels,
+    showGridLines,
+    showLegend,
+    width,
+  };
 }
 
 export function formatGraphValue(value: number): string {

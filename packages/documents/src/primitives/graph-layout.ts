@@ -32,11 +32,14 @@ export function createGraphLayout(
   const legendLine = fontSize * 1.8;
   const circular = isCircularGraph(type);
   const total = data.reduce((sum, datum) => sum + datum.value, 0);
-  const legendRows = circular
-    ? data.map((datum, index) => circularLegend(datum, index, total))
-    : [];
+  const legendRows =
+    circular && graph.showLegend
+      ? data.map((datum, index) => circularLegend(datum, index, total))
+      : [];
   for (const row of legendRows) fits(row, fontSize, width - 16);
-  const legendTop = height - 8 - (legendRows.length + 1) * legendLine;
+  const legendTop = graph.showLegend
+    ? height - 8 - (legendRows.length + 1) * legendLine
+    : height - 8;
   const scale = createGraphScale(data);
   let plot: GraphBox;
   if (circular) {

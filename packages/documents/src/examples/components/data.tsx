@@ -110,8 +110,8 @@ const printRows: readonly PrintRow[] = [
   },
   {
     id: "P-043",
-    document: "Event tickets",
-    format: "150×70",
+    document: "Team badges",
+    format: "54×86",
     owner: "Malik",
     status: "Review",
     due: "16 Jan",
@@ -119,8 +119,8 @@ const printRows: readonly PrintRow[] = [
   },
   {
     id: "P-044",
-    document: "Product labels",
-    format: "A6",
+    document: "Annual reports",
+    format: "A4",
     owner: "Ana",
     status: "Queued",
     due: "16 Jan",
@@ -214,8 +214,8 @@ export function DataTableEmptyExample() {
 export function GraphExample() {
   const data = [
     { label: "Cards", value: 80 },
-    { label: "Passes", value: 120 },
-    { label: "Labels", value: 60 },
+    { label: "Badges", value: 120 },
+    { label: "Reports", value: 60 },
   ];
   return (
     <Stack gap="lg">
@@ -272,8 +272,8 @@ export function GraphExample() {
 }
 const graphRecipeData = [
   { label: "Cards", value: 80 },
-  { label: "Tickets", value: 120 },
-  { label: "Labels", value: 60 },
+  { label: "Badges", value: 120 },
+  { label: "Reports", value: 60 },
 ] as const;
 export function GraphCartesianExample() {
   return (

@@ -29,7 +29,7 @@ export interface ComponentReference
 interface DocumentationCatalog {
   components: ComponentReference[];
   formats: (FormatDefinition & {
-    templates: { title: string; slug: string }[];
+    templates: { family: string; title: string; slug: string }[];
   })[];
   themes: (PdfExample & { id: string; tokens: PdfTheme })[];
 }

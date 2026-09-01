@@ -23,7 +23,7 @@ export default defineConfig({
   },
   webServer: {
     command: serverCommand,
-    url: `${baseURL}/templates/business-card-minimal/`,
+    url: `${baseURL}/templates/`,
     reuseExistingServer: false,
     timeout: 120_000,
   },

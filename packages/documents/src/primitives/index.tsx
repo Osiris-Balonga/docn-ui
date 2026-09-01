@@ -1,4 +1,5 @@
 export { PageFrame, type PageFrameProps } from "./page-frame";
+export { ReceiptFrame, type ReceiptFrameProps } from "./receipt-frame";
 export { useFlowFrame } from "./flow-context";
 export {
   DocumentFrame,

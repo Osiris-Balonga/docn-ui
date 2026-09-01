@@ -36,26 +36,35 @@ export function RadialGraph({
         <G key={sector.index}>
           <Path
             d={sector.path}
-            fill={theme.colors.text}
+            fill={
+              graph.colors[sector.index % graph.colors.length] ??
+              theme.colors.text
+            }
             fillOpacity={
-              1 - (sector.index / Math.max(1, graph.data.length - 1)) * 0.7
+              graph.colors.length
+                ? 1
+                : 1 - (sector.index / Math.max(1, graph.data.length - 1)) * 0.7
             }
             stroke={theme.colors.surface}
             strokeWidth={0.8}
           />
-          <Path
-            d={`M ${pointPath(sector.anchor)} L ${center.x + sector.side * (radius + 5)} ${sector.anchor.y} L ${sector.label.x - sector.side * 3} ${sector.label.y}`}
-            fill="none"
-            stroke={theme.colors.mutedText}
-            strokeWidth={0.5}
-          />
-          <GraphText
-            x={sector.label.x}
-            y={sector.label.y + theme.typeScale.caption * 0.35}
-            textAnchor={sector.side === 1 ? "start" : "end"}
-          >
-            {String(sector.index + 1)}
-          </GraphText>
+          {graph.showDataLabels ? (
+            <>
+              <Path
+                d={`M ${pointPath(sector.anchor)} L ${center.x + sector.side * (radius + 5)} ${sector.anchor.y} L ${sector.label.x - sector.side * 3} ${sector.label.y}`}
+                fill="none"
+                stroke={theme.colors.mutedText}
+                strokeWidth={0.5}
+              />
+              <GraphText
+                x={sector.label.x}
+                y={sector.label.y + theme.typeScale.caption * 0.35}
+                textAnchor={sector.side === 1 ? "start" : "end"}
+              >
+                {String(sector.index + 1)}
+              </GraphText>
+            </>
+          ) : null}
         </G>
       ))}
     </G>

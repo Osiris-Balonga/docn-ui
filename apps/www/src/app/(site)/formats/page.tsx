@@ -72,7 +72,7 @@ export default async function FormatsPage() {
                 <li key={template.slug}>
                   <Link
                     className="inline-flex min-h-10 items-center underline underline-offset-4"
-                    href={`/templates/${template.slug}/`}
+                    href={`/templates/?family=${template.family}`}
                   >
                     {template.title}
                   </Link>

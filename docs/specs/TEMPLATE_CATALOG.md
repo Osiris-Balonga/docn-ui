@@ -1,67 +1,58 @@
-# V1 catalog — fifteen compositions
+# V1 template catalog — seventeen compositions
 
-This catalog defines launch scope. Three compositions per family, not three colors of the same layout. IDs are stable for URLs, fixtures, and registry items.
-
-Implementation status on 2026-08-30: all fifteen IDs below have metadata, a nominal fixture, PDF-derived catalog image, static detail route, and shadcn registry block. The family suites qualify one representative adversarial risk per family instead of a format/theme matrix.
+This catalog defines the launch scope. It contains only invoices, receipts, resumes, reports, badges, and business cards. Template IDs are stable for URLs, fixtures, generated previews, and registry items. Event tickets and labels are not V1 catalog families and have no compatibility aliases or catalog entries.
 
 ## Inventory
 
-| ID | Family | Composition and expected distinction |
-| --- | --- | --- |
-| `business-card-minimal` | Business card | Aligned contact details, strong typographic hierarchy, brand on back |
-| `business-card-editorial` | Business card | Serif/sans contrast, asymmetric organization, additional information on back |
-| `business-card-studio` | Business card | Contrasting brand block, distributed contacts, QR and identity on back |
-| `event-ticket-classic` | Ticket | Event on left, stub/identifier on right, isolated QR |
-| `event-ticket-conference` | Ticket | Prominent attendee and category, secondary schedule/venue |
-| `event-ticket-live` | Ticket | Expressive title, prominent date, dedicated QR/access area |
-| `receipt-retail` | Receipt | Merchant, compact lines, taxes, total, payment |
-| `receipt-hospitality` | Receipt | Optional table/order, readable groups, service footer |
-| `receipt-service` | Receipt | SaaS subscription, customer, billing period, payment summary |
-| `label-product` | Label | Product name, reference, short information, optional QR |
-| `label-address` | Label | Prominent recipient/address, optional sender marker |
-| `label-inventory` | Label | Prominent identifier, location and QR in a second area |
-| `invoice-minimal` | Invoice | Light document, compact contact details, open table |
-| `invoice-business` | Invoice | Formal identity, seller/customer blocks, structured table |
-| `invoice-studio` | Invoice | Stronger visual identity, project and totals hierarchy |
+| ID                             | Family        | Composition and expected distinction                                 |
+| ------------------------------ | ------------- | -------------------------------------------------------------------- |
+| `invoice-spacious`             | Invoice       | Spacious service invoice with a compact original wordmark            |
+| `invoice-vertical`             | Invoice       | Editorial invoice with vertical identity and payment area            |
+| `invoice-corporate`            | Invoice       | Corporate header, alternating item table, and structured totals      |
+| `invoice-photo-header`         | Invoice       | Large original landscape image, open details, and restrained totals  |
+| `receipt-order-confirmation`   | Receipt       | Order summary with distinct product imagery and shipping metadata    |
+| `receipt-product-barcode`      | Receipt       | Compact product receipt with a barcode footer                        |
+| `receipt-cash-register`        | Receipt       | Narrow monochrome cash-register composition                          |
+| `resume-classic`               | Resume        | Restrained two-column professional resume                            |
+| `resume-accountant`            | Resume        | Dense single-column accountant resume                                |
+| `resume-designer`              | Resume        | Profile-led designer resume with a skill sidebar                     |
+| `report-product-analytics`     | Report        | KPI grid and source trend chart                                      |
+| `report-marketplace-revenue`   | Report        | Focused comparison chart with an explanatory conclusion              |
+| `report-customer-support`      | Report        | Survey dashboard with charts, quotations, and an original portrait   |
+| `badge-profile-lanyard`        | Badge         | Two-sided portrait badge with a white face and dark brand reverse    |
+| `badge-qr-portrait-light`      | Badge         | Light portrait badge with QR code and full-width header field        |
+| `badge-qr-portrait-blue`       | Badge         | Blue portrait badge with QR code and full-bleed patterned background |
+| `business-card-coral-qr`       | Business card | Two-page coral and white card with QR contact details                |
+| `business-card-violet-founder` | Business card | Two-page violet and black founder identity card                      |
 
-The shared themes `neutral`, `editorial`, and `bold` change tokens, not composition IDs. All receipt themes retain a readable monochrome version. Never impose large dark backgrounds on a thermal printer.
+Themes change template-owned tokens, not composition IDs. Every template keeps its own baseline palette and typography so a future theme builder can apply controlled substitutions without altering layout.
 
 ## Format compatibility
 
-| Family | V1 formats | Constraints |
-| --- | --- | --- |
-| Business cards | `card-85x55`, `card-90x50`, `card-us` (88.9×50.8 mm) | Landscape; equal front/back size; customization limited to presets |
-| Tickets | `ticket-210x74`, `ticket-150x70`, `ticket-a6` (105×148 mm) | classic/live: both landscape formats; conference: A6 portrait and 150×70 with a dedicated layout |
-| Receipts | `receipt-58`, `receipt-80` | Bounded automatic height; no conversion to A4 |
-| Labels | `label-70x37`, `label-100x50`, `label-custom` | Width 40–120, height 25–100 mm; mandatory preflight |
-| Invoices | `a4` (210×297), `letter` (215.9×279.4 mm) | Portrait and pagination; no A5 promise in V1 |
+| Family         | V1 formats                                              | Constraints                                                               |
+| -------------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Invoices       | `a4`, `letter`                                          | Portrait; pagination only where declared by the template                  |
+| Receipts       | `receipt-58`, `receipt-80`, or a declared document page | Thermal receipts use bounded automatic height and are not narrow A4 pages |
+| Resumes        | `a4`, `letter`                                          | Portrait; content density must remain within the declared composition     |
+| Reports        | `a4`, `letter`                                          | Portrait; graphs are PDF-native vectors with visible labels and legends   |
+| Badges         | `badge-54x86`                                           | Portrait 53.98 × 85.6 mm page                                             |
+| Business cards | `card-85x55`, `card-90x50`, `card-us`                   | Landscape; front and back are consecutive equally sized pages             |
 
-Names are product presets, not claims of universal commercial standards. Always display dimensions in mm; inch equivalents are optional for Letter/card-us. Each template declares its actual compatibility list; do not advertise the entire Cartesian product.
+Names are product presets, not claims of universal commercial standards. Display dimensions in millimeters and test at actual size. Each template declares its exact compatibility list; do not advertise the full Cartesian product.
 
-## Label sheets
+## Source and identity policy
 
-A4 and Letter profiles. Parameters: label size, page margins, spacing, calculated row/column counts, row-major order, starting cell, quantity. Verify `margins + cells + gaps <= page` on both axes. Reject impossible placement.
+Each template has one source used by the catalog, preview, PDF export, and registry. Shipped samples must not include third-party logos, trademarked product identities, copied brand names, or remote assets. Use original vector marks, fictional organizations, and locally stored generated or license-reviewed imagery. Record image provenance in `tooling/docs/assets/README.md`.
 
-The next page starts at its first cell; the starting cell applies only to page one. Positive quantity bounded at 100; ordered identifiers with no unintended duplication. Do not claim compatibility with an Avery reference without physically comparing that reference.
-
-## Required template files
-
-`<id>.tsx` (composition), `schema.ts`, `metadata.ts`, `examples.ts`, tests integrated into the family's PDF suite, and synthetic sample data. Extract a subcomponent only for a real responsibility or reuse. A family may share schemas/fixtures without copying identical files.
-
-Metadata: ID, version, title, description, tags, family, formats/themes, sides, QR/logo/print capabilities, source, and license after confirmation. Generate gallery images from nominal examples; never maintain them manually.
+Metadata includes ID, version, title, description, tags, family, formats, sides, asset capabilities, source, and license. Generate gallery images from nominal examples; never maintain them manually.
 
 ## Fixtures and testing effort
 
-- Every composition gets a nominal example: one generation and structure/content check through a parameterized family suite, not one test file per variant.
-- Test shared risks (long names, fonts, URLs, image limits) at the lowest shared level; do not repeat them fifteen times.
-- One representative adversarial fixture per family exercises its specific risk: card overflow, dense QR, long receipt, sheet overflow, multipage invoice.
-- Test format boundaries when geometry differs; do not automatically cross every format × theme × language × browser.
-- Selected visual references: one per family, plus a side or variant only when its structure is otherwise uncovered. Review all fifteen thumbnails as a contact sheet without creating fifteen screenshot suites.
-
-## After V1
-
-Reports, quotes, proposals, CVs, certificates, menus, brochures, badges, and invitations belong in a separate backlog. A new family needs its own need, composition, and constraint. Catalog quality takes priority over a large advertised count.
+- Every composition receives one nominal generation and structure/content check through the parameterized PDF suite.
+- Test shared risks at the lowest shared level; do not repeat them for every template.
+- Validate physical page dimensions for every generated template and page count for front/back business cards.
+- Review all generated thumbnails and representative full-page renders after a composition change.
 
 ## Invoice limitations
 
-Invoices use integer minor-unit prices, integer quantities, basis-point tax rates, and per-line half-up tax rounding. This deterministic calculation policy may not match every jurisdiction. The templates are not tax, bookkeeping, or certified electronic-invoicing software; consumers must adapt legal fields and calculation rules where required. See the [invoice guide](../guides/INVOICES.md) for pagination, format, and print limits.
+Invoices use deterministic integer-based sample calculations. They are not tax, bookkeeping, or certified electronic-invoicing software. Consumers must adapt legal fields and calculation rules for their jurisdiction. See the [invoice guide](../guides/INVOICES.md) for pagination, format, and print limits.

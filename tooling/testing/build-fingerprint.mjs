@@ -30,34 +30,67 @@ function git(...args) {
 }
 
 function computeFingerprint() {
-  const files = git(
-    "ls-files",
-    "-z",
-    "--cached",
-    "--others",
-    "--exclude-standard",
-    "--",
-    ...inputPathspecs,
-  )
+  const inputMode = process.env.CI === "true" ? "commit" : "workspace";
+  const includeInput = (file) =>
+    !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
+    !/\.(test|spec)\.[^/]+$/.test(file);
+  const tracked = git("ls-files", "--stage", "-z", "--", ...inputPathspecs)
     .toString("utf8")
     .split("\0")
     .filter(Boolean)
-    .filter(
-      (file) =>
-        !/(^|\/)(tests?|__tests__)(\/|$)/.test(file) &&
-        !/\.(test|spec)\.[^/]+$/.test(file),
-    )
-    .sort();
+    .map((entry) => {
+      const match = /^(\d+) ([0-9a-f]+) \d\t(.+)$/.exec(entry);
+      if (!match) throw new Error("A tracked build input is invalid.");
+      return { object: match[2], path: match[3] };
+    })
+    .filter(({ path }) => includeInput(path));
+  const untracked =
+    inputMode === "workspace"
+      ? git(
+          "ls-files",
+          "--others",
+          "--exclude-standard",
+          "-z",
+          "--",
+          ...inputPathspecs,
+        )
+          .toString("utf8")
+          .split("\0")
+          .filter(Boolean)
+          .filter(includeInput)
+          .filter((file) => existsSync(resolve(root, file)))
+      : [];
+  const files = [...tracked.map(({ path }) => path), ...untracked].sort();
   const hash = createHash("sha256");
-  for (const file of files) {
+  for (const { object, path } of tracked.sort((left, right) =>
+    left.path.localeCompare(right.path),
+  )) {
+    hash.update(path);
+    hash.update("\0");
+    hash.update(object);
+    hash.update("\0");
+  }
+  for (const file of untracked.sort()) {
     hash.update(file);
     hash.update("\0");
     hash.update(readFileSync(resolve(root, file)));
     hash.update("\0");
   }
+  if (inputMode === "workspace")
+    hash.update(
+      git(
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "HEAD",
+        "--",
+        ...tracked.map(({ path }) => path),
+      ),
+    );
   return {
-    schemaVersion: 1,
+    schemaVersion: 3,
     commit: String(git("rev-parse", "HEAD")).trim(),
+    inputMode,
     inputSha256: hash.digest("hex"),
     files: files.length,
   };
@@ -67,7 +100,7 @@ const mode = process.argv[2];
 if (mode !== "write" && mode !== "verify") {
   throw new Error("Use build-fingerprint.mjs write or verify.");
 }
-if (!existsSync(buildDirectory))
+if (mode === "verify" && !existsSync(buildDirectory))
   throw new Error("The static site build is missing at apps/www/out.");
 
 const current = computeFingerprint();
@@ -84,6 +117,7 @@ if (mode === "write") {
   if (
     recorded.schemaVersion !== current.schemaVersion ||
     recorded.commit !== current.commit ||
+    recorded.inputMode !== current.inputMode ||
     recorded.inputSha256 !== current.inputSha256 ||
     recorded.files !== current.files
   )
