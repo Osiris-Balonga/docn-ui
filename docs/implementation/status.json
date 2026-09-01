@@ -365,7 +365,7 @@
     {
       "id": "L14",
       "file": "lots/L14-qualification.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L13"],
       "branch": "test/v1-qualification",
       "baseCommit": "a2abf5c0894c79a774ac384d593c72710fe96395",
