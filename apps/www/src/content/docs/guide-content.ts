@@ -23,19 +23,30 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
   installation: [
     {
       id: "prerequisites",
-      title: "Keep your existing project",
+      title: "Start from a working shadcn project",
       blocks: [
         {
           type: "paragraph",
-          text: "Start with a React 19 TypeScript project that already has a working shadcn components.json. Keep its style, aliases and UI components. docn-ui adds source under a separate root-level docn directory; it does not reinitialize shadcn or require a docn runtime package.",
+          text: "docn-ui extends an existing React and TypeScript shadcn project. Confirm that components.json exists and that the official CLI can add a normal shadcn component before installing PDF source. Keep the project's selected base, style, aliases, Tailwind setup and components/ui directory.",
+        },
+        {
+          type: "link",
+          text: "Initialize shadcn first if your project is not ready",
+          href: "https://ui.shadcn.com/docs/installation",
         },
         {
           type: "paragraph",
-          text: "Qualification currently uses Node 24.18.0, pnpm 11.24.0, shadcn 4.19.0 and React 19.2.8. Other combinations are not guaranteed. Internal docn imports are relative, so a consumer using a different source alias does not need to adopt @/*.",
+          text: "docn-ui does not run a second initializer. The official shadcn CLI reads the same components.json and installs PDF-only source under a separate root-level docn directory. Internal docn imports are relative, so a consumer using a different source alias does not need to adopt @/*.",
         },
+      ],
+    },
+    {
+      id: "development-registry",
+      title: "Serve the development registry",
+      blocks: [
         {
           type: "paragraph",
-          text: "The registry is a local development registry, not an immutable public release. To serve your own checkout, run the following commands in the docn-ui repository. The preview defaults to port 4173. Leave it running while installing from a second terminal in your consumer project.",
+          text: "No immutable public namespace is released yet. For the qualified development flow, serve a docn-ui checkout locally and leave it running while the shadcn CLI installs from a second terminal in your application. Qualification currently uses Node 24.18.0, pnpm 11.24.0, shadcn 4.19.0 and React 19.2.8.",
         },
         {
           type: "code",
@@ -47,26 +58,26 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
     },
     {
       id: "install-source",
-      title: "Install the source",
+      title: "Add PDF source with the shadcn CLI",
       blocks: [
         {
           type: "paragraph",
-          text: "Run this command from your consumer project. It uses the configured registry build URL, which defaults to port 4173 even if you view this documentation on another port. To host the registry elsewhere, set DOCN_REGISTRY_ORIGIN to its full /r/dev/ URL before building and serve it there. Install the composed component example while the template catalog is rebuilt.",
+          text: "Run the command from the application that owns components.json. Start with the small text example to verify installation and rendering before choosing a full template. The URL defaults to the local registry on port 4173; set DOCN_REGISTRY_ORIGIN to another complete /r/dev/ origin before building only when you deliberately host that development registry elsewhere.",
         },
-        { type: "install", item: "docn-component-example" },
+        { type: "install", item: "docn-text-example" },
         {
           type: "paragraph",
-          text: "Your existing components.json remains authoritative. Do not replace it with docn-ui's own site configuration. A future public @docn namespace will be an additional registries entry, not a second initializer. No public namespace or release URL is promised today.",
+          text: "Inspect the files written under docn/ and commit them like any shadcn registry source. Your existing components.json remains authoritative; do not replace it with docn-ui's site configuration. A future public @docn namespace will be an additional registry entry, not another project initializer.",
         },
       ],
     },
     {
       id: "prepare-assets",
-      title: "Prepare assets, then render",
+      title: "Prepare assets and verify one PDF",
       blocks: [
         {
           type: "paragraph",
-          text: "Source installation does not silently download binary fonts. Review the visible asset installer and run the appropriate browser or Node command before rendering. Missing assets are an error, not a reason to silently substitute a font.",
+          text: "Source installation does not silently download binary fonts. Review the asset manifest and run the browser or Node installer from your application. Then render the verified example once before replacing its data or composing a larger document. Missing assets are an error, not a reason to silently substitute a font.",
         },
         {
           type: "link",
