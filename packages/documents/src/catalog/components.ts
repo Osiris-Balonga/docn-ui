@@ -332,9 +332,16 @@ const componentRecipes: Partial<Record<string, readonly ComponentRecipe[]>> = {
       exampleExport: "WatermarkRepeatedExample",
     },
     {
-      title: "Single-page placement",
-      description: "Place a smaller top watermark on only the first page.",
-      exampleExport: "WatermarkPlacementExample",
+      title: "Full-page horizontal mark",
+      description:
+        "Keep the same large, low-opacity label horizontal across the page.",
+      exampleExport: "WatermarkHorizontalExample",
+    },
+    {
+      title: "Full-page vertical mark",
+      description:
+        "Rotate the same full-page label vertically without reducing its display size.",
+      exampleExport: "WatermarkVerticalExample",
     },
   ],
   graph: [

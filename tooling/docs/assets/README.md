@@ -14,13 +14,15 @@ public domain under CC0 1.0 before Unsplash changed its license.
 The fixture is used only to demonstrate permitted local-image fit, crop,
 alignment and caption behavior in generated PDF documentation.
 
-## Transparent logo
+## Transparent logo mark
 
-`penpot-logo.png` is the transparent Penpot logo published by Penpot and
-dedicated to the public domain under CC0 1.0. It is used only to demonstrate a
-resolved transparent logo in the PageHeader documentation example.
+`studio-north-mark.png` is an original icon-only mark generated for the
+fictional Studio North documentation example. The near-black geometric mark
+combines a north-pointing compass shape with an abstract N and contains no
+wordmark, so the adjacent document heading remains the only visible name.
 
-- Source: https://commons.wikimedia.org/wiki/File:Penpotlogo.png
-- Original: https://commons.wikimedia.org/wiki/Special:Redirect/file/Penpotlogo.png
-- License: https://creativecommons.org/publicdomain/zero/1.0/
-- SHA-256: `54d75db88551677876365412740354871e55e5dc5e96a4d18ac9c048407b0d85`
+- Generated with: OpenAI built-in image generation
+- Generated on: 2026-09-01
+- Prompt intent: original monochrome geometric north/N mark, transparent
+  background, no text or existing-brand resemblance
+- SHA-256: `6ed78aed44f37ddd0eaf747ab91c99aba4aafb417dda7192e0c6c809ac77c77d`

@@ -115,6 +115,12 @@ describe("content primitive contracts", () => {
     expect(diagonal.width).toBe(body.width);
     expect(diagonal.x).toBe(body.x);
     expect(diagonal.height).toBe(144);
+    expect(() =>
+      getWatermarkLayout(
+        { text: "CONFIDENTIAL", fontSize: 72, rotation: -90 },
+        body,
+      ),
+    ).not.toThrow();
     for (const input of [
       { text: "" },
       { text: "A".repeat(25) },
@@ -124,7 +130,7 @@ describe("content primitive contracts", () => {
       { text: "DRAFT", repeat: "yes" },
       ...[0, 0.21, NaN].map((opacity) => ({ text: "DRAFT", opacity })),
       ...[11, 97, Infinity].map((fontSize) => ({ text: "DRAFT", fontSize })),
-      ...[-61, 61, Infinity].map((rotation) => ({ text: "DRAFT", rotation })),
+      ...[-91, 91, Infinity].map((rotation) => ({ text: "DRAFT", rotation })),
     ])
       expect(() => getWatermarkLayout(input as WatermarkProps, body)).toThrow();
     expect(() =>

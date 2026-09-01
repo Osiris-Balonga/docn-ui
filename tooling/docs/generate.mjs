@@ -98,7 +98,7 @@ try {
     await readFile(resolve(root, "tooling/docs/assets/desk-setup.jpg"))
   ).toString("base64")}`;
   const logoSource = `data:image/png;base64,${(
-    await readFile(resolve(root, "tooling/docs/assets/penpot-logo.png"))
+    await readFile(resolve(root, "tooling/docs/assets/studio-north-mark.png"))
   ).toString("base64")}`;
   const outputs = [];
   await mkdir(resolve(publicRoot, "generated/docs"), { recursive: true });

@@ -163,9 +163,9 @@ export function PageHeaderExample({ logoSource }: { logoSource: string }) {
           <PageHeader
             logo={{
               resolvedSource: logoSource,
-              alt: "Penpot logo",
-              width: 58,
-              height: 18,
+              alt: "Studio North mark",
+              width: 20,
+              height: 20,
             }}
           >
             <Heading>Studio North</Heading>
@@ -245,24 +245,25 @@ export function WatermarkExample() {
         />
       </DocumentFrame>
       <DocumentFrame format={format} theme={theme} margin={36}>
-        <Heading>Internal copy</Heading>
-        <Text>A smaller mark can sit at the top of a single page.</Text>
+        <Heading>Horizontal review copy</Heading>
+        <Text>The same full-page mark can remain horizontal.</Text>
         <Watermark
-          text="INTERNAL"
-          placement="top"
-          fontSize={20}
-          opacity={0.08}
-          repeat={false}
+          text="CONFIDENTIAL"
+          placement="center"
+          fontSize={72}
+          opacity={0.1}
+          rotation={0}
         />
       </DocumentFrame>
       <DocumentFrame format={format} theme={theme} margin={36}>
-        <Heading>Proof copy</Heading>
-        <Text>A restrained mark can sit near the bottom.</Text>
+        <Heading>Vertical review copy</Heading>
+        <Text>The same full-page mark can run vertically.</Text>
         <Watermark
-          text="PROOF"
-          placement="bottom"
-          fontSize={24}
-          opacity={0.06}
+          text="CONFIDENTIAL"
+          placement="center"
+          fontSize={72}
+          opacity={0.1}
+          rotation={-90}
         />
       </DocumentFrame>
     </>
@@ -283,17 +284,25 @@ export function WatermarkRepeatedExample() {
     </DocumentFrame>
   );
 }
-export function WatermarkPlacementExample() {
+export function WatermarkHorizontalExample() {
   if (format.kind !== "fixed") throw new Error("Expected a fixed page.");
   return (
     <DocumentFrame format={format} theme={theme} margin={36}>
-      <Heading>Internal copy</Heading>
+      <Heading>Horizontal review copy</Heading>
+      <Watermark text="CONFIDENTIAL" fontSize={72} opacity={0.1} />
+    </DocumentFrame>
+  );
+}
+export function WatermarkVerticalExample() {
+  if (format.kind !== "fixed") throw new Error("Expected a fixed page.");
+  return (
+    <DocumentFrame format={format} theme={theme} margin={36}>
+      <Heading>Vertical review copy</Heading>
       <Watermark
-        text="INTERNAL"
-        placement="top"
-        fontSize={20}
-        opacity={0.08}
-        repeat={false}
+        text="CONFIDENTIAL"
+        fontSize={72}
+        opacity={0.1}
+        rotation={-90}
       />
     </DocumentFrame>
   );
