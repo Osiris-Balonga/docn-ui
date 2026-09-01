@@ -344,7 +344,7 @@
     {
       "id": "L13",
       "file": "lots/L13-hardening.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L12"],
       "branch": "chore/production-hardening",
       "baseCommit": "611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270",
