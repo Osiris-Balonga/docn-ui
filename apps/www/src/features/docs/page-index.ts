@@ -53,13 +53,13 @@ export const knownPages: readonly KnownPage[] = [
   },
   {
     title: "Documentation",
-    description: "Available docn-ui guides",
+    description: "How docn-ui extends an existing shadcn project to PDF",
     href: "/docs/",
     section: "Documentation",
   },
   {
     title: "Getting started",
-    description: "Current capabilities and project boundaries",
+    description: "Add PDF source through shadcn and render the first document",
     href: "/docs/getting-started/",
     section: "Documentation",
   },

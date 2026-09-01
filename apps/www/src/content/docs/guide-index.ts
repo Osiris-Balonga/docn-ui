@@ -3,7 +3,7 @@ export const guideIndex = [
     slug: "installation",
     title: "Installation",
     description:
-      "Add PDF source to your existing shadcn project without changing its configuration.",
+      "Add the PDF layer to an existing shadcn project through the CLI and configuration you already use.",
   },
   {
     slug: "local-assets",
