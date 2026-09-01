@@ -1,6 +1,6 @@
 # L13 — Targeted accessibility, security, and performance
 
-Status: **in review** in [PR #44](https://github.com/Osiris-Balonga/docn-ui/pull/44). Branch: `chore/production-hardening`, based on `dev` commit `611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270`.
+Status: **merged** in [PR #44](https://github.com/Osiris-Balonga/docn-ui/pull/44) at `a2abf5c0894c79a774ac384d593c72710fe96395` on 2026-09-01. Branch: `chore/production-hardening`, based on `dev` commit `611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270`.
 
 Dependencies: L12. Requirements: NFR-01, NFR-02, NFR-04, NFR-07, NFR-10.
 

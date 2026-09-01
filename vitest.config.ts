@@ -66,10 +66,14 @@ export default defineConfig({
       {
         extends: true,
         test: {
-          name: "integration",
+          name: "visual",
           environment: "node",
-          include: ["{apps,packages,tooling}/**/*.integration.test.{ts,tsx}"],
-          exclude,
+          include: ["tests/visual/**/*.visual.test.ts"],
+          exclude: exclude.filter(
+            (pattern) => !pattern.includes("tests/visual"),
+          ),
+          maxWorkers: 1,
+          retry: 0,
         },
       },
       {

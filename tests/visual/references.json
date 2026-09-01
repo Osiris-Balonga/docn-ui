@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "approvedAt": "2026-09-01",
+  "renderer": "pdfjs-dist 6.2.108 with @napi-rs/canvas 1.0.8 at scale 2",
+  "references": [
+    {
+      "templateId": "invoice-photo-header",
+      "family": "invoice",
+      "page": 1,
+      "file": "invoice-photo-header-1.png",
+      "width": 1191,
+      "height": 1684,
+      "sha256": "2aca1b6cbaa0eebcc4db7febf2ed0b284c3b9e9e8e8bdab0110247481dbefd9c",
+      "rationale": "Image crop, full-width banner, open invoice hierarchy and restrained totals."
+    },
+    {
+      "templateId": "receipt-cash-register",
+      "family": "receipt",
+      "page": 1,
+      "file": "receipt-cash-register-1.png",
+      "width": 454,
+      "height": 806,
+      "sha256": "63091f97f51bedcdab8dc5d46053a6e441c90bb72c44d178f720f89fe80ed640",
+      "rationale": "Narrow receipt proportions, full-width separators and centered barcode."
+    },
+    {
+      "templateId": "resume-designer",
+      "family": "resume",
+      "page": 1,
+      "file": "resume-designer-1.png",
+      "width": 1191,
+      "height": 1684,
+      "sha256": "75475670142a4c71d713328e57feb4069bff88096a1201df3252fdef29fcface",
+      "rationale": "Portrait crop, green sidebar, dense experience flow and type hierarchy."
+    },
+    {
+      "templateId": "report-product-analytics",
+      "family": "report",
+      "page": 1,
+      "file": "report-product-analytics-1.png",
+      "width": 1191,
+      "height": 1684,
+      "sha256": "0b00f31feff35c0a4dbcc05cd5236a569ca731c55624f2ee8b7cd182de5ccd7c",
+      "rationale": "KPI alignment, multi-series colors, chart grid and legend markers."
+    },
+    {
+      "templateId": "badge-qr-portrait-blue",
+      "family": "badge",
+      "page": 1,
+      "file": "badge-qr-portrait-blue-1.png",
+      "width": 307,
+      "height": 486,
+      "sha256": "3b808728d6b1230b246e8451d25d78b0be36d4646bdde7a4a4d29120d8fe88d7",
+      "rationale": "Full-bleed patterned background, name/role clearance, QR and portrait alignment."
+    },
+    {
+      "templateId": "business-card-violet-founder",
+      "family": "business-card",
+      "page": 1,
+      "file": "business-card-violet-founder-1.png",
+      "width": 482,
+      "height": 312,
+      "sha256": "4fa68b7b858c36a2cfc2f127f817be23d3de2b5dd8768f383f6ae04df1266a96",
+      "rationale": "Front-side full-bleed violet field, original wordmark and cropped geometric mark."
+    },
+    {
+      "templateId": "business-card-violet-founder",
+      "family": "business-card",
+      "page": 2,
+      "file": "business-card-violet-founder-2.png",
+      "width": 482,
+      "height": 312,
+      "sha256": "9c57741a040bb2e5bdc1cbb09201bbcb01c6e9819e768210db8f5e0681b13f6c",
+      "rationale": "Reverse-side identity hierarchy, contact block and complete original mark."
+    }
+  ]
+}
