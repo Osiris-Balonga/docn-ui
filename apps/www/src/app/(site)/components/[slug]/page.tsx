@@ -7,6 +7,7 @@ import { DocumentationShell } from "@/features/docs/documentation-shell";
 import { readDocumentationCatalog } from "@/features/docs/catalog-data";
 import { PdfExampleViewer } from "@/features/docs/pdf-example-viewer";
 import { ComponentInstall } from "@/features/docs/component-install";
+import { createPageMetadata } from "@/lib/site-metadata";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -19,10 +20,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const entry = componentCatalog.find((entry) => entry.slug === slug);
-  return {
+  if (!entry) notFound();
+  return createPageMetadata({
     title: `${entry?.title ?? "Component"} — docn-ui`,
-    description: entry?.description,
-  };
+    description: entry.description,
+    path: `/components/${entry.slug}/`,
+  });
 }
 const heading = "mb-4 scroll-m-24 text-xl font-semibold tracking-tight";
 

@@ -2,12 +2,14 @@ import Link from "next/link";
 import { DocsArticle, CodeBlock } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
 import { readDocumentationCatalog } from "@/features/docs/catalog-data";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Formats — docn-ui",
   description:
     "Supported PDF page sizes, safe areas and template compatibility in millimeters.",
-};
+  path: "/formats/",
+});
 
 export default async function FormatsPage() {
   const { formats } = await readDocumentationCatalog();

@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { DocsArticle } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
 import { guideIndex } from "@/content/docs/guide-index";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Documentation — docn-ui",
   description:
     "Install, render and adapt source-owned PDF documents in an existing shadcn project.",
-};
+  path: "/docs/",
+});
 
 export default function DocsPage() {
   return (

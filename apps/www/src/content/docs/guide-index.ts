@@ -42,6 +42,12 @@ export const guideIndex = [
       "Review upstream changes while keeping ownership of your installed components.",
   },
   {
+    slug: "creating-templates",
+    title: "Creating templates",
+    description:
+      "Contribute a source-owned template with qualified data, metadata, previews and review evidence.",
+  },
+  {
     slug: "limitations",
     title: "Limitations",
     description:

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, readdir, stat } from "node:fs/promises";
-import { dirname, join, resolve, sep } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { JSDOM } from "jsdom";
 
 const output = resolve(import.meta.dirname, "../../apps/www/out");
@@ -34,13 +34,10 @@ async function readDocument(file) {
 }
 
 let linkCount = 0;
-const pages = (
-  await Promise.all(
-    ["docs", "components", "formats", "themes"].map((path) =>
-      htmlFiles(join(output, path)),
-    ),
-  )
-).flat();
+const pages = (await htmlFiles(output)).filter((file) => {
+  const path = relative(output, file).split(sep).join("/");
+  return !/^(404(?:\/|\.html$)|_not-found\/)/.test(path);
+});
 assert.ok(
   pages.length > 0,
   "Build the site before checking documentation links.",
@@ -55,6 +52,23 @@ for (const file of pages) {
     origin,
   );
   const document = await readDocument(file);
+  const canonical = document.querySelector('link[rel="canonical"]')?.href;
+  assert.ok(canonical, `${url.pathname}: missing canonical URL.`);
+  assert.equal(
+    new URL(canonical).pathname,
+    url.pathname,
+    `${url.pathname}: canonical path does not match the page.`,
+  );
+  assert.ok(
+    document.querySelector('meta[name="description"]')?.content.trim(),
+    `${url.pathname}: missing meta description.`,
+  );
+  assert.ok(document.title.trim(), `${url.pathname}: missing page title.`);
+  assert.match(
+    document.querySelector('meta[name="robots"]')?.content ?? "",
+    /noindex/i,
+    `${url.pathname}: unconfigured preview builds must not be indexed.`,
+  );
   for (const anchor of document.querySelectorAll("a[href]")) {
     const href = new URL(anchor.getAttribute("href"), url);
     if (href.origin !== origin) continue;
@@ -71,7 +85,11 @@ for (const file of pages) {
     }
     if (info.isDirectory()) target = join(target, "index.html");
     await stat(target);
-    if (href.hash && target.endsWith(".html")) {
+    const checksStaticFragments =
+      url.pathname.startsWith("/docs/") ||
+      url.pathname.startsWith("/components/") ||
+      ["/formats/", "/themes/"].includes(url.pathname);
+    if (href.hash && target.endsWith(".html") && checksStaticFragments) {
       assert.ok(
         (await readDocument(target)).getElementById(
           decodeURIComponent(href.hash.slice(1)),
@@ -87,6 +105,34 @@ for (const file of pages) {
     `${dirname(file)} must have one page heading.`,
   );
 }
+
+const publicUrls = pages
+  .map(
+    (file) =>
+      new URL(
+        file
+          .slice(output.length)
+          .split(sep)
+          .join("/")
+          .replace(/index\.html$/, ""),
+        origin,
+      ).pathname,
+  )
+  .sort();
+const sitemap = await readFile(join(output, "sitemap.xml"), "utf8");
+const sitemapUrls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)]
+  .map(([, value]) => new URL(value).pathname)
+  .sort();
+assert.deepEqual(
+  sitemapUrls,
+  publicUrls,
+  "The sitemap must list every public static page exactly once.",
+);
+assert.doesNotMatch(sitemap, /\/(generated|r)\//);
+
+const robots = await readFile(join(output, "robots.txt"), "utf8");
+assert.match(robots, /Disallow: \/(?:\r?\n|$)/);
+assert.match(robots, /Sitemap: .*\/sitemap\.xml/);
 console.log(
-  `Verified ${pages.length} documentation pages and ${linkCount} local links, including anchors.`,
+  `Verified ${pages.length} public pages, SEO metadata and ${linkCount} local links, including anchors.`,
 );

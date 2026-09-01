@@ -396,6 +396,107 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       ],
     },
   ],
+  "creating-templates": [
+    {
+      id: "single-source",
+      title: "Add one source-owned composition",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "A template is one composition that supplies the catalog, gallery preview, PDF export and registry. Add it to the existing family in packages/documents/src/templates instead of copying a family or changing playground core. Create a new family or form registry only when the document data contract is genuinely different.",
+        },
+        {
+          type: "list",
+          items: [
+            "Define or reuse a validated data schema and exported TypeScript type. Keep calculations and normalized values outside the visual composition.",
+            "Create the composition with @react-pdf/renderer primitives and docn-ui document components only. Do not use DOM elements, Tailwind classes or site components in PDF source.",
+            "Provide deterministic sample data as the fixture rendered by the catalog. Use realistic edge lengths and stable dates, totals and identifiers.",
+            "Export one TemplateDefinition from the family index with a stable ID, version, title, description, tags, family, formats, sides, capabilities, source path and license metadata.",
+            "Register the definition in packages/documents/src/templates/index.ts. The generator derives catalog records, previews and registry artifacts from that source.",
+          ],
+        },
+        {
+          type: "code",
+          label: "Generate derived template artifacts",
+          highlight: false,
+          code: "corepack pnpm generate:templates\ncorepack pnpm generate:registry",
+        },
+      ],
+    },
+    {
+      id: "identity-and-license",
+      title: "Use an original identity and permitted assets",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "Every contribution needs an original visual identity and traceable asset provenance. Do not reproduce a third-party logo, brand, document or marketplace preview. A reference may inform layout critique, but the shipped composition, marks, copy and imagery must be independently created or licensed for redistribution.",
+        },
+        {
+          type: "list",
+          items: [
+            "Record the template license in metadata and retain required attribution or license files beside imported assets.",
+            "Prefer repository-owned vectors and generated fixtures. Record the generator, prompt or source and redistribution terms for images.",
+            "Do not add a dependency to draw a single shape. A new dependency requires its purpose, license and bundle impact to be reviewed.",
+            "Keep user-provided images behind the existing validated local-image contract; never introduce arbitrary remote URLs.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "review-checklist",
+      title: "Review visual and data quality",
+      blocks: [
+        {
+          type: "list",
+          items: [
+            "Compare every side and supported format at actual dimensions. Check safe areas, alignment, clipping, overflow, page count, whitespace and rounded or edge-to-edge artwork.",
+            "Verify headings, labels, locale, dates, monetary values, subtotals, taxes and totals against the fixture. Machine-readable codes must encode the displayed value and remain decodable in the final PDF.",
+            "Exercise one representative long-value or dense-data case at the lowest sufficient test scope. Do not create a Cartesian product of variants.",
+            "Inspect the generated gallery image and detailed PDF preview. Never edit generated previews to hide a source-layout defect.",
+            "Confirm keyboard access and reduced-motion behavior for any website interaction changed by the contribution.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "compatibility-and-versioning",
+      title: "Version contract changes deliberately",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "A visual correction that preserves the accepted data contract increments the template patch version. Additive optional data or a new compatible format increments the minor version. Removing or renaming fields, changing their meaning, or changing physical output incompatibly requires a major version and migration notes. Never replace an immutable published registry item with different content.",
+        },
+        {
+          type: "list",
+          items: [
+            "Call out format changes in the pull request: page dimensions, orientation, sides, bleed, safe area and pagination behavior.",
+            "Call out API changes: schema fields, defaults, calculations, component props and exported types. Include migration guidance for any incompatibility.",
+            "Keep one coherent behavior and its focused tests in each commit. Update catalog evidence in the same contribution.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "verification",
+      title: "Verify and submit the contribution",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "Run the lowest sufficient targeted test while developing, then validate the complete lightweight suite and static documentation before review. Run the affected PDF test when composition, geometry, data rendering or assets changed; a documentation-only edit does not require the full PDF suite.",
+        },
+        {
+          type: "code",
+          label: "Required contribution checks",
+          highlight: false,
+          code: "corepack pnpm validate\ncorepack pnpm build\ncorepack pnpm verify:docs\n# When PDF source or assets changed:\ncorepack pnpm test:pdf -- <affected test file>",
+        },
+        {
+          type: "paragraph",
+          text: "Open a work-branch pull request to dev. Describe the template, source and license provenance, supported formats, API or version changes, focused tests, generated visual evidence and known limitations. Reviewers should be able to trace every catalog surface back to the one registered TemplateDefinition.",
+        },
+      ],
+    },
+  ],
   limitations: [
     {
       id: "fonts-and-scripts",

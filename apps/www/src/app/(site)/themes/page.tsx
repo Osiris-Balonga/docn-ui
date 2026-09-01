@@ -3,12 +3,14 @@ import { DocsArticle, CodeBlock } from "@/features/docs/docs-article";
 import { DocumentationShell } from "@/features/docs/documentation-shell";
 import { readDocumentationCatalog } from "@/features/docs/catalog-data";
 import { PdfExampleViewer } from "@/features/docs/pdf-example-viewer";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Themes — docn-ui",
   description:
     "Compare Neutral, Editorial and Bold PDF themes on identical document content.",
-};
+  path: "/themes/",
+});
 
 export default async function ThemesPage() {
   const { themes } = await readDocumentationCatalog();
