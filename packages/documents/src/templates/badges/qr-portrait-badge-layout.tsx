@@ -83,7 +83,7 @@ export function QrPortraitBadgeLayout({
           <Stack gap="xs">
             <Text
               weight="strong"
-              style={{ color: textColor, fontSize: 20, lineHeight: 0.92 }}
+              style={{ color: textColor, fontSize: 20, lineHeight: 1 }}
             >
               Celine{"\n"}Rose
             </Text>
@@ -92,6 +92,7 @@ export function QrPortraitBadgeLayout({
                 alignSelf: "flex-start",
                 backgroundColor: "#ffffff",
                 borderRadius: 5,
+                marginTop: 4,
                 paddingHorizontal: 5,
                 paddingVertical: 2,
               }}

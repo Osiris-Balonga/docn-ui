@@ -86,6 +86,14 @@ test("shows the new reference-led templates in their families", async ({
   await expect(page.locator("[data-empty-template-slot]:visible")).toHaveCount(
     1,
   );
+  const previewBox = await page
+    .getByRole("button", { name: "Enlarge Coral QR business card preview" })
+    .boundingBox();
+  const emptySlotBox = await page
+    .locator("[data-empty-template-slot]:visible > div:last-child")
+    .boundingBox();
+  expect(emptySlotBox?.y).toBe(previewBox?.y);
+  expect(emptySlotBox?.height).toBe(previewBox?.height);
   await page
     .getByRole("button", { name: "Enlarge Coral QR business card preview" })
     .click();

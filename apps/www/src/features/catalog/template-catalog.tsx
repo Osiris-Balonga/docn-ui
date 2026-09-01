@@ -124,11 +124,11 @@ function EmptyTemplateSlot({ className }: { className: string }) {
     <div
       aria-hidden="true"
       data-empty-template-slot=""
-      className={cn(
-        "h-[22.75rem] rounded-xl border border-dashed border-border/70 bg-transparent sm:h-[24.75rem]",
-        className,
-      )}
-    />
+      className={cn("min-w-0", className)}
+    >
+      <div className="h-11" />
+      <div className="h-72 rounded-xl border border-dashed border-border/70 bg-transparent sm:h-80" />
+    </div>
   );
 }
 

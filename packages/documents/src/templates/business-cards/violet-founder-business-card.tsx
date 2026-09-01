@@ -37,11 +37,21 @@ export const violetFounderBusinessCardStyle = defineTemplateStyle(
   },
   { violet: "#7b2cff" },
 );
-const Mark = ({ color, size = 55 }: { color: string; size?: number }) => (
-  <Svg width={size} height={size} viewBox="0 0 60 60">
+const NovaarcMark = ({
+  color,
+  size = 55,
+}: {
+  color: string;
+  size?: number;
+}) => (
+  <Svg width={size} height={size} viewBox="0 0 64 64">
+    <Path d="M10 56 V20 H21 L43 45 V20 H54 V56 H43 L21 31 V56 Z" fill={color} />
     <Path
-      d="M27 2 L36 20 L57 12 L43 29 L58 42 L37 39 L30 58 L24 39 L3 46 L17 30 L2 17 L23 21 Z"
-      fill={color}
+      d="M8 14 C20 2 44 2 56 14"
+      fill="none"
+      stroke={color}
+      strokeLinecap="round"
+      strokeWidth={6}
     />
   </Svg>
 );
@@ -59,11 +69,9 @@ export function VioletFounderBusinessCard(
         theme={style.theme}
         backgroundColor={style.slots.violet}
       >
-        <View
-          style={{ height: "100%", overflow: "hidden", position: "relative" }}
-        >
-          <View style={{ position: "absolute", right: -22, top: -22 }}>
-            <Mark color="#ffffff" size={132} />
+        <View style={{ height: "100%", position: "relative" }}>
+          <View style={{ position: "absolute", right: 8, top: 4 }}>
+            <NovaarcMark color="#ffffff" size={82} />
           </View>
           <Stack gap="xs" style={{ bottom: 7, left: 6, position: "absolute" }}>
             <Text weight="strong" style={{ fontSize: 27, letterSpacing: -1.2 }}>
@@ -82,7 +90,7 @@ export function VioletFounderBusinessCard(
       >
         <View style={{ height: "100%", position: "relative" }}>
           <View style={{ position: "absolute", right: 6, top: 2 }}>
-            <Mark color={style.slots.violet} size={72} />
+            <NovaarcMark color={style.slots.violet} size={64} />
           </View>
           <Stack gap="xs" style={{ left: 8, position: "absolute", top: 35 }}>
             <Text style={{ fontSize: 11 }}>ROHIT VERMA</Text>

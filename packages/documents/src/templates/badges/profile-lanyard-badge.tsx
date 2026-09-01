@@ -92,9 +92,30 @@ export function ProfileLanyardBadge(props: ProfileLanyardBadgeProps) {
       </PageFrame>
       <PageFrame format={format} theme={style.theme} backgroundColor="#15151b">
         <View style={{ height: "100%", position: "relative" }}>
-          <Text style={{ color: "#8f8f99", fontSize: 6, letterSpacing: 0.8 }}>
-            AI & MEDICAL INTELLIGENCE
-          </Text>
+          <View
+            style={{
+              alignItems: "center",
+              bottom: 0,
+              justifyContent: "center",
+              left: 0,
+              position: "absolute",
+              right: 0,
+              top: 0,
+            }}
+          >
+            <Text
+              align="center"
+              weight="strong"
+              style={{
+                color: "#ffffff",
+                fontSize: 22,
+                letterSpacing: 2,
+                lineHeight: 1.25,
+              }}
+            >
+              L{"\n"}U{"\n"}M{"\n"}I{"\n"}N{"\n"}A
+            </Text>
+          </View>
           <View style={{ bottom: 0, left: 0, position: "absolute" }}>
             <LuminaMark inverse />
           </View>

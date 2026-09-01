@@ -606,14 +606,14 @@ export const generatedTemplateCatalog = [
         height: 486,
         page: 2,
         sha256:
-          "a1f948dfe8a4fbeb2b46df626139121f25789ab816b017aff90e42b9ff32a3b3",
+          "282889f6a09e093f28416c99706ad17e132a41bd28995d85ebd4c849b32d3395",
         src: "/generated/templates/badge-profile-lanyard-2.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "a4e726c93e53431519d6277a93e19104a0e6e71a018003e31e9d332a596f7780",
+        "6eeb06e95dbe3872ff84777a8601d1cbb089f31b13c8e2b655897d66cd6af893",
       src: "/generated/templates/badge-profile-lanyard.pdf",
     },
     thumbnail: {
@@ -650,14 +650,14 @@ export const generatedTemplateCatalog = [
         height: 486,
         page: 1,
         sha256:
-          "f3d806d25d7b7f041d092e0049bb937e07852b0f07edb2ff9742321c0f12a4ee",
+          "bd6fb3f1668e120a27e3cfe075db38254107a3096eb655e9f9b081fedaceadc5",
         src: "/generated/templates/badge-qr-portrait-light-1.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "73212b35c9dc296352f777c5a641fdab5f9c97da51112d18dc84c152384d2bd8",
+        "32a6dbd700c1d94597a3e7443767df181628d5545cc839bab3016144cd200eb0",
       src: "/generated/templates/badge-qr-portrait-light.pdf",
     },
     thumbnail: {
@@ -665,7 +665,7 @@ export const generatedTemplateCatalog = [
       height: 486,
       page: 1,
       sha256:
-        "f3d806d25d7b7f041d092e0049bb937e07852b0f07edb2ff9742321c0f12a4ee",
+        "bd6fb3f1668e120a27e3cfe075db38254107a3096eb655e9f9b081fedaceadc5",
       src: "/generated/templates/badge-qr-portrait-light-1.png",
       width: 307,
     },
@@ -694,14 +694,14 @@ export const generatedTemplateCatalog = [
         height: 486,
         page: 1,
         sha256:
-          "457f751c962bfc4106721d5487800ca58ea5c1c012aa3ca93a16de8e7aa72dcc",
+          "3b808728d6b1230b246e8451d25d78b0be36d4646bdde7a4a4d29120d8fe88d7",
         src: "/generated/templates/badge-qr-portrait-blue-1.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "868cd710b1bf41d018e572e0a50a945257a439ec184d912c61fac5c31d342b65",
+        "9760f910b22a91252c322906542a5edf1d193e1b7b209ea3d655e0ab1eb8fa2f",
       src: "/generated/templates/badge-qr-portrait-blue.pdf",
     },
     thumbnail: {
@@ -709,7 +709,7 @@ export const generatedTemplateCatalog = [
       height: 486,
       page: 1,
       sha256:
-        "457f751c962bfc4106721d5487800ca58ea5c1c012aa3ca93a16de8e7aa72dcc",
+        "3b808728d6b1230b246e8451d25d78b0be36d4646bdde7a4a4d29120d8fe88d7",
       src: "/generated/templates/badge-qr-portrait-blue-1.png",
       width: 307,
     },
@@ -791,7 +791,7 @@ export const generatedTemplateCatalog = [
         height: 312,
         page: 1,
         sha256:
-          "7de20ffb23639c1f998f98e20bdffe9b89ea6c5656207f9686b18dc475e3654e",
+          "4fa68b7b858c36a2cfc2f127f817be23d3de2b5dd8768f383f6ae04df1266a96",
         src: "/generated/templates/business-card-violet-founder-1.png",
         width: 482,
       },
@@ -800,14 +800,14 @@ export const generatedTemplateCatalog = [
         height: 312,
         page: 2,
         sha256:
-          "9d6b6e0d07bb09ca664499af8158889ebb38bdde90558cb2d733d99b727835a4",
+          "9c57741a040bb2e5bdc1cbb09201bbcb01c6e9819e768210db8f5e0681b13f6c",
         src: "/generated/templates/business-card-violet-founder-2.png",
         width: 482,
       },
     ],
     pdf: {
       revision:
-        "6e3297b05b526bf0526f3f2544db175a4b6c5e47e7195dcfd21d3cdb0808c9aa",
+        "782908838d5384d30f65c7d7dc08d670a05630489137f17bc75573e28d7e2858",
       src: "/generated/templates/business-card-violet-founder.pdf",
     },
     thumbnail: {
@@ -815,7 +815,7 @@ export const generatedTemplateCatalog = [
       height: 312,
       page: 1,
       sha256:
-        "7de20ffb23639c1f998f98e20bdffe9b89ea6c5656207f9686b18dc475e3654e",
+        "4fa68b7b858c36a2cfc2f127f817be23d3de2b5dd8768f383f6ae04df1266a96",
       src: "/generated/templates/business-card-violet-founder-1.png",
       width: 482,
     },
