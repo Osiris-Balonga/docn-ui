@@ -1,6 +1,6 @@
 # L15 — Final CI and deployment preparation
 
-Status: **verified locally** at candidate `2574c96e264ba74939539e1d0c3ceb469efc6635`. Branch: `ci/release-delivery`, based on L14 merge `da10836b00240f4df1919863a6cca07de92a8ee8`.
+Status: **in review** in [PR #53](https://github.com/Osiris-Balonga/docn-ui/pull/53), locally verified at candidate `2574c96e264ba74939539e1d0c3ceb469efc6635`. Branch: `ci/release-delivery`, based on L14 merge `da10836b00240f4df1919863a6cca07de92a8ee8`.
 
 Dependencies: L14. Requirements: NFR-06, NFR-09, NFR-10.
 

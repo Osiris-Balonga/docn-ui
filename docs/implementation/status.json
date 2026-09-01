@@ -383,7 +383,7 @@
     {
       "id": "L15",
       "file": "lots/L15-delivery.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
       "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
