@@ -34,8 +34,9 @@ export {
 export { ProductAnalyticsReport } from "./reports/product-analytics-report";
 export { MarketplaceRevenueReport } from "./reports/marketplace-revenue-report";
 export { CustomerSupportReport } from "./reports/customer-support-report";
-export { ProfileSidebandBadge } from "./badges/profile-sideband-badge";
-export { QrPortraitBadge } from "./badges/qr-portrait-badge";
+export { ProfileLanyardBadge } from "./badges/profile-lanyard-badge";
+export { QrPortraitLightBadge } from "./badges/qr-portrait-light-badge";
+export { QrPortraitBlueBadge } from "./badges/qr-portrait-blue-badge";
 export { CoralQrBusinessCard } from "./business-cards/coral-qr-business-card";
 export { VioletFounderBusinessCard } from "./business-cards/violet-founder-business-card";
 export { PhotoHeaderInvoice } from "./invoices/photo-header-invoice";
@@ -57,8 +58,9 @@ import { cashRegisterReceiptDefinition } from "./receipts/cash-register-receipt"
 import { productAnalyticsReportDefinition } from "./reports/product-analytics-report";
 import { marketplaceRevenueReportDefinition } from "./reports/marketplace-revenue-report";
 import { customerSupportReportDefinition } from "./reports/customer-support-report";
-import { profileSidebandBadgeDefinition } from "./badges/profile-sideband-badge";
-import { qrPortraitBadgeDefinition } from "./badges/qr-portrait-badge";
+import { profileLanyardBadgeDefinition } from "./badges/profile-lanyard-badge";
+import { qrPortraitLightBadgeDefinition } from "./badges/qr-portrait-light-badge";
+import { qrPortraitBlueBadgeDefinition } from "./badges/qr-portrait-blue-badge";
 import { coralQrBusinessCardDefinition } from "./business-cards/coral-qr-business-card";
 import { violetFounderBusinessCardDefinition } from "./business-cards/violet-founder-business-card";
 import { classicResumeDefinition } from "./resume/classic-resume";
@@ -79,8 +81,9 @@ export const templateDefinitions = [
   productAnalyticsReportDefinition,
   marketplaceRevenueReportDefinition,
   customerSupportReportDefinition,
-  profileSidebandBadgeDefinition,
-  qrPortraitBadgeDefinition,
+  profileLanyardBadgeDefinition,
+  qrPortraitLightBadgeDefinition,
+  qrPortraitBlueBadgeDefinition,
   coralQrBusinessCardDefinition,
   violetFounderBusinessCardDefinition,
 ] as const;

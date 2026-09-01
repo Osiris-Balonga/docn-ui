@@ -19,8 +19,9 @@ This catalog defines the launch scope. It contains only invoices, receipts, resu
 | `report-product-analytics`     | Report        | KPI grid and source trend chart                                      |
 | `report-marketplace-revenue`   | Report        | Focused comparison chart with an explanatory conclusion              |
 | `report-customer-support`      | Report        | Survey dashboard with charts, quotations, and an original portrait   |
-| `badge-profile-sideband`       | Badge         | Portrait identity badge with a black vertical brand sideband         |
-| `badge-qr-portrait`            | Badge         | Two-sided portrait badge with QR code and original patterned variant |
+| `badge-profile-lanyard`        | Badge         | Two-sided portrait badge with a white face and dark brand reverse    |
+| `badge-qr-portrait-light`      | Badge         | Light portrait badge with QR code and full-width header field        |
+| `badge-qr-portrait-blue`       | Badge         | Blue portrait badge with QR code and full-bleed patterned background |
 | `business-card-coral-qr`       | Business card | Two-page coral and white card with QR contact details                |
 | `business-card-violet-founder` | Business card | Two-page violet and black founder identity card                      |
 

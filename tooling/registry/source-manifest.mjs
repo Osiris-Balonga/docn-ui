@@ -17,6 +17,27 @@ const receiptFrameItem = {
   files: ["packages/documents/src/primitives/receipt-frame.tsx"],
 };
 
+const qrPortraitBadgeLayoutItem = {
+  name: "docn-badge-qr-portrait-layout",
+  type: "registry:lib",
+  title: "QR portrait badge layout",
+  description:
+    "A shared full-bleed portrait and QR layout for vertical badge compositions.",
+  dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+  registryDependencies: [
+    "docn-contracts",
+    "docn-page-frame",
+    "docn-image",
+    "docn-qr-code",
+    "docn-text",
+    "docn-row",
+    "docn-stack",
+  ],
+  files: [
+    "packages/documents/src/templates/badges/qr-portrait-badge-layout.tsx",
+  ],
+};
+
 const newTemplateItems = [
   [
     "docn-invoice-photo-header",
@@ -82,23 +103,22 @@ const newTemplateItems = [
     ],
   ],
   [
-    "docn-badge-profile-sideband",
-    "Profile sideband badge",
-    "badges/profile-sideband-badge.tsx",
+    "docn-badge-profile-lanyard",
+    "Profile lanyard badge",
+    "badges/profile-lanyard-badge.tsx",
     ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
   ],
   [
-    "docn-badge-qr-portrait",
-    "QR portrait badge",
-    "badges/qr-portrait-badge.tsx",
-    [
-      "docn-page-frame",
-      "docn-image",
-      "docn-qr-code",
-      "docn-text",
-      "docn-row",
-      "docn-stack",
-    ],
+    "docn-badge-qr-portrait-light",
+    "Light QR portrait badge",
+    "badges/qr-portrait-light-badge.tsx",
+    ["docn-page-frame", "docn-badge-qr-portrait-layout"],
+  ],
+  [
+    "docn-badge-qr-portrait-blue",
+    "Blue QR portrait badge",
+    "badges/qr-portrait-blue-badge.tsx",
+    ["docn-page-frame", "docn-badge-qr-portrait-layout"],
   ],
   [
     "docn-business-card-coral-qr",
@@ -135,6 +155,7 @@ export const registrySourceManifest = {
   name: "docn-ui",
   homepage: "https://github.com/Osiris-Balonga/docn-ui",
   items: [
+    qrPortraitBadgeLayoutItem,
     {
       name: "docn-contracts",
       type: "registry:lib",

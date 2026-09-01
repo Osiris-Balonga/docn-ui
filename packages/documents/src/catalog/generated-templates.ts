@@ -574,18 +574,18 @@ export const generatedTemplateCatalog = [
     },
   },
   {
-    id: "badge-profile-sideband",
-    slug: "badge-profile-sideband",
-    title: "Profile sideband badge",
+    id: "badge-profile-lanyard",
+    slug: "badge-profile-lanyard",
+    title: "Profile lanyard badge",
     family: "badge",
     familyLabel: "Badges",
     description:
-      "A clean portrait employee badge with a black identity sideband and compact credential footer.",
+      "A two-sided portrait employee badge with a clean white face and a dedicated dark brand reverse.",
     supportedFormatIds: ["badge-54x86"],
     supportedThemeIds: ["neutral"],
-    tags: ["badge", "employee", "portrait", "sideband"],
+    tags: ["badge", "employee", "portrait", "two-sided"],
     version: "1.0.0",
-    sides: 1,
+    sides: 2,
     capabilities: {
       logo: false,
       printProfiles: true,
@@ -593,43 +593,52 @@ export const generatedTemplateCatalog = [
     },
     pages: [
       {
-        fixture: "badge-profile-sideband-example",
+        fixture: "badge-profile-lanyard-example",
         height: 486,
         page: 1,
         sha256:
-          "329ca0638f125d3b2f1ad759afc1f59e44f8beef5f362044ae9e634286f6ccdc",
-        src: "/generated/templates/badge-profile-sideband-1.png",
+          "30928edd959ce8cf2cdffb7cbfa136577afd58de7c4e1edd304846cb57ca092f",
+        src: "/generated/templates/badge-profile-lanyard-1.png",
+        width: 307,
+      },
+      {
+        fixture: "badge-profile-lanyard-example",
+        height: 486,
+        page: 2,
+        sha256:
+          "a1f948dfe8a4fbeb2b46df626139121f25789ab816b017aff90e42b9ff32a3b3",
+        src: "/generated/templates/badge-profile-lanyard-2.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "91647682101256b9d2e047da1293a31799ca92d26c454f843c2b5323306c263e",
-      src: "/generated/templates/badge-profile-sideband.pdf",
+        "a4e726c93e53431519d6277a93e19104a0e6e71a018003e31e9d332a596f7780",
+      src: "/generated/templates/badge-profile-lanyard.pdf",
     },
     thumbnail: {
-      fixture: "badge-profile-sideband-example",
+      fixture: "badge-profile-lanyard-example",
       height: 486,
       page: 1,
       sha256:
-        "329ca0638f125d3b2f1ad759afc1f59e44f8beef5f362044ae9e634286f6ccdc",
-      src: "/generated/templates/badge-profile-sideband-1.png",
+        "30928edd959ce8cf2cdffb7cbfa136577afd58de7c4e1edd304846cb57ca092f",
+      src: "/generated/templates/badge-profile-lanyard-1.png",
       width: 307,
     },
   },
   {
-    id: "badge-qr-portrait",
-    slug: "badge-qr-portrait",
-    title: "QR portrait badge",
+    id: "badge-qr-portrait-light",
+    slug: "badge-qr-portrait-light",
+    title: "Light QR portrait badge",
     family: "badge",
     familyLabel: "Badges",
     description:
-      "A two-sided portrait credential with a QR code, light face and original patterned blue variant.",
+      "A light portrait credential with a prominent QR code and an edge-to-edge header field.",
     supportedFormatIds: ["badge-54x86"],
     supportedThemeIds: ["neutral"],
-    tags: ["badge", "employee", "portrait", "qr", "two-sided"],
+    tags: ["badge", "employee", "portrait", "qr", "light"],
     version: "1.0.0",
-    sides: 2,
+    sides: 1,
     capabilities: {
       logo: false,
       printProfiles: true,
@@ -637,36 +646,71 @@ export const generatedTemplateCatalog = [
     },
     pages: [
       {
-        fixture: "badge-qr-portrait-example",
+        fixture: "badge-qr-portrait-light-example",
         height: 486,
         page: 1,
         sha256:
-          "d6e9461b6cd97a47fdaacd21bb87e23a6dbd0688161c8bfa8383c059ef6c2ff1",
-        src: "/generated/templates/badge-qr-portrait-1.png",
-        width: 307,
-      },
-      {
-        fixture: "badge-qr-portrait-example",
-        height: 486,
-        page: 2,
-        sha256:
-          "32b879d35b01ff056487a8be972a4aa76ecfc1beeeda83f470d928a507527aeb",
-        src: "/generated/templates/badge-qr-portrait-2.png",
+          "f3d806d25d7b7f041d092e0049bb937e07852b0f07edb2ff9742321c0f12a4ee",
+        src: "/generated/templates/badge-qr-portrait-light-1.png",
         width: 307,
       },
     ],
     pdf: {
       revision:
-        "f5f0b8f1e53361afe4cf2a3347c3d10f004a9bff9909928292e15a1c7efb9c30",
-      src: "/generated/templates/badge-qr-portrait.pdf",
+        "73212b35c9dc296352f777c5a641fdab5f9c97da51112d18dc84c152384d2bd8",
+      src: "/generated/templates/badge-qr-portrait-light.pdf",
     },
     thumbnail: {
-      fixture: "badge-qr-portrait-example",
+      fixture: "badge-qr-portrait-light-example",
       height: 486,
       page: 1,
       sha256:
-        "d6e9461b6cd97a47fdaacd21bb87e23a6dbd0688161c8bfa8383c059ef6c2ff1",
-      src: "/generated/templates/badge-qr-portrait-1.png",
+        "f3d806d25d7b7f041d092e0049bb937e07852b0f07edb2ff9742321c0f12a4ee",
+      src: "/generated/templates/badge-qr-portrait-light-1.png",
+      width: 307,
+    },
+  },
+  {
+    id: "badge-qr-portrait-blue",
+    slug: "badge-qr-portrait-blue",
+    title: "Blue QR portrait badge",
+    family: "badge",
+    familyLabel: "Badges",
+    description:
+      "A portrait credential with a QR code and an original abstract background extending to every page edge.",
+    supportedFormatIds: ["badge-54x86"],
+    supportedThemeIds: ["neutral"],
+    tags: ["badge", "employee", "portrait", "qr", "blue", "full-bleed"],
+    version: "1.0.0",
+    sides: 1,
+    capabilities: {
+      logo: false,
+      printProfiles: true,
+      qr: true,
+    },
+    pages: [
+      {
+        fixture: "badge-qr-portrait-blue-example",
+        height: 486,
+        page: 1,
+        sha256:
+          "457f751c962bfc4106721d5487800ca58ea5c1c012aa3ca93a16de8e7aa72dcc",
+        src: "/generated/templates/badge-qr-portrait-blue-1.png",
+        width: 307,
+      },
+    ],
+    pdf: {
+      revision:
+        "868cd710b1bf41d018e572e0a50a945257a439ec184d912c61fac5c31d342b65",
+      src: "/generated/templates/badge-qr-portrait-blue.pdf",
+    },
+    thumbnail: {
+      fixture: "badge-qr-portrait-blue-example",
+      height: 486,
+      page: 1,
+      sha256:
+        "457f751c962bfc4106721d5487800ca58ea5c1c012aa3ca93a16de8e7aa72dcc",
+      src: "/generated/templates/badge-qr-portrait-blue-1.png",
       width: 307,
     },
   },

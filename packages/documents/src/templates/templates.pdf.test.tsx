@@ -85,8 +85,9 @@ describe("reference-led templates", () => {
         "report-customer-support",
         ["Customer support", "76.2%", "What customers are saying"],
       ],
-      ["badge-profile-sideband", ["Daniel Thompson", "LUMINA", "ID 4925"]],
-      ["badge-qr-portrait", ["Celine", "Rose", "NOVA HEALTH"]],
+      ["badge-profile-lanyard", ["Daniel Thompson", "LUMINA", "ID 4925"]],
+      ["badge-qr-portrait-light", ["Celine", "Rose", "NOVA HEALTH"]],
+      ["badge-qr-portrait-blue", ["Celine", "Rose", "NOVA HEALTH"]],
       ["business-card-coral-qr", ["REDWOOD", "RAZIB", "P. FERGUSON"]],
       ["business-card-violet-founder", ["novaarc", "ROHIT VERMA"]],
     ]);

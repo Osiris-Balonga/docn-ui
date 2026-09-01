@@ -17,14 +17,14 @@ describe("document registry generation", () => {
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
     });
-    expect(templateCatalog).toHaveLength(17);
+    expect(templateCatalog).toHaveLength(18);
     expect(
       templateCatalog.reduce<Record<string, number>>((counts, template) => {
         counts[template.family] = (counts[template.family] ?? 0) + 1;
         return counts;
       }, {}),
     ).toEqual({
-      badge: 2,
+      badge: 3,
       "business-card": 2,
       invoice: 4,
       receipt: 3,
@@ -34,6 +34,13 @@ describe("document registry generation", () => {
     expect(
       templateCatalog.filter((template) => template.family === "business-card"),
     ).toEqual(expect.arrayContaining([expect.objectContaining({ sides: 2 })]));
+    expect(
+      templateCatalog.filter((template) => template.family === "badge"),
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: "badge-profile-lanyard", sides: 2 }),
+      ]),
+    );
     expect(result.items.map((item) => item.name)).toEqual(
       expect.arrayContaining([
         "docn-core",
@@ -55,7 +62,9 @@ describe("document registry generation", () => {
         "docn-receipt-order-confirmation",
         "docn-receipt-product-barcode",
         "docn-report-product-analytics",
-        "docn-badge-profile-sideband",
+        "docn-badge-profile-lanyard",
+        "docn-badge-qr-portrait-light",
+        "docn-badge-qr-portrait-blue",
         "docn-business-card-coral-qr",
       ]),
     );

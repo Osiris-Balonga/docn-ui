@@ -73,7 +73,13 @@ test("shows the new reference-led templates in their families", async ({
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "Badges" }).click();
-  await expect(page.locator("article")).toHaveCount(2);
+  await expect(page.locator("article")).toHaveCount(3);
+  await expect(
+    page.getByRole("heading", { name: "Light QR portrait badge" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Blue QR portrait badge" }),
+  ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "Business Cards" }).click();
   await expect(page.locator("article")).toHaveCount(2);
