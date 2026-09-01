@@ -25,6 +25,18 @@ describe("reference-led templates", () => {
     const expectedText = new Map([
       ["resume-classic", ["Your name", "EXPERIENCE", "LANGUAGES"]],
       [
+        "resume-accountant",
+        [
+          "SEBASTIAN BENNETT",
+          "Detail-oriented accountant",
+          "Financial Reporting",
+        ],
+      ],
+      [
+        "resume-designer",
+        ["Markus", "Professional Summary", "Technical Skills"],
+      ],
+      [
         "report-photo",
         ["REPORT TITLE", "Introduction", "Insert your heading here"],
       ],

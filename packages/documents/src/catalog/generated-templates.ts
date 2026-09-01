@@ -46,6 +46,94 @@ export const generatedTemplateCatalog = [
     },
   },
   {
+    id: "resume-accountant",
+    slug: "resume-accountant",
+    title: "Structured accountant resume",
+    family: "resume",
+    familyLabel: "CVs",
+    description:
+      "A precise monochrome resume with centered identity, ruled sections and a compact skills row.",
+    supportedFormatIds: ["a4"],
+    supportedThemeIds: ["neutral"],
+    tags: ["resume", "cv", "accounting", "monochrome"],
+    version: "1.0.0",
+    sides: 1,
+    capabilities: {
+      logo: false,
+      printProfiles: false,
+      qr: false,
+    },
+    pages: [
+      {
+        fixture: "resume-accountant-example",
+        height: 1684,
+        page: 1,
+        sha256:
+          "b0c5e59e4b4d283ed467d83e4fb1c031dd7cdfbd29c9722b7563150e73c8f5e0",
+        src: "/generated/templates/resume-accountant-1.png",
+        width: 1191,
+      },
+    ],
+    pdf: {
+      revision:
+        "068fc9f7459e2e7a87248a0333a03baf4b10c1e5da11488e29393015cead5169",
+      src: "/generated/templates/resume-accountant.pdf",
+    },
+    thumbnail: {
+      fixture: "resume-accountant-example",
+      height: 1684,
+      page: 1,
+      sha256:
+        "b0c5e59e4b4d283ed467d83e4fb1c031dd7cdfbd29c9722b7563150e73c8f5e0",
+      src: "/generated/templates/resume-accountant-1.png",
+      width: 1191,
+    },
+  },
+  {
+    id: "resume-designer",
+    slug: "resume-designer",
+    title: "Green designer resume",
+    family: "resume",
+    familyLabel: "CVs",
+    description:
+      "A polished two-column creative resume with an illustrated profile, green accents and compact timelines.",
+    supportedFormatIds: ["a4"],
+    supportedThemeIds: ["neutral"],
+    tags: ["resume", "cv", "designer", "two-column"],
+    version: "1.0.0",
+    sides: 1,
+    capabilities: {
+      logo: false,
+      printProfiles: false,
+      qr: false,
+    },
+    pages: [
+      {
+        fixture: "resume-designer-example",
+        height: 1684,
+        page: 1,
+        sha256:
+          "8247d58fd1ed52a3476289415ec1d48e5ea9cf104869a220a7e32695fd48f2c6",
+        src: "/generated/templates/resume-designer-1.png",
+        width: 1191,
+      },
+    ],
+    pdf: {
+      revision:
+        "34ca2e29c7b3b52e64ad2998644cf25762698219f0bf517da81c017ef6bae1b5",
+      src: "/generated/templates/resume-designer.pdf",
+    },
+    thumbnail: {
+      fixture: "resume-designer-example",
+      height: 1684,
+      page: 1,
+      sha256:
+        "8247d58fd1ed52a3476289415ec1d48e5ea9cf104869a220a7e32695fd48f2c6",
+      src: "/generated/templates/resume-designer-1.png",
+      width: 1191,
+    },
+  },
+  {
     id: "report-photo",
     slug: "report-photo",
     title: "Photo-led report",

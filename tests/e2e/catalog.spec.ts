@@ -47,9 +47,15 @@ test("shows the new reference-led templates in their families", async ({
   ).toBeVisible();
 
   await navigation.getByRole("tab", { name: "CVs" }).click();
-  await expect(page.locator("article")).toHaveCount(1);
+  await expect(page.locator("article")).toHaveCount(3);
   await expect(
     page.getByRole("heading", { name: "Classic two-column resume" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Structured accountant resume" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Green designer resume" }),
   ).toBeVisible();
   await navigation.getByRole("tab", { name: "Reports" }).click();
   await expect(

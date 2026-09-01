@@ -17,8 +17,10 @@ describe("document registry generation", () => {
       root,
       origin: "http://127.0.0.1:4173/r/dev/",
     });
-    expect(templateCatalog).toHaveLength(6);
+    expect(templateCatalog).toHaveLength(8);
     expect(templateCatalog.map((template) => template.family)).toEqual([
+      "resume",
+      "resume",
       "resume",
       "report",
       "invoice",
@@ -37,6 +39,8 @@ describe("document registry generation", () => {
         "docn-text-example",
         "docn-component-example",
         "docn-resume-classic",
+        "docn-resume-accountant",
+        "docn-resume-designer",
         "docn-report-photo",
         "docn-invoice-stripe",
         "docn-invoice-vertical",

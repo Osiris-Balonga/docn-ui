@@ -1,4 +1,12 @@
 export { ClassicResume, classicResumeExample } from "./resume/classic-resume";
+export {
+  AccountantResume,
+  accountantResumeExample,
+} from "./resume/accountant-resume";
+export {
+  DesignerResume,
+  designerResumeExample,
+} from "./resume/designer-resume";
 export { PhotoReport, photoReportExample } from "./reports/photo-report";
 export { StripeInvoice, stripeInvoiceExample } from "./invoices/stripe-invoice";
 export {
@@ -21,9 +29,13 @@ import { corporateInvoiceDefinition } from "./invoices/corporate-invoice";
 import { orderConfirmationDefinition } from "./receipts/order-confirmation";
 import { photoReportDefinition } from "./reports/photo-report";
 import { classicResumeDefinition } from "./resume/classic-resume";
+import { accountantResumeDefinition } from "./resume/accountant-resume";
+import { designerResumeDefinition } from "./resume/designer-resume";
 
 export const templateDefinitions = [
   classicResumeDefinition,
+  accountantResumeDefinition,
+  designerResumeDefinition,
   photoReportDefinition,
   stripeInvoiceDefinition,
   verticalInvoiceDefinition,

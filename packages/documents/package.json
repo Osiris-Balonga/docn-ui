@@ -17,6 +17,8 @@
     "./themes": "./src/themes/themes.ts",
     "./templates": "./src/templates/index.ts",
     "./templates/resume-classic": "./src/templates/resume/classic-resume.tsx",
+    "./templates/resume-accountant": "./src/templates/resume/accountant-resume.tsx",
+    "./templates/resume-designer": "./src/templates/resume/designer-resume.tsx",
     "./templates/report-photo": "./src/templates/reports/photo-report.tsx",
     "./templates/invoice-stripe": "./src/templates/invoices/stripe-invoice.tsx",
     "./templates/invoice-vertical": "./src/templates/invoices/vertical-invoice.tsx",
