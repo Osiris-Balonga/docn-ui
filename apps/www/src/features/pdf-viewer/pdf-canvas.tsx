@@ -23,7 +23,8 @@ export function PdfCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!bytes || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    if (!bytes || !canvas) return;
     const sourceBytes = bytes;
     let cancelled = false;
     let cancelRender: (() => void) | undefined;
@@ -47,10 +48,9 @@ export function PdfCanvas({
         onPageCount(document.numPages);
         const page = await document.getPage(pageNumber);
         loadedPage = page;
-        if (cancelled || !canvasRef.current) return;
+        if (cancelled) return;
         const cssViewport = page.getViewport({ scale: zoom * 1.25 });
         const renderViewport = page.getViewport({ scale: zoom * 2.5 });
-        const canvas = canvasRef.current;
         const context = canvas.getContext("2d", { alpha: false });
         if (!context) throw new Error("Canvas rendering is unavailable.");
         canvas.width = Math.ceil(renderViewport.width);
@@ -82,14 +82,11 @@ export function PdfCanvas({
       cancelRender?.();
       loadedPage?.cleanup();
       void loadingTask?.destroy();
-      const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = 0;
-        canvas.height = 0;
-        canvas.style.removeProperty("width");
-        canvas.style.removeProperty("height");
-      }
+      canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = 0;
+      canvas.height = 0;
+      canvas.style.removeProperty("width");
+      canvas.style.removeProperty("height");
     };
   }, [bytes, onError, onPageCount, pageNumber, zoom]);
 
