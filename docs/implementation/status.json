@@ -365,12 +365,16 @@
     {
       "id": "L14",
       "file": "lots/L14-qualification.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L13"],
       "branch": "test/v1-qualification",
       "baseCommit": "a2abf5c0894c79a774ac384d593c72710fe96395",
-      "actualCommits": [],
-      "evidence": null,
+      "actualCommits": [
+        "cf74df3963ae1cd9e9e4c94c004194cef60f2df6",
+        "bf87715bb651194e85d99175b80cfe05cb27f8ca",
+        "ef4fe201af05829710b258c18ba3ac636e351d21"
+      ],
+      "evidence": "../qa/L14.md",
       "blocker": null
     },
     {

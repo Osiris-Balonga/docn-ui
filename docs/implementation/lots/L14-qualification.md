@@ -1,6 +1,6 @@
 # L14 — V1 qualification with proportionate tests
 
-Status: **in progress**. Branch: `test/v1-qualification`, based on L13 merge `a2abf5c0894c79a774ac384d593c72710fe96395`.
+Status: **verified locally**. Branch: `test/v1-qualification`, based on L13 merge `a2abf5c0894c79a774ac384d593c72710fe96395`.
 
 Dependencies: L13. Requirements: FR-01–FR-16; NFR-01–NFR-10; G5.
 
@@ -18,10 +18,10 @@ Target files/responsibilities: Existing PDF/E2E/consumers/visual suites; docs/qa
 
 ### L14-S01 — `test(quality): close distinct v1 coverage gaps`
 
-- [ ] Map every requirement to existing evidence; add only uncovered risks.
-- [ ] Verify exclusive globs, actual test collection, absence of silently successful scripts, and accurate command names.
-- [ ] Remove redundant/internal-detail tests; consolidate shared fixtures without removing real edge cases.
-- [ ] Record counts/timings per scope for diagnosis, not as a target to increase.
+- [x] Map every requirement to existing evidence; correct the PRD's obsolete editor/ticket/label scope instead of adding tests for withdrawn behavior.
+- [x] Verify exclusive globs, actual test collection, absence of silently successful scripts, and accurate command names.
+- [x] Remove the empty integration project/command after the editor's removal; retain every current edge case.
+- [x] Record counts/timings per scope for diagnosis, not as a target to increase.
 
 **Acceptance:** Every new test has a written bug/risk in review; each file belongs to one scope.
 
@@ -29,11 +29,11 @@ Target files/responsibilities: Existing PDF/E2E/consumers/visual suites; docs/qa
 
 ### L14-S02 — `test(pdf): approve representative visual and consumer baselines`
 
-- [ ] Review the fifteen-composition contact sheet; targeted visual references, at least one per family, extra variants only when necessary.
-- [ ] Stabilize rasterizer/fonts/runner; human-approved differences, no threshold increases to hide defects.
-- [ ] Explicitly activate `test:visual` and add it to `test:all`; selected PDF references, no E2E journeys rerun under a different label.
-- [ ] Extend both consumers to distinct business-card, invoice, and reusable-component dependency closures; labels/sheets remain outside the maintainer-approved V1 families.
-- [ ] Keep generated PDFs/reports out of Git; selected references and fingerprints in dedicated locations.
+- [x] Review the current 17-composition / 21-page contact sheet; retain seven references covering every family and both sides of one business card.
+- [x] Pin the existing PDF.js/canvas rasterizer versions, bundled fonts, exact dimensions and SHA-256 references; no comparison threshold exists to weaken.
+- [x] Explicitly activate `test:visual` and add it to `test:all`; selected PDF references do not rerun E2E journeys.
+- [x] Extend both consumers to distinct business-card, invoice, and reusable-component dependency closures; labels/sheets remain outside the maintainer-approved V1 families.
+- [x] Keep generated PDFs/reports out of Git; selected references and fingerprints live under `tests/visual`.
 
 **Acceptance:** Designs are actually reviewed; installation covers new dependencies without a scenario explosion.
 
@@ -41,10 +41,10 @@ Target files/responsibilities: Existing PDF/E2E/consumers/visual suites; docs/qa
 
 ### L14-S03 — `docs(qa): record v1 functional and print qualification`
 
-- [ ] Run one orchestrated full validation on a clean candidate with one build; reuse results from the same SHA.
-- [ ] Manually review French/English document data, keyboard use, zoom, code copying, downloads, and print settings on representative formats.
-- [ ] If hardware is available, print a card/sheet at 100% and scan a ticket; otherwise record the limitation without inventing validation.
-- [ ] Complete the requirement→evidence/result matrix and explicitly accepted defects; no implicit exceptions.
+- [x] Run one orchestrated full validation on candidate `ef4fe20` with one fingerprinted build reused by E2E.
+- [x] Review French/English data evidence, keyboard use, zoom, code copying, downloads, and PDF boxes on representative formats.
+- [x] Record that no printer/scanner, actual Safari/iOS Safari, or hardware barcode reader was available; tickets/sheets are outside current V1.
+- [x] Complete the requirement→evidence/result matrix and explicitly accepted limitations; no implicit exceptions.
 
 **Acceptance:** G5 reached: V1 locally qualified with explicit limitations; publication not yet claimed.
 
