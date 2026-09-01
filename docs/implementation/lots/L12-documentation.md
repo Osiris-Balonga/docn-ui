@@ -1,6 +1,6 @@
 # L12 — Documentation, components, formats, and themes
 
-Status: **in progress**. Branch: `feat/documentation-catalog`, based on merged L11 commit `a342433e0902935a454d8ef04a85cb508a765f4a`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31.
+Status: **verified locally**. Final branch: `docs/l12-contribution-seo`, based on `dev` commit `8cdf4837cf36f3134b236b1ad843cc17daf1db0e`. The maintainer authorized PR #31's merge and L12 implementation on 2026-08-31, then authorized validation and merge of subsequent pull requests on 2026-09-01.
 
 Dependencies: L11. Requirements: FR-02, FR-13, FR-15, FR-16, FR-17.
 
@@ -125,9 +125,9 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S03 — `docs(contributing): define template contribution and review workflow`
 
-- [ ] Template contribution guide: schema/metadata/composition/fixture/registry/preview and a test in the appropriate scope.
-- [ ] Visual/data quality checklist, licenses, format/API changes, and versioning.
-- [ ] Include all documentation in search, titles/descriptions/canonical URLs, and sitemap; preview URLs must not be indexable.
+- [x] Template contribution guide: schema/metadata/composition/fixture/registry/preview and a test in the appropriate scope.
+- [x] Visual/data quality checklist, licenses, format/API changes, and versioning.
+- [x] Include all documentation in search, titles/descriptions/canonical URLs, and sitemap; preview URLs must not be indexable.
 
 **Acceptance:** Contributors can add a composition without changing playground core or copying an entire family.
 
