@@ -1,6 +1,6 @@
 # PDF component catalog — PDFx comparison and L12 contract
 
-Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and the S02a shared-frame foundation are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
+Date: 2026-08-31. Status: **L12 in progress**, not a public component availability claim. S01 and S02a–S02d are locally verified; the remaining component stories and gallery are planned. The maintainer requested component availability and documentation before further template redesign. L12 must cover the component categories below and add barcodes. Existing template compositions remain unchanged during this work, except for necessary, behavior-preserving imports.
 
 ## Evidence and scope
 
@@ -97,6 +97,32 @@ These are source-owned PDF APIs, not drop-in PDFx props. Existing calls and defa
 - `QRCode` keeps its existing vector renderer, payload limit, minimum module size and four-module quiet zone. This story does not add another encoder or alter scanner qualification.
 
 The combined typed example is compiled project source, not visitor-supplied JSX. It qualifies actual selectable text, external/internal link annotations, a local image, nested lists and QR composition in one PDF. Component-sized registry entries and public gallery routes remain S02g/S02h work.
+
+## S02c pagination and table API decision
+
+`KeepTogether` is a normal-flow, non-breaking group with a required `measuredHeight` in points. It reserves that minimum height and rejects a non-finite, non-positive or larger-than-body value with LAYOUT_OVERFLOW. Children are trusted, premeasured composition: their actual height must not exceed the supplied reservation. The component does not measure arbitrary JSX, clip it, shrink its font or split it silently. `PageBreak` requires following children and starts that content on a new flowing page; do not put it inside KeepTogether or use it as an empty trailing marker. Both require DocumentFrame's flow context.
+
+`PageHeader` and `PageFooter` are inline content compositions. Put them into DocumentFrame's existing `{ content, height, gap }` regions to repeat them with reserved space; use them in body flow for one-time content. Header accepts an optional locally resolved Image; footer accepts contact/other children and optional PageNumber props. Region heights remain explicitly declared and must cover their children. `PageNumber` uses the engine's final-pagination callback with a bounded format string containing `{page}` and optionally `{pages}` (default `Page {page} of {pages}`); numbering covers the whole Document, not a reset per frame.
+
+`Table`, `TableRow`, `TableCell` and `TableHeader` compose through the existing FlowTable helpers. Public columns have unique keys, readable labels, left/right alignment and numeric percentage widths totaling 100; one to twelve columns are allowed. TableRow requires a measured height and exactly one direct TableCell per column, in column order. Cells accept bounded strings or finite numbers, not arbitrary unmeasured nested JSX. Natural text wrapping remains enabled. The reservation includes vertical cell padding and borders; rows must be measured at the actual table width/font, and every non-breaking row must fit the complete flow body. Oversized declarations are rejected, never split or truncated.
+
+`TableHeader` accepts the same column constant and a measured height. Place it in a reserved PageHeader region for repetition, or in flow for a one-time heading. It is not an independently fixed overlay: the parent frame owns repetition and spacing, so table columns cannot silently overwrite a document title. Separate frames define distinct repeated table headings when a document contains different tables. Header labels must fit the declared height. The initial table surface spans the full flow-body width; do not nest it inside a narrower column without a separately measured frame.
+
+`DataTable<T>` maps typed data with `cell(row)`, `rowKey(row, index)` and `rowHeight(row, index)` callbacks to those same Table/Row/Cell components. It accepts at most 500 rows, 12 columns and 2,000 characters per cell, rejects duplicate/empty keys, invalid values and oversized row declarations, and supports an explicit empty-message prop. Callbacks are trusted compiled source, not user-entered code. Row heights are required rather than guessed from character count. This is deliberately not a universal automatic text-measurement engine; native wrapping and the documented premeasurement boundary remain visible.
+
+The shared multipage specimen will qualify repeated headers/footers, final numbering, first/last rows exactly once, wrapped cells, a summary that moves intact and an explicit break into a compositional table. Existing invoice helper calls and nominal layouts must remain unchanged.
+
+## S02d printable form and annotation API decision
+
+`Alert` accepts a required title, optional supporting text and a visible status label (`Note` by default). `Badge` accepts a required short label, compact/regular sizing and neutral/outline tone. Both use the PDF theme's monochrome roles, never an implicit status color or site icon. Text stays selectable and wraps naturally. These inline compositions work in either frame; callers remain responsible for fitting trusted content into fixed pages.
+
+`Form` accepts one to twelve titled groups, each with one to three equal-width columns and bounded fields (`id`, `label`, optional `value` and `required`). At most 60 fields are allowed; identifiers are unique across groups. Missing/empty values leave a writing line. Required fields print `(required)` beside the label. Rows are non-breaking, groups may continue between rows, and the group title stays with its first row. There are no HTML inputs, submission handlers, hidden data fields or interactive AcroForms. Values are bounded strings, not evaluated JSX. Text wraps without clipping; authors must qualify row heights at the actual width and theme before placing unusually long content or large fonts on a page.
+
+`Signature` accepts one or two signers with a required label and optional name, role and date. Stacked areas reserve a configurable 24–96 pt writing space (default 40 pt) above the signature line. Inline mode supports exactly one signer. Names are printed text, not reproduced handwriting; no cryptographic signature, identity verification or legal validity is implied. The signer group is non-breaking and must fit its containing frame.
+
+`Watermark` is a direct child of DocumentFrame, not a nested flow block. It uses the reserved body rectangle, never the header/footer. Its horizontal text is placed at the top, center (default) or bottom of that rectangle, with opacity 0.02–0.2 (default 0.08), font size 12–48 pt (default 32), and repeat enabled by default. With repeat disabled it appears only on the first page of that frame, regardless of preceding frames. A conservative width/height envelope rejects labels that cannot fit without shrinking or clipping. The first surface accepts 1–24 printable Latin characters; rotated marks, images, arbitrary Unicode shaping and fixed-format PageFrame placement are not yet qualified. Place it after body content for a visible overlay. Watermarks are annotations of intent, not document protection; printed contrast still requires review.
+
+The existing shared content specimen will gain printable forms/annotations and a second page to verify repeated versus first-page-only watermarks. No new dependency, template restyling or site shell change is required. The aggregate registry remains compatible; individually installable items and public examples arrive in S02g/S02h.
 
 ## shadcn installation and theme continuity
 

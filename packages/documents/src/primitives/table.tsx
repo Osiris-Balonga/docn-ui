@@ -16,6 +16,9 @@ export function FlowTableHeader({
   left = 0,
   top,
   width = "100%",
+  inline = false,
+  minHeight,
+  textStyle,
 }: {
   backgroundColor: string;
   borderColor: string;
@@ -24,10 +27,13 @@ export function FlowTableHeader({
   left?: number;
   top: number;
   width?: number | string;
+  inline?: boolean;
+  minHeight?: number;
+  textStyle?: TextProps["style"];
 }) {
   return (
     <View
-      fixed
+      fixed={!inline}
       style={{
         backgroundColor,
         borderBottomColor: borderColor,
@@ -36,24 +42,28 @@ export function FlowTableHeader({
         left,
         paddingBottom: 6,
         paddingTop: 6,
-        position: "absolute",
+        position: inline ? "relative" : "absolute",
         top,
         width,
+        ...(minHeight === undefined ? {} : { minHeight }),
       }}
     >
       {columns.map((column) => (
         <Text
           key={column.key}
-          style={{
-            color,
-            fontSize: 7,
-            fontWeight: 700,
-            letterSpacing: 0.4,
-            paddingHorizontal: 4,
-            textAlign: column.align ?? "left",
-            textTransform: "uppercase",
-            width: column.width,
-          }}
+          style={[
+            {
+              color,
+              fontSize: 7,
+              fontWeight: 700,
+              letterSpacing: 0.4,
+              paddingHorizontal: 4,
+              textAlign: column.align ?? "left",
+              textTransform: "uppercase",
+              width: column.width,
+            },
+            textStyle,
+          ]}
         >
           {column.label}
         </Text>
@@ -65,9 +75,11 @@ export function FlowTableHeader({
 export function FlowTableRow({
   borderColor,
   children,
+  minHeight = 28,
 }: {
   borderColor: string;
   children: ReactNode;
+  minHeight?: number;
 }) {
   return (
     <View
@@ -76,7 +88,7 @@ export function FlowTableRow({
         borderBottomColor: borderColor,
         borderBottomWidth: 0.5,
         flexDirection: "row",
-        minHeight: 28,
+        minHeight,
         paddingBottom: 7,
         paddingTop: 7,
       }}

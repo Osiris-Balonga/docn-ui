@@ -309,7 +309,11 @@
         "5f4e0538db6806c32aead4beb19ffd66f54e9da0",
         "06697e17ae68751df08bd4d880b82c7389399711",
         "a516c46b678aea25894c41a4a3fb31870f613653",
-        "0a9aeebaa2360f658cbd870e40187ab70c5dfac2"
+        "0a9aeebaa2360f658cbd870e40187ab70c5dfac2",
+        "f880d873d3cea7d23b78fff0c5eec1f8e5443ae3",
+        "e824244fd6034afd493fdfac2954cf49cdbd9441",
+        "3cf96d4343c8a570e3340834f03902f00d9c83b3",
+        "4c4a9d75197eb670fbd244b459e8af8c5e638005"
       ],
       "evidence": "../qa/L12.md",
       "blocker": null
