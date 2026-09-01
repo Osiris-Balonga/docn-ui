@@ -18,6 +18,8 @@ import {
   nodeConsumerUsage,
   nodeConsumerBuildConfig,
 } from "../../packages/documents/src/examples/consumer-usage";
+import { decodeBarcodeSpecimen } from "../../tooling/testing/barcode-pdf";
+import { browserBarcodeUsage, nodeBarcodeUsage } from "./barcode-usage";
 
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
@@ -209,6 +211,7 @@ async function installTemplate(
       resolve(root, "node_modules/shadcn/dist/index.js"),
       "add",
       `${registryOrigin}/r/dev/${itemName}.json`,
+      `${registryOrigin}/r/dev/docn-barcode.json`,
       "--cwd",
       directory,
       "--yes",
@@ -275,6 +278,11 @@ describe("isolated registry consumers", () => {
       scaffoldConsumer(browserDirectory, "docn-browser-consumer"),
       scaffoldConsumer(nodeDirectory, "docn-node-consumer"),
     ]);
+    const configurations = await Promise.all(
+      [browserDirectory, nodeDirectory].map((directory) =>
+        readFile(resolve(directory, "components.json"), "utf8"),
+      ),
+    );
     const registryServer = await startStaticServer(
       resolve(root, "apps/www/public"),
       4173,
@@ -296,9 +304,33 @@ describe("isolated registry consumers", () => {
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
     const installedSources = [...browserSources, ...nodeSources];
-    // S02d adds six form/annotation modules to the S02c aggregate closure.
-    expect(browserSources).toHaveLength(59);
-    expect(nodeSources).toHaveLength(60);
+    // The separately requested Barcode adds two sources; the shared context moves ownership only.
+    expect(browserSources).toHaveLength(68);
+    expect(nodeSources).toHaveLength(69);
+    for (const [index, directory] of [
+      browserDirectory,
+      nodeDirectory,
+    ].entries()) {
+      expect(
+        await readFile(resolve(directory, "components.json"), "utf8"),
+      ).toBe(configurations[index]);
+      const manifest = JSON.parse(
+        await readFile(resolve(directory, "package.json"), "utf8"),
+      );
+      expect(manifest.dependencies.jsbarcode).toBe("3.12.3");
+      expect(manifest.dependencies["@zxing/library"]).toBeUndefined();
+      // Copy only the shared QA composition, never a production primitive: those must come from the CLI.
+      await mkdir(resolve(directory, "docn/examples"), { recursive: true });
+      await writeFile(
+        resolve(directory, "docn/examples/primitive-barcodes.tsx"),
+        await readFile(
+          resolve(
+            root,
+            "packages/documents/src/examples/primitive-barcodes.tsx",
+          ),
+        ),
+      );
+    }
     expect(
       installedSources.filter((file) =>
         /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
@@ -328,7 +360,7 @@ describe("isolated registry consumers", () => {
 
     await writeFile(
       resolve(nodeDirectory, "src/node-entry.ts"),
-      nodeConsumerUsage,
+      nodeConsumerUsage + nodeBarcodeUsage,
     );
     await writeFile(
       resolve(nodeDirectory, "vite.config.mjs"),
@@ -341,7 +373,7 @@ describe("isolated registry consumers", () => {
     );
     await writeFile(
       resolve(browserDirectory, "src/main.ts"),
-      browserConsumerUsage,
+      browserConsumerUsage + browserBarcodeUsage,
     );
     await writeFile(
       resolve(browserDirectory, "vite.config.mjs"),
@@ -368,6 +400,9 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
     const nodeBytes = new Uint8Array(
       await readFile(resolve(nodeDirectory, "node-output.pdf")),
     );
+    const nodeBarcodeBytes = new Uint8Array(
+      await readFile(resolve(nodeDirectory, "node-barcodes.pdf")),
+    );
 
     const browserServer = await startStaticServer(
       resolve(browserDirectory, "dist-browser"),
@@ -375,6 +410,7 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
     );
     const browser = await chromium.launch({ headless: true });
     let browserBytes: Uint8Array;
+    let browserBarcodeBytes: Uint8Array;
     const remoteOrigins = new Set<string>();
     try {
       const page = await browser.newPage();
@@ -385,7 +421,7 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
       await page.goto(browserOrigin);
       await expect
         .poll(() => page.locator("#status").textContent())
-        .toBe("ready");
+        .toBe("ready-with-barcodes");
       const downloadPromise = page.waitForEvent("download");
       await page.getByRole("link", { name: "Download browser PDF" }).click();
       const download = await downloadPromise;
@@ -393,6 +429,12 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
       if (!path)
         throw new Error("The isolated browser download was not retained.");
       browserBytes = new Uint8Array(await readFile(path));
+      const barcodeDownloadPromise = page.waitForEvent("download");
+      await page.getByRole("link", { name: "Download barcode PDF" }).click();
+      const barcodePath = await (await barcodeDownloadPromise).path();
+      if (!barcodePath)
+        throw new Error("The barcode download was not retained.");
+      browserBarcodeBytes = new Uint8Array(await readFile(barcodePath));
     } finally {
       await browser.close();
       await stopServer(browserServer);
@@ -414,15 +456,38 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
     expect(browserInspection.view[3]).toBeCloseTo(155.905_511_811, 1);
     expect(browserInspection.text).toContain("Élodie Mbemba");
     expect(browserInspection.text).toContain("Atelier Nzela");
+    const expectedBarcodes = [
+      "DOCN-2026-0042",
+      "5901234123457",
+      "001234567890",
+      "0123456789012",
+    ];
+    expect(await decodeBarcodeSpecimen(nodeBarcodeBytes)).toEqual(
+      expectedBarcodes,
+    );
+    expect(await decodeBarcodeSpecimen(browserBarcodeBytes)).toEqual(
+      expectedBarcodes,
+    );
 
     await mkdir(artifacts, { recursive: true });
     await Promise.all([
       writeFile(resolve(artifacts, "node-consumer.pdf"), nodeBytes),
       writeFile(resolve(artifacts, "browser-consumer.pdf"), browserBytes),
+      writeFile(resolve(artifacts, "node-barcodes.pdf"), nodeBarcodeBytes),
+      writeFile(
+        resolve(artifacts, "browser-barcodes.pdf"),
+        browserBarcodeBytes,
+      ),
       writeFile(resolve(artifacts, "run.log"), `${logs.join("\n\n")}\n`),
       writeJson(resolve(artifacts, "install-state.json"), {
         schemaVersion: 1,
-        registryItems: ["docn-business-card-minimal", "docn-invoice-business"],
+        registryItems: [
+          "docn-business-card-minimal",
+          "docn-invoice-business",
+          "docn-barcode",
+        ],
+        decodedBarcodes: expectedBarcodes,
+        additionalQaCompositionsPerConsumer: 1,
         registryOnlineDuringRender: false,
         consumerRoots: [
           "<consumer-root>/browser-consumer",

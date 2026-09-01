@@ -12,6 +12,7 @@
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
     "./node": "./src/render/node.ts",
     "./primitives": "./src/primitives/index.tsx",
+    "./primitives/barcode": "./src/primitives/barcode.tsx",
     "./templates/business-cards": "./src/templates/business-cards/index.ts",
     "./templates/business-cards/metadata": "./src/templates/business-cards/metadata.ts",
     "./templates/business-cards/minimal": "./src/templates/business-cards/business-card-minimal/index.ts",
@@ -77,6 +78,7 @@
   },
   "dependencies": {
     "@react-pdf/renderer": "4.9.0",
+    "jsbarcode": "3.12.3",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "6.2.108",
     "qrcode": "1.5.4",

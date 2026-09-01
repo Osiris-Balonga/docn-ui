@@ -61,6 +61,33 @@ export const registrySourceManifest = {
       ],
     },
     {
+      name: "docn-theme-context",
+      type: "registry:lib",
+      title: "docn-ui PDF theme context",
+      description:
+        "Shared PDF-only theme provider, without page or render dependencies.",
+      dependencies: ["react@19.2.8"],
+      registryDependencies: ["docn-themes"],
+      files: ["packages/documents/src/primitives/theme-context.tsx"],
+    },
+    {
+      name: "docn-barcode",
+      type: "registry:component",
+      title: "Barcode",
+      description:
+        "Validated PDF-native Code 128 and EAN-13 with protected quiet zones.",
+      dependencies: [
+        "@react-pdf/renderer@4.9.0",
+        "jsbarcode@3.12.3",
+        "react@19.2.8",
+      ],
+      registryDependencies: ["docn-core", "docn-theme-context"],
+      files: [
+        "packages/documents/src/primitives/barcode-data.ts",
+        "packages/documents/src/primitives/barcode.tsx",
+      ],
+    },
+    {
       name: "docn-primitives",
       type: "registry:component",
       title: "docn-ui PDF primitives",
@@ -70,10 +97,14 @@ export const registrySourceManifest = {
         "qrcode@1.5.4",
         "react@19.2.8",
       ],
-      registryDependencies: ["docn-core", "docn-render", "docn-themes"],
+      registryDependencies: [
+        "docn-core",
+        "docn-render",
+        "docn-themes",
+        "docn-theme-context",
+      ],
       files: [
         "packages/documents/src/primitives/index.tsx",
-        "packages/documents/src/primitives/theme-context.tsx",
         "packages/documents/src/primitives/page-frame.tsx",
         "packages/documents/src/primitives/document-frame.tsx",
         "packages/documents/src/primitives/flow-layout.ts",
@@ -102,6 +133,13 @@ export const registrySourceManifest = {
         "packages/documents/src/primitives/signature.tsx",
         "packages/documents/src/primitives/watermark-layout.ts",
         "packages/documents/src/primitives/watermark.tsx",
+        "packages/documents/src/primitives/graph-data.ts",
+        "packages/documents/src/primitives/graph-geometry.ts",
+        "packages/documents/src/primitives/graph-layout.ts",
+        "packages/documents/src/primitives/graph-text.tsx",
+        "packages/documents/src/primitives/graph-cartesian.tsx",
+        "packages/documents/src/primitives/graph-radial.tsx",
+        "packages/documents/src/primitives/graph.tsx",
       ],
     },
     {
