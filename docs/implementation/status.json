@@ -324,7 +324,9 @@
         "1c3d3901698503b95c0924e7451f870e6dc7401d",
         "f2190fc739566fd7feb1e1651e83fd354bb4c94c",
         "3f16d7e13b2a21a9d85304723c74dbbbc9de7d05",
-        "02c2ee20c9be42def15b5c4aa9fb20b40e3ce65c"
+        "02c2ee20c9be42def15b5c4aa9fb20b40e3ce65c",
+        "a1093eb519d5f5ff59732726a701d4a9c1cb7817",
+        "727bcd722d931f85d7a8fdd87e0d00bc7300a211"
       ],
       "evidence": "../qa/L12.md",
       "blocker": null
