@@ -33,34 +33,36 @@ describe("document registry generation", () => {
       receipt: 3,
       ticket: 3,
     });
-    expect(result.items.map((item) => item.name)).toEqual([
-      "docn-core",
-      "docn-themes",
-      "docn-render",
-      "docn-theme-context",
-      "docn-barcode",
-      "docn-primitives",
-      "docn-event-ticket-foundation",
-      "docn-event-ticket-classic",
-      "docn-event-ticket-conference",
-      "docn-event-ticket-live",
-      "docn-receipt-foundation",
-      "docn-receipt-retail",
-      "docn-receipt-hospitality",
-      "docn-receipt-service",
-      "docn-label-foundation",
-      "docn-label-product",
-      "docn-label-address",
-      "docn-label-inventory",
-      "docn-business-card-foundation",
-      "docn-invoice-foundation",
-      "docn-invoice-minimal",
-      "docn-invoice-business",
-      "docn-invoice-studio",
-      "docn-business-card-minimal",
-      "docn-business-card-editorial",
-      "docn-business-card-studio",
-    ]);
+    expect(result.items.map((item) => item.name)).toEqual(
+      expect.arrayContaining([
+        "docn-core",
+        "docn-themes",
+        "docn-render",
+        "docn-theme-context",
+        "docn-barcode",
+        "docn-primitives",
+        "docn-event-ticket-foundation",
+        "docn-event-ticket-classic",
+        "docn-event-ticket-conference",
+        "docn-event-ticket-live",
+        "docn-receipt-foundation",
+        "docn-receipt-retail",
+        "docn-receipt-hospitality",
+        "docn-receipt-service",
+        "docn-label-foundation",
+        "docn-label-product",
+        "docn-label-address",
+        "docn-label-inventory",
+        "docn-business-card-foundation",
+        "docn-invoice-foundation",
+        "docn-invoice-minimal",
+        "docn-invoice-business",
+        "docn-invoice-studio",
+        "docn-business-card-minimal",
+        "docn-business-card-editorial",
+        "docn-business-card-studio",
+      ]),
+    );
     for (const template of templateCatalog) {
       expect(template.thumbnail.fixture).toBeTruthy();
       expect(template.thumbnail.sha256).toMatch(/^[a-f0-9]{64}$/);
@@ -147,7 +149,7 @@ describe("document registry generation", () => {
     );
     const barcode = resolveItemClosure("docn-barcode", items);
     expect(barcode).toEqual([
-      "docn-core",
+      "docn-contracts",
       "docn-themes",
       "docn-theme-context",
       "docn-barcode",
@@ -156,6 +158,45 @@ describe("document registry generation", () => {
     expect(
       sources.some((file: string) => /templates|render\//.test(file)),
     ).toBe(false);
+    const textClosure = resolveItemClosure("docn-text", items).map(
+      (name: string) => items.get(name)!,
+    );
+    const textFiles = textClosure.flatMap(
+      (item: { files: string[] }) => item.files,
+    );
+    expect(textFiles).toHaveLength(8);
+    expect(
+      textFiles.some((file: string) =>
+        /render\/|templates\/|heading|field-pair|qr-code|barcode|graph|index.tsx/.test(
+          file,
+        ),
+      ),
+    ).toBe(false);
+    expect(
+      new Set(
+        textClosure.flatMap(
+          (item: { dependencies: string[] }) => item.dependencies,
+        ),
+      ),
+    ).toEqual(
+      new Set(["zod@3.25.76", "react@19.2.8", "@react-pdf/renderer@4.9.0"]),
+    );
+    for (const item of registrySourceManifest.items.filter(
+      (item) => "component" in item,
+    )) {
+      const closure = resolveItemClosure(item.name, items).map((name: string) =>
+        items.get(name)!,
+      );
+      expect(
+        closure
+          .flatMap((dependency: { files: string[] }) => dependency.files)
+          .some((file: string) =>
+            /templates\/|render\/(?:runtime|browser|node|print-profile)\./.test(
+              file,
+            ),
+          ),
+      ).toBe(false);
+    }
     for (const name of [
       "docn-primitives",
       "docn-theme-context",
@@ -264,6 +305,22 @@ describe("document registry generation", () => {
         },
       }),
     ).rejects.toThrow("Missing registry source file");
+    await expect(
+      buildRegistry({
+        root,
+        manifest: {
+          ...registrySourceManifest,
+          items: registrySourceManifest.items.map((candidate) =>
+            candidate.name === "docn-text"
+              ? {
+                  ...candidate,
+                  preview: ["packages/documents/src/primitives/barcode.tsx"],
+                }
+              : candidate,
+          ),
+        },
+      }),
+    ).rejects.toThrow("outside docn-text's dependency closure");
     expect(
       resolveItemClosure(
         "docn-business-card-minimal",

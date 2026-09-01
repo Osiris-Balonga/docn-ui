@@ -6,6 +6,24 @@ export type KnownPage = {
 };
 
 export const knownPages: readonly KnownPage[] = [
+  ...componentCatalog.map(({ slug, title, description }) => ({
+    title,
+    description,
+    href: `/components/${slug}/`,
+    section: "Components" as const,
+  })),
+  {
+    title: "Formats",
+    description: "Physical dimensions and compatible templates",
+    href: "/formats/",
+    section: "Documentation",
+  },
+  {
+    title: "Themes",
+    description: "Compare PDF-safe typography on the same document",
+    href: "/themes/",
+    section: "Documentation",
+  },
   ...guideIndex.map((guide) => ({
     title: guide.title,
     description: guide.description,
@@ -44,3 +62,4 @@ export const knownPages: readonly KnownPage[] = [
   },
 ] as const;
 import { guideIndex } from "@/content/docs/guide-index";
+import { componentCatalog } from "@docn-ui/documents/catalog/components";

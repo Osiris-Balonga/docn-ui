@@ -80,8 +80,12 @@ export function DesktopSiteNavigation() {
 export function MobileSiteNavigation() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const showsDocumentation =
-    pathname.startsWith("/docs") || pathname.startsWith("/components");
+  const showsDocumentation = [
+    "/docs",
+    "/components",
+    "/formats",
+    "/themes",
+  ].some((prefix) => pathname.startsWith(prefix));
 
   return (
     <div className="md:hidden">
@@ -105,7 +109,7 @@ export function MobileSiteNavigation() {
               Browse docn-ui documentation and PDF components.
             </SheetDescription>
           </SheetHeader>
-          <div className="px-4 py-3">
+          <div className="scrollbar-hidden min-h-0 flex-1 overflow-y-auto px-4 py-3">
             <NavigationLinks
               ariaLabel="Primary mobile"
               onNavigate={() => setOpen(false)}

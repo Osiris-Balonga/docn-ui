@@ -2,7 +2,7 @@ import { Table, TableCell, TableRow } from "./composable-table";
 import { useFlowFrame } from "./flow-context";
 import { usePdfTheme } from "./theme-context";
 import { prepareTableRows, type DataTableColumn } from "./table-data";
-import { Text } from "./typography";
+import { Text } from "./text";
 
 export interface DataTableProps<T> {
   columns: readonly DataTableColumn<T>[];

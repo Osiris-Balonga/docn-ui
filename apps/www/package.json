@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "predev": "node ../../tooling/assets/copy-pdf-assets.mjs",
+    "predev": "node ../../tooling/assets/copy-pdf-assets.mjs && node ../../tooling/docs/generate.mjs",
     "dev": "cross-env NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1",
-    "prebuild": "node ../../tooling/assets/copy-pdf-assets.mjs",
+    "prebuild": "node ../../tooling/assets/copy-pdf-assets.mjs && node ../../tooling/docs/generate.mjs",
     "build": "cross-env NEXT_TELEMETRY_DISABLED=1 next build --webpack",
     "typecheck": "cross-env NEXT_TELEMETRY_DISABLED=1 next typegen && tsc --noEmit"
   },

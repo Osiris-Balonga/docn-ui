@@ -13,8 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  loadRegistrySourceClosure,
-  loadRegistryTemplatePreview,
+  loadRegistryPreview,
   type RegistrySourceFile,
 } from "./registry-source";
 import { cn } from "@/lib/utils";
@@ -141,10 +140,18 @@ export function RegistrySourcePanel({
   variant?: "drawer" | "page";
 }) {
   const drawer = variant === "drawer";
-  const [files, setFiles] = useState<RegistrySourceFile[]>([]);
-  const [itemCount, setItemCount] = useState(0);
+  const [source, setSource] = useState<{
+    itemName: string;
+    files: RegistrySourceFile[];
+    itemCount: number;
+    assetsIncluded: boolean;
+    error?: string;
+  }>();
   const [selectedTarget, setSelectedTarget] = useState("");
-  const [error, setError] = useState<string>();
+  const currentSource = source?.itemName === itemName ? source : undefined;
+  const files = currentSource?.files ?? [];
+  const itemCount = currentSource?.itemCount ?? 0;
+  const error = currentSource?.error;
   const origin = useSyncExternalStore(
     subscribeToStaticOrigin,
     () => window.location.origin,
@@ -155,23 +162,28 @@ export function RegistrySourcePanel({
     const currentOrigin = window.location.origin;
     let active = true;
     const itemUrl = `/r/dev/${itemName}.json`;
-    const sourceRequest = drawer
-      ? loadRegistryTemplatePreview({ itemUrl, origin: currentOrigin })
-      : loadRegistrySourceClosure({ itemUrl, origin: currentOrigin });
+    const sourceRequest = loadRegistryPreview({
+      itemUrl,
+      origin: currentOrigin,
+    });
     sourceRequest
       .then((result) => {
         if (!active) return;
-        setFiles(result.files);
-        setItemCount(result.itemCount);
+        setSource({ itemName, ...result });
         setSelectedTarget(result.files[0]?.target ?? "");
       })
       .catch((reason: unknown) => {
         if (active)
-          setError(
-            reason instanceof Error
-              ? reason.message
-              : "The registry source could not be loaded.",
-          );
+          setSource({
+            itemName,
+            files: [],
+            itemCount: 0,
+            assetsIncluded: false,
+            error:
+              reason instanceof Error
+                ? reason.message
+                : "The registry source could not be loaded.",
+          });
       });
     return () => {
       active = false;
@@ -181,7 +193,7 @@ export function RegistrySourcePanel({
   const selectedFile =
     files.find((file) => file.target === selectedTarget) ?? files[0];
   const installCommand = `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/${itemName}.json`;
-  const assetCommand = `node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
+  const assetCommand = `${currentSource?.assetsIncluded === false ? `corepack pnpm dlx shadcn@4.19.0 add ${origin}/r/dev/docn-fonts.json\n` : ""}node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
   const headingId = `registry-source-${itemName}`;
 
   return (
@@ -190,7 +202,7 @@ export function RegistrySourcePanel({
       aria-labelledby={headingId}
     >
       <h2 id={headingId} className="sr-only">
-        Template source
+        Component source
       </h2>
       <div
         className={cn(
@@ -276,14 +288,16 @@ export function RegistrySourcePanel({
         ) : selectedFile ? (
           <div
             className={cn(
+              drawer && "grid min-h-0 flex-1",
               drawer &&
-                "grid min-h-0 flex-1 md:grid-cols-[14rem_minmax(0,1fr)]",
+                files.length > 1 &&
+                "md:grid-cols-[14rem_minmax(0,1fr)]",
             )}
           >
-            {drawer ? (
+            {drawer && files.length > 1 ? (
               <aside
                 className="scrollbar-hidden max-h-40 overflow-auto border-b bg-muted/10 p-2 md:max-h-none md:border-r md:border-b-0"
-                aria-label="Template files"
+                aria-label="Component files"
               >
                 <p className="px-2 pb-2 text-xs font-medium">Files</p>
                 <SourceTree

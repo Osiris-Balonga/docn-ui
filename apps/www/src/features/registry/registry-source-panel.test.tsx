@@ -87,7 +87,7 @@ afterEach(() => {
 });
 
 describe("registry source panel", () => {
-  it("loads the complete source closure and copies the selected source", async () => {
+  it("loads the bounded preview and copies the selected source", async () => {
     vi.stubGlobal("fetch", vi.fn(registryFetch));
     const user = userEvent.setup();
     const writeText = vi.fn().mockResolvedValue(undefined);
@@ -98,7 +98,7 @@ describe("registry source panel", () => {
     render(<RegistrySourcePanel itemName="docn-business-card-minimal" />);
 
     expect(
-      await screen.findByText("6 files · 3 registry items"),
+      await screen.findByText("4 files · 2 registry items"),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/node docn\/assets\/install\.mjs/),
@@ -124,7 +124,7 @@ describe("registry source panel", () => {
     });
     render(<RegistrySourcePanel itemName="docn-business-card-minimal" />);
 
-    await screen.findByText("6 files · 3 registry items");
+    await screen.findByText("4 files · 2 registry items");
     await user.click(screen.getByRole("button", { name: "Copy source" }));
     expect(
       screen.getByText("Clipboard unavailable — select and copy manually."),
@@ -158,5 +158,75 @@ describe("registry source panel", () => {
       screen.getByLabelText("~/docn/templates/schema.ts source"),
     ).toHaveTextContent("interface CardData");
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("shows only declared component support files without loading transitive primitives", async () => {
+    const file = (name: string) => ({
+      path: `packages/documents/src/primitives/${name}.tsx`,
+      target: `~/docn/primitives/${name}.tsx`,
+      type: "registry:component",
+      content: `export const ${name} = 1;`,
+    });
+    const primary = file("DataTable");
+    const supporting = file("Table");
+    const fetchMock = vi.fn(
+      async (input: string | URL | Request) =>
+        new Response(
+          JSON.stringify(
+            String(input).endsWith("docn-data-table.json")
+              ? {
+                  name: "docn-data-table",
+                  files: [primary],
+                  registryDependencies: [
+                    "/r/dev/docn-table.json",
+                    "/r/dev/docn-text.json",
+                  ],
+                  meta: {
+                    sourcePreview: [
+                      { item: "docn-data-table", target: primary.target },
+                      { item: "docn-table", target: supporting.target },
+                    ],
+                  },
+                }
+              : {
+                  name: "docn-table",
+                  files: [supporting, file("PrivateHelper")],
+                  registryDependencies: ["/r/dev/docn-core.json"],
+                },
+          ),
+        ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <RegistrySourcePanel itemName="docn-data-table" variant="drawer" />,
+    );
+    expect(await screen.findByText("DataTable.tsx")).toBeInTheDocument();
+    await user.click(screen.getByText("Table.tsx"));
+    expect(
+      screen.getByLabelText(`${supporting.target} source`),
+    ).toHaveTextContent(supporting.content);
+    expect(screen.queryByText("PrivateHelper.tsx")).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const single = file("Heading");
+    fetchMock.mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          name: "docn-heading",
+          files: [single],
+          registryDependencies: ["/r/dev/docn-text.json"],
+          meta: {
+            sourcePreview: [{ item: "docn-heading", target: single.target }],
+          },
+        }),
+      ),
+    );
+    rerender(<RegistrySourcePanel itemName="docn-heading" variant="drawer" />);
+    expect(screen.queryByText("Table.tsx")).toBeNull();
+    expect(
+      await screen.findByLabelText(`${single.target} source`),
+    ).toHaveTextContent(single.content);
+    expect(screen.queryByLabelText("Component files")).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });

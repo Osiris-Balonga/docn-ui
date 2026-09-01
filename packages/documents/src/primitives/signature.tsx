@@ -1,7 +1,7 @@
 import { View } from "@react-pdf/renderer";
 import { assertSignature, type SignatureProps } from "./printable-data";
 import { usePdfTheme } from "./theme-context";
-import { Text } from "./typography";
+import { Text } from "./text";
 
 export type { SignatureProps, Signer } from "./printable-data";
 

@@ -1,4 +1,5 @@
 import { guideIndex } from "@/content/docs/guide-index";
+import { componentCatalog } from "@docn-ui/documents/catalog/components";
 
 export const docsNavigation = [
   {
@@ -6,6 +7,8 @@ export const docsNavigation = [
     items: [
       { title: "Overview", href: "/docs/" },
       { title: "Getting started", href: "/docs/getting-started/" },
+      { title: "Formats", href: "/formats/" },
+      { title: "Themes", href: "/themes/" },
     ],
   },
   {
@@ -19,7 +22,10 @@ export const docsNavigation = [
     title: "Components",
     items: [
       { title: "Overview", href: "/components/" },
-      { title: "Templates", href: "/templates/" },
+      ...componentCatalog.map(({ slug, title }) => ({
+        title,
+        href: `/components/${slug}/`,
+      })),
     ],
   },
 ] as const;

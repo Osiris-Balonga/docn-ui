@@ -227,6 +227,9 @@ export async function buildRegistry({
       title: sourceItem.title,
       description: sourceItem.description,
       dependencies: sourceItem.dependencies,
+      ...(sourceItem.devDependencies
+        ? { devDependencies: sourceItem.devDependencies }
+        : {}),
       registryDependencies: sourceItem.registryDependencies.map((name) =>
         dependencyUrl(origin, name),
       ),
@@ -235,6 +238,24 @@ export async function buildRegistry({
       meta: {
         registryVersion: DEVELOPMENT_REGISTRY_VERSION,
         schemaPackage: `shadcn@${PINNED_SHADCN_VERSION}`,
+        assetsIncluded: closure.has("docn-fonts"),
+        ...(sourceItem.component ? { component: sourceItem.component } : {}),
+        ...(sourceItem.preview
+          ? {
+              sourcePreview: sourceItem.preview.map((source) => {
+                if (!allowedSources.has(source))
+                  throw new Error(
+                    `Preview source ${source} is outside ${sourceItem.name}'s dependency closure.`,
+                  );
+                return {
+                  item: manifest.items.find((candidate) =>
+                    candidate.files.includes(source),
+                  ).name,
+                  target: knownTargets.get(source),
+                };
+              }),
+            }
+          : {}),
       },
     };
     generatedItems.push(registryItemSchema.parse(item));

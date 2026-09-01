@@ -92,10 +92,10 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02g — `feat(registry): expose individually installable PDF components`
 
-- [ ] Component-sized official shadcn registry items, dependency closures and typed usage examples; preserve the existing docn-primitives item.
-- [ ] Source views show the selected component and direct relevant files, not an unrestricted repository browser.
-- [ ] Do not pull templates, barcode encoders, site UI, or the full render pipeline into unrelated basic component installations.
-- [ ] Preserve the existing consumer components.json, aliases and owned files; no additional initializer or forced overwrite.
+- [x] Component-sized official shadcn registry items, dependency closures and typed usage examples; preserve the existing docn-primitives item.
+- [x] Source views show the selected component and direct relevant files, not an unrestricted repository browser.
+- [x] Do not pull templates, barcode encoders, site UI, or the full render pipeline into unrelated basic component installations.
+- [x] Preserve the existing consumer components.json, aliases and owned files; no additional initializer or forced overwrite.
 
 **Acceptance:** A basic primitive and a dependency-rich composition install and render outside the monorepo through the official CLI without replacing the consumer's configuration.
 
@@ -103,11 +103,11 @@ L12-S02 is split into S02a–S02h because the new request introduces real PDF be
 
 ### L12-S02h — `feat(docs): expose PDF primitives formats and theme examples`
 
-- [ ] Index/detail pages for actually available primitives with props, usage, PDF example, source/installation.
-- [ ] Replace inert component names with working detail links; cover the component matrix, including Barcode, in sidebar and search.
-- [ ] Format pages with actual dimensions/compatibility; compare themes on the same document.
-- [ ] Retain the approved shadcn shell, enlarged preview and shared code-block styling, including visually hidden scrollbars and keyboard scrolling.
-- [ ] Generate visuals through the existing pipeline; no test per paragraph or documentation card.
+- [x] Index/detail pages for actually available primitives with props, usage, PDF example, source/installation.
+- [x] Replace inert component names with working detail links; cover the component matrix, including Barcode, in sidebar and search.
+- [x] Format pages with actual dimensions/compatibility; compare themes on the same document.
+- [x] Retain the approved shadcn shell, enlarged preview and shared code-block styling, including visually hidden scrollbars and keyboard scrolling.
+- [x] Generate visuals through the existing pipeline; no test per paragraph or documentation card.
 
 **Acceptance:** components/formats/themes routes are complete, indexable, and consistent with code contracts. Every advertised component has real output and an installable source entry, not a placeholder.
 

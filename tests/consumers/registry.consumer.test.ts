@@ -14,12 +14,10 @@ import { chromium } from "@playwright/test";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { afterEach, describe, expect, it } from "vitest";
 import {
-  browserConsumerUsage,
   nodeConsumerUsage,
   nodeConsumerBuildConfig,
 } from "../../packages/documents/src/examples/consumer-usage";
-import { decodeBarcodeSpecimen } from "../../tooling/testing/barcode-pdf";
-import { browserBarcodeUsage, nodeBarcodeUsage } from "./barcode-usage";
+import { browserComponentUsage, nodeComponentUsage } from "./component-usage";
 
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
@@ -161,7 +159,7 @@ async function scaffoldConsumer(directory: string, name: string) {
     private: true,
     type: "module",
     packageManager: "pnpm@11.24.0",
-    devDependencies: { vite: "8.2.2" },
+    devDependencies: { vite: "8.2.2", typescript: "5.9.3" },
   });
   await writeJson(resolve(directory, "components.json"), {
     $schema: "https://ui.shadcn.com/schema.json",
@@ -192,17 +190,25 @@ async function scaffoldConsumer(directory: string, name: string) {
       moduleResolution: "Bundler",
       paths: { "#/*": ["src/*"] },
       target: "ES2022",
+      strict: true,
+      skipLibCheck: true,
     },
     include: ["docn", "src", "vite.config.mjs"],
   });
-  await writeFile(resolve(directory, "src/index.css"), "");
+  await writeFile(
+    resolve(directory, "src/index.css"),
+    ":root { --consumer-brand: #123456; }\n",
+  );
+  await writeFile(
+    resolve(directory, "src/consumer-owned.ts"),
+    'export const consumerOwned = "keep";\n',
+  );
 }
 
-async function installTemplate(
+async function installItem(
   directory: string,
   temporaryRoot: string,
-  target: "browser" | "node",
-  itemName: "docn-business-card-minimal" | "docn-invoice-business",
+  itemName: string,
 ) {
   await runPnpm(["install", "--ignore-workspace"], directory, temporaryRoot);
   await run(
@@ -211,7 +217,6 @@ async function installTemplate(
       resolve(root, "node_modules/shadcn/dist/index.js"),
       "add",
       `${registryOrigin}/r/dev/${itemName}.json`,
-      `${registryOrigin}/r/dev/docn-barcode.json`,
       "--cwd",
       directory,
       "--yes",
@@ -219,6 +224,13 @@ async function installTemplate(
     directory,
     temporaryRoot,
   );
+}
+
+async function prepareAssets(
+  directory: string,
+  temporaryRoot: string,
+  target: "browser" | "node",
+) {
   await run(
     process.execPath,
     [
@@ -268,7 +280,7 @@ async function inspectPdf(bytes: Uint8Array) {
 }
 
 describe("isolated registry consumers", () => {
-  it("installs once per environment and renders after the registry is offline", async () => {
+  it("installs distinct component closures and preserves legacy source/configuration", async () => {
     logs.length = 0;
     const temporaryRoot = await mkdtemp(join(tmpdir(), "docn-ui-consumers-"));
     temporaryRoots.push(temporaryRoot);
@@ -278,9 +290,18 @@ describe("isolated registry consumers", () => {
       scaffoldConsumer(browserDirectory, "docn-browser-consumer"),
       scaffoldConsumer(nodeDirectory, "docn-node-consumer"),
     ]);
-    const configurations = await Promise.all(
-      [browserDirectory, nodeDirectory].map((directory) =>
-        readFile(resolve(directory, "components.json"), "utf8"),
+    const retainedPaths = [
+      "components.json",
+      "src/index.css",
+      "src/consumer-owned.ts",
+    ];
+    const retained = await Promise.all(
+      [browserDirectory, nodeDirectory].map(async (directory) =>
+        Promise.all(
+          retainedPaths.map((file) =>
+            readFile(resolve(directory, file), "utf8"),
+          ),
+        ),
       ),
     );
     const registryServer = await startStaticServer(
@@ -288,129 +309,93 @@ describe("isolated registry consumers", () => {
       4173,
     );
 
-    await installTemplate(
-      browserDirectory,
-      temporaryRoot,
-      "browser",
-      "docn-business-card-minimal",
-    );
-    await installTemplate(
-      nodeDirectory,
-      temporaryRoot,
-      "node",
-      "docn-invoice-business",
-    );
-
+    await installItem(browserDirectory, temporaryRoot, "docn-text-example");
+    await installItem(nodeDirectory, temporaryRoot, "docn-component-example");
+    await prepareAssets(browserDirectory, temporaryRoot, "browser");
+    await prepareAssets(nodeDirectory, temporaryRoot, "node");
     const browserSources = await listFiles(resolve(browserDirectory, "docn"));
     const nodeSources = await listFiles(resolve(nodeDirectory, "docn"));
-    const installedSources = [...browserSources, ...nodeSources];
-    // The separately requested Barcode adds two sources; the shared context moves ownership only.
-    expect(browserSources).toHaveLength(68);
-    expect(nodeSources).toHaveLength(69);
-    for (const [index, directory] of [
-      browserDirectory,
-      nodeDirectory,
-    ].entries()) {
-      expect(
-        await readFile(resolve(directory, "components.json"), "utf8"),
-      ).toBe(configurations[index]);
+    expect(browserSources).toHaveLength(16);
+    expect(nodeSources).toHaveLength(38);
+    for (const [directory, sources] of [
+      [browserDirectory, browserSources],
+      [nodeDirectory, nodeSources],
+    ] as const) {
       const manifest = JSON.parse(
         await readFile(resolve(directory, "package.json"), "utf8"),
       );
-      expect(manifest.dependencies.jsbarcode).toBe("3.12.3");
-      expect(manifest.dependencies["@zxing/library"]).toBeUndefined();
-      // Copy only the shared QA composition, never a production primitive: those must come from the CLI.
-      await mkdir(resolve(directory, "docn/examples"), { recursive: true });
-      await writeFile(
-        resolve(directory, "docn/examples/primitive-barcodes.tsx"),
-        await readFile(
-          resolve(
-            root,
-            "packages/documents/src/examples/primitive-barcodes.tsx",
-          ),
+      for (const dependency of [
+        "pdf-lib",
+        "pdfjs-dist",
+        "qrcode",
+        "next",
+        "@zxing/library",
+      ])
+        expect(manifest.dependencies[dependency]).toBeUndefined();
+      expect(
+        sources.some((file) =>
+          /[\\/]templates[\\/]|[\\/]primitives[\\/]index.tsx$/.test(file),
         ),
-      );
+      ).toBe(false);
+      for (const file of sources) {
+        const content = await readFile(file, "utf8");
+        expect(content).not.toContain(root);
+        expect(content).not.toContain("workspace:*");
+        expect(content).not.toContain("@docn-ui/");
+      }
     }
+    const basicManifest = JSON.parse(
+      await readFile(resolve(browserDirectory, "package.json"), "utf8"),
+    );
+    expect(basicManifest.dependencies.jsbarcode).toBeUndefined();
     expect(
-      installedSources.filter((file) =>
-        /[\\/]primitives[\\/]qr-code\.ts$/.test(file),
+      browserSources.some((file) =>
+        /barcode|graph|data-table|heading|field-pair/.test(file),
       ),
-    ).toHaveLength(2);
-    expect(
-      installedSources.filter((file) => /[\\/]core[\\/]money\.ts$/.test(file)),
-    ).toHaveLength(2);
-    expect(
-      installedSources.filter((file) =>
-        /[\\/]core[\\/]imposition\.ts$/.test(file),
-      ),
-    ).toHaveLength(2);
-    expect(
-      nodeSources.some((file) =>
-        /[\\/]templates[\\/]invoices[\\/]invoice-business[\\/]invoice-business\.tsx$/.test(
-          file,
-        ),
-      ),
-    ).toBe(true);
-    for (const file of installedSources) {
-      const content = await readFile(file, "utf8");
-      expect(content).not.toContain(root);
-      expect(content).not.toContain("workspace:*");
-      expect(content).not.toContain("@docn-ui/");
-    }
+    ).toBe(false);
 
     await writeFile(
       resolve(nodeDirectory, "src/node-entry.ts"),
-      nodeConsumerUsage + nodeBarcodeUsage,
+      nodeComponentUsage,
     );
     await writeFile(
       resolve(nodeDirectory, "vite.config.mjs"),
       nodeConsumerBuildConfig,
     );
-
     await writeFile(
       resolve(browserDirectory, "index.html"),
       '<!doctype html><html><body><p id="status">rendering</p><script type="module" src="/src/main.ts"></script></body></html>',
     );
     await writeFile(
       resolve(browserDirectory, "src/main.ts"),
-      browserConsumerUsage + browserBarcodeUsage,
+      browserComponentUsage,
     );
     await writeFile(
       resolve(browserDirectory, "vite.config.mjs"),
       `import { defineConfig } from "vite";
-export default defineConfig({ build: { outDir: "dist-browser" } });
-`,
+export default defineConfig({ build: { outDir: "dist-browser" } });`,
     );
-
-    await runPnpm(["exec", "vite", "build"], nodeDirectory, temporaryRoot);
-    await runPnpm(["exec", "vite", "build"], browserDirectory, temporaryRoot);
+    for (const directory of [browserDirectory, nodeDirectory]) {
+      await runPnpm(["exec", "tsc", "--noEmit"], directory, temporaryRoot);
+      await runPnpm(["exec", "vite", "build"], directory, temporaryRoot);
+    }
     await stopServer(registryServer);
     await expect(fetch(`${registryOrigin}/r/registry.json`)).rejects.toThrow();
-
     await run(
       process.execPath,
       ["dist-node/node-entry.mjs"],
       nodeDirectory,
       temporaryRoot,
-      {
-        ...process.env,
-        NODE_PATH: resolve(nodeDirectory, "node_modules"),
-      },
     );
-    const nodeBytes = new Uint8Array(
-      await readFile(resolve(nodeDirectory, "node-output.pdf")),
+    const componentBytes = new Uint8Array(
+      await readFile(resolve(nodeDirectory, "components-output.pdf")),
     );
-    const nodeBarcodeBytes = new Uint8Array(
-      await readFile(resolve(nodeDirectory, "node-barcodes.pdf")),
-    );
-
     const browserServer = await startStaticServer(
       resolve(browserDirectory, "dist-browser"),
       4176,
     );
     const browser = await chromium.launch({ headless: true });
     let browserBytes: Uint8Array;
-    let browserBarcodeBytes: Uint8Array;
     const remoteOrigins = new Set<string>();
     try {
       const page = await browser.newPage();
@@ -421,91 +406,115 @@ export default defineConfig({ build: { outDir: "dist-browser" } });
       await page.goto(browserOrigin);
       await expect
         .poll(() => page.locator("#status").textContent())
-        .toBe("ready-with-barcodes");
+        .toBe("ready");
       const downloadPromise = page.waitForEvent("download");
       await page.getByRole("link", { name: "Download browser PDF" }).click();
-      const download = await downloadPromise;
-      const path = await download.path();
+      const path = await (await downloadPromise).path();
       if (!path)
         throw new Error("The isolated browser download was not retained.");
       browserBytes = new Uint8Array(await readFile(path));
-      const barcodeDownloadPromise = page.waitForEvent("download");
-      await page.getByRole("link", { name: "Download barcode PDF" }).click();
-      const barcodePath = await (await barcodeDownloadPromise).path();
-      if (!barcodePath)
-        throw new Error("The barcode download was not retained.");
-      browserBarcodeBytes = new Uint8Array(await readFile(barcodePath));
     } finally {
       await browser.close();
       await stopServer(browserServer);
     }
     expect([...remoteOrigins]).toEqual([browserOrigin]);
-
-    const [nodeInspection, browserInspection] = await Promise.all([
-      inspectPdf(nodeBytes),
+    const [componentInspection, browserInspection] = await Promise.all([
+      inspectPdf(componentBytes),
       inspectPdf(browserBytes),
     ]);
+    expect(componentInspection.pages).toBe(1);
+    expect(componentInspection.text).toContain("DOCUMENT");
+    expect(componentInspection.text).toContain("COPIES");
+    expect(componentInspection.text).toContain("Business cards");
+    expect(componentInspection.text).toContain("Product labels");
+    expect(componentInspection.text).toContain("Copies by document");
+    expect(componentInspection.text).toContain("DOCN-2026-0042");
+    expect(componentInspection.text).toContain("Page 1 of 1");
+    expect(browserInspection.pages).toBe(1);
+    expect(browserInspection.text).toContain(
+      "Source-owned text. Bonjour Élodie.",
+    );
+    expect(browserInspection.view[2]).toBeCloseTo(595.28, 1);
+
+    // A legacy installation joins the existing component sources, without replacing owned code.
+    const originalText = await readFile(
+      resolve(nodeDirectory, "docn/primitives/text.tsx"),
+      "utf8",
+    );
+    const legacyServer = await startStaticServer(
+      resolve(root, "apps/www/public"),
+      4173,
+    );
+    await installItem(nodeDirectory, temporaryRoot, "docn-invoice-business");
+    expect(
+      await readFile(
+        resolve(nodeDirectory, "docn/primitives/text.tsx"),
+        "utf8",
+      ),
+    ).toBe(originalText);
+    await writeFile(
+      resolve(nodeDirectory, "src/node-entry.ts"),
+      nodeConsumerUsage,
+    );
+    await runPnpm(["exec", "tsc", "--noEmit"], nodeDirectory, temporaryRoot);
+    await runPnpm(["exec", "vite", "build"], nodeDirectory, temporaryRoot);
+    await stopServer(legacyServer);
+    await run(
+      process.execPath,
+      ["dist-node/node-entry.mjs"],
+      nodeDirectory,
+      temporaryRoot,
+    );
+    const nodeBytes = new Uint8Array(
+      await readFile(resolve(nodeDirectory, "node-output.pdf")),
+    );
+    const nodeInspection = await inspectPdf(nodeBytes);
     expect(nodeInspection.pages).toBe(1);
-    expect(nodeInspection.view[2]).toBeCloseTo(595.275_590_551, 1);
-    expect(nodeInspection.view[3]).toBeCloseTo(841.889_763_78, 1);
     expect(nodeInspection.text).toContain("Kivu Advisory Group");
     expect(nodeInspection.text).toContain("KA-2026-118");
     expect(nodeInspection.text).toContain("9,628.00 USD");
-    expect(browserInspection.pages).toBe(2);
-    expect(browserInspection.view[2]).toBeCloseTo(240.944_881_889_8, 1);
-    expect(browserInspection.view[3]).toBeCloseTo(155.905_511_811, 1);
-    expect(browserInspection.text).toContain("Élodie Mbemba");
-    expect(browserInspection.text).toContain("Atelier Nzela");
-    const expectedBarcodes = [
-      "DOCN-2026-0042",
-      "5901234123457",
-      "001234567890",
-      "0123456789012",
-    ];
-    expect(await decodeBarcodeSpecimen(nodeBarcodeBytes)).toEqual(
-      expectedBarcodes,
-    );
-    expect(await decodeBarcodeSpecimen(browserBarcodeBytes)).toEqual(
-      expectedBarcodes,
-    );
-
+    for (const [index, directory] of [
+      browserDirectory,
+      nodeDirectory,
+    ].entries())
+      for (const [fileIndex, file] of retainedPaths.entries())
+        expect(await readFile(resolve(directory, file), "utf8")).toBe(
+          retained[index]![fileIndex],
+        );
     await mkdir(artifacts, { recursive: true });
     await Promise.all([
       writeFile(resolve(artifacts, "node-consumer.pdf"), nodeBytes),
       writeFile(resolve(artifacts, "browser-consumer.pdf"), browserBytes),
-      writeFile(resolve(artifacts, "node-barcodes.pdf"), nodeBarcodeBytes),
-      writeFile(
-        resolve(artifacts, "browser-barcodes.pdf"),
-        browserBarcodeBytes,
-      ),
+      writeFile(resolve(artifacts, "component-consumer.pdf"), componentBytes),
       writeFile(resolve(artifacts, "run.log"), `${logs.join("\n\n")}\n`),
       writeJson(resolve(artifacts, "install-state.json"), {
         schemaVersion: 1,
         registryItems: [
-          "docn-business-card-minimal",
+          "docn-text-example",
+          "docn-component-example",
           "docn-invoice-business",
-          "docn-barcode",
         ],
-        decodedBarcodes: expectedBarcodes,
-        additionalQaCompositionsPerConsumer: 1,
         registryOnlineDuringRender: false,
-        consumerRoots: [
-          "<consumer-root>/browser-consumer",
-          "<consumer-root>/node-consumer",
-        ],
         installedSourceFiles: {
           browser: browserSources.length,
-          node: nodeSources.length,
+          nodeComponents: nodeSources.length,
         },
-        browserRemoteOrigins: [...remoteOrigins].map((origin) =>
-          origin === browserOrigin ? "<browser-consumer-origin>" : origin,
-        ),
+        configurationAndOwnedFilesPreserved: true,
+        strictTypeChecks: true,
+        browserRemoteOrigins: ["<browser-consumer-origin>"],
         outputs: {
           browser: {
             bytes: browserBytes.byteLength,
             pages: browserInspection.pages,
           },
-          node: { bytes: nodeBytes.byteLength, pages: nodeInspection.pages },
+          components: {
+            bytes: componentBytes.byteLength,
+            pages: componentInspection.pages,
+          },
+          legacyInvoice: {
+            bytes: nodeBytes.byteLength,
+            pages: nodeInspection.pages,
+          },
         },
       }),
     ]);

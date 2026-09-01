@@ -1,6 +1,6 @@
 import { Path, Rect, Svg, View } from "@react-pdf/renderer";
 import { assertListItems, type ListItem } from "./list-data";
-import { Text } from "./typography";
+import { Text } from "./text";
 import { usePdfTheme } from "./theme-context";
 
 export type ListMarker = "bullet" | "numbered" | "check";
