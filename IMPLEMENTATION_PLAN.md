@@ -1,6 +1,6 @@
 # docn-ui — implementation and delivery plan
 
-Date: 2026-08-28. Status: **L00G through L11 are merged; L12 is in progress**. The plan contains **18 lots and 67 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration. Component revision: 2026-08-31; L12-S02 is split into eight sequential stories to cover PDFx's component categories, barcodes, individual source installation and usable documentation. Template redesign is paused.
+Date: 2026-08-28. Status: **L00G through L12 are merged; L13 is in review in PR #44**. The plan contains **18 lots and 67 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration. Component revision: 2026-08-31; L12-S02 was split into sequential stories to cover PDFx's component categories, barcodes, individual source installation and usable documentation. Template redesign is paused.
 
 ## 1. Execution contract
 
@@ -18,44 +18,44 @@ Revision requested on 2026-08-28: adapt Munganga's GitHub governance, tighten PR
 
 ## 3. Reading and sources of truth
 
-| Question                               | Canonical document                                                         |
-| -------------------------------------- | -------------------------------------------------------------------------- |
-| What should be delivered?              | [PRD](docs/PRD.md)                                                         |
-| What should the site look like?        | [DESIGN](DESIGN.md)                                                        |
-| Where should it be implemented?        | [Architecture](docs/ARCHITECTURE.md)                                       |
-| What PDF behavior is required?         | [Contracts](docs/specs/DOCUMENT_MODEL.md)                                  |
-| Which templates?                       | [Catalog](docs/specs/TEMPLATE_CATALOG.md)                                  |
-| Which PDF components and reference gaps? | [Component catalog](docs/specs/COMPONENT_CATALOG.md)                      |
-| How is source code obtained?           | [Registry](docs/specs/REGISTRY.md)                                         |
-| What evidence is required?             | [Testing](docs/TESTING.md)                                                 |
-| What is the actual status?             | [status.json](docs/implementation/status.json) and QA reports              |
-| Which commits come next?               | The lot specification below                                                |
-| Which GitHub rules and tracking apply? | [GITHUB](docs/GITHUB.md) and [actual IDs](docs/implementation/github.json) |
+| Question                                 | Canonical document                                                         |
+| ---------------------------------------- | -------------------------------------------------------------------------- |
+| What should be delivered?                | [PRD](docs/PRD.md)                                                         |
+| What should the site look like?          | [DESIGN](DESIGN.md)                                                        |
+| Where should it be implemented?          | [Architecture](docs/ARCHITECTURE.md)                                       |
+| What PDF behavior is required?           | [Contracts](docs/specs/DOCUMENT_MODEL.md)                                  |
+| Which templates?                         | [Catalog](docs/specs/TEMPLATE_CATALOG.md)                                  |
+| Which PDF components and reference gaps? | [Component catalog](docs/specs/COMPONENT_CATALOG.md)                       |
+| How is source code obtained?             | [Registry](docs/specs/REGISTRY.md)                                         |
+| What evidence is required?               | [Testing](docs/TESTING.md)                                                 |
+| What is the actual status?               | [status.json](docs/implementation/status.json) and QA reports              |
+| Which commits come next?                 | The lot specification below                                                |
+| Which GitHub rules and tracking apply?   | [GITHUB](docs/GITHUB.md) and [actual IDs](docs/implementation/github.json) |
 
 ## 4. Lot sequence
 
 Execution is sequential by default. `Depends on` identifies the preceding lot required to begin; its own prerequisites are transitive. Lot specifications and `status.json` use the same sequence. Do not add parallel agents or branches without a maintainer request.
 
-| Lot  | Deliverable                                           | Depends on | Specification                                                       |
-| ---- | ----------------------------------------------------- | ---------- | ------------------------------------------------------------------- |
-| L00  | Governance and first documentation commit             | —          | [Governance](docs/implementation/lots/L00-governance.md)            |
-| L00G | Public repository, protections, Project, and issues   | L00        | [GitHub](docs/implementation/lots/L00G-github-governance.md)        |
-| L01  | Workspace, Next.js, shadcn, tests, and minimal CI     | L00G       | [Bootstrap](docs/implementation/lots/L01-bootstrap.md)              |
-| L02  | PDF feasibility proven in the actual build            | L01        | [PDF rendering](docs/implementation/lots/L02-pdf-feasibility.md)    |
-| L03  | shadcn site shell and navigation                      | L02        | [Interface](docs/implementation/lots/L03-site-shell.md)             |
-| L04  | PDF contracts, formats, themes, and primitives        | L03        | [Foundations](docs/implementation/lots/L04-document-foundations.md) |
-| L05  | First complete business card, then three compositions | L04        | [Business cards](docs/implementation/lots/L05-business-cards.md)    |
-| L06  | Catalog and reusable data editor                      | L05        | [Catalog](docs/implementation/lots/L06-catalog-playground.md)       |
-| L07  | Real source installation outside the monorepo         | L06        | [Registry](docs/implementation/lots/L07-registry.md)                |
-| L08  | Three event tickets                                   | L07        | [Tickets](docs/implementation/lots/L08-event-tickets.md)            |
-| L09  | Three thermal receipts                                | L08        | [Receipts](docs/implementation/lots/L09-thermal-receipts.md)        |
-| L10  | Three labels and label sheets                         | L09        | [Labels](docs/implementation/lots/L10-labels.md)                    |
-| L11  | Three multipage invoices                              | L10        | [Invoices](docs/implementation/lots/L11-invoices.md)                |
+| Lot  | Deliverable                                            | Depends on | Specification                                                       |
+| ---- | ------------------------------------------------------ | ---------- | ------------------------------------------------------------------- |
+| L00  | Governance and first documentation commit              | —          | [Governance](docs/implementation/lots/L00-governance.md)            |
+| L00G | Public repository, protections, Project, and issues    | L00        | [GitHub](docs/implementation/lots/L00G-github-governance.md)        |
+| L01  | Workspace, Next.js, shadcn, tests, and minimal CI      | L00G       | [Bootstrap](docs/implementation/lots/L01-bootstrap.md)              |
+| L02  | PDF feasibility proven in the actual build             | L01        | [PDF rendering](docs/implementation/lots/L02-pdf-feasibility.md)    |
+| L03  | shadcn site shell and navigation                       | L02        | [Interface](docs/implementation/lots/L03-site-shell.md)             |
+| L04  | PDF contracts, formats, themes, and primitives         | L03        | [Foundations](docs/implementation/lots/L04-document-foundations.md) |
+| L05  | First complete business card, then three compositions  | L04        | [Business cards](docs/implementation/lots/L05-business-cards.md)    |
+| L06  | Catalog and reusable data editor                       | L05        | [Catalog](docs/implementation/lots/L06-catalog-playground.md)       |
+| L07  | Real source installation outside the monorepo          | L06        | [Registry](docs/implementation/lots/L07-registry.md)                |
+| L08  | Three event tickets                                    | L07        | [Tickets](docs/implementation/lots/L08-event-tickets.md)            |
+| L09  | Three thermal receipts                                 | L08        | [Receipts](docs/implementation/lots/L09-thermal-receipts.md)        |
+| L10  | Three labels and label sheets                          | L09        | [Labels](docs/implementation/lots/L10-labels.md)                    |
+| L11  | Three multipage invoices                               | L10        | [Invoices](docs/implementation/lots/L11-invoices.md)                |
 | L12  | Reusable PDF components, barcodes, gallery, and guides | L11        | [Documentation](docs/implementation/lots/L12-documentation.md)      |
-| L13  | Accessibility, security, and performance              | L12        | [Hardening](docs/implementation/lots/L13-hardening.md)              |
-| L14  | Full qualification and installations                  | L13        | [Qualification](docs/implementation/lots/L14-qualification.md)      |
-| L15  | Final CI, preview, and delivery preparation           | L14        | [Delivery](docs/implementation/lots/L15-delivery.md)                |
-| L16  | Final QA, authorized publication, and v1.0.0          | L15        | [Release](docs/implementation/lots/L16-release.md)                  |
+| L13  | Accessibility, security, and performance               | L12        | [Hardening](docs/implementation/lots/L13-hardening.md)              |
+| L14  | Full qualification and installations                   | L13        | [Qualification](docs/implementation/lots/L14-qualification.md)      |
+| L15  | Final CI, preview, and delivery preparation            | L14        | [Delivery](docs/implementation/lots/L15-delivery.md)                |
+| L16  | Final QA, authorized publication, and v1.0.0           | L15        | [Release](docs/implementation/lots/L16-release.md)                  |
 
 ## 5. Decision gates
 

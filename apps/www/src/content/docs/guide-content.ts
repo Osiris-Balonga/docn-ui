@@ -526,6 +526,20 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       ],
     },
     {
+      id: "browser-support",
+      title: "Browser support",
+      blocks: [
+        {
+          type: "paragraph",
+          text: "The static documentation, template catalog and preview reader are continuously tested in Playwright Chromium. Browser-side PDF generation is also qualified in a temporary Vite consumer using Chromium. Firefox, Safari and iOS Safari have not yet been tested on their actual engines and are not claimed as supported. Automated WebKit, when used, would not by itself establish Safari or iOS support.",
+        },
+        {
+          type: "paragraph",
+          text: "The preview reader exposes keyboard page navigation, zoom, download and focus restoration. Preview images have text alternatives, but they do not replace the document's structured data or establish an accessible PDF reading order.",
+        },
+      ],
+    },
+    {
       id: "codes-and-invoices",
       title: "Codes, signatures and invoices",
       blocks: [
@@ -553,7 +567,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
             "Shared input limits include 256 KiB JSON, depth 8, bounded strings and 512 UTF-8 bytes for a QR payload; physical code density can impose a lower limit.",
             "Permitted user images are validated PNG/JPEG, up to two files, 5 MiB and 16 megapixels each. Imported SVG, HTML, external PDFs and arbitrary image URLs are outside the public input contract.",
             "Invoices and receipts allow at most 200 lines, documents 50 pages and final output 20 MiB. A receipt also has a 2,000 mm height limit.",
-            "The site's render coordinator has a 15-second timeout. Standalone consumer calls must provide their own scheduling, timeout/recovery and resource cleanup.",
+            "The former site editor is not part of the current V1 catalog, so the site has no active render queue. Consumer applications must provide their own scheduling, a recommended 15-second timeout, stale-result handling and object URL cleanup.",
           ],
         },
       ],

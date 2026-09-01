@@ -1,6 +1,27 @@
 import { DOCUMENT_LIMITS } from "../core/contracts";
 import { DocumentValidationError } from "../core/errors";
 
+function decodeBase64Prefix(encoded: string, byteCount: number): number[] {
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const bytes: number[] = [];
+  let buffer = 0;
+  let bits = 0;
+  for (const character of encoded) {
+    if (character === "=") break;
+    const value = alphabet.indexOf(character);
+    if (value < 0) return [];
+    buffer = (buffer << 6) | value;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((buffer >> bits) & 0xff);
+      if (bytes.length === byteCount) break;
+    }
+  }
+  return bytes;
+}
+
 export function assertLocalImage(
   source: string,
   width: number,
@@ -55,4 +76,16 @@ export function assertLocalImage(
   const padding = encoded.endsWith("==") ? 2 : encoded.endsWith("=") ? 1 : 0;
   if ((encoded.length * 3) / 4 - padding > DOCUMENT_LIMITS.imageBytes)
     throw reject();
+  const signature = decodeBase64Prefix(encoded, 8);
+  const isPng =
+    match[1] === "png" &&
+    [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every(
+      (value, index) => signature[index] === value,
+    );
+  const isJpeg =
+    match[1] === "jpeg" &&
+    signature[0] === 0xff &&
+    signature[1] === 0xd8 &&
+    signature[2] === 0xff;
+  if (!isPng && !isJpeg) throw reject();
 }

@@ -1,4 +1,6 @@
 import { PDFDocument, type PDFPage } from "pdf-lib";
+import { DOCUMENT_LIMITS } from "../core/contracts";
+import { DocumentValidationError } from "../core/errors";
 import type { PageGeometry } from "../core/page-geometry";
 export { getPageGeometry, type PageGeometry } from "../core/page-geometry";
 
@@ -24,13 +26,27 @@ export async function applyPrintBoxes(
   geometry: PageGeometry,
 ): Promise<Uint8Array> {
   const document = await PDFDocument.load(bytes, { updateMetadata: false });
+  if (document.getPageCount() > DOCUMENT_LIMITS.pages)
+    throw new DocumentValidationError([
+      {
+        code: "LIMIT_EXCEEDED",
+        message: `Final PDF exceeds the ${DOCUMENT_LIMITS.pages}-page limit.`,
+        path: ["document", "pages"],
+      },
+    ]);
   for (const page of document.getPages()) setBoxes(page, geometry);
   const result = await document.save({
     addDefaultPage: false,
     useObjectStreams: false,
     updateFieldAppearances: false,
   });
-  if (result.byteLength > 20 * 1024 * 1024)
-    throw new RangeError("LIMIT_EXCEEDED: final PDF exceeds 20 MiB.");
+  if (result.byteLength > DOCUMENT_LIMITS.finalPdfBytes)
+    throw new DocumentValidationError([
+      {
+        code: "LIMIT_EXCEEDED",
+        message: "Final PDF exceeds the 20 MiB limit.",
+        path: ["document", "bytes"],
+      },
+    ]);
   return result;
 }
