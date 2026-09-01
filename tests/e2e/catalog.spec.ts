@@ -293,13 +293,32 @@ test("browses component examples source formats and themes", async ({
   await expect(page.getByRole("heading", { name: "Examples" })).toBeVisible();
   await expect(page.getByText("Solid, dashed and dotted rules")).toBeVisible();
   await expect(
-    page.getByLabel("divider-example.tsx code").filter({
+    page.getByLabel("divider-example-2.tsx code").filter({
       hasText: 'label="OR"',
     }),
   ).toHaveCount(1);
   await expect(
     page.getByRole("table", { name: "Divider properties" }),
   ).toContainText("PDF-native border style.");
+
+  await page.goto("/components/data-table/");
+  await expect(page.getByText("Typed production rows")).toBeVisible();
+  await expect(page.getByText("Empty dataset", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("table", { name: "DataTable properties" }),
+  ).toContainText("Typed column definitions and cell mapping functions.");
+
+  await page.goto("/components/image/");
+  await expect(page.getByText("Contained photograph")).toBeVisible();
+  await expect(page.getByText("Covered photograph")).toBeVisible();
+
+  await page.goto("/components/graph/");
+  await expect(page.getByText("Cartesian charts")).toBeVisible();
+  await expect(page.getByText("Circular charts")).toBeVisible();
+
+  await page.goto("/components/watermark/");
+  await expect(page.getByText("Repeated review mark")).toBeVisible();
+  await expect(page.getByText("Single-page placement")).toBeVisible();
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByPlaceholder("Search available pages...").fill("PageBreak");

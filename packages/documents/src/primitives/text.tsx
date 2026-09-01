@@ -6,11 +6,17 @@ export type TextSize = "body" | "caption" | "label";
 export type TextAlign = "left" | "center" | "right" | "justify";
 
 export interface TextProps {
+  /** Selectable PDF content. */
   children: ReactNode;
+  /** Horizontal text alignment. */
   align?: TextAlign;
+  /** Qualified regular or strong font weight. */
   weight?: "regular" | "strong";
+  /** Optional internal PDF destination identifier. */
   id?: string;
+  /** Theme typography scale. */
   size?: TextSize;
+  /** Theme-relative text color role. */
   tone?: "default" | "inverted" | "muted";
 }
 

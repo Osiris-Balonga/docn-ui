@@ -3,7 +3,9 @@ import type { ReactNode } from "react";
 import { Image, type ImageProps } from "./image";
 import { Row } from "./row";
 export interface PageHeaderProps {
+  /** Header text or composed PDF content. */
   children: ReactNode;
+  /** Optional resolved local logo with explicit dimensions. */
   logo?: Pick<ImageProps, "alt" | "resolvedSource" | "width" | "height">;
 }
 

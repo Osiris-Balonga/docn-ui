@@ -72,13 +72,13 @@ export default async function ComponentPage({
               Examples
             </h2>
             <div className="space-y-10">
-              {entry.recipes.map((recipe) => (
+              {entry.recipes.map((recipe, index) => (
                 <div key={recipe.title}>
                   <h3 className="mb-2 text-base font-medium">{recipe.title}</h3>
                   <p className="mb-4 max-w-[70ch] text-sm leading-6 text-muted-foreground">
                     {recipe.description}
                   </p>
-                  <CodeBlock label={`${slug}-example.tsx`}>
+                  <CodeBlock label={`${slug}-example-${index + 1}.tsx`}>
                     {recipe.code}
                   </CodeBlock>
                 </div>

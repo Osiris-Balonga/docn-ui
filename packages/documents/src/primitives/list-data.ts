@@ -2,9 +2,13 @@ import { DOCUMENT_LIMITS } from "../core/contracts";
 import { DocumentValidationError } from "../core/errors";
 
 export interface ListItem {
+  /** Primary printable item text. */
   text: string;
+  /** Optional muted supporting line. */
   description?: string;
+  /** Printed check state used by checklist markers. */
   checked?: boolean;
+  /** Nested entries, bounded to three levels overall. */
   children?: readonly ListItem[];
 }
 

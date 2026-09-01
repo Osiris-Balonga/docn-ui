@@ -3,7 +3,9 @@ import type { ReactNode } from "react";
 import { Row } from "./row";
 import { PageNumber, type PageNumberProps } from "./page-number";
 export interface PageFooterProps {
+  /** Optional contact, legal or document footer content. */
   children?: ReactNode;
+  /** Page-number configuration, or false to hide numbering. */
   pageNumber?: false | PageNumberProps;
 }
 

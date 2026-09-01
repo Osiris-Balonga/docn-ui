@@ -5,12 +5,15 @@ import { millimetersToPoints } from "../core/units";
 export type BarcodeFormat = "code128" | "ean13";
 
 export interface BarcodeProps {
+  /** Explicit Code 128 or EAN-13 encoding. */
   format: BarcodeFormat;
+  /** Validated printable payload. */
   value: string;
   /** Total width in points, including the protected quiet zones. */
   width?: number;
   /** Data-bar height in points, excluding guard extensions and readable text. */
   barHeight?: number;
+  /** Whether to print the human-readable value below the bars. */
   showValue?: boolean;
 }
 

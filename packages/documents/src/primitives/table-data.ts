@@ -3,13 +3,18 @@ import { DocumentValidationError } from "../core/errors";
 import { assertFlowBlockFits, type FlowFrame } from "./flow-layout";
 
 export interface TableColumn {
+  /** Stable column identifier. */
   key: string;
+  /** Printable header label. */
   label: string;
+  /** Percentage width; all columns must total 100. */
   width: number;
+  /** Text alignment for header and cells. */
   align?: "left" | "right";
 }
 export type TableValue = string | number;
 export interface DataTableColumn<T> extends TableColumn {
+  /** Maps one typed row to a printable string or number. */
   cell(row: T): TableValue;
 }
 export interface PreparedTableRow {

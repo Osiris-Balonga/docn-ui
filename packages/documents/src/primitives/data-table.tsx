@@ -5,10 +5,15 @@ import { prepareTableRows, type DataTableColumn } from "./table-data";
 import { Text } from "./text";
 
 export interface DataTableProps<T> {
+  /** Typed column definitions and cell mapping functions. */
   columns: readonly DataTableColumn<T>[];
+  /** Validated rows rendered in source order. */
   data: readonly T[];
+  /** Stable key for each printable row. */
   rowKey(row: T, index: number): string;
+  /** Qualified row height in PDF points. */
   rowHeight(row: T, index: number): number;
+  /** Printed message used when data is empty. */
   emptyMessage?: string;
 }
 

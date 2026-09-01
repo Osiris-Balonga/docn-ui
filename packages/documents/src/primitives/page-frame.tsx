@@ -8,10 +8,15 @@ import { createSafeFrame } from "./measurement";
 import { PdfThemeProvider } from "./theme-context";
 
 export interface PageFrameProps {
+  /** Optional PDF background color replacing the theme canvas. */
   backgroundColor?: string;
+  /** Fixed-format document content. */
   children: ReactNode;
+  /** Resolved physical format and orientation. */
   format: ResolvedFixedFormat;
+  /** Screen or bounded print profile with optional bleed and crop marks. */
   printProfile?: PrintProfile;
+  /** Qualified PDF theme used by all child primitives. */
   theme: PdfTheme;
 }
 

@@ -2,8 +2,11 @@ import { View } from "@react-pdf/renderer";
 import { Text } from "./text";
 import { usePdfTheme } from "./theme-context";
 export interface FieldPairProps {
+  /** Short muted field label. */
   label: string;
+  /** Readable field value. */
   value: string;
+  /** Place the label above the value or in the first third of a row. */
   orientation?: "vertical" | "horizontal";
 }
 

@@ -5,7 +5,9 @@ import { usePdfTheme } from "./theme-context";
 
 export type ListMarker = "bullet" | "numbered" | "check";
 export interface ListProps {
+  /** Validated printable list entries with bounded nesting. */
   items: readonly ListItem[];
+  /** Bullet, sequential number or static checkbox marker. */
   marker?: ListMarker;
 }
 

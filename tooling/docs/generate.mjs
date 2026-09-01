@@ -94,16 +94,9 @@ try {
   );
   prepareExampleFonts(resolve(root, "packages/documents/assets"));
   const api = createApiReader(root);
-  const sample = createCanvas(420, 210);
-  const context = sample.getContext("2d");
-  context.fillStyle = "#eeeeee";
-  context.fillRect(0, 0, 420, 210);
-  context.fillStyle = "#171717";
-  context.fillRect(24, 24, 162, 162);
-  context.fillStyle = "#888888";
-  context.fillRect(210, 24, 186, 69);
-  context.fillRect(210, 117, 186, 69);
-  const imageSource = sample.toDataURL("image/png");
+  const imageSource = `data:image/jpeg;base64,${(
+    await readFile(resolve(root, "tooling/docs/assets/desk-setup.jpg"))
+  ).toString("base64")}`;
   const outputs = [];
   await mkdir(resolve(publicRoot, "generated/docs"), { recursive: true });
   await mkdir(resolve(root, ".artifacts/docs"), { recursive: true });

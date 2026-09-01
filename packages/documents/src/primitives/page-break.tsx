@@ -2,7 +2,11 @@ import { View } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 import { DocumentValidationError } from "../core/errors";
 import { useFlowFrame } from "./flow-context";
-export function PageBreak({ children }: { children: ReactNode }) {
+export interface PageBreakProps {
+  /** Content that begins at the top of a new flowing page. */
+  children: ReactNode;
+}
+export function PageBreak({ children }: PageBreakProps) {
   useFlowFrame();
   if (
     children === undefined ||

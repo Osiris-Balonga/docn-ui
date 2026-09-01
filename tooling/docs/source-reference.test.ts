@@ -29,7 +29,7 @@ test("usage retains its local data/types and imports without leaking other examp
   );
   expect(example.code).toContain("interface PrintRow");
   expect(example.code).toContain("const printRows");
-  expect(example.code).toContain("const printColumns");
+  expect(example.code).toContain("const dataBaseColumns");
   expect(example.code).toContain('from "../docn/primitives/data-table"');
   expect(example.code).not.toContain("Barcode");
   expect(example.code).not.toContain("Graph");
@@ -53,4 +53,16 @@ test("component recipes stay focused and public props retain source descriptions
     default: '"solid"',
     description: "PDF-native border style.",
   });
-});
+
+  const readApi = createApiReader(root);
+  for (const entry of componentCatalog) {
+    expect(entry.recipes?.length, `${entry.title} recipes`).toBeGreaterThan(0);
+    const registryItem = componentRegistryItems.find(
+      (candidate: { name: string }) => candidate.name === `docn-${entry.slug}`,
+    );
+    const api = readApi(registryItem);
+    for (const declaration of api)
+      for (const prop of declaration.props)
+        expect(prop.description, `${entry.title}.${prop.name}`).not.toBe("");
+  }
+}, 10_000);

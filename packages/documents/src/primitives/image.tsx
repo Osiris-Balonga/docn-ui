@@ -3,12 +3,19 @@ import { assertLocalImage } from "./image-validation";
 import { Text } from "./text";
 
 export interface ImageProps {
+  /** Horizontal placement within the surrounding PDF region. */
   align?: "start" | "center" | "end";
+  /** Optional selectable caption below the image. */
   caption?: string;
+  /** Preserve the full image or crop it to fill the box. */
   fit?: "contain" | "cover";
+  /** Alternative text exposed to the PDF renderer. */
   alt: string;
+  /** Explicit image-box height in PDF points. */
   height: number;
+  /** Resolved permitted local data or blob source. */
   resolvedSource: string;
+  /** Explicit image-box width in PDF points. */
   width: number;
 }
 

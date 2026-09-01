@@ -3,8 +3,11 @@ import { assertPrintText, invalidPrintData } from "./printable-data";
 import { Text } from "./text";
 import { usePdfTheme } from "./theme-context";
 export interface BadgeProps {
+  /** Short printed status label. */
   label: string;
+  /** Compact caption or regular body text size. */
   size?: "compact" | "regular";
+  /** Filled-neutral or outline theme treatment. */
   tone?: "neutral" | "outline";
 }
 

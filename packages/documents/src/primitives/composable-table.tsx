@@ -26,7 +26,9 @@ function useTableColumns() {
 }
 
 export interface TableProps {
+  /** Ordered column definitions whose widths total 100 percent. */
   columns: readonly TableColumn[];
+  /** Direct measured TableRow children. */
   children: ReactNode;
 }
 export function Table({ columns, children }: TableProps) {
@@ -40,7 +42,9 @@ export function Table({ columns, children }: TableProps) {
 }
 
 export interface TableCellProps {
+  /** Column key matching the cell's position in the row. */
   column: string;
+  /** Selectable string or numeric value. */
   children: TableValue;
 }
 export function TableCell({ column, children }: TableCellProps) {
@@ -72,7 +76,9 @@ export function TableCell({ column, children }: TableCellProps) {
 }
 
 export interface TableRowProps {
+  /** Exactly one ordered TableCell for every column. */
   children: ReactNode;
+  /** Qualified row height in PDF points. */
   measuredHeight: number;
 }
 export function TableRow({ children, measuredHeight }: TableRowProps) {
@@ -111,7 +117,9 @@ export function TableRow({ children, measuredHeight }: TableRowProps) {
 }
 
 export interface TableHeaderProps {
+  /** Ordered column labels, widths and alignments. */
   columns: readonly TableColumn[];
+  /** Qualified header height in PDF points. */
   measuredHeight: number;
 }
 export function TableHeader({ columns, measuredHeight }: TableHeaderProps) {

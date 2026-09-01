@@ -3,8 +3,11 @@ import { usePdfTheme } from "./theme-context";
 import { validateLink } from "./link-validation";
 
 export interface LinkProps {
+  /** Readable selectable link label. */
   children: string;
+  /** Validated HTTP(S), mailto, tel or internal destination. */
   href: string;
+  /** Whether to print an underline below the label. */
   underline?: boolean;
 }
 

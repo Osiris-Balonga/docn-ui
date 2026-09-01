@@ -19,16 +19,24 @@ export function invalidPrintData(message: string, path: string): never {
 }
 
 export interface FormField {
+  /** Unique field identifier across all groups. */
   id: string;
+  /** Printed field label. */
   label: string;
+  /** Optional prefilled printable value. */
   value?: string;
+  /** Whether the label prints a required marker. */
   required?: boolean;
 }
 
 export interface FormGroup {
+  /** Unique group identifier. */
   id: string;
+  /** Printed group heading. */
   title: string;
+  /** One, two or three equal printable columns. */
   columns?: 1 | 2 | 3;
+  /** Ordered printable fields in the group. */
   fields: readonly FormField[];
 }
 
@@ -71,15 +79,22 @@ export function assertFormGroups(groups: readonly FormGroup[]): void {
 }
 
 export interface Signer {
+  /** Printed signer-area label. */
   label: string;
+  /** Optional printed signer name. */
   name?: string;
+  /** Optional printed role or capacity. */
   role?: string;
+  /** Optional printed date or date prompt. */
   date?: string;
 }
 
 export interface SignatureProps {
+  /** One or two signer definitions. */
   signers: readonly Signer[];
+  /** Stack metadata below the line or place it alongside the signing area. */
   layout?: "stacked" | "inline";
+  /** Reserved handwritten-signature height in PDF points. */
   space?: number;
 }
 

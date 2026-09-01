@@ -3,10 +3,15 @@ import type { LayoutBounds } from "./measurement";
 import { assertPrintText, invalidPrintData } from "./printable-data";
 
 export interface WatermarkProps {
+  /** Short printable Latin watermark label. */
   text: string;
+  /** Vertical placement within the flow body. */
   placement?: "top" | "center" | "bottom";
+  /** Restrained opacity from 0.02 to 0.2. */
   opacity?: number;
+  /** Text size from 12 to 48 PDF points. */
   fontSize?: number;
+  /** Repeat on flowing pages or limit the mark to the first page. */
   repeat?: boolean;
 }
 

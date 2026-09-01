@@ -42,6 +42,7 @@ export {
   PageBreak,
   PageNumber,
   type KeepTogetherProps,
+  type PageBreakProps,
   type PageNumberProps,
 } from "./pagination";
 export {
