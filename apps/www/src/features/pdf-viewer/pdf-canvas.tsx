@@ -31,7 +31,7 @@ export function PdfCanvas({
     let loadedPage: PDFPageProxy | undefined;
     let loadingTask: PDFDocumentLoadingTask | undefined;
 
-    async function renderPage() {
+    const renderPage = async () => {
       try {
         const { GlobalWorkerOptions, getDocument } =
           await import("pdfjs-dist/legacy/build/pdf.mjs");
@@ -73,7 +73,7 @@ export function PdfCanvas({
           return;
         onError("The PDF preview could not be displayed. Try rendering again.");
       }
-    }
+    };
 
     void renderPage();
 
