@@ -1,15 +1,9 @@
 "use client";
 
-import {
-  type KeyboardEvent,
-  Suspense,
-  useEffect,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { type KeyboardEvent, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckIcon, Code2Icon, TerminalIcon } from "lucide-react";
+import { Code2Icon } from "lucide-react";
 import {
   templateCatalog,
   templateFamilies,
@@ -27,47 +21,11 @@ import {
 } from "@/components/ui/sheet";
 import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 import { PdfPreviewDialog } from "@/features/pdf-preview/pdf-preview-dialog";
-import { copyText } from "@/features/registry/registry-source";
 import { cn } from "@/lib/utils";
 
-const subscribeToStaticOrigin = () => () => {};
-
 function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
-  const [copied, setCopied] = useState(false);
-  const origin = useSyncExternalStore(
-    subscribeToStaticOrigin,
-    () => window.location.origin,
-    () => "http://127.0.0.1:4173",
-  );
-  const installCommand = `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/docn-${template.id}.json`;
-
-  async function copyInstallCommand() {
-    const success = await copyText(installCommand).catch(() => false);
-    setCopied(success);
-  }
-
   return (
-    <div className="flex items-center gap-1">
-      <Button
-        type="button"
-        variant="ghost"
-        className="h-10 px-2.5"
-        onClick={copyInstallCommand}
-        aria-label={
-          copied
-            ? `Copied ${template.title} install command`
-            : `Copy ${template.title} install command`
-        }
-      >
-        {copied ? (
-          <CheckIcon aria-hidden="true" />
-        ) : (
-          <TerminalIcon aria-hidden="true" />
-        )}
-        <span className="hidden sm:inline">
-          {copied ? "Copied" : "Install"}
-        </span>
-      </Button>
+    <div className="flex items-center">
       <Sheet>
         <SheetTrigger
           render={
