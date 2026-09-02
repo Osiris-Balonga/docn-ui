@@ -9,7 +9,7 @@ import {
 } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CheckIcon, Code2Icon, CopyIcon } from "lucide-react";
+import { CheckIcon, Code2Icon, TerminalIcon } from "lucide-react";
 import {
   templateCatalog,
   templateFamilies,
@@ -62,9 +62,11 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
         {copied ? (
           <CheckIcon aria-hidden="true" />
         ) : (
-          <CopyIcon aria-hidden="true" />
+          <TerminalIcon aria-hidden="true" />
         )}
-        <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+        <span className="hidden sm:inline">
+          {copied ? "Copied" : "Install"}
+        </span>
       </Button>
       <Sheet>
         <SheetTrigger
