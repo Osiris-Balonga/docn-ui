@@ -224,7 +224,7 @@ test("browses component examples source formats and themes", async ({
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "New Components" }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "All Components" }),
   ).toBeVisible();
@@ -232,7 +232,9 @@ test("browses component examples source formats and themes", async ({
   await expect(page.getByText("Browse templates")).toHaveCount(0);
   const inventory = page.getByRole("region", { name: "All Components" });
   await expect(inventory.getByRole("link")).toHaveCount(28);
-  await inventory.getByRole("link", { name: "Barcode", exact: true }).click();
+  const barcodeLink = inventory.getByRole("link", { name: "Barcode New" });
+  await expect(barcodeLink).toBeVisible();
+  await barcodeLink.click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Barcode");
   const specimen = page.getByRole("img", {
     name: "Barcode PDF example, page 1",
