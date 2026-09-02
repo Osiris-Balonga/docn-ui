@@ -125,3 +125,11 @@ test("documentation search isolates editor shortcuts, reports no matches, and op
   await user.click(screen.getByText("Browser and Node"));
   expect(routerPush).toHaveBeenCalledWith("/docs/browser-and-node/");
 });
+
+test("the homepage search trigger stays transparent over the video", () => {
+  render(<SiteHeader overMedia />);
+
+  expect(
+    screen.getByRole("button", { name: "Search documentation" }),
+  ).toHaveClass("bg-transparent", "dark:bg-transparent");
+});
