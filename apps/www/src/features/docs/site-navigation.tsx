@@ -20,7 +20,7 @@ const primaryNavigation = [
   { title: "Home", href: "/" },
   { title: "Docs", href: "/docs/" },
   { title: "Components", href: "/components/" },
-  { title: "Template", href: "/templates/" },
+  { title: "Templates", href: "/templates/" },
 ] as const;
 
 function isActive(pathname: string, href: string) {
