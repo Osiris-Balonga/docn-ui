@@ -1,69 +1,69 @@
-# L07 — Registre et consommation hors monorepo
+# L07 — Registry and consumption outside the monorepo
 
-Statut initial : **planned**. Branche : `feat/shadcn-pdf-registry`.
+Initial status: **planned**. Branch: `feat/shadcn-pdf-registry`.
 
-Dépendances : L06. Exigences : FR-13, FR-14 ; NFR-03, NFR-06, NFR-08, NFR-09 ; G3.
+Dependencies: L06. Requirements: FR-13, FR-14; NFR-03, NFR-06, NFR-08, NFR-09; G3.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/REGISTRY.md), [référence 2](../../adr/0004-source-distribution.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/REGISTRY.md), [reference 2](../../adr/0004-source-distribution.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Prouver la distribution avec les cartes existantes avant de multiplier les templates. Le vrai CLI shadcn fait partie de la preuve.
+Prove distribution with existing cards before multiplying templates. The actual shadcn CLI is part of the evidence.
 
-Fichiers/responsabilités cibles : tooling/registry, tooling/assets, tests/consumers, source viewer, apps/www/public/r généré.
+Target files/responsibilities: tooling/registry, tooling/assets, tests/consumers, source viewer, generated apps/www/public/r.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L07-S01 — `feat(registry): generate versioned items from document sources`
 
-- [ ] Manifeste source unique, IDs docn-* et items des cartes ; schéma officiel local épinglé.
-- [ ] Construire la fermeture de dépendances, cibler les sous-dossiers docn et réécrire les imports de manière bornée et testée.
-- [ ] Valider cycles, chemins, doublons, aliases privés et sources manquantes ; sorties déterministes et ignorées.
-- [ ] Version dev explicite ; pas de namespace/domaine prétendument réservé.
+- [x] Single source manifest, docn-* IDs, card items; pinned local official schema.
+- [x] Build the dependency closure, target an isolated root-level docn source tree, and rewrite imports to bounded relative paths without assuming the consumer's import prefix.
+- [x] Validate cycles, paths, duplicates, private aliases, and missing sources; deterministic, ignored outputs.
+- [x] Explicit development version; no supposedly reserved namespace/domain.
 
-**Acceptation :** Tous les fichiers nécessaires sont présents, aucun import du site ou workspace n'est distribué.
+**Acceptance:** Every required file is included; no site/workspace import is distributed.
 
-**Vérification ciblée :** Unit graphe/transformation ciblé ; pnpm verify:registry. Pas de snapshot de milliers de lignes de JSON.
+**Targeted verification:** Targeted graph/transformation unit tests; pnpm verify:registry. No snapshots of thousands of JSON lines.
 
 ### L07-S02 — `feat(registry): distribute verified local assets and usage examples`
 
-- [ ] Choisir le mécanisme supporté d'installation des fontes ; si récupérateur, code visible sans auto-exécution.
-- [ ] Résoudre destination, hashes, licences et refus d'écrasement ; tests traversal/size limit dans la suite utilitaire existante.
-- [ ] Fournir exemples browser et Node avec AssetResolver local et instructions exactes.
+- [x] Choose a supported font installation mechanism; if a fetcher is needed, keep its code visible without automatic execution.
+- [x] Resolve destinations, hashes, licenses, and overwrite rejection; traversal/size-limit tests in the existing utility suite.
+- [x] Provide browser and Node examples with local AssetResolver and exact instructions.
 
-**Acceptation :** Après préparation des assets, le rendu n'exige plus le domaine docn-ui ; échec d'asset explicite.
+**Acceptance:** After asset preparation, rendering requires no docn-ui domain; asset failures are explicit.
 
-**Vérification ciblée :** pnpm verify:assets ; unit récupérateur ciblé ; pas de téléchargement réseau dans unit.
+**Targeted verification:** pnpm verify:assets; targeted fetcher unit tests; no network downloads in unit tests.
 
 ### L07-S03 — `feat(code): expose complete source and installation instructions`
 
-- [ ] Afficher depuis les mêmes sources la liste de fichiers, code colorisé et copie ; fallback si clipboard indisponible.
-- [ ] Commande réelle pointant sur origine configurée/version ; local en dev, URL publique seulement après décision.
-- [ ] Documenter prérequis shadcn, dépendances, assets, customisation et mises à jour sans overwrite automatique.
+- [x] Display the file list, highlighted code, and copy action from the same sources; fallback when the clipboard is unavailable.
+- [x] Actual command targeting the configured origin/version; local in development, public URL only after a decision.
+- [x] Document shadcn prerequisites, dependencies, assets, customization, and updates without automatic overwrite.
 
-**Acceptation :** L'utilisateur accède au code complet et pas seulement au JSX de la page ; commande locale exécutable.
+**Acceptance:** Users access complete source, not only page JSX; the local command is executable.
 
-**Vérification ciblée :** Components source/copy ciblé ; vérifier lien entre source affichée et manifest.
+**Targeted verification:** Targeted source/copy component tests; verify the displayed source/manifest relationship.
 
 ### L07-S04 — `test(registry): install and render templates in isolated consumers`
 
-- [ ] Activer test:consumers, lancer deux projets temporaires hors workspace avec vrai CLI épinglé.
-- [ ] Installer une carte et sa fermeture ; exécuter rendu browser et Node avec assets locaux puis vérifier contenu/dimensions.
-- [ ] Bloquer le domaine du registre après installation et prouver l'autonomie ; conserver logs expurgés et état d'installation.
-- [ ] Ajouter consumer-tests conditionnel aux changements de distribution, obligatoire aux jalons ; vérifier commande all sans duplication.
+- [x] Activate test:consumers; run two temporary projects outside the workspace with the actual pinned CLI.
+- [x] Install a card and its dependency closure; run browser and Node rendering with local assets, then verify content/dimensions.
+- [x] Block the registry domain after installation and prove independence; retain sanitized logs and installation state.
+- [x] Add consumer-tests conditional on distribution changes and mandatory at gates; verify the all command without duplication.
 
-**Acceptation :** G3 : aucun accès caché aux node_modules/aliases du monorepo ni au domaine docn-ui après installation.
+**Acceptance:** G3: no hidden access to monorepo node_modules/aliases or the docn-ui domain after installation; an existing non-`@` shadcn configuration remains unchanged and works.
 
-**Vérification ciblée :** pnpm test:consumers ; pnpm verify:registry ; contrôle du PDF consommateur. Ne pas installer séparément les trois cartes partageant le même graphe.
+**Targeted verification:** pnpm test:consumers; pnpm verify:registry; inspect the consumer PDF. Do not separately install all three cards sharing the same graph.
 
-## Critère de sortie
+## Exit criteria
 
-Distribution autonome qualifiée. Tout template ultérieur s'insère dans ce contrat ; ne pas repousser un défaut d'installation à la release.
+Standalone distribution qualified. Every later template follows this contract; do not defer installation defects to release.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L07.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L07.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de publication npm, CLI propriétaire, namespace officiel ou écrasement automatique des fichiers utilisateur.
+No npm publication, proprietary CLI, official namespace, or automatic overwrite of user files.

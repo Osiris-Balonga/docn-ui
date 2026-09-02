@@ -1,61 +1,61 @@
-# L14 — Qualification V1 avec tests proportionnés
+# L14 — V1 qualification with proportionate tests
 
-Statut initial : **planned**. Branche : `test/v1-qualification`.
+Status: **merged** in [PR #52](https://github.com/Osiris-Balonga/docn-ui/pull/52) at merge commit `da10836b00240f4df1919863a6cca07de92a8ee8` on 2026-09-01. Branch: `test/v1-qualification`, based on L13 merge `a2abf5c0894c79a774ac384d593c72710fe96395`.
 
-Dépendances : L13. Exigences : FR-01–FR-16 ; NFR-01–NFR-10 ; G5.
+Dependencies: L13. Requirements: FR-01–FR-16; NFR-01–NFR-10; G5.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../TESTING.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../PRD.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../TESTING.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../PRD.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Combler les trous de couverture démontrés et auditer la suite existante. Ne pas recréer toutes les preuves des lots précédents.
+Close demonstrated coverage gaps and audit the existing suite. Do not recreate all evidence from previous lots.
 
-Fichiers/responsabilités cibles : Suites existantes tests PDF/E2E/consumers/visual ; docs/qa/L14.md.
+Target files/responsibilities: Existing PDF/E2E/consumers/visual suites; docs/qa/L14.md.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L14-S01 — `test(quality): close distinct v1 coverage gaps`
 
-- [ ] Mapper chaque exigence à une preuve existante ; ajouter seulement les risques non couverts.
-- [ ] Vérifier globs exclusifs, tests réellement collectés, absence de scripts silencieusement verts et noms de commande fidèles.
-- [ ] Enlever tests redondants ou de détail interne ; consolider fixtures communes sans supprimer vrais cas limites.
-- [ ] Consigner nombre/temps par périmètre à titre diagnostique, pas comme objectif à augmenter.
+- [x] Map every requirement to existing evidence; correct the PRD's obsolete editor/ticket/label scope instead of adding tests for withdrawn behavior.
+- [x] Verify exclusive globs, actual test collection, absence of silently successful scripts, and accurate command names.
+- [x] Remove the empty integration project/command after the editor's removal; retain every current edge case.
+- [x] Record counts/timings per scope for diagnosis, not as a target to increase.
 
-**Acceptation :** Tout nouveau test a un bug/risque écrit dans la revue ; chaque fichier appartient à un seul périmètre.
+**Acceptance:** Every new test has a written bug/risk in review; each file belongs to one scope.
 
-**Vérification ciblée :** Listing Vitest/Playwright et exécution des seuls nouveaux cas d'abord.
+**Targeted verification:** Vitest/Playwright listings and execution of only new cases first.
 
 ### L14-S02 — `test(pdf): approve representative visual and consumer baselines`
 
-- [ ] Relire planche contact des quinze compositions ; références visuelles ciblées au moins une par famille, variantes supplémentaires seulement si nécessaire.
-- [ ] Stabiliser rasteriseur/fonts/runner ; différences approuvées humainement, seuils non augmentés pour masquer un défaut.
-- [ ] Activer explicitement `test:visual` et l'ajouter à `test:all` ; références PDF choisies, aucun parcours E2E relancé sous une autre étiquette.
-- [ ] Étendre les deux consumers aux fermetures distinctes carte/facture/planche ; ne pas réinstaller chaque variante.
-- [ ] Garder PDFs/rapports générés hors Git, références sélectionnées et empreintes dans leurs emplacements dédiés.
+- [x] Review the current 17-composition / 21-page contact sheet; retain seven references covering every family and both sides of one business card.
+- [x] Pin the existing PDF.js/canvas rasterizer versions, bundled fonts, exact dimensions and SHA-256 references; no comparison threshold exists to weaken.
+- [x] Explicitly activate `test:visual` and add it to `test:all`; selected PDF references do not rerun E2E journeys.
+- [x] Extend both consumers to distinct business-card, invoice, and reusable-component dependency closures; labels/sheets remain outside the maintainer-approved V1 families.
+- [x] Keep generated PDFs/reports out of Git; selected references and fingerprints live under `tests/visual`.
 
-**Acceptation :** Les designs sont réellement examinés ; l'installation couvre les dépendances nouvelles sans explosion de scénarios.
+**Acceptance:** Designs are actually reviewed; installation covers new dependencies without a scenario explosion.
 
-**Vérification ciblée :** pnpm test:pdf ; pnpm test:visual ; pnpm test:consumers, avec réutilisation de PDFs/artefacts valides.
+**Targeted verification:** pnpm test:pdf; pnpm test:visual; pnpm test:consumers, reusing valid PDFs/artifacts.
 
 ### L14-S03 — `docs(qa): record v1 functional and print qualification`
 
-- [ ] Exécuter une validation complète orchestrée sur candidat propre avec un build ; réutiliser résultats du même SHA.
-- [ ] Revue manuelle FR/EN, clavier, zoom, copie code, téléchargements et paramètres d'impression sur supports représentatifs.
-- [ ] Si matériel disponible, imprimer carte/planche à 100 % et scanner un billet ; sinon consigner la limite sans inventer validation.
-- [ ] Compléter matrice exigence→preuve/résultat et défauts acceptés explicitement ; aucune exception implicite.
+- [x] Run one orchestrated full validation on candidate `ef4fe20` with one fingerprinted build reused by E2E.
+- [x] Review French/English data evidence, keyboard use, zoom, code copying, downloads, and PDF boxes on representative formats.
+- [x] Record that no printer/scanner, actual Safari/iOS Safari, or hardware barcode reader was available; tickets/sheets are outside current V1.
+- [x] Complete the requirement→evidence/result matrix and explicitly accepted limitations; no implicit exceptions.
 
-**Acceptation :** G5 atteint : V1 qualifiée localement avec limites explicites ; la publication n'est pas encore déclarée.
+**Acceptance:** G5 reached: V1 locally qualified with explicit limitations; publication not yet claimed.
 
-**Vérification ciblée :** pnpm validate:full ; QA manuelle ciblée. Ne pas réexécuter coverage puis test léger dans ce même passage.
+**Targeted verification:** pnpm validate:full; targeted manual QA. Do not rerun coverage and then lightweight tests in this same pass.
 
-## Critère de sortie
+## Exit criteria
 
-Preuve de chaque exigence ou exception approuvée, suite maintenable et temps connu. Aucun bug bloquant d'export/données/perte de contenu.
+Evidence for every requirement or an approved exception, a maintainable suite, and known runtime. No blocking export/data/content-loss bug.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L14.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L14.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de matrice combinatoire thèmes×formats×langues×navigateurs, pas de test de conformité d'une librairie tierce.
+No combinatorial themes×formats×languages×browsers matrix or third-party library compliance tests.

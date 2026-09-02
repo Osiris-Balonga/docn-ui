@@ -1,34 +1,34 @@
-# Risques et décisions à confirmer
+# Risks and decisions to confirm
 
-## Risques techniques
+## Technical risks
 
-| ID | Risque | Prévention / décision de sortie | Lot |
+| ID | Risk | Prevention / exit decision | Lot |
 | --- | --- | --- | --- |
-| R01 | Worker React-pdf incompatible avec bundler/export | spike sur vrai build ; adapter bundling ou ADR, pas fallback serveur implicite | L02 |
-| R02 | Polices variables/WOFF2 ou glyphes manquants | polices statiques autorisées, corpus FR/EN ; erreur explicite | L02/L04 |
-| R03 | Hauteur automatique reçu incorrecte | mesure/rendu réel, taille bornée, pas estimation par caractères | L02/L09 |
-| R04 | Dimensions/boîtes d'impression fausses | lecteur PDF indépendant et feuille test ; claims limités | L02/L14 |
-| R05 | Aperçu différent du téléchargement | résultat immutable par révision ; buffer viewer copié | L05/L06 |
-| R06 | Code installé dépend du monorepo | consumer hors workspace très tôt, graphe/aliases contrôlés | L07 |
-| R07 | Assets distants nécessaires après installation | récupérateur explicite, licences/hashes, test sans domaine docn-ui | L07 |
-| R08 | Tests exponentiels et lents | scopes exclusifs, échantillonnage par risque, mesures des temps | L01/L14 |
-| R09 | UI figée ou mémoire en hausse | file de rendu bornée, timeout, pages virtualisées, cleanup | L06/L13 |
-| R10 | Données personnelles dans URL/logs | mémoire locale, messages expurgés, interception réseau | L06/L13 |
-| R11 | QR illisible après réduction | taille module/zone calme, décodage du PDF rasterisé | L08 |
-| R12 | Facture interprétée comme système comptable certifié | règles de calcul explicites, disclaimer, pas de conformité affirmée | L11/L12 |
-| R13 | Catalogue esthétique mais peu distinct | revue des compositions, critère de différence de structure | L05–L11 |
-| R14 | Workflow de branche non bloquant ou falsifiable par la PR | base de confiance, required check réel, repo ID et tests de refus | L00G |
-| R15 | Historique perdu ou workflow solo bloqué | merge commits ; pas de quota reviewer non disponible ni bypass | L00G |
-| R16 | Backlog divergent ou issues dupliquées | Status unique, marqueurs/IDs stables et relecture après mutation | L00G puis tous |
+| R01 | React-pdf worker incompatible with bundler/export | Spike on actual build; adapt bundling or ADR, no implicit server fallback | L02 |
+| R02 | Variable/WOFF2 fonts or missing glyphs | Permitted static fonts, French/English corpus, explicit errors | L02/L04 |
+| R03 | Incorrect automatic receipt height | Actual measurement/rendering, bounded size, no character-count estimate | L02/L09 |
+| R04 | Incorrect dimensions/print boxes | Independent PDF reader and test sheet; limited claims | L02/L14 |
+| R05 | Preview differs from download | Immutable result per revision; copied viewer buffer | L05/L06 |
+| R06 | Installed source depends on monorepo | Early outside-workspace consumer, checked graph/aliases | L07 |
+| R07 | Remote assets required after installation | Explicit fetcher, licenses/hashes, test without docn-ui domain | L07 |
+| R08 | Exponential and slow tests | Exclusive scopes, risk-based sampling, timing measurements | L01/L14 |
+| R09 | Frozen UI or growing memory | Bounded render queue, timeout, virtualized pages, cleanup | L06/L13 |
+| R10 | Personal data in URLs/logs | Local memory, sanitized messages, network interception | L06/L13 |
+| R11 | Unreadable QR after resizing | Module size/quiet zone, decoding from rasterized PDF | L08 |
+| R12 | Invoice mistaken for certified accounting software | Explicit calculation rules, disclaimer, no compliance claim | L11/L12 |
+| R13 | Attractive but insufficiently distinct catalog | Composition review and structural distinction criterion | L05–L11 |
+| R14 | Branch workflow nonblocking or forgeable by PR | Trusted base, actual required check, repository ID, rejection tests | L00G |
+| R15 | Lost history or blocked solo workflow | Merge commits; no unavailable reviewer quota or bypass | L00G |
+| R16 | Divergent backlog or duplicate issues | Single Status, stable markers/IDs, readback after mutation | L00G, then all |
 
-## Hypothèses non bloquantes pour démarrer localement
+## Assumptions that do not block local startup
 
-Site anglais ; templates FR/EN ; Base UI ; Next.js statique ; trois thèmes ; quinze compositions ; pas de backend. Modifier avant le lot concerné via ADR, pas en douce dans l'implémentation.
+French/English document data; Base UI; static Next.js; three themes; fifteen compositions; no backend. Change these through an ADR before the affected lot, not silently during implementation. English site and project content is a confirmed maintainer requirement.
 
-## Informations externes requises avant publication
+## External information required before publication
 
-Destination Git publique confirmée : `Osiris-Balonga/docn-ui`. Setup GitHub demandé avant L01 ; l'absence d'accès ne permet plus de sauter cette étape. Auteur/licence, URL du site, hébergeur et autorisation de fusion/livraison restent distincts. Les noter dans `status.json.externalDecisions`, sans déduire une licence de la seule visibilité publique.
+Confirmed public Git destination: `Osiris-Balonga/docn-ui`. GitHub setup is required before L01; lack of access no longer permits skipping it. Emmanuel Osiris Balonga explicitly selected MIT on 2026-09-02; site URL, host, and merge/delivery authorization remain separate decisions recorded in `status.json.externalDecisions`.
 
-## Capacité de reprise
+## Recovery
 
-Un problème technique ne justifie pas de supprimer un template demandé. Isoler un résultat de spike, proposer une alternative avec coût et limite. Une validation matérielle indisponible devient une limitation explicite ; une promesse de précision d'impression ne peut pas être conservée sans preuve correspondante.
+A technical problem does not justify removing a requested template. Isolate the spike result and propose an alternative with its cost and limitations. Unavailable hardware validation becomes an explicit limitation; retain no printing-precision promise without corresponding evidence.

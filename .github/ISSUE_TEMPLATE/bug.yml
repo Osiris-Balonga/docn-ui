@@ -1,6 +1,6 @@
 name: Bug report
 description: Report a reproducible problem in an implemented feature.
-labels: ['type:bug']
+labels: ["type:bug"]
 body:
   - type: textarea
     id: reproduction

@@ -1,69 +1,69 @@
-# L13 — Accessibilité, sécurité et performance ciblées
+# L13 — Targeted accessibility, security, and performance
 
-Statut initial : **planned**. Branche : `chore/production-hardening`.
+Status: **merged** in [PR #44](https://github.com/Osiris-Balonga/docn-ui/pull/44) at `a2abf5c0894c79a774ac384d593c72710fe96395` on 2026-09-01. Branch: `chore/production-hardening`, based on `dev` commit `611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270`.
 
-Dépendances : L12. Exigences : NFR-01, NFR-02, NFR-04, NFR-07, NFR-10.
+Dependencies: L12. Requirements: NFR-01, NFR-02, NFR-04, NFR-07, NFR-10.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../TESTING.md), [référence 2](../../RELEASE.md), [référence 3](../../specs/DOCUMENT_MODEL.md), [référence 4](../../../DESIGN.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../TESTING.md), [reference 2](../../RELEASE.md), [reference 3](../../specs/DOCUMENT_MODEL.md), [reference 4](../../../DESIGN.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Corriger les défauts observés dans les parcours existants ; ne pas lancer une refonte ou une campagne de milliers de tests.
+Fix observed defects in existing journeys; do not begin a redesign or a campaign of thousands of tests.
 
-Fichiers/responsabilités cibles : apps/www coordination/viewer/UI, sécurité build/headers, budgets et docs/qa/L13.md.
+Target files/responsibilities: apps/www coordination/viewer/UI, build/header security, budgets, and docs/qa/L13.md.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L13-S01 — `fix(a11y): complete keyboard and responsive document workflows`
 
-- [ ] Clavier dans palette, filtres, formulaire, onglets, viewer et boutons export ; nom accessible et focus restauré.
-- [ ] Erreurs et progression annoncées sans spam ; données accessibles hors canvas, couche texte PDF.js si supportée par version qualifiée.
-- [ ] Corriger responsive, code long, reçu haut, 200 % zoom et reduced-motion ; ne pas utiliser des snapshots pour toute combinaison.
+- [x] Keyboard access in the current family tabs and preview/export controls; accessible names and restored dialog focus. Removed editor-only controls are not claimed as current surfaces.
+- [x] Announce page/zoom changes without visual noise; static preview images retain text alternatives. PDF.js text layers are not used by the current static-image catalog.
+- [x] Preserve mobile download, 250% preview zoom, long-code scrolling, narrow layouts and reduced motion without a per-combination snapshot matrix.
 
-**Acceptation :** Le parcours complet est utilisable sans souris et sans débordement global ; limites du fichier PDF accessibles clairement indiquées.
+**Acceptance:** The complete journey works without a mouse or global overflow; clearly state PDF file accessibility limitations.
 
-**Vérification ciblée :** Étendre E2E accessibilité existant, axe sur états significatifs, contrôle manuel lecteur d'écran/clavier.
+**Targeted verification:** Extend existing accessibility E2E, axe on significant states, manual screen-reader/keyboard checks.
 
 ### L13-S02 — `perf(pdf): bound rendering work and viewer memory`
 
-- [ ] Mesurer chargement initial, temps carte warm/cold, reçu long/facture et mémoire après 20 éditions/navigation.
-- [ ] Confirmer backpressure/timeout, limiter pages canvas en mémoire, libérer les anciens documents/URLs et éviter les imports eager.
-- [ ] Fixer budgets chiffrés à partir de l'environnement de référence décrit, sans métriques de laptop présentées comme universelles.
-- [ ] Budgets d'architecture non négociables : zéro moteur PDF dans route de docs simple, un job actif + un pending, 15 s timeout et 50 pages max.
+- [x] Measure initial catalog loading and memory after 20 family/preview transitions; template generation measures all 18 current fixtures. Interactive edit timings are not applicable after the editor's V1 removal.
+- [x] Bound preview and final PDFs to 50 pages, release page/document/canvas resources and lazy-load PDF.js where the canvas is used. Consumer scheduling remains caller-owned.
+- [x] Record indicative numeric observations from the local Windows reference environment without universal claims.
+- [x] Confirm no PDF engine chunk on the documentation route, a recommended 15 s consumer timeout and a maximum of 50 pages. No site queue exists in the current static catalog.
 
-**Acceptation :** Aucune croissance non bornée des workers/URLs/canvases ; thème de site ne relance pas un rendu PDF.
+**Acceptance:** No unbounded growth of workers/URLs/canvases; changing the site theme does not rerender PDFs.
 
-**Vérification ciblée :** Un scénario de mesure reproductible, analyse bundle et integration cleanup existante ; pas de assertions de timing fragiles dans chaque test.
+**Targeted verification:** One reproducible measurement scenario, bundle analysis, and existing cleanup integration; no fragile timing assertions in every test.
 
 ### L13-S03 — `fix(security): harden assets links and generated-document boundaries`
 
-- [ ] Revoir MIME/magic bytes/tailles, URL sources interdites, schémas de liens et erreurs expurgées.
-- [ ] Définir CSP/headers compatibles avec le build réel sur serveur statique de test ; tester worker et polices réels.
-- [ ] Contrôler absence de données dans URL/logs/storage, pas de télémétrie ni police distante ; supply chain et licences vérifiées.
-- [ ] Configurer vérification de dépendances et mises à jour sans auto-merge ; ne pas installer un scanner serveur inutile.
+- [x] Review MIME, PNG/JPEG magic bytes, size envelopes, forbidden source URLs, link schemes and sanitized errors.
+- [x] Serve the actual static build with a CSP and defensive headers compatible with local images, fonts and blob workers.
+- [x] Retain local-only document data, disabled Next telemetry and bundled fonts; no document input is stored or sent by the current catalog.
+- [x] Configure weekly npm and GitHub Actions dependency PRs without auto-merge or a new scanner.
 
-**Acceptation :** Les entrées hostiles sont refusées et les contraintes réseau n'empêchent pas la génération nominale.
+**Acceptance:** Hostile inputs are rejected; network constraints do not prevent nominal generation.
 
-**Vérification ciblée :** Tests négatifs ciblés dans suites existantes ; E2E privacy/security sur vrai build ; verify:assets.
+**Targeted verification:** Targeted negative tests in existing suites; privacy/security E2E on the actual build; verify:assets.
 
 ### L13-S04 — `docs(quality): record browser support and performance evidence`
 
-- [ ] Documenter navigateur/OS réellement testés, configuration runner, budgets, erreurs et limites.
-- [ ] Cibler Chromium CI ; smoke manuel Firefox et Safari réel quand disponibles, WebKit automatisé n'étant pas preuve Safari/iOS.
-- [ ] Mettre à jour matrice de contrôle et traiter les risques restants sans les masquer par un claim de compatibilité universelle.
+- [x] Document the tested browser/OS, runner configuration, budgets, errors and limitations.
+- [x] Keep Chromium as the CI target; explicitly leave actual Firefox, Safari and iOS Safari unclaimed because those engines were unavailable locally.
+- [x] Update the verification matrix and carry physical printing plus non-Chromium browser qualification into L14.
 
-**Acceptation :** Les promesses publiques correspondent exactement aux résultats observés ; exceptions identifiées pour L14.
+**Acceptance:** Public promises exactly match observed results; exceptions identified for L14.
 
-**Vérification ciblée :** Rapport QA et inspection des preuves ; ne pas relancer les suites déjà vertes sur le même SHA pour rédiger le rapport.
+**Targeted verification:** QA report and evidence inspection; do not rerun already passing suites at the same SHA just to write the report.
 
-## Critère de sortie
+## Exit criteria
 
-Risques qualité traités ou limitations explicitement consignées ; données privées toujours locales.
+Quality risks addressed or explicitly documented as limitations; private data remains local.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L13.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L13.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas d'analytics, benchmark géant, nouvelle suite par dépendance ou certification PDF/UA.
+No analytics, giant benchmark, new suite per dependency, or PDF/UA certification.

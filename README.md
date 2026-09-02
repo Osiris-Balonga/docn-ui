@@ -1,35 +1,70 @@
 # docn-ui
 
-Un catalogue de composants et de templates PDF composables, avec une interface de documentation construite avec shadcn/ui.
+A source-owned PDF component and template registry for existing shadcn projects.
 
-**État au 28 août 2026 : L00 vérifié localement, setup GitHub L00G avant L01.** Le projet est destiné à être open source ; le dépôt public est confirmé, la licence reste à choisir. Aucun site, moteur PDF, registre public ou package n'est encore implémenté. Consulter [l'état des lots](docs/implementation/status.json) et [la gouvernance GitHub](docs/GITHUB.md).
+**Status on September 2, 2026: public beta verified; official v1.0.0 release in progress.** The V1 catalog contains eighteen compositions across invoices, receipts, CVs, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The beta is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license. See the [lot status](docs/implementation/status.json) and [L16 evidence](docs/qa/L16.md).
 
-## Pour l'agent d'implémentation
+[Documentation](https://docn-ui.vercel.app/docs/) · [Templates](https://docn-ui.vercel.app/templates/) · [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L16 issue #20](https://github.com/Osiris-Balonga/docn-ui/issues/20)
 
-1. Lire le [guide de démarrage de l'agent](docs/implementation/START_HERE.md), puis [AGENTS.md](AGENTS.md).
-2. Lire le [plan maître](IMPLEMENTATION_PLAN.md).
-3. Consulter [l'état des lots](docs/implementation/status.json).
-4. Exécuter la première fiche admissible, en commençant par [L00 — Gouvernance](docs/implementation/lots/L00-governance.md).
+## Install in an existing shadcn project
 
-## Documents de référence
+Run the official shadcn CLI from the application that already owns `components.json`:
 
-| Document | Rôle |
-| --- | --- |
-| [PRODUCT.md](PRODUCT.md) | Vision, utilisateurs, principes et hypothèses |
-| [DESIGN.md](DESIGN.md) | Expérience et interface shadcn/ui |
-| [PRD](docs/PRD.md) | Exigences identifiées et périmètre V1 |
-| [Architecture](docs/ARCHITECTURE.md) | Modules, dépendances et flux |
-| [Contrats PDF](docs/specs/DOCUMENT_MODEL.md) | Données, formats, thèmes, rendu et erreurs |
-| [Catalogue V1](docs/specs/TEMPLATE_CATALOG.md) | Quinze compositions, cinq familles |
-| [Distribution](docs/specs/REGISTRY.md) | Code récupérable et registre compatible shadcn |
-| [Tests](docs/TESTING.md) | Commandes, matrices et preuves |
-| [Livraison](docs/RELEASE.md) | Git, CI, publication et rollback |
-| [GitHub](docs/GITHUB.md) | Protections, Project, milestones, issues et suivi par les agents |
-| [Risques](docs/RISKS.md) | Incertitudes, décisions et limites |
-| [Sources](docs/REFERENCES.md) | Inspiration et références techniques |
+```sh
+corepack pnpm dlx shadcn@4.19.1 add https://docn-ui.vercel.app/r/dev/docn-text-example.json
+```
 
-Cette documentation adopte une organisation inspirée de BMAD : brief produit, PRD, architecture, décisions, lots et stories vérifiables. Elle ne prétend pas être un projet généré par BMAD et ne requiert pas son installation.
+The command installs inspectable PDF source below `docn/`, preserves the existing shadcn aliases and UI components, and adds only the dependencies required by the selected item. The mutable `/r/dev/` path is for beta evaluation; the official release will provide an immutable versioned registry. Prepare the verified local fonts after installation as described in the [asset guide](docs/guides/REGISTRY_ASSETS.md).
 
-## Périmètre de lancement
+## Local development
 
-Cartes de visite, billets d'événement, reçus thermiques, étiquettes et factures ; trois compositions par famille. Aperçu du PDF réel, édition de données, thèmes, formats, téléchargement et récupération du code. Pas d'éditeur libre par glisser-déposer ni de compte utilisateur dans cette V1.
+Use Node `24.18.0` and pnpm `11.24.0` (the exact project pin). If the host pnpm differs, prefix commands with `npm exec --yes --package=pnpm@11.24.0 --` instead of changing a shared global installation.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm typecheck
+pnpm validate
+pnpm build
+pnpm preview
+```
+
+`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. The public beta is a separately fingerprinted Vercel deployment.
+
+See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs each active lightweight project once. PDF tests remain a separate actual-document scope; browser and consumer suites activate only with the lots that need them.
+
+## Agent startup
+
+1. Read the [agent startup guide](docs/implementation/START_HERE.md), then [AGENTS.md](AGENTS.md).
+2. Read the [master plan](IMPLEMENTATION_PLAN.md).
+3. Check the [lot status](docs/implementation/status.json).
+4. Execute the first eligible lot. [L00 — Governance](docs/implementation/lots/L00-governance.md) establishes the baseline; do not repeat completed work.
+
+All project documentation, plans, UI copy, and GitHub content must be written in English.
+
+## Reference documents
+
+| Document                                      | Purpose                                                      |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| [PRODUCT.md](PRODUCT.md)                      | Vision, users, principles, and assumptions                   |
+| [DESIGN.md](DESIGN.md)                        | Experience and shadcn/ui interface                           |
+| [PRD](docs/PRD.md)                            | Identified requirements and V1 scope                         |
+| [Architecture](docs/ARCHITECTURE.md)          | Modules, dependencies, and flows                             |
+| [PDF contracts](docs/specs/DOCUMENT_MODEL.md) | Data, formats, themes, rendering, and errors                 |
+| [V1 catalog](docs/specs/TEMPLATE_CATALOG.md)  | Fifteen compositions across five families                    |
+| [Distribution](docs/specs/REGISTRY.md)        | Source ownership and a shadcn-compatible registry            |
+| [Testing](docs/TESTING.md)                    | Commands, matrices, and evidence                             |
+| [Delivery](docs/RELEASE.md)                   | Git, CI, publication, and rollback                           |
+| [GitHub](docs/GITHUB.md)                      | Protections, Project, milestones, issues, and agent tracking |
+| [Risks](docs/RISKS.md)                        | Uncertainties, decisions, and limitations                    |
+| [Sources](docs/REFERENCES.md)                 | Inspiration and technical references                         |
+
+This documentation uses a BMAD-inspired structure: product brief, PRD, architecture, decisions, lots, and verifiable stories. It does not claim to be generated by BMAD and does not require installing it.
+
+## Launch scope
+
+Invoices, receipts, CVs, reports, badges, and business cards. The public catalog presents actual PDF previews, install-copy actions, and the primary template source. Typed render contracts retain themes, formats, validation, and local PDF generation without adding a freeform editor, user accounts, or a second shadcn configuration.
+
+## License
+
+MIT © 2026 Emmanuel Osiris Balonga. Installed registry source carries the same notice under `docn/LICENSE`; bundled font licenses remain alongside their assets.

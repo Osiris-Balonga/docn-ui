@@ -4,21 +4,23 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L00G",
+  "currentLot": "L16",
   "git": {
     "initialized": true,
-    "remote": null,
-    "mode": "local-only"
+    "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
+    "mode": "connected"
   },
   "externalDecisions": {
     "repository": "Osiris-Balonga/docn-ui",
     "visibility": "public",
-    "author": null,
-    "license": null,
-    "hosting": null,
-    "siteUrl": null,
-    "publicationAuthorized": false,
-    "githubSetupAuthorized": true
+    "author": "Emmanuel Osiris Balonga",
+    "license": "MIT",
+    "hosting": "Vercel",
+    "siteUrl": "https://docn-ui.vercel.app",
+    "publicationAuthorized": true,
+    "githubSetupAuthorized": true,
+    "projectLanguage": "en",
+    "conversationLanguage": "fr"
   },
   "states": [
     "planned",
@@ -33,7 +35,7 @@
     {
       "id": "L00",
       "file": "lots/L00-governance.md",
-      "state": "verified_local",
+      "state": "merged",
       "dependsOn": [],
       "branch": "main",
       "baseCommit": null,
@@ -47,228 +49,376 @@
     {
       "id": "L00G",
       "file": "lots/L00G-github-governance.md",
-      "state": "in_progress",
-      "dependsOn": [
-        "L00"
-      ],
+      "state": "merged",
+      "dependsOn": ["L00"],
       "branch": "chore/github-governance",
       "baseCommit": "85b5a36965e33f81f22a6342902c2a67631055e3",
-      "actualCommits": [],
+      "actualCommits": [
+        "fdfcc573eccd70f7cfa191c8fa40a278119310c1",
+        "88519ed3bfc85c54401222f65f3cbcdfa1e05ab7",
+        "4c09f8b978b6556b6e80816bb62b05c217e10f6c",
+        "db0bd636cf484c679fd85f2bb3d00fdb58e97ff4",
+        "b7596c9261c2029cc65a13304631caaf974aa0ae"
+      ],
       "evidence": "../qa/L00G.md",
-      "blocker": null
+      "blocker": null,
+      "mergeCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
+      "mergedAt": "2026-08-28T23:33:07Z"
     },
     {
       "id": "L01",
       "file": "lots/L01-bootstrap.md",
-      "state": "planned",
-      "dependsOn": [
-        "L00G"
-      ],
+      "state": "merged",
+      "dependsOn": ["L00G"],
       "branch": "chore/bootstrap-workspace",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "07dd743db42c293ed59f99e6ff734eaef94ea86b",
+      "actualCommits": [
+        "897e9cce5c0add3fd1bc4fe757275ed0ec5f173b",
+        "a5ea60d0b03af4ab53e280a21e69324b15cfce1c",
+        "cead66f0a47857afcdeb764a0123359472d7c8e7",
+        "0fd6c339388632db7b683ec9cc0ca6daaeec7e2c",
+        "b914ea19a72a785841e29eb46356179504dc1308",
+        "9d2a420256d2039fd63af698cd4f8b4d0f8fa379"
+      ],
+      "evidence": "../qa/L01.md",
+      "blocker": null,
+      "mergeCommit": "3b7b418670e121fdd63eed2b9b0f55dde2a02acc",
+      "mergedAt": "2026-08-29T00:04:41Z"
     },
     {
       "id": "L02",
       "file": "lots/L02-pdf-feasibility.md",
-      "state": "planned",
-      "dependsOn": [
-        "L01"
-      ],
+      "state": "merged",
+      "dependsOn": ["L01"],
       "branch": "feat/pdf-rendering-spike",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "3b7b418670e121fdd63eed2b9b0f55dde2a02acc",
+      "actualCommits": [
+        "88cb17531e9f3b1214fa8241d79e425b0ecafcc7",
+        "7b0cf796db5eccf75291553de7fb0b28e0d80775",
+        "52b798d8a9265e65c6fc5fa4628df3f86bacfca8"
+      ],
+      "evidence": "../qa/L02.md",
+      "blocker": null,
+      "mergeCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
+      "mergedAt": "2026-08-29T06:26:48Z"
     },
     {
       "id": "L03",
       "file": "lots/L03-site-shell.md",
-      "state": "planned",
-      "dependsOn": [
-        "L02"
-      ],
+      "state": "merged",
+      "dependsOn": ["L02"],
       "branch": "feat/shadcn-site-shell",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "b16ff8c0ac36b4dc131b22b18b61d86c1761f41f",
+      "actualCommits": [
+        "bec8bdb5033eb992d6c3ab52eb702afb50facb05",
+        "dd22d6451934f5eed5223e18a0900d506d5ad58f",
+        "a0e81b700802f63f48bc229ebd6edd4ec7401c89",
+        "a8d75c4cdcd544b9022c22e7968c899e04bf3fc0"
+      ],
+      "evidence": "../qa/L03.md",
+      "blocker": null,
+      "mergeCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
+      "mergedAt": "2026-08-29T07:07:14Z"
     },
     {
       "id": "L04",
       "file": "lots/L04-document-foundations.md",
-      "state": "planned",
-      "dependsOn": [
-        "L03"
-      ],
+      "state": "merged",
+      "dependsOn": ["L03"],
       "branch": "feat/document-foundations",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "55deb07d24f5a8d4bfa0b7a03d71f5cadcc8f888",
+      "actualCommits": [
+        "02d21ebdbd309898d9e29ae770f67cfe8ac3e3ec",
+        "fda84780c856b813555cbc617c694101562347a9",
+        "49f01b3e71b81c533a2b94d3706f8fa072e2b668",
+        "2b8d6568552f1da794dafde9953698bed3fd8e8b"
+      ],
+      "evidence": "../qa/L04.md",
+      "blocker": null,
+      "mergeCommit": "37d799556498c7019ac53ebfcf74816031c011de",
+      "mergedAt": "2026-08-29T21:46:15Z"
     },
     {
       "id": "L05",
       "file": "lots/L05-business-cards.md",
-      "state": "planned",
-      "dependsOn": [
-        "L04"
-      ],
+      "state": "merged",
+      "dependsOn": ["L04"],
       "branch": "feat/business-card-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "37d799556498c7019ac53ebfcf74816031c011de",
+      "actualCommits": [
+        "dbf7baaf4354f04a75e06cb39ed68cd45ccc2421",
+        "d9a4f05b42a559cdc939f593dbde09e36955b0ed",
+        "088912ba8116d2ebde4017d85a1c30418a01a386",
+        "a0077c1803bdfdd1fa7840ca123f0826c97c16d3"
+      ],
+      "evidence": "../qa/L05.md",
+      "blocker": null,
+      "mergeCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
+      "mergedAt": "2026-08-29T23:08:15Z"
     },
     {
       "id": "L06",
       "file": "lots/L06-catalog-playground.md",
-      "state": "planned",
-      "dependsOn": [
-        "L05"
-      ],
+      "state": "merged",
+      "dependsOn": ["L05"],
       "branch": "feat/catalog-and-playground",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "3947b6fb50518e63c6934d67d73ba15d1ffdad9c",
+      "actualCommits": [
+        "c1dbe887c0dfaf8073f850e4cb0583f8aa72693e",
+        "5d702cbe1e49b04c9604b36e63832dd766b8321a",
+        "cdd531e81c8b51e7dfaf8b7a48d7ce7c7abf392f",
+        "7baf5649555fa37939e7ec2c3c5922a60e3a5640",
+        "13cc667b34d66f18e395d74c031d841a57811637"
+      ],
+      "evidence": "../qa/L06.md",
+      "blocker": null,
+      "mergeCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
+      "mergedAt": "2026-08-30T07:32:47Z"
     },
     {
       "id": "L07",
       "file": "lots/L07-registry.md",
-      "state": "planned",
-      "dependsOn": [
-        "L06"
-      ],
+      "state": "merged",
+      "dependsOn": ["L06"],
       "branch": "feat/shadcn-pdf-registry",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "4257ac9bdba714028a717aa2be2c56b2689bc3e2",
+      "actualCommits": [
+        "f35752cdb9d9b0112c70b9ee825d2e5c7164d689",
+        "4e732ec980d2058e532cb7ffb3636a8fc95ba3d9",
+        "75caf254a9e31c5c5d4a33bf2e659319078cf30a",
+        "b29ead07c031d80877d25b1ecfbfb458761872f5",
+        "4c8016cd51671cf57b59ef838decd933bffb2eb7",
+        "4323b424ad62e14069f6bc1a082e6f45e9e877e8",
+        "d5214fa78bb28244481a72c907c007bbbb75cb31",
+        "bfd7e52b7ae069efd32f1da889ba34a60e75aebe",
+        "9e1627a014595dce6880f98a73f16d925e543575",
+        "81cf249cab53a3822eb85fee0802ad64dfbc1316",
+        "73efffd1c1693c637db23d518a72ef096536ede1"
+      ],
+      "evidence": "../qa/L07.md",
+      "blocker": null,
+      "mergeCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
+      "mergedAt": "2026-08-30T14:51:33Z"
     },
     {
       "id": "L08",
       "file": "lots/L08-event-tickets.md",
-      "state": "planned",
-      "dependsOn": [
-        "L07"
-      ],
+      "state": "merged",
+      "dependsOn": ["L07"],
       "branch": "feat/event-ticket-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "21d6a6f0025a89eeb28ef2058b272216a91607f3",
+      "actualCommits": [
+        "4d132e2dcd9b930a8a63138d27d0ff968f43c130",
+        "9559db7e968bd7449d3f0bae538a8f09eae8a65b",
+        "b2aeef1cd0cb216fd16989f9270b9f36c0e7008c",
+        "668da87041df4ab37992207123e09ffe18d54b3f",
+        "f285b2abd1dede008c14549adb2d6361354209f7",
+        "925f5d4ceeb5c5117e49386d4a821c928ace8b30",
+        "ed492dded03370c8606809b910e9467453fb72ae"
+      ],
+      "evidence": "../qa/L08.md",
+      "blocker": null,
+      "mergeCommit": "4cb0ebf9e3b57037790201b14bfea0cd1386a700",
+      "mergedAt": "2026-08-30T16:02:45Z"
     },
     {
       "id": "L09",
       "file": "lots/L09-thermal-receipts.md",
-      "state": "planned",
-      "dependsOn": [
-        "L08"
-      ],
+      "state": "merged",
+      "dependsOn": ["L08"],
       "branch": "feat/thermal-receipt-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "4cb0ebf9e3b57037790201b14bfea0cd1386a700",
+      "actualCommits": [
+        "1a85987e10186c1d7566e3caa795bb0f2f908a32",
+        "8af173b3e4b46b67e93892df03571fa48a4c6341",
+        "e79562cb040c344e732d7aae78fbe5983c1cb17c",
+        "a880013665e1771d0164ab2d9b65aa098bd3e90d",
+        "f698b2ec2ad1dfa8f22b937ed724c233a80a3378",
+        "faea97b5dc9ef22a7ff4bd0e7a3999909d8bdcb8",
+        "3d3b55113ea188d3d425a8be9c934a1326d3d79f"
+      ],
+      "evidence": "../qa/L09.md",
+      "blocker": null,
+      "mergeCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
+      "mergedAt": "2026-08-30T16:42:50Z"
     },
     {
       "id": "L10",
       "file": "lots/L10-labels.md",
-      "state": "planned",
-      "dependsOn": [
-        "L09"
-      ],
+      "state": "merged",
+      "dependsOn": ["L09"],
       "branch": "feat/label-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5",
+      "actualCommits": [
+        "9c4ab62645f73fbf3871b5fe2a1f0e79c3ea39b9",
+        "600a988a44f5c7846cc10b49d98953d316f4bd5a",
+        "ad9169f1a05bf7ffc4ee539d0fa4771807abc772",
+        "c498ed9375cf5e90b1d94c7432861943068c6469",
+        "72c7f73ad43563ca41f1604daaceb29013824b7e",
+        "0fd268a8a7010a4c57b3d6ffde96dc36954a4195",
+        "39a8782a420de5c3950fc04fc990c842d054132d",
+        "acf30364b93846ea13d3b9dd793501fd5c385d6c",
+        "8c5558270137bfa772ccee95936a2971bf44369f"
+      ],
+      "evidence": "../qa/L10.md",
+      "blocker": null,
+      "mergeCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
+      "mergedAt": "2026-08-30T17:23:07Z"
     },
     {
       "id": "L11",
       "file": "lots/L11-invoices.md",
-      "state": "planned",
-      "dependsOn": [
-        "L10"
-      ],
+      "state": "merged",
+      "dependsOn": ["L10"],
       "branch": "feat/invoice-templates",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "09eeb31b012ab0db5a30d1ebbfd73ab32b9f6e83",
+      "actualCommits": [
+        "6b9ce2d686bcdc713c1e41ff1dde9a7b821ddde4",
+        "b77287d8a51ff02587082b348ad9334033aba42b",
+        "0d29f615d177375bb229bc541976dc5d913ee0c9",
+        "53e516917b25a677b9df22c63f2dcef3555d8ee2",
+        "480cda931248fda536204981ce2ef495e5e24c66",
+        "d2f39733ad930814bbb8303b6666174c0e7d6421",
+        "821d8fbe1b27ca0a7daee00b235098171d3c0571",
+        "2e2c1c9e33c6eca4899122b843efdf0a56719e27",
+        "ff8e1255db91bc2199dfe3bf4f5f8348d69df668",
+        "206a63ef632ae6028675b9ab7da6eac8f4f0de1d",
+        "69c97fccb4194a3ad3045413676e9918d8d140cb",
+        "32c22eb854cf3990964d78693756c724ea49b081",
+        "24761240ed18fd812c965a08e1dfee4947ae83a8",
+        "af1785f48aaad6d354b9743bbcbeb9b52d70a55d",
+        "96c166a944e2c56c5c253b82a9ac8071e9290349",
+        "a9a5dc582575c90c216817c78570c65892b5eb8f",
+        "98cab3dcb8474227a366b3e0a880325c3e93fbd0"
+      ],
+      "evidence": "../qa/L11.md",
+      "blocker": null,
+      "mergeCommit": "a342433e0902935a454d8ef04a85cb508a765f4a",
+      "mergedAt": "2026-08-31T08:57:32Z"
     },
     {
       "id": "L12",
       "file": "lots/L12-documentation.md",
-      "state": "planned",
-      "dependsOn": [
-        "L11"
+      "state": "merged",
+      "dependsOn": ["L11"],
+      "branch": "docs/l12-contribution-seo",
+      "baseCommit": "8cdf4837cf36f3134b236b1ad843cc17daf1db0e",
+      "actualCommits": [
+        "901907af6a08f40d32e40a7f0dc7b63cac1c3e52",
+        "6c8563b8a10de329d0aac10a85f9d509699dffbc",
+        "5f4e0538db6806c32aead4beb19ffd66f54e9da0",
+        "06697e17ae68751df08bd4d880b82c7389399711",
+        "a516c46b678aea25894c41a4a3fb31870f613653",
+        "0a9aeebaa2360f658cbd870e40187ab70c5dfac2",
+        "f880d873d3cea7d23b78fff0c5eec1f8e5443ae3",
+        "e824244fd6034afd493fdfac2954cf49cdbd9441",
+        "3cf96d4343c8a570e3340834f03902f00d9c83b3",
+        "4c4a9d75197eb670fbd244b459e8af8c5e638005",
+        "576861945ba6d796e23e10bdbe64e1159f6cd625",
+        "c98d5e096f8bf28c2a3170128c05e90c14499b39",
+        "1cdfae95d0efa3e0627a680c30d37b7a5eadb70e",
+        "57d83ba01c4c61a4531a5d5aa2589557edca432f",
+        "a3902150cd40d4f2fb69e46fa5566c6fc3c9327d",
+        "2dada84ae1e9f8927c0bbbcce0c1b564be135399",
+        "11491873291141ba975d4e8181e6b752bf2e6c9d",
+        "1c3d3901698503b95c0924e7451f870e6dc7401d",
+        "f2190fc739566fd7feb1e1651e83fd354bb4c94c",
+        "3f16d7e13b2a21a9d85304723c74dbbbc9de7d05",
+        "02c2ee20c9be42def15b5c4aa9fb20b40e3ce65c",
+        "a1093eb519d5f5ff59732726a701d4a9c1cb7817",
+        "727bcd722d931f85d7a8fdd87e0d00bc7300a211",
+        "77caee0b73d0e5f65a6b2aa2e83faf86cf570873",
+        "c0ea41f54b530452cfefa06ff3a700106bb3f2dd",
+        "54bcaea7d1c62d7b253178be213850ef89867390",
+        "6b84c374305eef7daf5d145c60eea6cf60a20215",
+        "dce3332f9442c1d75e026cdf4ef628e0a0bad69f",
+        "6cfdc872a8d0ab98c1ea3d75c96ea3fddca2acb5",
+        "ed900469b6843e05a7276ed3da97aac40d6a00a3",
+        "1cd9b873d46705514a61df91388f286d8990b0f0"
       ],
-      "branch": "feat/documentation-catalog",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "evidence": "../qa/L12.md",
+      "blocker": null,
+      "mergeCommit": "8491f7d2a15364a3cdd4d376da08096c03896f40",
+      "mergedAt": "2026-09-01T18:25:48Z"
     },
     {
       "id": "L13",
       "file": "lots/L13-hardening.md",
-      "state": "planned",
-      "dependsOn": [
-        "L12"
-      ],
+      "state": "merged",
+      "dependsOn": ["L12"],
       "branch": "chore/production-hardening",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "611bb2222fce347bc8f9cd4a9f76f8a1d2c9f270",
+      "actualCommits": [
+        "58145bb00cc009af7ad621647b681cf05fe3640b",
+        "4700a6b08ad7e4af92c53e03927ebb30363b5800",
+        "a13e87c58551781d7df2866eb1efb9df034fe8ca",
+        "92f3632c3868e1f61cb29383e81fb016d0b3f26e",
+        "9f54f3609bbfcb721afc6ad11942725bc3b54131",
+        "35e6a3a7d6f678933e1afb7b9a1a9d7735acf5d8",
+        "b2535e0f1a2dcbdd9519b140aa3b44aa4c2f54a9"
+      ],
+      "evidence": "../qa/L13.md",
+      "blocker": null,
+      "mergeCommit": "a2abf5c0894c79a774ac384d593c72710fe96395",
+      "mergedAt": "2026-09-01T21:35:19Z"
     },
     {
       "id": "L14",
       "file": "lots/L14-qualification.md",
-      "state": "planned",
-      "dependsOn": [
-        "L13"
-      ],
+      "state": "merged",
+      "dependsOn": ["L13"],
       "branch": "test/v1-qualification",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "a2abf5c0894c79a774ac384d593c72710fe96395",
+      "actualCommits": [
+        "cf74df3963ae1cd9e9e4c94c004194cef60f2df6",
+        "bf87715bb651194e85d99175b80cfe05cb27f8ca",
+        "ef4fe201af05829710b258c18ba3ac636e351d21",
+        "68564f1c463bcf174184f551ca55e8e3be8ca8fa"
+      ],
+      "evidence": "../qa/L14.md",
+      "blocker": null,
+      "mergeCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
+      "mergedAt": "2026-09-01T22:07:15Z"
     },
     {
       "id": "L15",
       "file": "lots/L15-delivery.md",
-      "state": "planned",
-      "dependsOn": [
-        "L14"
-      ],
+      "state": "merged",
+      "dependsOn": ["L14"],
       "branch": "ci/release-delivery",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
-      "blocker": null
+      "baseCommit": "da10836b00240f4df1919863a6cca07de92a8ee8",
+      "actualCommits": [
+        "0944db72efe3e33e1d61e4d4750f46078a64ffd4",
+        "6fbc1b84eb2eec7f63898898ba1e835f754a38cc",
+        "a43a218dfbcbb065db19a29c770abd2d2f1524e3",
+        "2574c96e264ba74939539e1d0c3ceb469efc6635"
+      ],
+      "evidence": "../qa/L15.md",
+      "blocker": null,
+      "mergeCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
+      "mergedAt": "2026-09-01T22:36:41Z"
     },
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "planned",
-      "dependsOn": [
-        "L15"
-      ],
+      "state": "in_progress",
+      "dependsOn": ["L15"],
       "branch": "release/v1.0.0",
-      "baseCommit": null,
-      "actualCommits": [],
-      "evidence": null,
+      "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
+      "actualCommits": [
+        "149c027ba7b4c2927715dba9e3181c0dd06ed718",
+        "bbf88fb5fe41360f7c52f81cff9279ec97e77abd",
+        "8a999444c1b235a6d90ae0e95f6b6b593b62a973",
+        "c1b3a9b15e83ad2fda5a934aa534489ce8a17af4",
+        "33c68a723dd809976319b6ed3b21a007f0af952a"
+      ],
+      "evidence": "../qa/L16.md",
       "blocker": null
     }
   ],
   "github": {
     "setupLot": "L00G",
     "trackingFile": "github.json",
-    "configured": false
+    "configured": true
   }
 }

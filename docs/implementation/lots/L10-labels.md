@@ -1,57 +1,57 @@
-# L10 — Étiquettes individuelles et planches
+# L10 — Individual labels and sheets
 
-Statut initial : **planned**. Branche : `feat/label-templates`.
+Status: **in review** in PR [#30](https://github.com/Osiris-Balonga/docn-ui/pull/30) after local verification, on branch `feat/label-templates` based on merged L09 commit `b3b57b6676e0e5d90dcd0e49d3986a551b25f5b5`.
 
-Dépendances : L09. Exigences : FR-11, FR-13, FR-16 ; NFR-05.
+Dependencies: L09. Requirements: FR-11, FR-13, FR-16; NFR-05.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/DOCUMENT_MODEL.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/DOCUMENT_MODEL.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Trois compositions avec export individuel ou planche paramétrée, sans prétendre à une référence commerciale de papier non testée.
+Three compositions with individual or configurable sheet export, without claiming an untested commercial paper reference.
 
-Fichiers/responsabilités cibles : packages/documents/src/core/imposition, templates/labels, formulaire et contrôles de planche.
+Target files/responsibilities: packages/documents/src/core/imposition, templates/labels, form, and sheet controls.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L10-S01 — `feat(labels): define bounded sheet geometry and placement`
 
-- [ ] Fonctions pures dimensions/marges/espaces/cellules, nombre de lignes/colonnes possible et placement row-major.
-- [ ] Cellule de départ première page, quantité et page suivante ; Refuser format impossible, marges négatives et dépassement.
-- [ ] Schéma étiquette, profil individuel/planche et custom dimensions bornées.
+- [x] Pure functions for dimensions/margins/gaps/cells, possible row/column counts, and row-major placement.
+- [x] First-page starting cell, quantity, subsequent pages; reject impossible formats, negative margins, and overflow.
+- [x] Label schema, individual/sheet profile, and bounded custom dimensions.
 
-**Acceptation :** Tout rectangle reste dans la page ; chaque donnée occupe exactement une cellule attendue.
+**Acceptance:** Every rectangle stays within the page; each data item occupies exactly one expected cell.
 
-**Vérification ciblée :** Unit imposition : première/dernière cellule, changement de page et géométrie impossible. Pas un test pour chaque combinaison de millimètres.
+**Targeted verification:** Imposition unit tests: first/last cell, page transition, impossible geometry. Not one test per millimeter combination.
 
 ### L10-S02 — `feat(labels): add product address and inventory layouts`
 
-- [ ] Composer trois layouts adaptés aux tailles, QR réutilisé avec sa contrainte de densité.
-- [ ] Ajouter rendu individuel puis planche avec IDs ordonnés ; éviter duplication de la logique de template.
-- [ ] Contrôles UI de dimensions, sheet/individual, quantité et départ ; metadata, vignettes et registre.
+- [x] Compose three size-appropriate layouts; reuse QR with its density constraint.
+- [x] Add individual rendering, then sheets with ordered IDs; avoid duplicating template logic.
+- [x] Connect the accepted preview/copy/source catalog surface; add metadata, PDF-derived thumbnails, and registry items. The removed customization form is not restored.
 
-**Acceptation :** Changer de mode export conserve les données et produit dimensions/nombre de pages attendus.
+**Acceptance:** Switching export modes preserves data and produces expected dimensions/page counts.
 
-**Vérification ciblée :** Suite PDF de famille : trois exemples individuels, une planche chevauchant deux pages ; inspecter texte et coordonnées.
+**Targeted verification:** Family PDF suite: three individual examples and one sheet spanning two pages; inspect text and coordinates.
 
 ### L10-S03 — `test(labels): qualify sheet alignment and partial-sheet export`
 
-- [ ] Comparer placement réel PDF aux coordonnées attendues indépendantes ; vérifier aucune donnée sautée ou doublée.
-- [ ] Créer une référence visuelle de planche si elle apporte la couverture de structure absente des étiquettes individuelles.
-- [ ] Documenter feuille test, échelle 100 %, marges matérielles et absence de certification Avery.
+- [x] Compare actual PDF placement with independently expected coordinates; verify no skipped or duplicated data.
+- [x] Retain a two-page partial sheet and three individual outputs for local visual inspection; select the product preview as the committed family reference.
+- [x] Document test sheets, 100% scale, hardware margins, and lack of Avery certification.
 
-**Acceptation :** Une planche commencée au milieu et poursuivie sur la page suivante est correcte ; limites d'impression affichées.
+**Acceptance:** A sheet starting partway through and continuing on the next page is correct; printing limits are displayed.
 
-**Vérification ciblée :** pnpm test:pdf label ; pnpm test:unit imposition ; pnpm verify:registry. Aucun E2E par cellule.
+**Targeted verification:** pnpm test:pdf label; pnpm test:unit imposition; pnpm verify:registry. No E2E per cell.
 
-## Critère de sortie
+## Exit criteria
 
-Douze compositions au total ; imposition isolée, testée et utilisable sans site.
+Twelve compositions in total; isolated, tested imposition usable without the site.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L10.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L10.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de driver imprimante, imposition duplex universelle ni compatibilité commerciale supposée.
+No printer driver, universal duplex imposition, or assumed commercial compatibility.

@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+saveExact: true
+engineStrict: true
+
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

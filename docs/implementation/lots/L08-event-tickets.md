@@ -1,57 +1,57 @@
-# L08 — Billets d'événement et QR vectoriel
+# L08 — Event tickets and vector QR
 
-Statut initial : **planned**. Branche : `feat/event-ticket-templates`.
+Initial status: **planned**. Branch: `feat/event-ticket-templates`.
 
-Dépendances : L07. Exigences : FR-01, FR-09, FR-13, FR-16 ; NFR-05.
+Dependencies: L07. Requirements: FR-01, FR-09, FR-13, FR-16; NFR-05.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/DOCUMENT_MODEL.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/DOCUMENT_MODEL.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Trois billets distincts, formats et QR utiles. Le QR représente une donnée ; aucun système de billetterie sécurisé n'est implémenté.
+Three distinct tickets with useful formats and QR. QR represents data; no secure ticketing system is implemented.
 
-Fichiers/responsabilités cibles : packages/documents/src/primitives/qr, templates/event-tickets, formulaire famille, metadata et registre.
+Target files/responsibilities: packages/documents/src/primitives/qr, templates/event-tickets, family form, metadata, and registry.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L08-S01 — `feat(tickets): add ticket schema and printable QR primitive`
 
-- [ ] Schéma d'événement avec instant/fuseau/lieu/identifiant et payload validé ; données exemples fixes.
-- [ ] Encodeur maintenu/licencié et primitive vectorielle avec zone calme, taille minimale des modules et densité vérifiée.
-- [ ] Erreur de payload trop dense ; pas de lien tiers demandé pour générer le QR.
+- [ ] Event schema with instant/time zone/venue/identifier and validated payload; fixed sample data.
+- [ ] Maintained/licensed encoder and vector primitive with quiet zone, minimum module size, and density checks.
+- [ ] Error for overly dense payloads; no third-party link requested to generate QR.
 
-**Acceptation :** QR du PDF final décodé identique à l'entrée et date affichée dans le fuseau choisi.
+**Acceptance:** Decoding the final PDF's QR reproduces the input; the date displays in the selected time zone.
 
-**Vérification ciblée :** Unit validation date/payload au bon niveau ; un test PDF QR avec rasterisation et décodage indépendant.
+**Targeted verification:** Date/payload validation unit tests at the appropriate level; one PDF QR test with rasterization and independent decoding.
 
 ### L08-S02 — `feat(tickets): add classic conference and live layouts`
 
-- [ ] Implémenter trois compositions distinctes avec zones de texte bornées et QR non déformé.
-- [ ] Classic/live formats paysage ; conference A6 et layout paysage dédié, pas simple réduction homothétique.
-- [ ] Ajouter formulaire famille, metadata, vignettes réelles, source et items de registre via le pipeline existant.
+- [ ] Implement three distinct compositions with bounded text areas and undistorted QR.
+- [ ] Classic/live landscape formats; conference A6 and dedicated landscape layout, not simple proportional shrinking.
+- [ ] Add family form, metadata, actual thumbnails, source, and registry items through the existing pipeline.
 
-**Acceptation :** Trois billets disponibles dans le catalogue ; format supporté explicite, toutes les informations essentielles lisibles.
+**Acceptance:** Three tickets available in the catalog; explicit supported formats and readable essential information.
 
-**Vérification ciblée :** Une suite PDF de famille paramétrée avec trois exemples nominaux et un titre/nom long représentatif.
+**Targeted verification:** One parameterized family PDF suite with three nominal examples and one representative long title/name.
 
 ### L08-S03 — `test(tickets): qualify layout density and ticket export`
 
-- [ ] Étendre la suite QR pour le cas limite de densité réellement nouveau, ne pas tester l'algorithme tiers exhaustivement.
-- [ ] Sélectionner un billet pour référence visuelle ; relire la planche contact des trois modèles.
-- [ ] Documenter la séparation entre génération graphique, contrôle d'accès et impression/découpe.
+- [ ] Extend the QR suite for the genuinely new density boundary; do not exhaustively test the third-party algorithm.
+- [ ] Select one ticket as a visual reference; review the three-template contact sheet.
+- [ ] Document the distinction between graphic generation, access control, and printing/cutting.
 
-**Acceptation :** Aucun QR coupé et aucun claim de billet infalsifiable ; registre de tous les items valide.
+**Acceptance:** No clipped QR or claim of tamper-proof tickets; all registry items validate.
 
-**Vérification ciblée :** pnpm test:pdf ticket ; pnpm verify:registry ; parcours export existant réutilisé, pas trois nouveaux E2E.
+**Targeted verification:** pnpm test:pdf ticket; pnpm verify:registry; reuse the existing export journey, not three new E2Es.
 
-## Critère de sortie
+## Exit criteria
 
-Six compositions publiques au total et primitive QR réutilisable. Un décodage numérique est distingué d'un essai imprimé.
+Six public compositions in total and a reusable QR primitive. Distinguish digital decoding from a printed trial.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L08.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L08.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de signature de billet, scan serveur, réservation, paiement ou base de participants.
+No ticket signing, server scanning, reservations, payments, or attendee database.

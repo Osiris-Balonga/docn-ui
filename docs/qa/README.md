@@ -1,9 +1,9 @@
-# Preuves de validation
+# Validation evidence
 
-Rapport disponible : [L00 — gouvernance vérifiée localement](L00.md). Aucun test applicatif exécuté à ce stade.
+Available reports: [L00 — local governance](L00.md) and [L00G — verified GitHub and Project setup](L00G.md). No application tests have run yet; only targeted governance checks.
 
-Aucun rapport applicatif ne doit être déclaré réussi pendant la planification. Créer `Lxx.md` à partir du [modèle](../implementation/templates/QA_REPORT.md) lors de l'exécution du lot.
+Do not declare an application report successful during planning. Create `Lxx.md` from the [template](../implementation/templates/QA_REPORT.md) when executing its lot.
 
-Commiter les synthèses légères, liens et décisions. Conserver PDF générés, captures et rapports complets dans `.artifacts/` ignoré ou comme artefacts CI. Ne pas inclure de données personnelles dans les fixtures ou captures.
+Commit concise summaries, links, and decisions in English. Keep generated PDFs, screenshots, and full reports in ignored `.artifacts/` or CI artifacts. Do not include personal data in fixtures or screenshots.
 
-Une reprise doit pouvoir déterminer le SHA testé, le périmètre réel et ce qui reste non vérifié sans relancer aveuglément toutes les suites.
+A resuming agent must be able to identify the tested SHA, actual scope, and remaining unverified work without blindly rerunning every suite.

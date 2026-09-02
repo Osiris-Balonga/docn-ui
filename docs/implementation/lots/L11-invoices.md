@@ -1,67 +1,68 @@
-# L11 — Factures multipages et catalogue complet
+# L11 — Multipage invoices and complete catalog
 
-Statut initial : **planned**. Branche : `feat/invoice-templates`.
+Status: **merged** through PR #31 at `a342433e0902935a454d8ef04a85cb508a765f4a` on 2026-08-31, following explicit maintainer authorization and seven successful checks at head `98cab3dcb8474227a366b3e0a880325c3e93fbd0`. Branch: `feat/invoice-templates`. No release or site publication is implied.
 
-Dépendances : L10. Exigences : FR-01, FR-12, FR-13, FR-16 ; NFR-05 ; G4.
+Dependencies: L10. Requirements: FR-01, FR-12, FR-13, FR-16; NFR-05; G4.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../specs/DOCUMENT_MODEL.md), [référence 2](../../specs/TEMPLATE_CATALOG.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../specs/DOCUMENT_MODEL.md), [reference 2](../../specs/TEMPLATE_CATALOG.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Trois factures avec pagination réelle et calculs partagés du reçu. Atteindre quinze compositions sans élargir le produit à un logiciel comptable.
+Three invoices with actual pagination and shared receipt calculations. Reach fifteen compositions without expanding into accounting software.
 
-Fichiers/responsabilités cibles : packages/documents/src/primitives/table, templates/invoices, formulaire lignes et registre.
+Target files/responsibilities: packages/documents/src/primitives/table, templates/invoices, line-item form, and registry.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L11-S01 — `feat(invoices): add invoice schema and multipage table primitives`
 
-- [ ] Réutiliser money et ses tests ; ajouter données vendeur/client/numéro/dates/lignes et champs textuels bornés.
-- [ ] Table PDF en flux, en-têtes répétés et marges footer ; lignes hautes subdivisées selon contrat ou erreur explicite.
-- [ ] Totaux/signature gardés ensemble quand possible ; textes extraits sur toutes les pages.
+- [x] Reuse money and its tests; add seller/customer/number/dates/lines and bounded text fields.
+- [x] Flowing PDF tables, repeated headers, footer margins; split tall rows according to the contract or return an explicit error.
+- [x] Keep totals/signatures together where possible; extract text from every page.
 
-**Acceptation :** Une facture longue ne recouvre pas son footer et ne perd ni ligne ni total.
+**Acceptance:** A long invoice does not overlap its footer or lose any line or total.
 
-**Vérification ciblée :** Suite PDF pagination existante enrichie ; un unit contrat spécifique si nécessaire, pas de recopie money.
+**Targeted verification:** Extend the existing pagination PDF suite; add a specific contract unit test if needed, without copying money tests.
 
 ### L11-S02 — `feat(invoices): add minimal business and studio layouts`
 
-- [ ] Implémenter trois compositions avec A4/Letter, thèmes et coordonnées optionnelles.
-- [ ] Formulaire lignes borné avec ajout/retrait stable ; réutiliser contrôle de données/erreurs du playground.
-- [ ] Metadata, catalogue, vignettes, source, registre et descriptions de différence visuelle.
+- [x] Implement three compositions with A4/Letter, themes, and optional contact details.
+- [x] Preserve the maintainer-approved preview/copy/source catalog surface without restoring the removed line-item customization form.
+- [x] Metadata, catalog, thumbnails, source, registry, and descriptions of visual differences.
+- [x] Apply the maintainer-requested monochrome base, enlarged preview overlay, and bounded template/family source tree without exposing transitive primitives.
 
-**Acceptation :** Quinze compositions annoncées et réellement disponibles ; chaque facture a ses données et un rendu complet.
+**Acceptance:** Fifteen compositions advertised and actually available; each invoice has its data and complete rendering.
 
-**Vérification ciblée :** Exemples nominaux dans la suite PDF facture et revue de planche contact.
+**Targeted verification:** Nominal examples in the invoice PDF suite and contact-sheet review.
 
 ### L11-S03 — `test(invoices): verify long-table export and summary placement`
 
-- [ ] Une fixture représentative multipage avec libellé long, contrôles de continuité et total correct.
-- [ ] Étendre un parcours E2E à l'ajout de lignes et au PDF téléchargé ; ne pas refaire les permutations d'arrondi en browser.
-- [ ] Cas d'erreur limite de lignes ou champ trop long vérifié au niveau approprié.
+- [x] One representative multipage fixture with a long label, continuity checks, and correct total.
+- [x] Add an invoice catalog/source E2E journey without restoring the maintainer-rejected public editor or download control.
+- [x] Verify line-count limits or overly long fields at the appropriate level.
 
-**Acceptation :** L'export final contient première/dernière ligne, numéro et total ; aucune page blanche ni bloc coupé illisible.
+**Acceptance:** Final export contains first/last lines, number, and total; no blank page or unreadably split block.
 
-**Vérification ciblée :** pnpm test:pdf invoice ; pnpm test:e2e invoice.spec.ts ; référence visuelle facture multipage sélectionnée.
+**Targeted verification:** pnpm test:pdf invoice; pnpm test:e2e invoice.spec.ts; selected multipage invoice visual reference.
 
 ### L11-S04 — `docs(catalog): document the complete v1 template inventory`
 
-- [ ] Vérifier inventaire quinze IDs uniques et metadata/fixtures/source/registre associés.
-- [ ] Ajouter avertissement calcul/fiscalité et limites des formats, sans déclarer conformité territoriale.
-- [ ] Réaliser G4 avec validate:full des scopes activés, installer les graphes nouveaux si la distribution a changé et enregistrer la preuve.
+- [x] Verify the inventory of fifteen unique IDs with associated metadata/fixtures/source/registry.
+- [x] Add calculation/tax warnings and format limits without claiming jurisdictional compliance.
+- [x] Complete G4 with validate:full for activated scopes; install new dependency graphs if distribution changed and record evidence.
 
-**Acceptation :** G4 : catalogue V1 complet ; chaque exigence famille est traçable ; aucune promesse de template futur dans la navigation.
+**Acceptance:** G4: complete V1 catalog; each family requirement is traceable; no future-template promises in navigation.
 
-**Vérification ciblée :** pnpm validate:full ; revue d'inventaire et planche contact. Cette validation de jalon ne se répète pas après chaque correction de libellé.
+**Targeted verification:** pnpm validate:full; inventory and contact-sheet review. Do not repeat this gate validation after every label correction.
 
-## Critère de sortie
+## Exit criteria
 
-Quinze compositions sur cinq familles. G4 vérifié avec code/source/exports et limitations.
+Fifteen compositions across five families. G4 verified with code/source/exports and limitations.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L11.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L11.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas d'avoirs, taxes composées, quantités fractionnaires, facturation électronique certifiée ou tenue comptable.
+No credit notes, compound taxes, fractional quantities, certified electronic invoicing, or bookkeeping.

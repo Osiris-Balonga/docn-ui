@@ -10,44 +10,47 @@ web
 
 ## Users
 
-Développeurs React/TypeScript qui doivent produire des PDF soignés depuis des données, sans redessiner chaque document. Le catalogue doit aussi être compréhensible par un designer ou un utilisateur qui teste un modèle, sans transformer la V1 en éditeur généraliste.
+React/TypeScript developers who need polished PDFs from data without redesigning every document. The catalog must also be understandable to a designer or someone trying a template, without turning V1 into a general-purpose editor.
 
-## Product Purpose
+## Product purpose
 
-Fournir des formats physiques explicites, des compositions adaptées à chaque usage et une identité visuelle personnalisable. L'utilisateur découvre un template, teste ses données, constate le rendu PDF exact, le télécharge et récupère son code.
+Extend the shadcn source-ownership workflow to printable documents and PDFs. Developers keep their existing shadcn project and `components.json`, add docn-ui as another registry, then own the installed document source. Users discover a template, inspect the exact PDF output, and obtain its source code without adopting a parallel design system or runtime service.
 
-## Décisions confirmées
+## Confirmed decisions
 
-- Modèle inspiré de shadcn et PDFx : composants composables, code récupérable, catalogue documenté.
-- shadcn/ui pour l'interface du site, dont l'expérience rappelle sa documentation.
-- Diversité des supports, notamment cartes de visite et tickets.
-- Première chaîne complète avec une carte de visite, puis extension aux autres familles.
-- Plan d'implémentation détaillé en fichiers, étapes et commits ; pas d'implémentation pendant la rédaction du plan.
+- A shadcn-compatible extension for print and PDF source: the official CLI, the consumer's existing `components.json`, composable components, source ownership, and a documented catalog.
+- shadcn/ui for the site interface, with an experience reminiscent of its documentation.
+- A variety of physical formats, including business cards and tickets.
+- A first complete workflow using a business card, followed by other families.
+- A detailed implementation plan in files, steps, and commits; no implementation during the original planning phase.
+- English throughout the project, explicitly including documentation, plans, UI copy, and GitHub content (maintainer instruction, 2026-08-29).
+- A reusable PDF component catalog covering PDFx's component categories, plus barcodes, with real examples, documentation and official shadcn installation (maintainer instruction, 2026-08-31). Further template redesign is paused while L12 delivers these capabilities; see the [component contract](docs/specs/COMPONENT_CATALOG.md).
 
-## Hypothèses de travail du plan
+## Working assumptions in the plan
 
-Ces choix sont des propositions explicites de l'agent, modifiables via ADR avant leur lot ; ils ne sont pas attribués au mainteneur : site initial en anglais pour une audience développeur, documents en français et anglais ; V1 de quinze compositions ; Next.js statique ; génération locale ; distribution via le CLI shadcn existant ; licence permissive recommandée mais non accordée à ce stade.
+These are explicit agent proposals, changeable through an ADR before their lot; they are not attributed to the maintainer: document data support in French and English; fifteen V1 compositions; a static Next.js site; local generation; distribution through the existing shadcn CLI; a permissive license recommended but not yet approved. The English language of the site and project documentation is now a confirmed requirement, not an assumption.
 
-## Brand Personality
+## Brand personality
 
-Précise, sobre, accessible. L'interface met les documents en valeur ; les templates peuvent être plus expressifs que l'interface. Pas de promesse « impression professionnelle universelle ».
+Precise, restrained, accessible. The interface showcases the documents; templates may be more expressive than the interface. No promise of universal professional printing support.
 
 ## Anti-references
 
-- Un catalogue de variantes identiques dont seule la couleur change.
-- Des aperçus HTML qui ne correspondent pas au PDF téléchargé.
-- Un outil imposant des dizaines de réglages avant le premier document.
-- Une imitation du nom, logo ou contenu de shadcn ou PDFx.
-- Une page promotionnelle dominante sans accès rapide aux templates.
+- A catalog of identical variants differing only in color.
+- HTML previews that do not match the downloaded PDF.
+- A tool requiring dozens of settings before the first document.
+- An imitation of the shadcn or PDFx name, logo, or content.
+- A promotional page that dominates the experience and delays access to templates.
 
-## Design Principles
+## Design principles
 
-1. Le document réel est la référence de l'aperçu et du téléchargement.
-2. Le support dicte la composition ; changer les dimensions ne suffit pas.
-3. Le code appartient au projet utilisateur après installation.
-4. Les limites sont visibles : texte trop long, format incompatible, police absente.
-5. La confidentialité est simple : les données d'essai restent dans le navigateur.
+1. The actual document is the source of truth for preview and download.
+2. The physical format determines the composition; changing dimensions alone is insufficient.
+3. Installed source belongs to the user's project.
+4. The existing shadcn configuration remains authoritative; docn-ui does not create a competing project configuration.
+5. Limits are visible: excessive text, incompatible formats, missing fonts.
+6. Privacy is straightforward: trial data stays in the browser.
 
-## Accessibility & Inclusion
+## Accessibility and inclusion
 
-Objectif de conception WCAG 2.2 AA pour le site, clavier complet, focus visible, zoom à 200 %, texte des états et respect de `prefers-reduced-motion`. Le contenu du PDF est également présenté sous forme de données accessibles dans l'éditeur ; cela ne constitue pas une certification d'accessibilité du fichier PDF. Les scripts autres que latin et leurs polices nécessitent une qualification ultérieure.
+Design target: WCAG 2.2 AA for the site, full keyboard support, visible focus, 200% zoom, textual states, and respect for `prefers-reduced-motion`. PDF content is also available as accessible data in the editor; this does not certify PDF accessibility. Non-Latin scripts and their fonts require later qualification.

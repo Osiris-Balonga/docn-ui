@@ -1,80 +1,84 @@
 # PRD — docn-ui V1
 
-Statut : spécification de planification, 2026-08-28. Référence : [produit](../PRODUCT.md). Les IDs ci-dessous servent à relier les exigences aux lots et aux preuves.
+Status: planning specification, 2026-08-28. Reference: [product](../PRODUCT.md). The IDs below connect requirements to lots and evidence.
 
-## Résultat utilisateur
+## User outcome
 
-Un développeur trouve un document adapté à son support, remplace les données de démonstration, obtient un PDF fidèle à l'aperçu et installe le même template dans son projet sans dépendre du site docn-ui à l'exécution.
+A developer finds a document suited to the physical format, replaces sample data, obtains a PDF matching the preview, and installs the same template in their project without depending on the docn-ui site at runtime.
 
-Parcours principal : catalogue → composition → données → format compatible → thème → aperçu PDF → téléchargement ou installation → rendu autonome.
+Primary journey: catalog family → composition → generated PDF preview → download or source installation → standalone rendering.
 
-## Exigences fonctionnelles
+## Functional requirements
 
-| ID | Exigence vérifiable | Lots responsables |
-| --- | --- | --- |
-| FR-01 | Catalogue de 15 compositions, cinq familles, recherche et filtres combinables | L06, L08–L11 |
-| FR-02 | Fiche avec description, formats compatibles, données, thème, source, limites | L05, L06, L12 |
-| FR-03 | Dimensions physiques explicites ; format, composition et thème indépendants | L02, L04 |
-| FR-04 | Aperçu du PDF réellement généré, pages/faces, zoom, état de révision | L02, L05, L06 |
-| FR-05 | Éditeur de données typées, validation et remise à zéro ; JSON en mode avancé | L05, L06 |
-| FR-06 | Téléchargement du même PDF que l'aperçu courant, nom sûr et erreurs visibles | L05, L06 |
-| FR-07 | Trois thèmes cohérents ; modification contrôlée de l'accent et du logo | L04, L06 |
-| FR-08 | Trois cartes de visite, deux faces, formats compatibles et zones sûres | L05 |
-| FR-09 | Trois billets, QR code vérifié et contenu variable sans troncature cachée | L08 |
-| FR-10 | Trois reçus, largeurs 58/80 mm, hauteur liée au contenu et limite explicite | L09 |
-| FR-11 | Trois étiquettes, export individuel et planche paramétrée | L10 |
-| FR-12 | Trois factures, A4/Letter, lignes multipages et calculs déterministes | L11 |
-| FR-13 | Code complet consultable, récupérable et installable via registre shadcn | L07, L12 |
-| FR-14 | Installation vérifiée dans deux projets vierges, navigateur et Node | L07, L14 |
-| FR-15 | Documentation des composants, formats, thèmes, usages et création d'un template | L12 |
-| FR-16 | Données documentaires FR/EN ; contenu du site initial en anglais | L04–L12 |
+| ID    | Verifiable requirement                                                                                                                                                               | Responsible lots |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
+| FR-01 | Catalog of 17 compositions across invoices, receipts, resumes, reports, badges, and business cards, with family navigation                                                           | L06, L11, L12    |
+| FR-02 | Catalog specimen with title, actual generated preview, PDF download, complete source installation, and published limitations                                                         | L06, L07, L12    |
+| FR-03 | Explicit physical dimensions; independent format, composition, and theme                                                                                                             | L02, L04         |
+| FR-04 | Preview pages generated from the same template source as the downloadable PDF, with page/side navigation and zoom                                                                    | L02, L05, L06    |
+| FR-05 | Withdrawn from the current static V1 catalog: no public data editor or advanced JSON mode                                                                                            | Maintainer scope |
+| FR-06 | Download the fixture PDF represented by the current generated preview, with an accessible action                                                                                     | L06, L13         |
+| FR-07 | Three document themes for reusable components; templates retain explicit source-owned baseline tokens                                                                                | L04, L12         |
+| FR-08 | Two distinct two-sided business cards with compatible formats and safe areas                                                                                                         | L05, L12         |
+| FR-09 | Withdrawn from V1 without a compatibility alias: event tickets are not a catalog family                                                                                              | Maintainer scope |
+| FR-10 | Three receipts, 58/80 mm widths, content-dependent height, explicit limit                                                                                                            | L09              |
+| FR-11 | Withdrawn from V1 without a compatibility alias: labels are not a catalog family                                                                                                     | Maintainer scope |
+| FR-12 | Four invoices, A4/Letter compatibility as declared per template, and deterministic sample calculations                                                                               | L11, L12         |
+| FR-13 | Complete source viewable, retrievable, and installable as an additional registry through the official shadcn CLI and the consumer's existing `components.json`                       | L07, L12         |
+| FR-14 | Verified installation in two fresh projects, browser and Node                                                                                                                        | L07, L14         |
+| FR-15 | Documentation for components, formats, themes, usage, and template creation                                                                                                          | L12              |
+| FR-16 | French/English document data support; English site content                                                                                                                           | L04–L12          |
+| FR-17 | Reusable PDF components covering the 24 inspected PDFx categories plus Barcode, with typed APIs, real PDF examples, working detail pages and individual shadcn registry installation | L12              |
 
-Une variation de couleur ne compte pas comme nouvelle composition. La matrice précise des templates et formats est dans le [catalogue](specs/TEMPLATE_CATALOG.md).
+A color variation does not count as a new composition. The precise template/format matrix is in the [catalog](specs/TEMPLATE_CATALOG.md). All project prose, including documentation and plans, must be in English; this does not remove document locale support.
 
-## Exigences non fonctionnelles
+Maintainer revision, 2026-08-31: prioritize documentation and reusable components before further template redesign. The [component contract](specs/COMPONENT_CATALOG.md) records the PDFx comparison, current gaps, initial proposed Code 128/EAN-13 barcode scope, and component availability criteria. Coverage means equivalent document-building capability, not PDFx import compatibility or adoption of its CLI. Static forms and signature areas do not imply interactive PDF fields or cryptographic signing.
 
-| ID | Contrat | Vérification / lots |
-| --- | --- | --- |
-| NFR-01 | Données saisies et images jamais envoyées à un service distant | interception réseau, L06/L13/L14 |
-| NFR-02 | Site utilisable au clavier, responsive et avec réduction de mouvement | axe + tests manuels, L03/L13/L14 |
-| NFR-03 | Résultat indépendant des tokens/CSS DOM du site | test de frontières et consommation externe, L04/L07 |
-| NFR-04 | Rendu lourd isolé ; dernière saisie prioritaire ; ressources libérées | concurrence/timeout/navigation, L02/L06/L13 |
-| NFR-05 | PDF vérifié structurellement et visuellement ; texte non perdu | suite PDF, L02 puis chaque famille |
-| NFR-06 | Versions, assets et builds reproductibles ; licences tracées | lockfile/hashes/CI, L01/L07/L15 |
-| NFR-07 | Entrées bornées ; pas d'exécution de code ni chargement d'URL utilisateur | tests négatifs, L06/L13 |
-| NFR-08 | Installation hors monorepo sans imports privés ni dépendance docn-ui runtime | consumer fixtures, L07/L14 |
-| NFR-09 | URL et version de registre explicites, pas de publication implicite | L07/L15/L16 |
-| NFR-10 | Aucun support d'impression ou de navigateur non testé annoncé comme garanti | QA et documentation, L12/L14/L16 |
+## Nonfunctional requirements
 
-## Exigences de gouvernance ajoutées avant L01
+| ID     | Contract                                                                                                                        | Verification / lots                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| NFR-01 | Entered data and images are never sent to a remote service                                                                      | Network interception, L06/L13/L14                |
+| NFR-02 | Site usable with a keyboard, responsive layout, and reduced motion                                                              | axe + manual checks, L03/L13/L14                 |
+| NFR-03 | Output independent of site DOM tokens/CSS                                                                                       | Boundary and external consumption tests, L04/L07 |
+| NFR-04 | Heavy rendering isolated; latest input takes priority; resources released                                                       | Concurrency/timeout/navigation, L02/L06/L13      |
+| NFR-05 | PDF verified structurally and visually; text preserved                                                                          | PDF suite, L02 then each family                  |
+| NFR-06 | Reproducible versions, assets, and builds; tracked licenses                                                                     | Lockfile/hashes/CI, L01/L07/L15                  |
+| NFR-07 | Bounded inputs; no code execution or loading of user URLs                                                                       | Negative tests, L06/L13                          |
+| NFR-08 | Installation outside the monorepo without private imports or a docn-ui runtime dependency                                       | Consumer fixtures, L07/L14                       |
+| NFR-09 | Explicit registry URL and version; no implicit publication                                                                      | L07/L15/L16                                      |
+| NFR-10 | No untested printing or browser support advertised as guaranteed                                                                | QA and documentation, L12/L14/L16                |
+| NFR-11 | Registry source has no required import-prefix convention and does not replace the consumer's shadcn UI aliases or configuration | Custom-alias consumer fixture, L07/L14           |
 
-| ID | Exigence | Lot |
-| --- | --- | --- |
-| GOV-01 | Dépôt public confirmé, PR obligatoires sur dev/main, aucun bypass ni force push | L00G |
-| GOV-02 | Seule dev du même dépôt peut cibler main, check obligatoire vérifié | L00G |
-| GOV-03 | Project, milestones et une issue par lot ; stories/commits/preuves liés sans doublons | L00G puis chaque lot |
-| GOV-04 | État mis à jour à chaque transition ; Done distinct de validation locale, release vérifiée | Tous les lots |
+## Governance requirements added before L01
 
-## Critères des principaux parcours
+| ID     | Requirement                                                                                | Lot                  |
+| ------ | ------------------------------------------------------------------------------------------ | -------------------- |
+| GOV-01 | Confirmed public repository, required PRs on dev/main, no bypass or force push             | L00G                 |
+| GOV-02 | Only dev from the same repository may target main, with a verified required check          | L00G                 |
+| GOV-03 | Project, milestones, one issue per lot; linked stories/commits/evidence without duplicates | L00G, then every lot |
+| GOV-04 | Update status at every transition; Done differs from local verification; verify release    | All lots             |
 
-### Trouver un template
+## Main journey acceptance criteria
 
-Étant sur `/templates/`, quand l'utilisateur combine famille et format, seuls les modèles compatibles apparaissent. Le compteur correspond, le retour arrière restaure les filtres publics, et une recherche sans résultat propose de les effacer. Aucun moteur PDF n'est nécessaire pour filtrer la galerie.
+### Find a template
 
-### Personnaliser et exporter
+On `/templates/`, selecting a family shows exactly its registered templates and preserves the family in the URL. Unsupported legacy family parameters canonicalize to the first available family. Gallery navigation and filtering require no PDF engine.
 
-Étant sur une carte, quand l'utilisateur modifie son nom puis son logo, il voit une génération annoncée puis le PDF de cette révision. Il peut parcourir le verso. Le téléchargement est bloqué tant que la nouvelle révision n'est pas prête ; les octets téléchargés correspondent à l'aperçu. Des données invalides ne font pas disparaître les champs ni ne remplacent les valeurs par celles d'exemple.
+### Preview and download
 
-### Installer
+From a template specimen, the user can open the generated preview, inspect every side/page, zoom, and download the corresponding fixture PDF. The current V1 site does not offer public customization; consumers edit the installed, source-owned template and data in their own application.
 
-Étant sur la source, quand l'utilisateur suit la commande de registre dans un projet compatible, tous les fichiers et dépendances nécessaires sont installés. Les imports se résolvent sans les alias du monorepo. Après configuration des assets documentée, le rendu fonctionne sans accès au domaine docn-ui.
+### Install
 
-## Données et fonctionnalités exclues
+From the source view, following the registry command in an existing shadcn project installs all required files and dependencies without reinitializing shadcn. The project's existing `components.json` remains authoritative. Installed docn-ui files use relative internal imports and therefore do not require `@/*` or another fixed consumer import prefix. After documented asset setup, rendering works without access to the docn-ui domain.
 
-Pas de comptes, espace cloud, historique de documents, serveur de rendu, paiements, éditeur libre, code utilisateur exécutable, import HTML/Markdown arbitraire, partage de données par URL, scan/validation serveur de billet ou bibliothèque de templates payants. Le navigateur n'ouvre que des PDF générés par l'application, pas des PDF externes téléversés.
+## Excluded data and features
 
-Pas de certification fiscale des factures ; les champs légaux restent à adapter par le consommateur. Pas de garantie CMJN/PDF-X/PDF-UA. Pas de persistance automatique des coordonnées ou logos. Pas de PWA/offline garanti à cette étape.
+No accounts, cloud storage, document history, rendering server, payments, freeform editor, executable user code, arbitrary HTML/Markdown import, data sharing through URLs, server ticket scanning/validation, or paid template library. The browser opens only PDFs generated by the application, not uploaded external PDFs.
 
-## Définition de terminé
+No tax certification for invoices; consumers must adapt legal fields. No CMYK/PDF-X/PDF-UA guarantee. No automatic persistence of contact details or logos. No guaranteed PWA/offline support at this stage.
 
-Les 15 compositions existent et sont distinctes ; chaque template possède schéma, exemple nominal, cas limites, formats, source, fiche, test PDF et entrée de registre. Les deux modes de consommation sont vérifiés, les parcours passent sur les navigateurs ciblés, les limitations sont publiées et aucune donnée n'est transmise. L16 exige en plus l'autorisation, une version publique vérifiée et un rollback documenté. Toute exception doit être explicitement acceptée et réduire la promesse publique correspondante.
+## Definition of done
+
+All 17 compositions exist and are distinct; every template has a schema, nominal example, formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.

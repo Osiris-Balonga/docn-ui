@@ -1,27 +1,27 @@
-# Story Lxx-Syy — titre
+# Story Lxx-Syy — title
 
-Statut : planned. Exigences : FR/NFR à identifier. Prérequis : lot/story.
+Status: planned. Requirements: identify FR/NFR IDs. Prerequisites: lot/story.
 
-Issue du lot / sous-issue éventuelle : URL réelle. Project item : ID réel. PR : URL réelle à l'ouverture. Suivre [GITHUB](../../GITHUB.md), sans créer une issue par commit par défaut.
+Lot issue / optional sub-issue: actual URL. Project item: actual ID. PR: actual URL once opened. Follow [GITHUB](../../GITHUB.md); do not create one issue per commit by default.
 
-## Intention
+## Intent
 
-En tant que ..., je veux ... afin de ...
+As a ..., I want ... so that ...
 
-## Travail borné
+## Bounded work
 
-Fichiers/responsabilités concernés ; étapes ; exclusions. Réutiliser les modules et fixtures existants.
+Affected files/responsibilities; steps; exclusions. Reuse existing modules and fixtures.
 
-## Acceptation
+## Acceptance
 
-Étant donné ..., quand ..., alors ... ; cas d'erreur important. Une acceptation doit être observable et ne pas simplement répéter le code.
+Given ..., when ..., then ...; include an important error case. Acceptance must be observable instead of merely repeating the code.
 
-## Vérification minimale suffisante
+## Minimum sufficient verification
 
-Périmètre/commande ciblée ; preuve et limite. Ajouter un test seulement si un risque distinct n'est pas déjà couvert.
+Targeted scope/command; evidence and limitation. Add a test only for a distinct risk not already covered.
 
 ## Commit
 
 `type(scope): action in English`
 
-Mettre à jour la fiche et l'état avec les résultats réels. Ce modèle sert uniquement si un lot doit être subdivisé ; les stories initiales sont déjà détaillées dans les fiches de lots.
+Update the specification and status with actual results. Use this template only when a lot needs subdivision; initial stories are already detailed in lot specifications. Write every section in English.

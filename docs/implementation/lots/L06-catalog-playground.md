@@ -1,68 +1,68 @@
-# L06 — Catalogue et éditeur réutilisable
+# L06 — Catalog and reusable editor
 
-Statut initial : **planned**. Branche : `feat/catalog-and-playground`.
+Initial status: **planned**. Branch: `feat/catalog-and-playground`.
 
-Dépendances : L05. Exigences : FR-01, FR-02, FR-04–FR-07 ; NFR-01, NFR-04, NFR-07.
+Dependencies: L05. Requirements: FR-01, FR-02, FR-04–FR-07; NFR-01, NFR-04, NFR-07.
 
-## Lecture et entrée
+## Reading and entry criteria
 
-Lire [le plan maître](../../../IMPLEMENTATION_PLAN.md) et [les règles agent](../../../AGENTS.md). Le lot précédent doit être vérifié selon le mode Git choisi. Références : [référence 1](../../../DESIGN.md), [référence 2](../../specs/DOCUMENT_MODEL.md), [référence 3](../../TESTING.md).
+Read the [master plan](../../../IMPLEMENTATION_PLAN.md) and [agent rules](../../../AGENTS.md). The preceding lot must be verified according to the selected Git mode. References: [reference 1](../../../DESIGN.md), [reference 2](../../specs/DOCUMENT_MODEL.md), [reference 3](../../TESTING.md).
 
-## Périmètre et fichiers
+## Scope and files
 
-Généraliser l'expérience de carte pour les familles suivantes, sans construire un éditeur de mise en page ni un système de formulaire entièrement générique.
+Generalize the card experience for later families without creating a layout editor or fully generic form system.
 
-Fichiers/responsabilités cibles : apps/www/src/features/catalog, playground, pdf-viewer, routes templates ; metadata/documents.
+Target files/responsibilities: apps/www/src/features/catalog, playground, pdf-viewer, template routes; document metadata.
 
-## Stories et commits dans l'ordre
+## Stories and commits in order
 
 ### L06-S01 — `feat(catalog): add searchable format-aware template gallery`
 
-- [ ] Créer catalogue léger depuis metadata, galerie avec vraies vignettes, recherche et filtres combinables.
-- [ ] Synchroniser seulement filtres publics dans l'URL ; compteur, état vide, effacement et retour arrière.
-- [ ] Prégénérer les routes connues et 404 ; charger moteurs/templates à la demande, jamais pour toutes les vignettes.
+- [x] Create a lightweight metadata catalog, gallery with actual thumbnails, search, and combinable filters.
+- [x] Synchronize only public filters to the URL; count, empty state, clearing, and back navigation.
+- [x] Pregenerate known routes and 404; load engines/templates on demand, never for every thumbnail.
 
-**Acceptation :** La galerie affiche seulement les trois cartes disponibles à ce stade ; les filtres fonctionnent et n'importent pas le moteur.
+**Acceptance:** The gallery shows only the three available cards at this stage; filters work without importing the engine.
 
-**Vérification ciblée :** Unit ciblé filtre + un parcours catalogue ; pas de test de chaque texte statique.
+**Targeted verification:** Targeted filter unit tests and one catalog journey; no test for every static string.
 
 ### L06-S02 — `feat(playground): add validated data theme and format controls`
 
-- [ ] Séparer shell réutilisable et formulaires explicites par famille ; metadata sérialisables et registry de formulaires, sans introspection universelle de Zod.
-- [ ] Ajouter JSON avancé texte borné, validation avant application et retour au formulaire ; aucune évaluation de code.
-- [ ] Ajouter contrôle accent/locale/profil print et reset ; conserver dernière preview valide marquée ancienne lors d'une erreur.
-- [ ] Toute modification des paramètres invalide la révision exportable ; ne pas injecter JSON/logo dans URL ou stockage.
+- [x] Separate the reusable shell from explicit family forms; serializable metadata and a form registry without universal Zod introspection.
+- [x] Add bounded advanced JSON text, validation before applying, and return to the form; no code evaluation.
+- [x] Add accent/locale/print-profile controls and reset; retain the last valid preview marked outdated during errors.
+- [x] Any parameter change invalidates the exportable revision; never put JSON/logos in URLs or storage.
 
-**Acceptation :** Les états et actions restent cohérents entre formulaire et JSON, sans perte silencieuse de données.
+**Acceptance:** Form and JSON states/actions remain consistent without silent data loss.
 
-**Vérification ciblée :** Components de l'éditeur et integration coordination ; réutiliser unit schémas déjà présents.
+**Targeted verification:** Editor component tests and coordination integration; reuse existing schema unit tests.
 
 ### L06-S03 — `feat(playground): handle safe image uploads and render lifecycle`
 
-- [ ] Imports PNG/JPEG locaux bornés, décodage/dimensions réelles, orientation normalisée et retrait EXIF ; suppression locale possible.
-- [ ] File active/pending latest-wins, timeout, arrêt worker, cleanup buffers/Object URLs et tâches PDF.js.
-- [ ] Erreur générique expurgée ; reprise contrôlée et téléchargement désactivé quand la révision est invalide ou obsolète.
+- [x] Bounded local PNG/JPEG imports, actual decoding/dimensions, normalized orientation, EXIF removal; local removal available.
+- [x] Active/pending latest-wins queue, timeout, worker termination, cleanup of buffers/Object URLs and PDF.js tasks.
+- [x] Sanitized generic errors; controlled recovery and disabled download when the revision is invalid or stale.
 
-**Acceptation :** Fichier refusé expliqué ; éditions rapides ne produisent pas un export périmé ; navigation ne laisse pas de worker actif.
+**Acceptance:** Rejected files have explanations; rapid edits cannot produce stale exports; navigation leaves no active worker.
 
-**Vérification ciblée :** Unit validation d'image commune + integration latest-wins/cleanup ; un scénario réel d'erreur/reprise, pas un E2E par type MIME.
+**Targeted verification:** Shared image-validation unit tests and latest-wins/cleanup integration; one real failure/recovery scenario, not one E2E per MIME type.
 
 ### L06-S04 — `test(playground): verify export privacy and stale-result protection`
 
-- [ ] Étendre E2E carte pour vérifier export de la dernière révision et absence de requête contenant données/image.
-- [ ] Test négatif ciblé des URL d'assets utilisateur ; données en mémoire seulement.
-- [ ] Activer le job e2e-chromium et ses artefacts sans rejouer toutes les suites légères ; documenter la frontière réelle/mock.
+- [x] Extend card E2E to verify the latest revision export and no requests containing data/images.
+- [x] Targeted negative test for user asset URLs; memory-only data.
+- [x] Activate e2e-chromium and its artifacts without rerunning all lightweight suites; document real/mock boundaries.
 
-**Acceptation :** Le parcours nominal utilise les vrais workers et PDF ; aucune donnée saisie n'est transmise au site ou à un tiers.
+**Acceptance:** The nominal journey uses actual workers and PDFs; entered data is never transmitted to the site or a third party.
 
-**Vérification ciblée :** pnpm validate ; pnpm test:e2e playground.spec.ts ; build réutilisé une seule fois.
+**Targeted verification:** pnpm validate; pnpm test:e2e playground.spec.ts; reuse one build.
 
-## Critère de sortie
+## Exit criteria
 
-Catalogue et shell d'éditeur extensibles par metadata + formulaire de famille. Pas de couplage entre UI et code PDF exportable.
+Catalog and editor shell extend through metadata and family forms. No coupling between UI and exportable PDF source.
 
-Compléter [l'état](../status.json) et créer `docs/qa/L06.md` depuis le [modèle](../templates/QA_REPORT.md). Indiquer les commits réels, contrôles effectués et éventuels écarts. Pas de suite supplémentaire sans risque distinct à couvrir.
+Update [status](../status.json) and create `docs/qa/L06.md` from the [template](../templates/QA_REPORT.md). Record actual commits, completed checks, and deviations. No additional suite without a distinct risk to cover.
 
-## Hors périmètre
+## Out of scope
 
-Pas de partage par URL des données, historique cloud, drag-and-drop libre ou import JSX.
+No document-data URL sharing, cloud history, freeform drag-and-drop, or JSX import.

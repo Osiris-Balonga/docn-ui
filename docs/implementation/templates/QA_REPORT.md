@@ -1,27 +1,27 @@
-# QA — Lxx — titre
+# QA — Lxx — title
 
-Statut : non exécuté. SHA/branche : à renseigner avec des valeurs réelles.
+Status: not executed. SHA/branch: fill in actual values.
 
-Issue / Project item / PR : liens et IDs réels. Merge SHA : seulement après fusion observée. Dernière synchronisation du suivi : date réelle. Contrôles distants et locaux distingués.
+Issue / Project item / PR: actual links and IDs. Merge SHA: only after an observed merge. Last tracking synchronization: actual date. Distinguish remote and local checks.
 
-## Périmètre
+## Scope
 
-Stories et exigences concernées ; comportement ajouté/modifié. Décrire les simulations éventuelles et ce qui fonctionne avec moteur/navigateur réels.
+Affected stories and requirements; added/changed behavior. Describe any simulations and what works with the actual engine/browser.
 
-## Vérifications
+## Verification
 
-| Commande ou contrôle | Environnement | Résultat réel | Preuve |
+| Command or check | Environment | Actual result | Evidence |
 | --- | --- | --- | --- |
-| À renseigner | OS, runtime, versions, navigateur | non exécuté | aucun |
+| To be filled in | OS, runtime, versions, browser | Not executed | None |
 
-## Justification des tests ajoutés
+## Justification for added tests
 
-Bug/risque couvert, suite existante étendue et raison d'un nouveau fichier si nécessaire. Indiquer les périmètres non exécutés et pourquoi ils ne sont pas affectés. Ne pas inventer un nombre de tests.
+Covered bug/risk, existing suite extended, and reason for a new file if needed. Identify unexecuted scopes and why they are unaffected. Do not invent a test count.
 
-## Visuel et document
+## Visual and document checks
 
-Document/fixture, dimensions, pages/faces, aperçu/export, captures inspectées, limitations d'impression. Un screenshot de page vide ne constitue pas une preuve.
+Document/fixture, dimensions, pages/sides, preview/export, inspected screenshots, printing limitations. An empty-page screenshot is not evidence.
 
-## Écarts et reprise
+## Deviations and resumption
 
-Décisions/ADR modifiés, blocages, commandes restantes, prochaine story. Distinguer validation locale, CI, fusion et publication.
+Changed decisions/ADRs, blockers, remaining commands, next story. Distinguish local validation, CI, merging, and publication. Write the report in English.

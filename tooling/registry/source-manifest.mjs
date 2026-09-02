@@ -1,0 +1,490 @@
+import {
+  componentRegistryItems,
+  primitiveSupportItems,
+} from "./component-items.mjs";
+
+export const DEVELOPMENT_REGISTRY_VERSION = "dev";
+export const PINNED_SHADCN_VERSION = "4.19.1";
+
+const receiptFrameItem = {
+  name: "docn-receipt-frame",
+  type: "registry:lib",
+  title: "Receipt frame",
+  description:
+    "A physical roll-receipt sample frame with a qualified local PDF theme.",
+  dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+  registryDependencies: ["docn-contracts", "docn-themes", "docn-theme-context"],
+  files: ["packages/documents/src/primitives/receipt-frame.tsx"],
+};
+
+const qrPortraitBadgeLayoutItem = {
+  name: "docn-badge-qr-portrait-layout",
+  type: "registry:lib",
+  title: "QR portrait badge layout",
+  description:
+    "A shared full-bleed portrait and QR layout for vertical badge compositions.",
+  dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+  registryDependencies: [
+    "docn-contracts",
+    "docn-page-frame",
+    "docn-image",
+    "docn-qr-code",
+    "docn-text",
+    "docn-row",
+    "docn-stack",
+  ],
+  files: [
+    "packages/documents/src/templates/badges/qr-portrait-badge-layout.tsx",
+  ],
+};
+
+const newTemplateItems = [
+  [
+    "docn-invoice-photo-header",
+    "Photo header invoice",
+    "invoices/photo-header-invoice.tsx",
+    ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-receipt-product-barcode",
+    "Product barcode receipt",
+    "receipts/product-barcode-receipt.tsx",
+    [
+      "docn-receipt-frame",
+      "docn-barcode",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-receipt-cash-register",
+    "Cash register receipt",
+    "receipts/cash-register-receipt.tsx",
+    [
+      "docn-receipt-frame",
+      "docn-barcode",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-report-product-analytics",
+    "Product analytics report",
+    "reports/product-analytics-report.tsx",
+    [
+      "docn-page-frame",
+      "docn-graph",
+      "docn-heading",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-report-marketplace-revenue",
+    "Marketplace revenue report",
+    "reports/marketplace-revenue-report.tsx",
+    ["docn-page-frame", "docn-graph", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-report-customer-support",
+    "Customer support report",
+    "reports/customer-support-report.tsx",
+    [
+      "docn-page-frame",
+      "docn-graph",
+      "docn-heading",
+      "docn-image",
+      "docn-text",
+      "docn-row",
+      "docn-stack",
+    ],
+  ],
+  [
+    "docn-badge-profile-lanyard",
+    "Profile lanyard badge",
+    "badges/profile-lanyard-badge.tsx",
+    ["docn-page-frame", "docn-image", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-badge-qr-portrait-light",
+    "Light QR portrait badge",
+    "badges/qr-portrait-light-badge.tsx",
+    ["docn-page-frame", "docn-badge-qr-portrait-layout"],
+  ],
+  [
+    "docn-badge-qr-portrait-blue",
+    "Blue QR portrait badge",
+    "badges/qr-portrait-blue-badge.tsx",
+    ["docn-page-frame", "docn-badge-qr-portrait-layout"],
+  ],
+  [
+    "docn-business-card-coral-qr",
+    "Coral QR business card",
+    "business-cards/coral-qr-business-card.tsx",
+    ["docn-page-frame", "docn-qr-code", "docn-text", "docn-row", "docn-stack"],
+  ],
+  [
+    "docn-business-card-violet-founder",
+    "Violet founder business card",
+    "business-cards/violet-founder-business-card.tsx",
+    ["docn-page-frame", "docn-text", "docn-row", "docn-stack"],
+  ],
+].map(([name, title, relativeFile, primitiveDependencies]) => {
+  const file = `packages/documents/src/templates/${relativeFile}`;
+  return {
+    name,
+    type: "registry:block",
+    title,
+    description: `A source-owned ${String(title).toLowerCase()} composition.`,
+    dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+    devDependencies: ["@types/react@19.2.18"],
+    registryDependencies: [
+      "docn-template-types",
+      "docn-template-style",
+      ...primitiveDependencies,
+    ],
+    files: [file],
+    preview: [file],
+  };
+});
+
+export const registrySourceManifest = {
+  name: "docn-ui",
+  homepage: "https://github.com/Osiris-Balonga/docn-ui",
+  items: [
+    qrPortraitBadgeLayoutItem,
+    {
+      name: "docn-contracts",
+      type: "registry:lib",
+      title: "Document contracts",
+      description:
+        "Validated formats, units and errors; no rendering or imposition.",
+      dependencies: ["zod@3.25.76"],
+      registryDependencies: [],
+      files: [
+        "packages/documents/src/LICENSE",
+        ...["contracts.ts", "errors.ts", "formats.ts", "units.ts"].map(
+          (file) => `packages/documents/src/core/${file}`,
+        ),
+      ],
+    },
+    {
+      name: "docn-page-geometry",
+      type: "registry:lib",
+      title: "Page geometry",
+      description: "Pure physical page box arithmetic.",
+      dependencies: [],
+      registryDependencies: ["docn-contracts"],
+      files: ["packages/documents/src/core/page-geometry.ts"],
+    },
+    {
+      name: "docn-core",
+      type: "registry:lib",
+      title: "docn-ui document core",
+      description: "Compatible aggregate core, including imposition and money.",
+      dependencies: [],
+      registryDependencies: ["docn-contracts", "docn-page-geometry"],
+      files: ["index.ts", "fingerprint.ts", "imposition.ts", "money.ts"].map(
+        (file) => `packages/documents/src/core/${file}`,
+      ),
+    },
+    {
+      name: "docn-themes",
+      type: "registry:lib",
+      title: "docn-ui PDF themes",
+      description: "Validated PDF-safe theme tokens and accent overrides.",
+      dependencies: ["zod@3.25.76"],
+      registryDependencies: ["docn-contracts"],
+      files: ["packages/documents/src/themes/themes.ts"],
+    },
+    {
+      name: "docn-theme-context",
+      type: "registry:lib",
+      title: "docn-ui PDF theme context",
+      description:
+        "Shared PDF-only theme provider, without page or render dependencies.",
+      dependencies: ["react@19.2.8"],
+      registryDependencies: ["docn-themes"],
+      files: ["packages/documents/src/primitives/theme-context.tsx"],
+    },
+    {
+      name: "docn-fonts",
+      type: "registry:lib",
+      title: "Local PDF fonts",
+      description:
+        "Explicit font preparation and browser/Node registration, without PDF post-processing.",
+      dependencies: [
+        "@react-pdf/renderer@4.9.0",
+        "react@19.2.8",
+        "zod@3.25.76",
+      ],
+      devDependencies: ["@types/node@24.13.3", "@types/react@19.2.18"],
+      registryDependencies: ["docn-contracts"],
+      files: [
+        "packages/documents/assets/manifest.json",
+        "packages/documents/src/assets/install.mjs",
+        "packages/documents/src/assets/manifest.ts",
+        "packages/documents/src/render/assets.browser.ts",
+        "packages/documents/src/render/assets.node.ts",
+        "packages/documents/src/render/assets.ts",
+        "packages/documents/src/render/fonts.ts",
+      ],
+    },
+    {
+      name: "docn-render",
+      type: "registry:lib",
+      title: "docn-ui render runtime",
+      description:
+        "Browser and Node rendering with local assets and final PDF post-processing.",
+      dependencies: [
+        "@react-pdf/renderer@4.9.0",
+        "pdf-lib@1.17.1",
+        "pdfjs-dist@6.2.108",
+        "react@19.2.8",
+        "zod@3.25.76",
+      ],
+      registryDependencies: ["docn-core", "docn-fonts"],
+      files: ["browser.ts", "node.ts", "print-profile.ts", "runtime.ts"].map(
+        (file) => `packages/documents/src/render/${file}`,
+      ),
+    },
+    ...primitiveSupportItems,
+    ...componentRegistryItems,
+    {
+      name: "docn-template-types",
+      type: "registry:lib",
+      title: "Template contracts",
+      description:
+        "Shared source-owned template metadata and sample asset contract.",
+      dependencies: ["react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: ["docn-contracts"],
+      files: ["packages/documents/src/templates/types.ts"],
+    },
+    {
+      name: "docn-template-style",
+      type: "registry:lib",
+      title: "Template style policy",
+      description:
+        "Source-owned template colors and fonts with scoped overrides for future builders.",
+      dependencies: ["react@19.2.8", "zod@3.25.76"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: ["docn-template-types", "docn-themes"],
+      files: ["packages/documents/src/templates/style-policy.ts"],
+    },
+    {
+      name: "docn-resume-classic",
+      type: "registry:block",
+      title: "Classic two-column resume",
+      description: "A source-owned editorial resume composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-heading",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+      ],
+      files: ["packages/documents/src/templates/resume/classic-resume.tsx"],
+      preview: ["packages/documents/src/templates/resume/classic-resume.tsx"],
+    },
+    {
+      name: "docn-resume-accountant",
+      type: "registry:block",
+      title: "Structured accountant resume",
+      description: "A source-owned monochrome accountant resume composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+      ],
+      files: ["packages/documents/src/templates/resume/accountant-resume.tsx"],
+      preview: [
+        "packages/documents/src/templates/resume/accountant-resume.tsx",
+      ],
+    },
+    {
+      name: "docn-resume-designer",
+      type: "registry:block",
+      title: "Green designer resume",
+      description: "A source-owned two-column designer resume composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+        "docn-image",
+      ],
+      files: ["packages/documents/src/templates/resume/designer-resume.tsx"],
+      preview: ["packages/documents/src/templates/resume/designer-resume.tsx"],
+    },
+    {
+      name: "docn-invoice-spacious",
+      type: "registry:block",
+      title: "Spacious service invoice",
+      description: "A source-owned spacious service invoice composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-heading",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+        "docn-link",
+        "docn-divider",
+        "docn-image",
+      ],
+      files: ["packages/documents/src/templates/invoices/spacious-invoice.tsx"],
+      preview: [
+        "packages/documents/src/templates/invoices/spacious-invoice.tsx",
+      ],
+    },
+    {
+      name: "docn-receipt-order-confirmation",
+      type: "registry:block",
+      title: "Order confirmation",
+      description: "A source-owned commerce order confirmation composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-receipt-frame",
+        "docn-heading",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+        "docn-image",
+        "docn-divider",
+      ],
+      files: [
+        "packages/documents/src/templates/receipts/order-confirmation.tsx",
+      ],
+      preview: [
+        "packages/documents/src/templates/receipts/order-confirmation.tsx",
+      ],
+    },
+    {
+      name: "docn-invoice-vertical",
+      type: "registry:block",
+      title: "Vertical studio invoice",
+      description: "A source-owned editorial invoice with QR payment.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+        "docn-qr-code",
+      ],
+      files: ["packages/documents/src/templates/invoices/vertical-invoice.tsx"],
+      preview: [
+        "packages/documents/src/templates/invoices/vertical-invoice.tsx",
+      ],
+    },
+    {
+      name: "docn-invoice-corporate",
+      type: "registry:block",
+      title: "Corporate table invoice",
+      description: "A source-owned corporate table invoice composition.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      devDependencies: ["@types/react@19.2.18"],
+      registryDependencies: [
+        "docn-template-types",
+        "docn-template-style",
+        "docn-page-frame",
+        "docn-heading",
+        "docn-text",
+        "docn-row",
+        "docn-stack",
+      ],
+      files: [
+        "packages/documents/src/templates/invoices/corporate-invoice.tsx",
+      ],
+      preview: [
+        "packages/documents/src/templates/invoices/corporate-invoice.tsx",
+      ],
+    },
+    {
+      name: "docn-text-example",
+      type: "registry:block",
+      title: "Text document example",
+      description:
+        "An opt-in typed Text example with explicit local font preparation.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: ["docn-text", "docn-fonts"],
+      files: ["packages/documents/src/examples/text-document.tsx"],
+      preview: [
+        "packages/documents/src/examples/text-document.tsx",
+        "packages/documents/src/primitives/text.tsx",
+      ],
+    },
+    {
+      name: "docn-component-example",
+      type: "registry:block",
+      title: "Composed document example",
+      description:
+        "A typed table, graph and barcode composition without a template or aggregate primitive dependency.",
+      dependencies: ["@react-pdf/renderer@4.9.0", "react@19.2.8"],
+      registryDependencies: [
+        "docn-fonts",
+        "docn-data-table",
+        "docn-document-frame",
+        "docn-graph",
+        "docn-barcode",
+        "docn-heading",
+        "docn-page-footer",
+      ],
+      files: ["packages/documents/src/examples/component-document.tsx"],
+      preview: ["packages/documents/src/examples/component-document.tsx"],
+    },
+    {
+      name: "docn-primitives",
+      type: "registry:component",
+      title: "docn-ui PDF primitives",
+      description:
+        "Compatible aggregate primitive facade; Barcode remains opt-in.",
+      dependencies: [],
+      registryDependencies: [
+        "docn-core",
+        "docn-render",
+        "docn-receipt-frame",
+        ...componentRegistryItems
+          .filter((item) => item.name !== "docn-barcode")
+          .map((item) => item.name),
+      ],
+      files: [
+        "index.tsx",
+        "typography.tsx",
+        "layout.tsx",
+        "containers.tsx",
+        "annotations.tsx",
+        "pagination.tsx",
+        "page-regions.tsx",
+      ].map((file) => `packages/documents/src/primitives/${file}`),
+    },
+    receiptFrameItem,
+    ...newTemplateItems,
+  ],
+};
