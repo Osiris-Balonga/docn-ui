@@ -65,7 +65,7 @@ export function DocsSearch({ overMedia = false }: { overMedia?: boolean }) {
         className={cn(
           "hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 sm:flex sm:w-36 md:w-48 lg:w-40 xl:w-64 dark:bg-card",
           overMedia &&
-            "border border-white/15 bg-black/20 text-white/70 shadow-sm backdrop-blur-md hover:bg-black/35 hover:text-white",
+            "border border-white/20 bg-transparent text-white/75 shadow-none backdrop-blur-md hover:bg-white/10 hover:text-white dark:bg-transparent dark:hover:bg-white/10",
         )}
         onClick={() => setOpen(true)}
         aria-label="Search documentation"

@@ -166,6 +166,14 @@ describe("registry source panel", () => {
     expect(screen.queryByRole("combobox", { name: "Source file" })).toBeNull();
     expect(screen.queryByText("2 files · 2 registry items")).toBeNull();
     expect(
+      screen.getByRole("button", { name: "Copy install command" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
+      ),
+    ).toBeInTheDocument();
+    expect(
       screen.getByLabelText("~/docn/examples/card.tsx source"),
     ).toHaveTextContent('export const Card = "composed source";');
     expect(screen.getByText("layout.tsx")).toBeInTheDocument();
