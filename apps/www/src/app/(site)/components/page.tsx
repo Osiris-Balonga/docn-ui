@@ -43,17 +43,6 @@ export default function ComponentsPage() {
         description="Here you can find all the PDF components available in the library. Explore their previews, code and API."
         hideBreadcrumb
       >
-        <section aria-labelledby="new-components">
-          <h2
-            id="new-components"
-            className="scroll-m-20 text-xl font-semibold tracking-tight"
-          >
-            New Components
-          </h2>
-          <div className="mt-3">
-            <ComponentLink slug="barcode" title="Barcode" isNew />
-          </div>
-        </section>
         <section aria-labelledby="all-components">
           <h2
             id="all-components"
@@ -64,7 +53,11 @@ export default function ComponentsPage() {
           <ul className="mt-4 grid grid-cols-2 gap-x-8 gap-y-1 sm:grid-cols-3">
             {componentCatalog.map((entry) => (
               <li key={entry.slug}>
-                <ComponentLink slug={entry.slug} title={entry.title} />
+                <ComponentLink
+                  slug={entry.slug}
+                  title={entry.title}
+                  isNew={entry.slug === "barcode"}
+                />
               </li>
             ))}
           </ul>

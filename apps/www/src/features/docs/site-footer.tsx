@@ -26,7 +26,7 @@ export function SiteFooter({ overMedia = false }: { overMedia?: boolean }) {
                 href="/templates/"
                 className="flex min-h-10 items-center outline-none transition-colors hover:text-foreground focus-visible:rounded-sm focus-visible:ring-3 focus-visible:ring-ring/50"
               >
-                Template
+                Templates
               </Link>
             </li>
             <li>

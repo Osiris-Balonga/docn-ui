@@ -13,10 +13,7 @@ const pageSections: Record<string, readonly { title: string; href: string }[]> =
         href: "#development-installation",
       },
     ],
-    "/components/": [
-      { title: "New Components", href: "#new-components" },
-      { title: "All Components", href: "#all-components" },
-    ],
+    "/components/": [{ title: "All Components", href: "#all-components" }],
   };
 
 export function DocsOnThisPage({

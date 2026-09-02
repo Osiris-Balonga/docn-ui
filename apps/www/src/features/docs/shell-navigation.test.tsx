@@ -58,7 +58,7 @@ test("the shell exposes a focused skip link and an operable mobile documentation
     within(primaryNavigation).getByRole("link", { name: "Components" }),
   ).toBeInTheDocument();
   expect(
-    within(primaryNavigation).getByRole("link", { name: "Template" }),
+    within(primaryNavigation).getByRole("link", { name: "Templates" }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole("link", { name: "Open docn-ui on GitHub" }),
@@ -126,10 +126,10 @@ test("documentation search isolates editor shortcuts, reports no matches, and op
   expect(routerPush).toHaveBeenCalledWith("/docs/browser-and-node/");
 });
 
-test("the homepage search trigger stays transparent over the video", () => {
+test("the homepage search trigger remains identifiable over the video", () => {
   render(<SiteHeader overMedia />);
 
   expect(
     screen.getByRole("button", { name: "Search documentation" }),
-  ).toHaveClass("bg-transparent", "dark:bg-transparent");
+  ).toHaveClass("border-white/25", "bg-black/20", "shadow-sm");
 });
