@@ -77,7 +77,11 @@ export function DesktopSiteNavigation() {
   );
 }
 
-export function MobileSiteNavigation() {
+export function MobileSiteNavigation({
+  overMedia = false,
+}: {
+  overMedia?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const showsDocumentation = [
@@ -94,7 +98,11 @@ export function MobileSiteNavigation() {
           render={
             <Button
               variant="ghost"
-              className="h-10 px-2.5"
+              className={cn(
+                "h-10 px-2.5",
+                overMedia &&
+                  "border border-white/15 bg-black/20 text-white/85 shadow-sm backdrop-blur-md hover:bg-black/35 hover:text-white",
+              )}
               aria-label="Open site navigation"
             />
           }
@@ -102,8 +110,20 @@ export function MobileSiteNavigation() {
           <MenuIcon aria-hidden="true" data-icon="inline-start" />
           Menu
         </SheetTrigger>
-        <SheetContent side="left" className="w-[min(20rem,85vw)]">
-          <SheetHeader className="border-b">
+        <SheetContent
+          side="left"
+          className={cn(
+            "w-[min(20rem,85vw)]",
+            overMedia &&
+              "dark border-white/15 bg-slate-950/55 text-white shadow-2xl backdrop-blur-2xl",
+          )}
+          {...(overMedia
+            ? { overlayClassName: "bg-black/25 backdrop-blur-sm" }
+            : {})}
+        >
+          <SheetHeader
+            className={cn("border-b", overMedia && "border-white/10")}
+          >
             <SheetTitle>Navigation</SheetTitle>
             <SheetDescription>
               Browse docn-ui documentation and PDF components.

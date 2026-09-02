@@ -12,18 +12,18 @@ export const metadata = createPageMetadata({
 
 export default function HomePage() {
   return (
-    <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-7xl items-center px-4 py-14 sm:px-6 sm:py-20">
+    <div className="flex w-full flex-1 items-center px-4 py-4 sm:px-6 sm:py-6">
       <section
         aria-labelledby="home-heading"
-        className="mx-auto w-full max-w-3xl text-center"
+        className="mx-auto w-full max-w-3xl text-center text-white"
       >
         <h1
           id="home-heading"
-          className="text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-6xl"
+          className="text-4xl leading-tight font-semibold tracking-tight text-balance drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] sm:text-6xl"
         >
           Well-designed PDF templates, owned by your codebase.
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-pretty text-white/82 drop-shadow-[0_1px_10px_rgba(0,0,0,0.55)] sm:text-lg sm:leading-8">
           docn-ui extends the shadcn source workflow to printable documents:
           install the templates you need, edit them locally, and generate PDFs
           in the browser.
@@ -31,7 +31,10 @@ export default function HomePage() {
         <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link
             href="/templates/"
-            className={cn(buttonVariants({ size: "lg" }), "h-10 px-4")}
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "h-10 bg-white px-4 text-black shadow-sm transition-transform hover:bg-white/90 active:scale-[0.96]",
+            )}
           >
             Browse templates
           </Link>
@@ -39,7 +42,7 @@ export default function HomePage() {
             href="/docs/getting-started/"
             className={cn(
               buttonVariants({ size: "lg", variant: "outline" }),
-              "h-10 px-4",
+              "h-10 border-white/30 bg-black/20 px-4 text-white shadow-sm backdrop-blur-sm transition-transform hover:bg-black/35 hover:text-white active:scale-[0.96]",
             )}
           >
             Read the foundation guide

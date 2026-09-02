@@ -1,9 +1,15 @@
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export function SiteFooter() {
+export function SiteFooter({ overMedia = false }: { overMedia?: boolean }) {
   return (
-    <footer className="bg-background">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className={overMedia ? "bg-transparent" : "bg-background"}>
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6",
+          overMedia && "text-white/65",
+        )}
+      >
         <p>Source-owned PDF components for React.</p>
         <nav aria-label="Footer">
           <ul className="flex items-center gap-5">

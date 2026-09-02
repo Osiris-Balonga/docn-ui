@@ -13,6 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 import { knownPages } from "./page-index";
 
 function isEditableTarget(target: EventTarget | null) {
@@ -22,7 +23,7 @@ function isEditableTarget(target: EventTarget | null) {
   );
 }
 
-export function DocsSearch() {
+export function DocsSearch({ overMedia = false }: { overMedia?: boolean }) {
   const router = useRouter();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
@@ -61,7 +62,11 @@ export function DocsSearch() {
         ref={triggerRef}
         type="button"
         variant="secondary"
-        className="hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 sm:flex sm:w-36 md:w-48 lg:w-40 xl:w-64 dark:bg-card"
+        className={cn(
+          "hidden h-8 justify-start rounded-lg border-none bg-muted px-3 text-muted-foreground shadow-none transition-colors hover:bg-muted/50 sm:flex sm:w-36 md:w-48 lg:w-40 xl:w-64 dark:bg-card",
+          overMedia &&
+            "border border-white/15 bg-black/20 text-white/70 shadow-sm backdrop-blur-md hover:bg-black/35 hover:text-white",
+        )}
         onClick={() => setOpen(true)}
         aria-label="Search documentation"
       >
@@ -75,9 +80,18 @@ export function DocsSearch() {
         onOpenChange={changeOpen}
         title="Search documentation"
         description="Find an available docn-ui page."
-        className="sm:max-w-lg"
+        className={cn(
+          "sm:max-w-lg",
+          overMedia &&
+            "dark border border-white/15 bg-slate-950/55 text-white ring-white/10 shadow-2xl backdrop-blur-2xl",
+        )}
+        {...(overMedia
+          ? { overlayClassName: "bg-black/25 backdrop-blur-sm" }
+          : {})}
       >
-        <Command>
+        <Command
+          className={overMedia ? "bg-transparent text-white" : undefined}
+        >
           <CommandInput autoFocus placeholder="Search available pages..." />
           <CommandList>
             <CommandEmpty>No documentation found.</CommandEmpty>
@@ -91,7 +105,11 @@ export function DocsSearch() {
                         key={page.href}
                         value={`${page.title} ${page.description}`}
                         onSelect={() => navigate(page.href)}
-                        className="items-start py-2"
+                        className={cn(
+                          "items-start py-2",
+                          overMedia &&
+                            "data-selected:bg-white/10 data-selected:text-white",
+                        )}
                       >
                         <FileTextIcon aria-hidden="true" className="mt-0.5" />
                         <span>
