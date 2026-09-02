@@ -168,14 +168,16 @@ describe("registry source panel", () => {
     expect(
       screen.getByRole("button", { name: "Copy install command" }),
     ).toBeInTheDocument();
+    const installCommand = screen.getByText(
+      /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
+    );
+    const source = screen.getByLabelText("~/docn/examples/card.tsx source");
+    expect(installCommand).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("~/docn/examples/card.tsx source"),
-    ).toHaveTextContent('export const Card = "composed source";');
+      installCommand.compareDocumentPosition(source) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(source).toHaveTextContent('export const Card = "composed source";');
     expect(screen.getByText("layout.tsx")).toBeInTheDocument();
     expect(screen.getByText("schema.ts")).toBeInTheDocument();
     expect(screen.getByText("examples.ts")).toBeInTheDocument();

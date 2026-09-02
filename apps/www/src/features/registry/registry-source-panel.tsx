@@ -204,6 +204,22 @@ export function RegistrySourcePanel({
       <h2 id={headingId} className="sr-only">
         Component source
       </h2>
+      {drawer ? (
+        <div className="mb-3 flex min-w-0 items-center gap-3 rounded-lg border bg-muted/35 p-2 pl-3">
+          <Terminal
+            aria-hidden="true"
+            className="size-4 shrink-0 text-muted-foreground"
+          />
+          <code className="min-w-0 flex-1 truncate text-xs">
+            {installCommand}
+          </code>
+          <CopyAction
+            compact
+            label="Copy install command"
+            text={installCommand}
+          />
+        </div>
+      ) : null}
       <div
         className={cn(
           "overflow-hidden rounded-lg border bg-card",
@@ -331,22 +347,7 @@ export function RegistrySourcePanel({
         )}
       </div>
 
-      {drawer ? (
-        <div className="mt-3 flex min-w-0 items-center gap-3 rounded-lg border bg-muted/35 p-2 pl-3">
-          <Terminal
-            aria-hidden="true"
-            className="size-4 shrink-0 text-muted-foreground"
-          />
-          <code className="min-w-0 flex-1 truncate text-xs">
-            {installCommand}
-          </code>
-          <CopyAction
-            compact
-            label="Copy install command"
-            text={installCommand}
-          />
-        </div>
-      ) : (
+      {drawer ? null : (
         <>
           <div className="mt-6 grid gap-4 lg:grid-cols-2">
             <CommandBlock
