@@ -1,9 +1,10 @@
 import { ThemeMenu } from "@/features/theme/theme-menu";
+import { cn } from "@/lib/utils";
 import { DocsSearch } from "./docs-search";
 import { GitHubLink } from "./github-link";
 import { DesktopSiteNavigation, MobileSiteNavigation } from "./site-navigation";
 
-export function SiteHeader() {
+export function SiteHeader({ overMedia = false }: { overMedia?: boolean }) {
   return (
     <>
       <a
@@ -12,12 +13,17 @@ export function SiteHeader() {
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 bg-background">
+      <header
+        className={cn(
+          "sticky top-0 z-40",
+          overMedia ? "bg-transparent text-white" : "bg-background",
+        )}
+      >
         <div className="flex h-16 w-full items-center gap-2 px-4 sm:px-6">
-          <MobileSiteNavigation />
+          <MobileSiteNavigation overMedia={overMedia} />
           <DesktopSiteNavigation />
           <div className="ml-auto flex items-center gap-3">
-            <DocsSearch />
+            <DocsSearch overMedia={overMedia} />
             <GitHubLink />
             <ThemeMenu />
           </div>
