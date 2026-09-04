@@ -6,5 +6,12 @@ saveExact: true
 engineStrict: true
 
 allowBuilds:
+  core-js: false
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - "@posthog/browser-common@0.7.2"
+  - "@posthog/core@1.50.5"
+  - "@posthog/types@1.409.0"
+  - posthog-js@1.427.0

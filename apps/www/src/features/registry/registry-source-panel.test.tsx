@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RegistrySourcePanel } from "./registry-source-panel";
 
+const captureAnalyticsEvent = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/analytics-client", () => ({ captureAnalyticsEvent }));
+
 const rootItem = {
   name: "docn-component-example",
   meta: {
@@ -102,6 +106,7 @@ function registryFetch(input: string | URL | Request) {
 }
 
 afterEach(() => {
+  captureAnalyticsEvent.mockReset();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -154,6 +159,11 @@ describe("registry source panel", () => {
   it("limits the drawer to the example and declared direct dependency", async () => {
     const fetchMock = vi.fn(registryFetch);
     vi.stubGlobal("fetch", fetchMock);
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
     render(
       <RegistrySourcePanel
         itemName="docn-component-example"
@@ -168,6 +178,17 @@ describe("registry source panel", () => {
     expect(
       screen.getByRole("button", { name: "Copy install command" }),
     ).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Copy install command" }),
+    );
+    expect(captureAnalyticsEvent).toHaveBeenCalledWith({
+      name: "install_command_copied",
+      properties: {
+        packageId: "docn-component-example",
+        packageFamily: "component",
+        source: "drawer",
+      },
+    });
     const installCommand = screen.getByText(
       /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
     );

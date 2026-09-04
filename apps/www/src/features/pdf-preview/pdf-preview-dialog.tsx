@@ -12,6 +12,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { captureAnalyticsEvent } from "@/lib/analytics-client";
+import type { ContentAnalyticsContext } from "@/lib/analytics-events";
 import { cn } from "@/lib/utils";
 
 const MIN_ZOOM = 50;
@@ -35,6 +37,7 @@ interface PdfPreviewDialogProps {
   previewImageClassName?: string;
   hoverLabel?: string;
   onPreviewError?: () => void;
+  analytics?: ContentAnalyticsContext;
 }
 
 export function PdfPreviewDialog({
@@ -47,6 +50,7 @@ export function PdfPreviewDialog({
   previewImageClassName,
   hoverLabel = "Open preview",
   onPreviewError,
+  analytics,
 }: PdfPreviewDialogProps) {
   const [open, setOpen] = useState(false);
   const [internalPage, setInternalPage] = useState(0);
@@ -65,7 +69,19 @@ export function PdfPreviewDialog({
     <Dialog
       open={open}
       onOpenChange={(nextOpen) => {
-        if (nextOpen) setZoom(100);
+        if (nextOpen) {
+          setZoom(100);
+          if (analytics) {
+            captureAnalyticsEvent({
+              name: "content_viewed",
+              properties: analytics,
+            });
+            captureAnalyticsEvent({
+              name: "preview_opened",
+              properties: analytics,
+            });
+          }
+        }
         setOpen(nextOpen);
       }}
     >
@@ -163,6 +179,13 @@ export function PdfPreviewDialog({
               <a
                 href={downloadHref}
                 download
+                onClick={() => {
+                  if (analytics)
+                    captureAnalyticsEvent({
+                      name: "download_started",
+                      properties: { ...analytics, format: "pdf" },
+                    });
+                }}
                 aria-label={`Download ${title} PDF`}
                 className={buttonVariants({
                   variant: "ghost",
