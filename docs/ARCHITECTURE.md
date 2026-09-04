@@ -85,9 +85,9 @@ Enumerate dynamic routes with `generateStaticParams`; no arbitrary runtime slugs
 
 No Server Actions, generation API, request-dependent middleware, authentication cookies, ISR, or server image optimizer. Generate catalog images at build time and serve local files; explicitly configure an export-compatible mode. Security headers come from the host, not a Next API unavailable in static export.
 
-## Privacy-minimal analytics
+## Privacy-minimal hybrid analytics
 
-The static site may emit the bounded anonymous events defined by [ADR 0005](adr/0005-privacy-minimal-analytics.md). Analytics is cookieless, manual, and optional. It does not add a site API, authentication, remote document storage, user profiles, replay, or free-form event properties. The browser receives only a public ingestion token; privileged queries remain in the separate private analytics repository.
+The static site may emit the bounded anonymous events defined by [ADR 0005](adr/0005-privacy-minimal-analytics.md). Vercel Web Analytics records anonymous page views for traffic, country, route, and referrer reporting. PostHog records only manual, allowlisted product actions and remains optional. Both paths are cookieless. They do not add a site API, authentication, remote document storage, user profiles, replay, or free-form event properties. The browser receives only a public PostHog ingestion token; privileged PostHog and Vercel queries remain in the separate private analytics repository. The dashboard does not join visitor identities across providers.
 
 Serve matching versions of PDF.js/generator workers, fonts, and any required CMaps locally. L02 proves production resolution, not just `dev` resolution.
 

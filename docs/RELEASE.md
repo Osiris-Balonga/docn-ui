@@ -38,6 +38,8 @@ For the authorized beta, configure the Vercel production build with `SITE_URL=ht
 
 Analytics remains disabled unless both `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com` are configured. The project token is public ingestion configuration, not a personal API credential. Before enabling it, configure the PostHog EU project for Cookieless server hash mode, no person profiles, no autocapture or replay, and discarded IP data. Never add the private Query Read key to this repository or public Vercel project.
 
+Vercel Web Analytics is included independently through the same-origin `@vercel/analytics` integration. Enable Web Analytics for the public Vercel project before promotion. It supplies anonymous page views, daily traffic, country, route, and referrer aggregates without a cookie banner. Keep any Vercel access token used to query those aggregates exclusively in the private dashboard Preview environment.
+
 Static builds emit a canonical URL and sitemap entry for every public page. Without `SITE_URL`, canonicals use the loopback development origin and the complete site emits `noindex, nofollow` plus `Disallow: /`. A publication candidate becomes indexable only when it has an authorized `SITE_URL` and `DOCN_ALLOW_INDEXING=true`. Generated preview assets and development registry paths remain excluded from crawlers. Do not enable indexing merely to test a preview deployment.
 
 Long cache lifetimes for hashed assets and immutable versioned registry files; current HTML/catalog can be revalidated. Registry JSON/public archives needed by consumers are accessible without a session; configure CORS where documented use requires it, not as general permission for exfiltration.
