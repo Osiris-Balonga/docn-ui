@@ -14,7 +14,7 @@ Status: target architecture with the L02 PDF feasibility gate and L04 document f
 | Validation      | Zod                                                            | Data schemas and structured messages                                                    |
 | QR              | Maintained encoder to qualify, vector rendering                | Readability, no third-party request                                                     |
 | Verification    | Vitest, Testing Library, Playwright, axe, PDF inspection tools | Behavior and actual artifacts                                                           |
-| Documentation   | Typed local content and controlled React components            | Versioned static content, no CMS or runtime MDX parser; L12-S01 refinement               |
+| Documentation   | Typed local content and controlled React components            | Versioned static content, no CMS or runtime MDX parser; L12-S01 refinement              |
 | Distribution    | Additional shadcn registry                                     | Reuse the official CLI and the consumer's existing configuration; no proprietary V1 CLI |
 
 Exact compatible versions are recorded in [DEPENDENCIES.md](DEPENDENCIES.md); do not infer major versions from this document. L02 validated webpack worker bundling, local font/worker resolution, renderer geometry, page boxes, pagination, and two-pass roll height before generalization. The `pdfjs-dist` viewer and `@react-pdf/renderer` generator are separate libraries; do not confuse them with the viewer wrapper named `react-pdf`.
@@ -85,6 +85,10 @@ Enumerate dynamic routes with `generateStaticParams`; no arbitrary runtime slugs
 
 No Server Actions, generation API, request-dependent middleware, authentication cookies, ISR, or server image optimizer. Generate catalog images at build time and serve local files; explicitly configure an export-compatible mode. Security headers come from the host, not a Next API unavailable in static export.
 
+## Privacy-minimal analytics
+
+The static site may emit the bounded anonymous events defined by [ADR 0005](adr/0005-privacy-minimal-analytics.md). Analytics is cookieless, manual, and optional. It does not add a site API, authentication, remote document storage, user profiles, replay, or free-form event properties. The browser receives only a public ingestion token; privileged queries remain in the separate private analytics repository.
+
 Serve matching versions of PDF.js/generator workers, fonts, and any required CMaps locally. L02 proves production resolution, not just `dev` resolution.
 
 ## Asset generation
@@ -95,4 +99,4 @@ The build must prepare assets before Next copies `public`. Examples and licenses
 
 ## Extensions without premature implementation
 
-Schemas carry `schemaVersion`; template and registry versions are explicit. This supports evolution without requiring a universal engine. A hosted API or visual editor would need a separate PRD and ADRs, particularly for privacy and security.
+Schemas carry `schemaVersion`; template and registry versions are explicit. This supports evolution without requiring a universal engine. A hosted API or visual editor would need a separate PRD and ADRs, particularly for privacy and security. Analytics is the narrow exception documented by ADR 0005; it does not authorize those broader services.

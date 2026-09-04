@@ -4,22 +4,35 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { copyText } from "@/features/registry/registry-source";
+import { captureAnalyticsEvent } from "@/lib/analytics-client";
 import { cn } from "@/lib/utils";
 
 export function CopyCodeButton({
   compact = false,
   label,
   text,
+  analytics,
 }: {
   compact?: boolean;
   label: string;
   text: string;
+  analytics?: {
+    packageId: string;
+    packageFamily: "component" | "template";
+    source: "drawer" | "page";
+  };
 }) {
   const [status, setStatus] = useState<"copied" | "idle" | "manual">("idle");
 
   async function handleCopy() {
     try {
-      setStatus((await copyText(text)) ? "copied" : "manual");
+      const copied = await copyText(text);
+      setStatus(copied ? "copied" : "manual");
+      if (copied && analytics)
+        captureAnalyticsEvent({
+          name: "install_command_copied",
+          properties: analytics,
+        });
     } catch {
       setStatus("manual");
     }

@@ -20,6 +20,14 @@ Node is restricted to the qualified 24.x LTS line. The installed runtime satisfi
 
 Sources: [Next static exports](https://nextjs.org/docs/app/guides/static-exports), [Next installation](https://nextjs.org/docs/app/getting-started/installation), [pnpm settings](https://pnpm.io/settings), and the published npm manifests for the exact versions above.
 
+## Privacy-minimal analytics (maintainer-directed pre-release change)
+
+| Dependency | Version | License | Reason and browser impact |
+| --- | --- | --- | --- |
+| posthog-js | 1.427.0 | Apache-2.0 AND MIT | Cookieless EU event ingestion with a maintained browser SDK. Client instrumentation dynamically imports the slim/no-external entry. Autocapture, profiles, replay, surveys, tours, conversations, flags, experiments, performance, heatmaps, and external dependency loading are disabled. The measured impact is +1,573 gzip bytes on initial scripts plus a 49,990-byte gzip deferred chunk when configured; the 21,281,003-byte unpacked npm archive includes optional modules and source artifacts. |
+
+The SDK adds 11 locked package entries. `core-js@3.50.0` has a nonessential informational postinstall and is explicitly denied build-script execution; no native binary or generated runtime file is required. The same-day packages are enumerated in `minimumReleaseAgeExclude` because the maintainer explicitly requested implementation now; exact versions and the frozen lockfile preserve reproducibility. The CSP permits only the EU ingestion origin under `connect-src` and does not permit remote PostHog scripts.
+
 ## Interface (L01-S02)
 
 | Dependency | Version | License | Reason and browser impact |

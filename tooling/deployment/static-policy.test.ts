@@ -23,6 +23,12 @@ describe("portable static hosting policy", () => {
     expect(staticSecurityHeaders["Content-Security-Policy"]).toContain(
       "worker-src 'self' blob:",
     );
+    expect(staticSecurityHeaders["Content-Security-Policy"]).toContain(
+      "connect-src 'self' blob: https://eu.i.posthog.com",
+    );
+    expect(staticSecurityHeaders["Content-Security-Policy"]).not.toContain(
+      "https://*.posthog.com",
+    );
   });
 
   it("maps the portable policy to the Vercel static deployment", () => {

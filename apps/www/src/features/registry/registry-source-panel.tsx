@@ -115,7 +115,19 @@ function SourceTree({
   );
 }
 
-function CommandBlock({ command, label }: { command: string; label: string }) {
+function CommandBlock({
+  command,
+  label,
+  analytics,
+}: {
+  command: string;
+  label: string;
+  analytics?: {
+    packageId: string;
+    packageFamily: "component" | "template";
+    source: "page";
+  };
+}) {
   return (
     <div className="min-w-0 overflow-hidden rounded-lg border bg-muted/35">
       <div className="flex items-center justify-between gap-3 border-b px-3 py-2">
@@ -123,7 +135,11 @@ function CommandBlock({ command, label }: { command: string; label: string }) {
           <Terminal aria-hidden="true" className="size-3.5" />
           {label}
         </span>
-        <CopyAction label="Copy" text={command} />
+        <CopyAction
+          label="Copy"
+          text={command}
+          {...(analytics ? { analytics } : {})}
+        />
       </div>
       <CodeViewport className="max-w-full px-4 py-3 text-sm">
         <code>{command}</code>
@@ -135,9 +151,11 @@ function CommandBlock({ command, label }: { command: string; label: string }) {
 export function RegistrySourcePanel({
   itemName,
   variant = "page",
+  analyticsPackageFamily = "component",
 }: {
   itemName: string;
   variant?: "drawer" | "page";
+  analyticsPackageFamily?: "component" | "template";
 }) {
   const drawer = variant === "drawer";
   const [source, setSource] = useState<{
@@ -217,6 +235,11 @@ export function RegistrySourcePanel({
             compact
             label="Copy install command"
             text={installCommand}
+            analytics={{
+              packageId: itemName,
+              packageFamily: analyticsPackageFamily,
+              source: "drawer",
+            }}
           />
         </div>
       ) : null}
@@ -353,6 +376,11 @@ export function RegistrySourcePanel({
             <CommandBlock
               label="Install with shadcn"
               command={installCommand}
+              analytics={{
+                packageId: itemName,
+                packageFamily: analyticsPackageFamily,
+                source: "page",
+              }}
             />
             <CommandBlock
               label="Prepare browser assets"

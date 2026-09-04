@@ -2,7 +2,7 @@ export const staticSecurityHeaders = {
   "Content-Security-Policy": [
     "default-src 'self'",
     "base-uri 'self'",
-    "connect-src 'self' blob:",
+    "connect-src 'self' blob: https://eu.i.posthog.com",
     "font-src 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",

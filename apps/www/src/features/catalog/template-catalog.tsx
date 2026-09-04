@@ -54,6 +54,7 @@ function TemplateActions({ template }: { template: TemplateCatalogEntry }) {
             <RegistrySourcePanel
               itemName={`docn-${template.id}`}
               variant="drawer"
+              analyticsPackageFamily="template"
             />
           </div>
         </SheetContent>
@@ -80,6 +81,12 @@ function TemplateSpecimen({ template }: { template: TemplateCatalogEntry }) {
         downloadHref={`${template.pdf.src}?v=${template.pdf.revision.slice(0, 12)}`}
         triggerClassName="h-72 rounded-xl bg-muted/35 p-5 sm:h-80 sm:p-7"
         previewImageClassName="max-h-full w-auto shadow-lg ring-1 ring-foreground/10"
+        analytics={{
+          contentId: template.id,
+          contentType: "template",
+          contentFamily: template.family,
+          source: "catalog",
+        }}
       />
     </article>
   );
