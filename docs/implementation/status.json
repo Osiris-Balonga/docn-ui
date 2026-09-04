@@ -20,7 +20,14 @@
     "publicationAuthorized": true,
     "githubSetupAuthorized": true,
     "projectLanguage": "en",
-    "conversationLanguage": "fr"
+    "conversationLanguage": "fr",
+    "analytics": {
+      "provider": "PostHog EU",
+      "publicInstrumentation": "cookieless allowlisted events",
+      "privateDashboardRepository": "Osiris-Balonga/docn-ui-analytics",
+      "authorizedAt": "2026-09-04",
+      "releaseAuthorizationUnchanged": true
+    }
   },
   "states": [
     "planned",
