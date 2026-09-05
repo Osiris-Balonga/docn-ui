@@ -73,7 +73,7 @@
     "@react-pdf/renderer": "4.9.0",
     "jsbarcode": "3.12.3",
     "pdf-lib": "1.17.1",
-    "pdfjs-dist": "6.2.108",
+    "pdfjs-dist": "6.3.289",
     "qrcode": "1.5.4",
     "react": "19.2.8",
     "zod": "3.25.76"
