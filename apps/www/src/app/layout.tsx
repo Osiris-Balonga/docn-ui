@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Analytics } from "@/components/analytics";
 import { ThemeProvider } from "@/features/theme/theme-provider";
 import { siteIsIndexable, siteUrl } from "@/lib/site-metadata";
 import "./globals.css";
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-svh bg-background font-sans text-foreground antialiased">
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

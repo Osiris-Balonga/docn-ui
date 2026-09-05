@@ -22,8 +22,8 @@
     "projectLanguage": "en",
     "conversationLanguage": "fr",
     "analytics": {
-      "provider": "PostHog EU",
-      "publicInstrumentation": "cookieless allowlisted events",
+      "provider": "Vercel Web Analytics and PostHog EU",
+      "publicInstrumentation": "cookieless page views and allowlisted product events",
       "privateDashboardRepository": "Osiris-Balonga/docn-ui-analytics",
       "authorizedAt": "2026-09-04",
       "releaseAuthorizationUnchanged": true
