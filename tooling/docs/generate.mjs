@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { resolve, posix } from "node:path";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { relative, resolve, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { createCanvas } from "@napi-rs/canvas";
@@ -16,27 +16,56 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 const publicRoot = resolve(root, "apps/www/public");
 const indexPath = resolve(root, ".artifacts/docs/catalog.json");
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const inputs = execFileSync(
-  "git",
-  [
-    "ls-files",
-    "-z",
-    "--cached",
-    "--others",
-    "--exclude-standard",
-    "--",
-    "packages/documents",
-    "tooling/docs",
-    "tooling/registry",
-    "pnpm-lock.yaml",
-  ],
-  { cwd: root },
-)
-  .toString()
-  .split("\0")
-  .filter(Boolean)
-  .filter((file) => existsSync(resolve(root, file)))
-  .sort();
+const inputPaths = [
+  "packages/documents",
+  "tooling/docs",
+  "tooling/registry",
+  "pnpm-lock.yaml",
+];
+
+async function collectFiles(path) {
+  const absolutePath = resolve(root, path);
+  const entries = await readdir(absolutePath, { withFileTypes: true }).catch(
+    () => null,
+  );
+  if (!entries) return existsSync(absolutePath) ? [path] : [];
+  const files = await Promise.all(
+    entries.map((entry) =>
+      entry.isDirectory()
+        ? collectFiles(resolve(path, entry.name))
+        : entry.isFile()
+          ? [
+              relative(root, resolve(absolutePath, entry.name)).replaceAll(
+                "\\",
+                "/",
+              ),
+            ]
+          : [],
+    ),
+  );
+  return files.flat();
+}
+
+const inputs = existsSync(resolve(root, ".git"))
+  ? execFileSync(
+      "git",
+      [
+        "ls-files",
+        "-z",
+        "--cached",
+        "--others",
+        "--exclude-standard",
+        "--",
+        ...inputPaths,
+      ],
+      { cwd: root },
+    )
+      .toString()
+      .split("\0")
+      .filter(Boolean)
+      .filter((file) => existsSync(resolve(root, file)))
+      .sort()
+  : (await Promise.all(inputPaths.map(collectFiles))).flat().sort();
 const hash = createHash("sha256");
 for (const file of inputs) {
   hash.update(file);
