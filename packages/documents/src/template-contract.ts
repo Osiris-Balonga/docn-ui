@@ -149,6 +149,13 @@ const localImageIdSchema = z
   .max(120)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a lowercase kebab-case image ID.");
 const sha256Schema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
+const fontManifestIdentitySchema = z
+  .object({
+    assetIds: z.array(z.string().min(1)),
+    schemaVersion: z.number().int().positive(),
+    sha256: sha256Schema,
+  })
+  .strict();
 const localImageDescriptorSchema = z
   .object({
     id: localImageIdSchema,
@@ -873,16 +880,28 @@ function validateManifestIdentity(
   identity: FontManifestIdentity,
   theme: PdfTheme,
 ): FontManifestIdentity {
+  const parsed = fontManifestIdentitySchema.safeParse(identity);
+  if (!parsed.success) {
+    throwIssues(
+      parsed.error.issues.map((item) =>
+        issue("ASSET_REJECTED", item.message, [
+          "fontManifestIdentity",
+          ...normalizeDocumentPath(item.path),
+        ]),
+      ),
+    );
+  }
+  const validatedIdentity = parsed.data as FontManifestIdentity;
   const expectedIds = selectedFontAssets(theme).map((asset) => asset.id);
   const expectedSha256 = canonicalSha256Sync({
     assets: fontManifestProjection(theme),
     schemaVersion: assetManifest.schemaVersion,
   });
   if (
-    identity.schemaVersion !== assetManifest.schemaVersion ||
-    identity.assetIds.length !== expectedIds.length ||
-    identity.assetIds.some((id, index) => id !== expectedIds[index]) ||
-    identity.sha256 !== expectedSha256
+    validatedIdentity.schemaVersion !== assetManifest.schemaVersion ||
+    validatedIdentity.assetIds.length !== expectedIds.length ||
+    validatedIdentity.assetIds.some((id, index) => id !== expectedIds[index]) ||
+    validatedIdentity.sha256 !== expectedSha256
   ) {
     throwIssues([
       issue(
@@ -892,7 +911,7 @@ function validateManifestIdentity(
       ),
     ]);
   }
-  return identity;
+  return validatedIdentity;
 }
 
 export function normalizeTemplateInput<TData extends JsonObject>(
@@ -914,7 +933,9 @@ export function normalizeTemplateInput<TData extends JsonObject>(
       issue("INVALID_DATA", "Template data is required.", ["data"]),
     ]);
   }
-  const data = validateFixture(descriptor.schema, input.data, "data");
+  const data = deepFreeze(
+    clone(validateFixture(descriptor.schema, input.data, "data")),
+  ) as TData;
   const theme = resolveTheme(descriptor, input.theme);
   const format = normalizeFormat(descriptor, input.format);
   const locale = input.locale ?? descriptor.defaultLocale;
@@ -966,7 +987,7 @@ export function normalizeTemplateInput<TData extends JsonObject>(
     theme.theme as PdfTheme,
   );
   return deepFreeze({
-    data: clone(data),
+    data,
     fontManifestIdentity: clone(manifestIdentity),
     format: clone(format),
     localImageDescriptors: clone(images),

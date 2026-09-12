@@ -1,5 +1,5 @@
 import { generatedTemplateCatalog } from "./generated-templates";
-import { assertTemplateIdSet, type TemplateId } from "../template-ids";
+import { assertTemplateIdSet } from "../template-ids";
 
 export type TemplateFamily =
   "badge" | "business-card" | "invoice" | "receipt" | "report" | "resume";
@@ -36,7 +36,7 @@ export interface TemplateCatalogEntry {
   description: string;
   family: TemplateFamily;
   familyLabel: string;
-  id: TemplateId;
+  id: string;
   pages: readonly CatalogThumbnail[];
   pdf: {
     revision: string;

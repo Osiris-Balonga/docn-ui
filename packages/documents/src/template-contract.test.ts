@@ -214,6 +214,31 @@ describe("unified template descriptors", () => {
         issues: [expect.objectContaining({ path: ["fontManifestIdentity"] })],
       }),
     );
+    for (const invalidIdentity of [
+      { ...neutral, extra: "not-render-affecting" },
+      null,
+      { ...neutral, assetIds: "font-noto-sans-400" },
+    ]) {
+      expect(() =>
+        normalizeTemplateInput(
+          template,
+          { data: { imageIds: [], name: "Ada" } },
+          {
+            fontManifestIdentity: invalidIdentity as never,
+            localImageDescriptors: [],
+          },
+        ),
+      ).toThrowError(
+        expect.objectContaining({
+          code: "ASSET_REJECTED",
+          issues: [
+            expect.objectContaining({
+              path: expect.arrayContaining(["fontManifestIdentity"]),
+            }),
+          ],
+        }),
+      );
+    }
   });
 
   it("copies and freezes mutable descriptor defaults at registration", () => {
@@ -247,6 +272,26 @@ describe("unified template descriptors", () => {
     expect(normalized.revision).toBe(1);
     expect(Object.isFrozen(normalized)).toBe(true);
     expect(Object.isFrozen(normalized.theme.theme.colors)).toBe(true);
+  });
+
+  it("freezes validated data before image-ID extraction and keeps the same value", async () => {
+    let extractorSawFrozenData = false;
+    const template = descriptor({
+      extractLocalImageIds: (data) => {
+        extractorSawFrozenData = Object.isFrozen(data);
+        Reflect.set(data, "name", "Mutated");
+        return [];
+      },
+    });
+    const identity = await createFontManifestIdentity(getPdfTheme("neutral"));
+    const normalized = normalizeTemplateInput(
+      template,
+      { data: { imageIds: [], name: "Ada" } },
+      { fontManifestIdentity: identity, localImageDescriptors: [] },
+    );
+    expect(extractorSawFrozenData).toBe(true);
+    expect(normalized.data.name).toBe("Ada");
+    expect(Object.isFrozen(normalized.data)).toBe(true);
   });
 
   it("never substitutes fixture data and preserves structured validation paths", async () => {
