@@ -12,6 +12,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RegistrySourcePanel } from "@/features/registry/registry-source-panel";
 import { PdfPreviewDialog } from "@/features/pdf-preview/pdf-preview-dialog";
+import { captureAnalyticsEvent } from "@/lib/analytics-client";
 import type { PdfExample } from "./catalog-data";
 
 export function PdfExampleViewer({
@@ -28,6 +29,14 @@ export function PdfExampleViewer({
   const [page, setPage] = useState(0);
   const [failed, setFailed] = useState(false);
   const current = example.pages[page]!;
+  const analytics = itemName
+    ? {
+        contentId: itemName.replace(/^docn-/, ""),
+        contentType: "component" as const,
+        contentFamily: "pdf-components",
+        source: "documentation" as const,
+      }
+    : undefined;
   const pagination =
     example.pages.length > 1 ? (
       <div className="flex items-center justify-center gap-3">
@@ -98,6 +107,13 @@ export function PdfExampleViewer({
           <a
             href={example.pdf}
             download
+            onClick={() => {
+              if (analytics)
+                captureAnalyticsEvent({
+                  name: "download_started",
+                  properties: { ...analytics, format: "pdf" },
+                });
+            }}
             className={buttonVariants({ variant: "ghost", className: "h-10" })}
           >
             Download PDF
@@ -123,6 +139,7 @@ export function PdfExampleViewer({
               triggerClassName="min-h-44"
               previewImageClassName="max-h-80 w-auto"
               onPreviewError={() => setFailed(true)}
+              {...(analytics ? { analytics } : {})}
             />
           )}
         </div>

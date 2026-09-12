@@ -3,6 +3,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { RegistrySourcePanel } from "./registry-source-panel";
 
+const captureAnalyticsEvent = vi.hoisted(() => vi.fn());
+
+vi.mock("@/lib/analytics-client", () => ({ captureAnalyticsEvent }));
+
 const rootItem = {
   name: "docn-component-example",
   meta: {
@@ -26,8 +30,8 @@ const rootItem = {
     ],
   },
   registryDependencies: [
-    "http://127.0.0.1:4173/r/dev/docn-document-frame.json",
-    "http://127.0.0.1:4173/r/dev/docn-primitives.json",
+    "http://127.0.0.1:4173/r/v1.0.0/docn-document-frame.json",
+    "http://127.0.0.1:4173/r/v1.0.0/docn-primitives.json",
   ],
   files: [
     {
@@ -102,6 +106,7 @@ function registryFetch(input: string | URL | Request) {
 }
 
 afterEach(() => {
+  captureAnalyticsEvent.mockReset();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -154,6 +159,11 @@ describe("registry source panel", () => {
   it("limits the drawer to the example and declared direct dependency", async () => {
     const fetchMock = vi.fn(registryFetch);
     vi.stubGlobal("fetch", fetchMock);
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
     render(
       <RegistrySourcePanel
         itemName="docn-component-example"
@@ -168,8 +178,19 @@ describe("registry source panel", () => {
     expect(
       screen.getByRole("button", { name: "Copy install command" }),
     ).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Copy install command" }),
+    );
+    expect(captureAnalyticsEvent).toHaveBeenCalledWith({
+      name: "install_command_copied",
+      properties: {
+        packageId: "docn-component-example",
+        packageFamily: "component",
+        source: "drawer",
+      },
+    });
     const installCommand = screen.getByText(
-      /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
+      /shadcn@4\.19\.1 add .*\/r\/v1\.0\.0\/docn-component-example\.json/,
     );
     const source = screen.getByLabelText("~/docn/examples/card.tsx source");
     expect(installCommand).toBeInTheDocument();
@@ -208,8 +229,8 @@ describe("registry source panel", () => {
                   name: "docn-data-table",
                   files: [primary],
                   registryDependencies: [
-                    "/r/dev/docn-table.json",
-                    "/r/dev/docn-text.json",
+                    "/r/v1.0.0/docn-table.json",
+                    "/r/v1.0.0/docn-text.json",
                   ],
                   meta: {
                     sourcePreview: [
@@ -221,7 +242,7 @@ describe("registry source panel", () => {
               : {
                   name: "docn-table",
                   files: [supporting, file("PrivateHelper")],
-                  registryDependencies: ["/r/dev/docn-core.json"],
+                  registryDependencies: ["/r/v1.0.0/docn-core.json"],
                 },
           ),
         ),
@@ -244,7 +265,7 @@ describe("registry source panel", () => {
         JSON.stringify({
           name: "docn-heading",
           files: [single],
-          registryDependencies: ["/r/dev/docn-text.json"],
+          registryDependencies: ["/r/v1.0.0/docn-text.json"],
           meta: {
             sourcePreview: [{ item: "docn-heading", target: single.target }],
           },

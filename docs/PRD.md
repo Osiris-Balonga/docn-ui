@@ -12,7 +12,7 @@ Primary journey: catalog family → composition → generated PDF preview → do
 
 | ID    | Verifiable requirement                                                                                                                                                               | Responsible lots |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| FR-01 | Catalog of 17 compositions across invoices, receipts, resumes, reports, badges, and business cards, with family navigation                                                           | L06, L11, L12    |
+| FR-01 | Catalog of 18 compositions across invoices, receipts, resumes, reports, badges, and business cards, with family navigation                                                           | L06, L11, L12    |
 | FR-02 | Catalog specimen with title, actual generated preview, PDF download, complete source installation, and published limitations                                                         | L06, L07, L12    |
 | FR-03 | Explicit physical dimensions; independent format, composition, and theme                                                                                                             | L02, L04         |
 | FR-04 | Preview pages generated from the same template source as the downloadable PDF, with page/side navigation and zoom                                                                    | L02, L05, L06    |
@@ -81,4 +81,4 @@ No tax certification for invoices; consumers must adapt legal fields. No CMYK/PD
 
 ## Definition of done
 
-All 17 compositions exist and are distinct; every template has a schema, nominal example, formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.
+All 18 compositions exist and are distinct; every template has a schema, nominal example, formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.

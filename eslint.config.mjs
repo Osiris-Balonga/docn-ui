@@ -10,6 +10,7 @@ export default defineConfig([
     "**/.next/**",
     "**/out/**",
     "**/dist/**",
+    ".vercel/**",
     ".artifacts/**",
     "**/next-env.d.ts",
     "coverage/**",

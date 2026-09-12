@@ -23,6 +23,12 @@ describe("portable static hosting policy", () => {
     expect(staticSecurityHeaders["Content-Security-Policy"]).toContain(
       "worker-src 'self' blob:",
     );
+    expect(staticSecurityHeaders["Content-Security-Policy"]).toContain(
+      "connect-src 'self' blob: https://eu.i.posthog.com",
+    );
+    expect(staticSecurityHeaders["Content-Security-Policy"]).not.toContain(
+      "https://*.posthog.com",
+    );
   });
 
   it("maps the portable policy to the Vercel static deployment", () => {
@@ -45,7 +51,7 @@ describe("portable static hosting policy", () => {
       );
 
     expect(config.installCommand).toContain("pnpm@11.24.0");
-    expect(config.buildCommand).toBe("corepack pnpm@11.24.0 build");
+    expect(config.buildCommand).toBe("corepack pnpm@11.24.0 build:vercel");
     expect(config.outputDirectory).toBe("apps/www/out");
     expect(headersFor("/(.*)")["Cache-Control"]).toBe(
       cacheControlForPath("/docs/installation/index.html"),

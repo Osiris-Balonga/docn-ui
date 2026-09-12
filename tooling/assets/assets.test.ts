@@ -25,7 +25,51 @@ function digest(bytes: Uint8Array) {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
+const brandAssets = [
+  {
+    file: "apps/www/src/app/icon.svg",
+    bytes: 419,
+    sha256: "3e11181fad76a48192a1ce830dc3d7de75511906727736ca57ff8e67842a7255",
+  },
+  {
+    file: "apps/www/public/brand/docn-mark-light.svg",
+    bytes: 375,
+    sha256: "b058521b55b8a1c7677582a26554171e866bce616ca958254b62c8dad5a044e0",
+  },
+  {
+    file: "apps/www/public/brand/docn-mark-dark.svg",
+    bytes: 375,
+    sha256: "e69b6243bd86f1e4822bac3d9d576b8675795e906c9b38f2a89964365743a557",
+  },
+  {
+    file: "apps/www/public/brand/docn-lockup-light.svg",
+    bytes: 521,
+    sha256: "6069034b3cb4a3a0292f493c29618bf797d4cafa3dee4c9b16087e2a7a6029b1",
+  },
+  {
+    file: "apps/www/public/brand/docn-lockup-dark.svg",
+    bytes: 521,
+    sha256: "4e161cf8070c3caf3bd325ac99c58fbeadabafa8dbf1547f879f49e9f9e25a0e",
+  },
+] as const;
+
 describe("registry asset distribution", () => {
+  it("keeps project-owned brand SVGs matched to their provenance inventory", async () => {
+    const provenance = await readFile(
+      join(root, "apps/www/public/brand/README.md"),
+      "utf8",
+    );
+
+    expect(provenance).toContain("[MIT License](../../../../LICENSE)");
+    for (const asset of brandAssets) {
+      const bytes = new Uint8Array(await readFile(join(root, asset.file)));
+      expect(bytes.byteLength, asset.file).toBe(asset.bytes);
+      expect(digest(bytes), asset.file).toBe(asset.sha256);
+      expect(provenance, asset.file).toContain(`\`${asset.file}\``);
+      expect(provenance, asset.file).toContain(`\`${asset.sha256}\``);
+    }
+  });
+
   it("verifies the real fonts and license before creating a same-origin manifest", async () => {
     const verified = await readVerifiedAssetFiles(root);
     expect(verified.files.map((file) => file.file)).toEqual([
@@ -37,14 +81,23 @@ describe("registry asset distribution", () => {
     ]);
     const distribution = await buildDistributionAssets({
       root,
-      origin: "http://127.0.0.1:4173/r/dev/",
+      origin: "http://127.0.0.1:4173/r/v1.0.0/",
+      registryVersion: "v1.0.0",
     });
+    expect(distribution.manifest.registryVersion).toBe("v1.0.0");
     expect(distribution.manifest.files).toHaveLength(5);
     expect(
       distribution.manifest.files.every((file) =>
-        file.url.startsWith("http://127.0.0.1:4173/r/dev/assets/"),
+        file.url.startsWith("http://127.0.0.1:4173/r/v1.0.0/assets/"),
       ),
     ).toBe(true);
+    await expect(
+      buildDistributionAssets({
+        root,
+        origin: "http://127.0.0.1:4173/r/dev/",
+        registryVersion: "v1.0.0",
+      }),
+    ).rejects.toThrow("exact /r/v1.0.0/ path");
 
     const invalidManifest = structuredClone(verified.manifest);
     invalidManifest.assets[0].file = "../font.woff";

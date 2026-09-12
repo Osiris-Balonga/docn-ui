@@ -26,7 +26,7 @@ Minimum permissions `contents: read`, pinned actions with verified provenance, n
 
 The consumer job reports explicit non-applicability when no distribution path changed. Its filter includes the lockfile, workspace/compiler configuration, fonts, document sources, template generation, asset generation, registry generation and the consumer test itself. The PDF, visual, build and browser jobs currently remain unconditional, so no release evidence disappears behind a path filter. Release uses no exemptions.
 
-The `release-policy` workflow is present but must not be added to the `main` ruleset until a real promotion PR has produced the exact check from GitHub Actions. The first promotion remains blocked without `release-approved`; creating or applying that label is a release authorization action, not a routine implementation step.
+The `release-policy` workflow is present and its exact GitHub Actions context succeeded on the authorized interim promotions in PRs #60, #62, and #64. The active `protect-main` ruleset does not yet require that context. Add it before the official v1.0.0 promotion through an authorized governance change. Applying the existing `release-approved` label to a new promotion remains a release authorization action, not a routine implementation step; earlier labels do not authorize a later release.
 
 ## Hosting
 
@@ -35,6 +35,10 @@ Technical default: portable static build (`apps/www/out`). The maintainer select
 L15 provides a local preview because no destination is authorized. Run `pnpm build:preview`, then `pnpm preview:verify`; `pnpm preview` keeps the verified build available at `http://127.0.0.1:4173`. The build fingerprint records its source inputs, complete static-output digest, file/byte counts, `SITE_URL`, registry origin and indexing mode. `SITE_URL` controls canonical URLs and sitemap output. Previews are not indexed.
 
 For the authorized beta, configure the Vercel production build with `SITE_URL=https://docn-ui.vercel.app`, `DOCN_REGISTRY_ORIGIN=https://docn-ui.vercel.app/r/dev/`, and `DOCN_ALLOW_INDEXING=false`. Build locally with `vercel build --prod`, deploy the resulting `.vercel/output` with `vercel deploy --prebuilt --prod --skip-domain`, and verify the generated HTTPS URL before `vercel promote`. After promotion, repeat the probes against the stable alias and perform one installation from its public development registry. Never promote a build whose fingerprint does not match the reviewed source SHA.
+
+Analytics remains disabled unless both `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com` are configured. The project token is public ingestion configuration, not a personal API credential. Before enabling it, configure the PostHog EU project for Cookieless server hash mode, no person profiles, no autocapture or replay, and discarded IP data. Never add the private Query Read key to this repository or public Vercel project.
+
+Vercel Web Analytics is included independently through the same-origin `@vercel/analytics` integration. Enable Web Analytics for the public Vercel project before promotion. It supplies anonymous page views, daily traffic, country, route, and referrer aggregates without a cookie banner. Keep any Vercel access token used to query those aggregates exclusively in the private dashboard Preview environment.
 
 Static builds emit a canonical URL and sitemap entry for every public page. Without `SITE_URL`, canonicals use the loopback development origin and the complete site emits `noindex, nofollow` plus `Disallow: /`. A publication candidate becomes indexable only when it has an authorized `SITE_URL` and `DOCN_ALLOW_INDEXING=true`. Generated preview assets and development registry paths remain excluded from crawlers. Do not enable indexing merely to test a preview deployment.
 
@@ -53,9 +57,11 @@ The maintainer selected MIT on 2026-09-02 for code and documentation copyrighted
 - No author or code-license decision remains: Emmanuel Osiris Balonga and MIT are confirmed.
 - Any custom domain or billing action. Vercel and the `docn-ui.vercel.app` beta origin are confirmed.
 - Permission to make the site indexable. Public non-indexed beta publication is authorized.
-- Permission to create the `release-approved` label/apply it to the promotion PR, merge `dev -> main`, deploy, tag and create the GitHub release.
+- Permission to apply the existing `release-approved` label to the v1.0.0 promotion PR, merge `dev -> main`, deploy, tag and create the GitHub release. Authorizations used for earlier interim promotions do not carry over.
 
 Repository visibility is already public, but that grants none of the decisions above. No npm publication is planned for V1.
+
+The candidate scope and limitations are recorded in the [changelog](../CHANGELOG.md): eighteen templates across six families. These are release notes under review, not evidence of an immutable candidate or completed release.
 
 1. Verify and integrate all preceding lots, with candidate SHA evidence.
 2. Complete functional/visual QA and document limitations; invent no hardware results.
@@ -71,7 +77,7 @@ Repository visibility is already public, but that grants none of the decisions a
 1. Fill the author, license, host, `SITE_URL` and publication-authorization fields in `docs/implementation/status.json` from explicit maintainer decisions.
 2. Prepare the immutable `/r/v1.0.0/` registry and release notes on `release/v1.0.0`, then fully validate its exact SHA.
 3. Merge its preparation PR to `dev`; open the same-repository `dev -> main` promotion PR without a closing keyword for L16.
-4. Observe a real `release-policy` check, then add that exact GitHub Actions context to `protect-main`; apply `release-approved` only after authorization.
+4. Add the already-observed GitHub Actions `release-policy` context to `protect-main` through an authorized governance change; apply `release-approved` to the v1.0.0 promotion only after separate release authorization.
 5. Deploy the qualified artifact, verify the public deep links/assets/PDF/registry and one public shadcn installation, then tag/release and close L16.
 
 ## Rollback
