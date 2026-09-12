@@ -804,11 +804,10 @@ function normalizeFormat<TData extends JsonObject>(
   }
 }
 
-function normalizeImages<TData extends JsonObject>(
+function extractLocalImageIds<TData extends JsonObject>(
   descriptor: TemplateDescriptor<TData>,
   data: TData,
-  supplied: readonly LocalImageDescriptor[],
-): readonly LocalImageDescriptor[] {
+): readonly LocalImageId[] {
   const imageIds = [
     ...new Set(
       descriptor
@@ -827,6 +826,13 @@ function normalizeImages<TData extends JsonObject>(
       ),
     ]);
   }
+  return imageIds;
+}
+
+function normalizeImages(
+  imageIds: readonly LocalImageId[],
+  supplied: readonly LocalImageDescriptor[],
+): readonly LocalImageDescriptor[] {
   const descriptors = supplied.map((value, index) => {
     const parsed = localImageDescriptorSchema.safeParse(value);
     if (!parsed.success) {
@@ -925,11 +931,20 @@ function validateManifestIdentity(
   return validatedIdentity;
 }
 
-export function normalizeTemplateInput<TData extends JsonObject>(
+interface PreparedTemplateNormalization<TData extends JsonObject> {
+  readonly data: TData;
+  readonly format: ResolvedFormat;
+  readonly imageIds: readonly LocalImageId[];
+  readonly locale: DocumentLocale;
+  readonly printProfile: PrintProfile;
+  readonly revision: number;
+  readonly theme: ResolvedTemplateTheme;
+}
+
+function prepareTemplateNormalization<TData extends JsonObject>(
   descriptor: TemplateDescriptor<TData>,
   input: TemplateRenderInput<TData>,
-  context: NormalizationContext,
-): NormalizedTemplateInput<TData> {
+): PreparedTemplateNormalization<TData> {
   if (!registeredDescriptors.has(descriptor as object)) {
     throwIssues([
       issue(
@@ -1009,28 +1024,72 @@ export function normalizeTemplateInput<TData extends JsonObject>(
       ]),
     ]);
   }
-  const images = normalizeImages(
-    descriptor,
+  return {
     data,
+    format,
+    imageIds: extractLocalImageIds(descriptor, data),
+    locale,
+    printProfile,
+    revision,
+    theme,
+  };
+}
+
+function completeTemplateNormalization<TData extends JsonObject>(
+  descriptor: TemplateDescriptor<TData>,
+  prepared: PreparedTemplateNormalization<TData>,
+  context: NormalizationContext,
+): NormalizedTemplateInput<TData> {
+  const images = normalizeImages(
+    prepared.imageIds,
     context.localImageDescriptors,
   );
   const manifestIdentity = validateManifestIdentity(
     context.fontManifestIdentity,
-    theme.theme as PdfTheme,
+    prepared.theme.theme as PdfTheme,
   );
   return deepFreeze({
-    data,
+    data: prepared.data,
     fontManifestIdentity: clone(manifestIdentity),
-    format: clone(format),
+    format: clone(prepared.format),
     localImageDescriptors: clone(images),
-    locale,
-    printProfile: clone(printProfile),
-    revision,
+    locale: prepared.locale,
+    printProfile: clone(prepared.printProfile),
+    revision: prepared.revision,
     schemaVersion: descriptor.schemaVersion,
     templateId: descriptor.id,
     templateVersion: descriptor.version,
-    theme: clone(theme),
+    theme: clone(prepared.theme),
   }) as NormalizedTemplateInput<TData>;
+}
+
+export function normalizeTemplateInput<TData extends JsonObject>(
+  descriptor: TemplateDescriptor<TData>,
+  input: TemplateRenderInput<TData>,
+  context: NormalizationContext,
+): NormalizedTemplateInput<TData> {
+  return completeTemplateNormalization(
+    descriptor,
+    prepareTemplateNormalization(descriptor, input),
+    context,
+  );
+}
+
+/** @internal Runtime orchestration hook; use normalizeTemplateInput publicly. */
+export async function normalizeTemplateInputForRender<TData extends JsonObject>(
+  descriptor: TemplateDescriptor<TData>,
+  input: TemplateRenderInput<TData>,
+  createContext: (prepared: {
+    readonly imageIds: readonly LocalImageId[];
+    readonly resolvedTheme: ResolvedTemplateTheme;
+  }) => Promise<NormalizationContext>,
+): Promise<NormalizedTemplateInput<TData>> {
+  const prepared = prepareTemplateNormalization(descriptor, input);
+  const context = await createContext({
+    imageIds: prepared.imageIds,
+    resolvedTheme: prepared.theme,
+  });
+  return completeTemplateNormalization(descriptor, prepared, context);
 }
 
 export async function fingerprintNormalizedTemplateInput<

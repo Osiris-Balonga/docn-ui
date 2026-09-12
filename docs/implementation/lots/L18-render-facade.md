@@ -18,10 +18,10 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S01 — `feat(render): add the unified Node renderPdf facade`
 
-- [ ] Normalize and validate through L17, register manifest-bound local fonts once, dispatch the plan kind and finalize the PDF.
-- [ ] Implement exact `NodeRenderRuntimeOptions`: the optional module-relative `../../assets/` font directory default and the runtime-only local-image resolver, with an explicit contained directory override.
-- [ ] Return the existing `RenderResult` fields without aliases; never return bare bytes in place of `RenderResult` from the primary facade.
-- [ ] Copy a caller-supplied revision unchanged, default a one-shot omitted revision to 1, and never infer stale state in the runtime.
+- [x] Normalize and validate through L17, register manifest-bound local fonts once, dispatch the plan kind and finalize the PDF.
+- [x] Implement exact `NodeRenderRuntimeOptions`: the optional module-relative `../../assets/` font directory default and the runtime-only local-image resolver, with an explicit contained directory override.
+- [x] Return the existing `RenderResult` fields without aliases; never return bare bytes in place of `RenderResult` from the primary facade.
+- [x] Copy a caller-supplied revision unchanged, default a one-shot omitted revision to 1, and never infer stale state in the runtime.
 
 **Acceptance:** A Node consumer renders a representative template without importing React, React PDF, format resolution, font registration or plan helpers.
 

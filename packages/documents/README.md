@@ -11,7 +11,7 @@
 | `@docn-ui/documents/primitives`                       | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers | React and `@react-pdf/renderer`; no site imports              |
 | `@docn-ui/documents/templates/business-card-coral-qr` | One source-owned business-card composition and definition                                  | Core, themes, primitives, and React-pdf only; no site imports |
 | `@docn-ui/documents/browser`                          | Browser fixed-document adapter and same-origin asset resolver                              | React-pdf browser renderer and manifest assets                |
-| `@docn-ui/documents/node`                             | Node fixed-document adapter and absolute-path asset resolver                               | React-pdf Node renderer and pdf-lib box finalization          |
+| `@docn-ui/documents/node`                             | Unified Node `renderPdf` facade, advanced plan adapters, and verified local-asset resolver | React-pdf Node renderer and pdf-lib box finalization          |
 | `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                   | Core, themes, manifest, measurement, and Node adapter         |
 | `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                     | Internal evidence; never a registry dependency                |
 
@@ -54,3 +54,36 @@ Templates depend on core, themes, primitives, and an explicit renderer entry. Th
 `assets/manifest.json` is the inventory for distributable binaries. Every entry has a stable ID, fixed local/public path, byte size, SHA-256 hash, source package, and license file. Browser and Node resolvers accept only these IDs. User data cannot select a URL or filesystem path. The website build copies manifest fonts to the same-origin static directory; document rendering performs no font download.
 
 Registry work in L07 must derive item files and binary declarations from the same source tree and manifest. Feasibility fixtures, QA artifacts, website components, and generated output are excluded.
+
+## Unified Node rendering
+
+The Node entry now owns the normal orchestration path without requiring a
+consumer to import React, React PDF, format resolution, font registration, or
+render-plan helpers:
+
+```ts
+import { renderPdf } from "@docn-ui/documents/node";
+
+const result = await renderPdf(template, {
+  data,
+  theme: "neutral",
+  revision: 4,
+});
+```
+
+`result` retains the released `RenderResult` fields. An omitted revision is
+`1`; a supplied positive revision is copied unchanged. The optional
+`fontAssetDirectory` points to a complete local copy of the qualified manifest
+assets. Every file remains contained below that directory and must match its
+recorded byte length and SHA-256 digest. There is no system-font or network
+fallback.
+
+Template data may carry validated local-image IDs, never paths or URLs. The
+optional `localImageResolver` returns owned PNG/JPEG bytes and a declared MIME
+type at runtime. The facade decodes bounded pixels, applies EXIF orientation,
+normalizes metadata, fingerprints the final descriptor, and releases the
+plan-facing sources after every render outcome. PNG pixels and rotated JPEG
+pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
+compressed image stream while bounded metadata segments are removed, avoiding
+an unbounded JPEG-to-PNG size increase. The browser facade and worker
+coordinator remain L18 follow-up work.

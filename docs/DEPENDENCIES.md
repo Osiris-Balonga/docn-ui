@@ -146,3 +146,28 @@ Exact tarball license texts and manifests were inspected; ZXing ships its Apache
 Barcode has a dedicated import/registry entry, not an export from the legacy primitive barrel. The shared theme-context registry item is extracted early from S02g so Barcode can use PDF tokens without depending on the aggregate primitives. Existing template installations retain the same source closure and do not acquire JsBarcode. Component-sized installation of all other primitives remains S02g. No new installer, configuration replacement, server rendering, or package publication is introduced.
 
 Sources: [JsBarcode object output](https://github.com/lindell/JsBarcode#retrieve-the-barcode-values-so-you-can-render-it-any-way-youd-like), [JsBarcode MIT license](https://github.com/lindell/JsBarcode/blob/master/MIT-LICENSE.txt), [ZXing package](https://www.npmjs.com/package/@zxing/library), [ZXing 0.23.0 license](https://github.com/zxing-js/library/blob/v0.23.0/LICENSE). Final component isolation and actual-PDF decoding evidence is recorded in L12 QA after execution.
+
+## Local document-image preflight (L18-S01)
+
+| Dependency    | Version | License      | Reason and runtime impact                                                                                                                               |
+| ------------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| @pdf-lib/upng | 1.0.1   | MIT          | Isomorphic PNG pixel decode and deterministic metadata-free PNG re-encode; already locked transitively through pdf-lib, now a direct runtime dependency |
+| jpeg-js       | 0.4.4   | BSD-3-Clause | Isomorphic JPEG pixel decode with explicit resolution and memory bounds; a new direct runtime dependency with no runtime dependencies                   |
+| pako          | 1.0.11  | MIT AND Zlib | Existing transitive dependency of @pdf-lib/upng used for bounded PNG inflate/deflate; no new locked version                                             |
+
+The exact installed manifests and license files were inspected. The published
+unpacked sizes reported by npm are 707,597 bytes for `@pdf-lib/upng` and 76,029
+bytes for `jpeg-js`; those figures are package inventory, not bundle sizes. An
+isolated codec-entry measurement produced 90,065 bytes minified / 31,617 bytes
+gzip in total: UPNG plus pako measured 70,328 / 23,724 and jpeg-js measured
+20,241 / 8,478. No stable budget or threshold is inferred from this one
+measurement. No website entry imports the new Node facade in S01. Browser
+reachability and application-level bundle measurement remain L18-S02 work.
+
+PNG inputs and JPEGs requiring orientation are deterministically re-encoded as
+metadata-free PNG. Unrotated JPEGs are fully pixel-decoded for validation, then
+retain their compressed scan while bounded APP metadata and comments are
+removed. This avoids turning a valid sub-5-MiB photograph into an oversized PNG
+without relying on jpeg-js's Node-only encoder return path. No codec source is
+copied or patched. Redistribution must preserve the MIT, BSD-3-Clause, and pako
+MIT/Zlib notices.

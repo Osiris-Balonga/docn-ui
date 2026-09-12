@@ -72,7 +72,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@pdf-lib/upng": "1.0.1",
     "@react-pdf/renderer": "4.9.0",
+    "jpeg-js": "0.4.4",
     "jsbarcode": "3.12.3",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "6.2.108",
