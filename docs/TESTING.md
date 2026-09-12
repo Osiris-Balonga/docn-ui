@@ -55,7 +55,14 @@ Implement these scripts in L01, then activate each scope with its first real sui
 | `pnpm verify:registry` | Schema/graph/paths/imports of the generated registry; no installation                                                         |
 | `pnpm verify:assets`   | Presence, licenses, checksums; no browser tests                                                                               |
 | `pnpm verify:docs`     | Local documentation links, fragments, static targets and page headings from the existing build; no rebuild or remote requests |
-| `pnpm verify:bundle`   | File sizes from the existing build                                                                                            |
+
+No root `verify:bundle` script is implemented. A bundle review is tied to the
+dependency or integration that creates the risk: first run
+`node tooling/testing/build-fingerprint.mjs verify`, then record the exact
+`node:zlib` raw/gzip measurement command and its results in the corresponding
+QA report. The fingerprint proves artifact identity; it is not a substitute
+for a bundle-size budget, and a measurement without a reviewed threshold must
+not be presented as a stable verifier.
 
 The difference from DrawMotion is intentional: `validate` is lightweight here; `validate:full` is the complete gate check. Do not use `validate` alone as release evidence. `test:all` must include every activated scope, not a hidden selection. L01 documents the available commands; later lots add their scopes to the aggregator when activated.
 
@@ -82,11 +89,11 @@ No full suite after every text edit. Do not run coverage and repeat lightweight 
 
 One shared suite per family generates the three nominal examples and verifies useful invariants: readable file, dimensions, essential text, expected pages/sides, no final blank page. Expected values must not be computed by the function under test.
 
-Then add distinct risks: overflowing card, impossible QR, receipt at the height limit, sheet starting cell, multipage invoice. Common image/data/money limits are tested at the shared level, not repeated for fifteen compositions.
+Then add distinct risks: overflowing card, impossible QR, receipt at the height limit, sheet starting cell, multipage invoice. Common image/data/money limits are tested at the shared level, not repeated for eighteen compositions.
 
 Inspect PDFs with a reader independent of the layout. A `%PDF` signature or `Blob.size > 0` does not prove content. Decode QR from a rasterization of the final PDF, not merely from the string sent to the encoder.
 
-Visual snapshots start with one representative example per family. Add a reference only for a distinct structure or visual regression. No automatic 15 × formats × themes × languages × browsers matrix. A contact sheet of all fifteen examples helps human review without fifteen browser suites.
+Visual snapshots start with one representative example per family. Add a reference only for a distinct structure or visual regression. No automatic 18 × formats × themes × languages × browsers matrix. A contact sheet of all eighteen examples helps human review without eighteen browser suites.
 
 File tests verify what unit tests cannot: the engine, pagination, fonts, and placement. Calibrate pixel-diff thresholds on a fixed Linux runner with pinned rasterizer/fonts; do not treat Windows and Linux as bit-identical. Fix temporal metadata in fixtures; do not require arbitrary binary equality between renders.
 

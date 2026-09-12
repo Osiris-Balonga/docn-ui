@@ -17,6 +17,7 @@ import {
   type RegistrySourceFile,
 } from "./registry-source";
 import { cn } from "@/lib/utils";
+import { registryPath } from "@/lib/registry-version";
 
 const subscribeToStaticOrigin = () => () => {};
 
@@ -179,7 +180,7 @@ export function RegistrySourcePanel({
   useEffect(() => {
     const currentOrigin = window.location.origin;
     let active = true;
-    const itemUrl = `/r/dev/${itemName}.json`;
+    const itemUrl = `${registryPath}/${itemName}.json`;
     const sourceRequest = loadRegistryPreview({
       itemUrl,
       origin: currentOrigin,
@@ -210,8 +211,8 @@ export function RegistrySourcePanel({
 
   const selectedFile =
     files.find((file) => file.target === selectedTarget) ?? files[0];
-  const installCommand = `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/${itemName}.json`;
-  const assetCommand = `${currentSource?.assetsIncluded === false ? `corepack pnpm dlx shadcn@4.19.1 add ${origin}/r/dev/docn-fonts.json\n` : ""}node docn/assets/install.mjs --manifest ${origin}/r/dev/assets/manifest.json --target browser`;
+  const installCommand = `corepack pnpm dlx shadcn@4.19.1 add ${origin}${registryPath}/${itemName}.json`;
+  const assetCommand = `${currentSource?.assetsIncluded === false ? `corepack pnpm dlx shadcn@4.19.1 add ${origin}${registryPath}/docn-fonts.json\n` : ""}node docn/assets/install.mjs --manifest ${origin}${registryPath}/assets/manifest.json --target browser`;
   const headingId = `registry-source-${itemName}`;
 
   return (

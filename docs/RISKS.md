@@ -23,7 +23,7 @@
 
 ## Assumptions that do not block local startup
 
-French/English document data; Base UI; static Next.js; three themes; fifteen compositions; no backend. Change these through an ADR before the affected lot, not silently during implementation. English site and project content is a confirmed maintainer requirement.
+French/English document data; Base UI; static Next.js; three themes; eighteen compositions across six families; no backend. Change these through an ADR before the affected lot, not silently during implementation. English site and project content is a confirmed maintainer requirement.
 
 ## External information required before publication
 

@@ -3,7 +3,6 @@ import {
   primitiveSupportItems,
 } from "./component-items.mjs";
 
-export const DEVELOPMENT_REGISTRY_VERSION = "dev";
 export const PINNED_SHADCN_VERSION = "4.19.1";
 
 const receiptFrameItem = {

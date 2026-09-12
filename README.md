@@ -2,7 +2,7 @@
 
 A source-owned PDF component and template registry for existing shadcn projects.
 
-**Status on September 2, 2026: public beta verified; official v1.0.0 release in progress.** The V1 catalog contains eighteen compositions across invoices, receipts, CVs, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The beta is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license. See the [lot status](docs/implementation/status.json) and [L16 evidence](docs/qa/L16.md).
+**Status on September 12, 2026: public beta verified; official v1.0.0 release preparation in progress.** The V1 catalog contains eighteen compositions across invoices, receipts, resumes, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The beta is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license. It remains non-indexed and uses the mutable `/r/dev/` registry; no immutable v1.0.0 registry, tag, or GitHub release is claimed. See the [candidate release notes](CHANGELOG.md), [lot status](docs/implementation/status.json), and [L16 evidence](docs/qa/L16.md).
 
 [Documentation](https://docn-ui.vercel.app/docs/) · [Templates](https://docn-ui.vercel.app/templates/) · [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L16 issue #20](https://github.com/Osiris-Balonga/docn-ui/issues/20)
 
@@ -51,7 +51,7 @@ All project documentation, plans, UI copy, and GitHub content must be written in
 | [PRD](docs/PRD.md)                            | Identified requirements and V1 scope                         |
 | [Architecture](docs/ARCHITECTURE.md)          | Modules, dependencies, and flows                             |
 | [PDF contracts](docs/specs/DOCUMENT_MODEL.md) | Data, formats, themes, rendering, and errors                 |
-| [V1 catalog](docs/specs/TEMPLATE_CATALOG.md)  | Fifteen compositions across five families                    |
+| [V1 catalog](docs/specs/TEMPLATE_CATALOG.md)  | Eighteen compositions across six families                    |
 | [Distribution](docs/specs/REGISTRY.md)        | Source ownership and a shadcn-compatible registry            |
 | [Testing](docs/TESTING.md)                    | Commands, matrices, and evidence                             |
 | [Delivery](docs/RELEASE.md)                   | Git, CI, publication, and rollback                           |

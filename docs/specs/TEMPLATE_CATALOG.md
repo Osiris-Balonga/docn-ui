@@ -1,4 +1,4 @@
-# V1 template catalog — seventeen compositions
+# V1 template catalog — eighteen compositions
 
 This catalog defines the launch scope. It contains only invoices, receipts, resumes, reports, badges, and business cards. Template IDs are stable for URLs, fixtures, generated previews, and registry items. Event tickets and labels are not V1 catalog families and have no compatibility aliases or catalog entries.
 

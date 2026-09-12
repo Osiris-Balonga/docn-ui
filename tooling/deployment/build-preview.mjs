@@ -1,8 +1,10 @@
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { readReleaseMetadata } from "../registry/release.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
+const { registryVersion } = await readReleaseMetadata(root);
 const bundledCorepack = resolve(
   dirname(process.execPath),
   "node_modules/corepack/dist/corepack.js",
@@ -16,7 +18,7 @@ if (packageManager.length < 2)
 const environment = {
   ...process.env,
   DOCN_ALLOW_INDEXING: "false",
-  DOCN_REGISTRY_ORIGIN: "http://127.0.0.1:4173/r/dev/",
+  DOCN_REGISTRY_ORIGIN: `http://127.0.0.1:4173/r/${registryVersion}/`,
   SITE_URL: "http://127.0.0.1:4173",
 };
 const commands = [

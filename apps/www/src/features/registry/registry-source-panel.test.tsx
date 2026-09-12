@@ -30,8 +30,8 @@ const rootItem = {
     ],
   },
   registryDependencies: [
-    "http://127.0.0.1:4173/r/dev/docn-document-frame.json",
-    "http://127.0.0.1:4173/r/dev/docn-primitives.json",
+    "http://127.0.0.1:4173/r/v1.0.0/docn-document-frame.json",
+    "http://127.0.0.1:4173/r/v1.0.0/docn-primitives.json",
   ],
   files: [
     {
@@ -190,7 +190,7 @@ describe("registry source panel", () => {
       },
     });
     const installCommand = screen.getByText(
-      /shadcn@4\.19\.1 add .*\/r\/dev\/docn-component-example\.json/,
+      /shadcn@4\.19\.1 add .*\/r\/v1\.0\.0\/docn-component-example\.json/,
     );
     const source = screen.getByLabelText("~/docn/examples/card.tsx source");
     expect(installCommand).toBeInTheDocument();
@@ -229,8 +229,8 @@ describe("registry source panel", () => {
                   name: "docn-data-table",
                   files: [primary],
                   registryDependencies: [
-                    "/r/dev/docn-table.json",
-                    "/r/dev/docn-text.json",
+                    "/r/v1.0.0/docn-table.json",
+                    "/r/v1.0.0/docn-text.json",
                   ],
                   meta: {
                     sourcePreview: [
@@ -242,7 +242,7 @@ describe("registry source panel", () => {
               : {
                   name: "docn-table",
                   files: [supporting, file("PrivateHelper")],
-                  registryDependencies: ["/r/dev/docn-core.json"],
+                  registryDependencies: ["/r/v1.0.0/docn-core.json"],
                 },
           ),
         ),
@@ -265,7 +265,7 @@ describe("registry source panel", () => {
         JSON.stringify({
           name: "docn-heading",
           files: [single],
-          registryDependencies: ["/r/dev/docn-text.json"],
+          registryDependencies: ["/r/v1.0.0/docn-text.json"],
           meta: {
             sourcePreview: [{ item: "docn-heading", target: single.target }],
           },

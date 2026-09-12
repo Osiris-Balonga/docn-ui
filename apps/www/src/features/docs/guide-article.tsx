@@ -3,9 +3,10 @@ import { CodeBlock, DocsArticle } from "./docs-article";
 import { DocumentationShell } from "./documentation-shell";
 import { guideContent, type GuideBlock } from "@/content/docs/guide-content";
 import { guideIndex, type GuideSlug } from "@/content/docs/guide-index";
+import { registryPath } from "@/lib/registry-version";
 
 const registryBase =
-  process.env.DOCN_REGISTRY_ORIGIN ?? "http://127.0.0.1:4173/r/dev/";
+  process.env.DOCN_REGISTRY_ORIGIN ?? `http://127.0.0.1:4173${registryPath}/`;
 
 function GuideContentBlock({ block }: { block: GuideBlock }) {
   switch (block.type) {

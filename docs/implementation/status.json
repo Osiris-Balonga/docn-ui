@@ -18,6 +18,8 @@
     "hosting": "Vercel",
     "siteUrl": "https://docn-ui.vercel.app",
     "publicationAuthorized": true,
+    "publicationScope": "public non-indexed beta only",
+    "officialV1ReleaseAuthorized": false,
     "githubSetupAuthorized": true,
     "projectLanguage": "en",
     "conversationLanguage": "fr",
@@ -408,19 +410,36 @@
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L15"],
-      "branch": "release/v1.0.0",
-      "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
+      "branch": "codex/l16-v1-candidate",
+      "baseCommit": "6207e72bde54453069ef69bfa3f048556dd595ca",
       "actualCommits": [
         "149c027ba7b4c2927715dba9e3181c0dd06ed718",
         "bbf88fb5fe41360f7c52f81cff9279ec97e77abd",
         "8a999444c1b235a6d90ae0e95f6b6b593b62a973",
         "c1b3a9b15e83ad2fda5a934aa534489ce8a17af4",
-        "33c68a723dd809976319b6ed3b21a007f0af952a"
+        "33c68a723dd809976319b6ed3b21a007f0af952a",
+        "bde1f86aeb31e064dfce4de5e3908b11226cfbd6",
+        "486b3201591f41f34c39d5214ef923693a1d63a1",
+        "fe13298a17d4e17fbd80041efedc7563f358b26b",
+        "0e38d30b2e8b99ab40a5d138d128da0fe5e92201",
+        "3fea729b8e81a8da8f9e1f70f6fd130bc8f350d0",
+        "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
+        "d40273cbb7d8ea49243931a694742475ff6e6e30",
+        "c9a4023087fc403e3aa593570b391b1612ed6141"
       ],
       "evidence": "../qa/L16.md",
-      "blocker": null
+      "synchronizedDevCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
+      "verifiedCandidate": {
+        "commit": "c9a4023087fc403e3aa593570b391b1612ed6141",
+        "inputSha256": "f184499a192e7c10dc74a0c87f0a3e22f571f62b92bac3bdaccc784dc125ba90",
+        "outputSha256": "36fb2d5ec597438949b1b333a9816bdeb884f717128d72a3f5e368a726a7ee94",
+        "outputFiles": 465,
+        "outputBytes": 40002524,
+        "registryVersion": "v1.0.0"
+      },
+      "blocker": "The synchronized local candidate is verified, but official v1 release authorization, release PR review and merges, production deployment, tag, GitHub Release, and public v1 smoke verification are absent; protect-main does not yet require release-policy."
     }
   ],
   "github": {

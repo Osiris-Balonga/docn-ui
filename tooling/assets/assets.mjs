@@ -8,6 +8,7 @@ import {
   parseDistributionUrl,
   validateDistributionManifest,
 } from "../../packages/documents/src/assets/install.mjs";
+import { assertRegistryOrigin } from "../registry/release.mjs";
 
 function validateSourceManifest(manifest) {
   if (
@@ -100,14 +101,21 @@ export async function readVerifiedAssetFiles(root, manifestOverride) {
   return { files, manifest };
 }
 
-export async function buildDistributionAssets({ root, origin }) {
-  const base = parseDistributionUrl(origin, "Registry origin");
+export async function buildDistributionAssets({
+  root,
+  origin,
+  registryVersion,
+}) {
+  const base = parseDistributionUrl(
+    assertRegistryOrigin(origin, registryVersion),
+    "Registry origin",
+  );
   const { files } = await readVerifiedAssetFiles(root);
   const manifestUrl = new URL("assets/manifest.json", base).href;
   const manifest = validateDistributionManifest(
     {
       schemaVersion: 1,
-      registryVersion: "dev",
+      registryVersion,
       files: files.map(({ bytes, file, ...entry }) => ({
         ...entry,
         bytes: bytes.byteLength,

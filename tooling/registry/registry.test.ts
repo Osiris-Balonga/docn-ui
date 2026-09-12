@@ -2,11 +2,13 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   buildRegistry,
+  registryOutputPaths,
   resolveItemClosure,
   rewriteDocumentImports,
   validateSourceManifest,
 } from "./registry.mjs";
 import { registrySourceManifest } from "./source-manifest.mjs";
+import { assertRegistryOrigin, readReleaseMetadata } from "./release.mjs";
 import { templateCatalog } from "../../packages/documents/src/catalog/manifest";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -15,7 +17,7 @@ describe("document registry generation", () => {
   it("builds the component and source-owned template registry", async () => {
     const result = await buildRegistry({
       root,
-      origin: "http://127.0.0.1:4173/r/dev/",
+      origin: "http://127.0.0.1:4173/r/v1.0.0/",
     });
     expect(templateCatalog).toHaveLength(18);
     expect(
@@ -74,6 +76,27 @@ describe("document registry generation", () => {
     expect(
       result.items.some((item) => item.name.includes("business-card")),
     ).toBe(true);
+    expect(
+      result.items.every(
+        (item) =>
+          item.meta.registryVersion === "v1.0.0" &&
+          item.docs.startsWith("Immutable registry item for docn-ui 1.0.0"),
+      ),
+    ).toBe(true);
+    expect(
+      result.items
+        .flatMap((item) => item.registryDependencies)
+        .every((dependency) =>
+          dependency.startsWith("http://127.0.0.1:4173/r/v1.0.0/"),
+        ),
+    ).toBe(true);
+    expect(
+      new Set(templateCatalog.map((template) => template.version)),
+    ).toEqual(new Set(["1.0.0"]));
+    await expect(readReleaseMetadata(root)).resolves.toEqual({
+      packageVersion: "1.0.0",
+      registryVersion: "v1.0.0",
+    });
     const contracts = result.items.find(
       (item) => item.name === "docn-contracts",
     )!;
@@ -87,9 +110,24 @@ describe("document registry generation", () => {
     expect(
       await buildRegistry({
         root,
-        origin: "http://127.0.0.1:4173/r/dev/",
+        origin: "http://127.0.0.1:4173/r/v1.0.0/",
       }),
     ).toEqual(result);
+  });
+
+  it("keeps release origins and output paths on one explicit version", () => {
+    expect(
+      assertRegistryOrigin("http://127.0.0.1:4173/r/v1.0.0/", "v1.0.0"),
+    ).toBe("http://127.0.0.1:4173/r/v1.0.0/");
+    expect(registryOutputPaths(root, "v1.0.0").versionRoot).toMatch(
+      /apps[\\/]www[\\/]public[\\/]r[\\/]v1\.0\.0$/,
+    );
+    expect(() =>
+      assertRegistryOrigin("http://127.0.0.1:4173/r/dev/", "v1.0.0"),
+    ).toThrow("exact /r/v1.0.0/ path");
+    expect(() => registryOutputPaths(root, "../v1.0.0")).toThrow(
+      "Invalid registry output version",
+    );
   });
   it("isolates the barcode encoder from unrelated components and theme context", () => {
     const items = new Map(
