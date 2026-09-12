@@ -8,6 +8,7 @@ import { docsNavigation } from "../../apps/www/src/features/docs/navigation";
 import { guideIndex } from "../../apps/www/src/content/docs/guide-index";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
+const readApi = createApiReader(root);
 
 test("every public component has one registry item, searchable route and sidebar link", () => {
   expect(componentCatalog).toHaveLength(28);
@@ -58,13 +59,12 @@ test("component recipes stay focused and public props retain source descriptions
   const item = componentRegistryItems.find(
     (candidate: { name: string }) => candidate.name === "docn-divider",
   );
-  const [divider] = createApiReader(root)(item);
+  const [divider] = readApi(item);
   expect(divider.props.find((prop) => prop.name === "variant")).toMatchObject({
     default: '"solid"',
     description: "PDF-native border style.",
   });
 
-  const readApi = createApiReader(root);
   for (const entry of componentCatalog) {
     expect(entry.recipes?.length, `${entry.title} recipes`).toBeGreaterThan(0);
     const registryItem = componentRegistryItems.find(
