@@ -55,7 +55,14 @@ Implement these scripts in L01, then activate each scope with its first real sui
 | `pnpm verify:registry` | Schema/graph/paths/imports of the generated registry; no installation                                                         |
 | `pnpm verify:assets`   | Presence, licenses, checksums; no browser tests                                                                               |
 | `pnpm verify:docs`     | Local documentation links, fragments, static targets and page headings from the existing build; no rebuild or remote requests |
-| `pnpm verify:bundle`   | File sizes from the existing build                                                                                            |
+
+No root `verify:bundle` script is implemented. A bundle review is tied to the
+dependency or integration that creates the risk: first run
+`node tooling/testing/build-fingerprint.mjs verify`, then record the exact
+`node:zlib` raw/gzip measurement command and its results in the corresponding
+QA report. The fingerprint proves artifact identity; it is not a substitute
+for a bundle-size budget, and a measurement without a reviewed threshold must
+not be presented as a stable verifier.
 
 The difference from DrawMotion is intentional: `validate` is lightweight here; `validate:full` is the complete gate check. Do not use `validate` alone as release evidence. `test:all` must include every activated scope, not a hidden selection. L01 documents the available commands; later lots add their scopes to the aggregator when activated.
 
