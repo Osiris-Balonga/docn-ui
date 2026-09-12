@@ -13,6 +13,7 @@ export {
 } from "./themes/themes";
 export * from "./template-contract";
 export * from "./template-ids";
+export * from "./renderable-template";
 export {
   assertWithinSafeFrame,
   createSafeFrame,

@@ -388,9 +388,10 @@ export function parseLocalImageId(
   return parsed.data as LocalImageId;
 }
 
-export function defineTemplateDescriptor<TData extends JsonObject>(
-  descriptor: TemplateDescriptor<TData>,
-): TemplateDescriptor<TData> {
+export function defineTemplateDescriptor<
+  TData extends JsonObject,
+  TDescriptor extends TemplateDescriptor<TData> = TemplateDescriptor<TData>,
+>(descriptor: TDescriptor): TDescriptor {
   const problems: DocumentIssue[] = [];
   const families: readonly TemplateFamily[] = [
     "badge",
@@ -619,7 +620,7 @@ export function defineTemplateDescriptor<TData extends JsonObject>(
     }),
   });
   registeredDescriptors.add(registered);
-  return registered;
+  return registered as TDescriptor;
 }
 
 function selectedFontAssets(theme: PdfTheme) {

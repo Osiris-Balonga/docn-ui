@@ -51,12 +51,12 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ### L17-S03 — `feat(templates): define renderable template contracts`
 
-- [ ] Extend `TemplateDescriptor<TData>` as `RenderableTemplate<TData>` with a plan factory and a `fixed | flow | continuous` discriminant that wraps the existing two advanced plan types.
-- [ ] Cover the actual six-family, 18-template catalog in the new metadata union without altering legacy unions.
-- [ ] Add an additive adapter for one fixed current template without changing its visual composition.
-- [ ] Qualify flow with the existing `ComponentDocument`/`DocumentFrame` specimen and continuous behavior with the feasibility fixture; do not adapt a catalog receipt in L17.
-- [ ] Preserve every adapted component export and keep static trusted template resolution possible for L18.
-- [ ] Give plan factories a bounded context containing the frozen resolved theme, runtime-owned resolved-image lookup, and an optional differential legacy-style projection; omitted theme changes nothing, while explicit input applies only differing requested colors and qualified family changes, never type scale, spacing, weights, or geometry.
+- [x] Extend `TemplateDescriptor<TData>` as `RenderableTemplate<TData>` with a plan factory and a `fixed | flow | continuous` discriminant that wraps the existing two advanced plan types.
+- [x] Cover the actual six-family, 18-template catalog in the new metadata union without altering legacy unions.
+- [x] Add an additive adapter for one fixed current template without changing its visual composition.
+- [x] Qualify flow with the existing `ComponentDocument`/`DocumentFrame` specimen and continuous behavior with the feasibility fixture; do not adapt a catalog receipt in L17.
+- [x] Preserve every adapted component export and keep static trusted template resolution possible for L18.
+- [x] Give plan factories a bounded context containing the frozen resolved theme, runtime-owned resolved-image lookup, and an optional differential legacy-style projection; omitted theme changes nothing, while explicit input applies only differing requested colors and qualified family changes, never type scale, spacing, weights, or geometry.
 
 **Acceptance:** Fixed, flow, and continuous evidence satisfies one generic contract, the current template adapter preserves its component export, and no catalog receipt geometry or version changes.
 

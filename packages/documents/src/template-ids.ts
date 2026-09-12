@@ -47,3 +47,19 @@ export function assertTemplateIdSet(
     },
   ]);
 }
+
+export function assertTemplateIdSubset(
+  ids: readonly string[],
+  path: readonly (number | string)[] = ["templateIds"],
+): asserts ids is readonly TemplateId[] {
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const extra = [...new Set(ids)].filter((id) => !isTemplateId(id));
+  if (duplicates.length === 0 && extra.length === 0) return;
+  throw new DocumentValidationError([
+    {
+      code: "INVALID_DATA",
+      message: `Template IDs must be unique canonical IDs (extra: ${extra.join(", ") || "none"}; duplicates: ${[...new Set(duplicates)].join(", ") || "none"}).`,
+      path,
+    },
+  ]);
+}

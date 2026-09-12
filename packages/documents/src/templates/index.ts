@@ -48,8 +48,16 @@ export {
   type TemplateStyleOverrides,
 } from "./style-policy";
 export {
+  getRenderableTemplate,
+  renderableTemplates,
+  violetFounderBusinessCardRenderable,
+  type RenderableTemplateId,
+  type VioletFounderBusinessCardData,
+} from "./renderable";
+export {
   TEMPLATE_IDS,
   assertTemplateIdSet,
+  assertTemplateIdSubset,
   isTemplateId,
   type TemplateId,
 } from "../template-ids";
