@@ -25,10 +25,11 @@ Extend the shadcn source-ownership workflow to printable documents and PDFs. Dev
 - A detailed implementation plan in files, steps, and commits; no implementation during the original planning phase.
 - English throughout the project, explicitly including documentation, plans, UI copy, and GitHub content (maintainer instruction, 2026-08-29).
 - A reusable PDF component catalog covering PDFx's component categories, plus barcodes, with real examples, documentation and official shadcn installation (maintainer instruction, 2026-08-31). Further template redesign is paused while L12 delivers these capabilities; see the [component contract](docs/specs/COMPONENT_CATALOG.md).
+- A post-V1 usability program that makes the qualified rendering guarantees available through one template contract, one `theme` input and matching Node/browser `renderPdf` calls, then migrates all eighteen shipped templates and builds Theme Studio on that same contract (maintainer instruction, 2026-09-12).
 
 ## Working assumptions in the plan
 
-The original planning assumptions were explicit agent proposals, not maintainer statements: document data support in French and English; fifteen V1 compositions; a static Next.js site; local generation; distribution through the existing shadcn CLI; and a permissive license recommendation. Subsequent maintainer decisions and implemented scope supersede two of those assumptions: the current V1 catalog contains eighteen compositions across six families, and MIT is confirmed. The English language of the site and project documentation is also a confirmed requirement, not an assumption.
+The original planning assumptions were explicit agent proposals, not maintainer statements: document data support in French and English; fifteen V1 compositions; a static Next.js site; local generation; distribution through the existing shadcn CLI; and a permissive license recommendation. Subsequent maintainer decisions and implemented scope supersede two of those assumptions: the released V1 catalog contains eighteen compositions across six families, and MIT is confirmed. The exact deprecation window for the pre-L17 template props remains an explicit agent proposal, changeable through an ADR before its lot. The English language of the site and project documentation is also a confirmed requirement, not an assumption. Public-release, merge and deployment decisions remain governed by the recorded external decisions and are never inferred from authorization to implement locally.
 
 ## Brand personality
 
@@ -50,6 +51,12 @@ Precise, restrained, accessible. The interface showcases the documents; template
 4. The existing shadcn configuration remains authoritative; docn-ui does not create a competing project configuration.
 5. Limits are visible: excessive text, incompatible formats, missing fonts.
 6. Privacy is straightforward: trial data stays in the browser.
+7. The first successful render requires document data and, optionally, a theme; format, local fonts, validation and print safety remain present but use qualified defaults.
+8. Theme Studio exports the same validated theme syntax consumed by templates and renderers; it is not a second theming system.
+
+## Post-V1 success condition
+
+A consumer installs a template and the relevant source-owned render entry, calls `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)`, and receives the existing structured `RenderResult` without directly importing React PDF, registering fonts, resolving physical formats, or constructing a render plan. Advanced consumers may still use the lower-level primitives and plans. Simplicity is achieved by orchestration and defaults, not by removing strict data validation, local font manifests, the separate validated local-image channel, integer money calculations, physical-format checks, print-profile finalization or caller-owned revision ordering.
 
 ## Accessibility and inclusion
 

@@ -34,21 +34,38 @@ A color variation does not count as a new composition. The precise template/form
 
 Maintainer revision, 2026-08-31: prioritize documentation and reusable components before further template redesign. The [component contract](specs/COMPONENT_CATALOG.md) records the PDFx comparison, current gaps, initial proposed Code 128/EAN-13 barcode scope, and component availability criteria. Coverage means equivalent document-building capability, not PDFx import compatibility or adoption of its CLI. Static forms and signature areas do not imply interactive PDF fields or cryptographic signing.
 
+## Post-V1 requirements
+
+These requirements begin only after L16. They improve the existing product without changing the evidence or release status of V1.
+
+| ID    | Verifiable requirement                                                                                                                                                                                                                              | Responsible lots |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| FR-18 | One generic renderable-template definition owns strict data validation, defaults, compatibility metadata, permitted asset selection and fixed, flow or continuous plan creation                                                                     | L17              |
+| FR-19 | A consumer renders through matching Node and browser `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)` calls without direct React PDF, font-registration, format-resolution or render-plan setup | L18              |
+| FR-20 | Preset and custom document themes use one validated `theme` option; a custom theme carries `baseThemeId` for template compatibility, and print profiles remain a separate physical-output concern                                                   | L17, L18         |
+| FR-21 | Public tables have explicit bounded fixed/continuous layout inputs, and Graph supports grouped bars plus labeled multi-series datasets up to 6 series × 30 points with display formatters                                                           | L19              |
+| FR-22 | All 18 templates use the unified contract and appropriate public docn components; every intentional raw primitive or local composition exception is recorded                                                                                        | L20              |
+| FR-23 | Theme Studio edits compatible color and qualified font-family tokens, provides textual state and contrast diagnostics, and exports a compiling `~/docn/themes/<safe-name>.ts` source file accepted by `renderPdf` without runtime evaluation        | L21              |
+| FR-24 | The source registry and isolated Node/browser consumers install and exercise the unified API, with migration guidance for legacy component props and render paths                                                                                   | L22              |
+
 ## Nonfunctional requirements
 
-| ID     | Contract                                                                                                                        | Verification / lots                              |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| NFR-01 | Entered data and images are never sent to a remote service                                                                      | Network interception, L06/L13/L14                |
-| NFR-02 | Site usable with a keyboard, responsive layout, and reduced motion                                                              | axe + manual checks, L03/L13/L14                 |
-| NFR-03 | Output independent of site DOM tokens/CSS                                                                                       | Boundary and external consumption tests, L04/L07 |
-| NFR-04 | Heavy rendering isolated; latest input takes priority; resources released                                                       | Concurrency/timeout/navigation, L02/L06/L13      |
-| NFR-05 | PDF verified structurally and visually; text preserved                                                                          | PDF suite, L02 then each family                  |
-| NFR-06 | Reproducible versions, assets, and builds; tracked licenses                                                                     | Lockfile/hashes/CI, L01/L07/L15                  |
-| NFR-07 | Bounded inputs; no code execution or loading of user URLs                                                                       | Negative tests, L06/L13                          |
-| NFR-08 | Installation outside the monorepo without private imports or a docn-ui runtime dependency                                       | Consumer fixtures, L07/L14                       |
-| NFR-09 | Explicit registry URL and version; no implicit publication                                                                      | L07/L15/L16                                      |
-| NFR-10 | No untested printing or browser support advertised as guaranteed                                                                | QA and documentation, L12/L14/L16                |
-| NFR-11 | Registry source has no required import-prefix convention and does not replace the consumer's shadcn UI aliases or configuration | Custom-alias consumer fixture, L07/L14           |
+| ID     | Contract                                                                                                                                                                                                      | Verification / lots                                 |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| NFR-01 | Entered data and images are never sent to a remote service                                                                                                                                                    | Network interception, L06/L13/L14/L21/L22           |
+| NFR-02 | Site usable with a keyboard, responsive layout, and reduced motion                                                                                                                                            | axe + manual checks, L03/L13/L14/L21                |
+| NFR-03 | Output independent of site DOM tokens/CSS                                                                                                                                                                     | Boundary and external consumption tests, L04/L07    |
+| NFR-04 | Heavy rendering isolated; latest input takes priority; resources released                                                                                                                                     | Concurrency/timeout/navigation, L02/L06/L13/L18/L21 |
+| NFR-05 | PDF verified structurally and visually; text preserved                                                                                                                                                        | PDF suite, L02 then each family                     |
+| NFR-06 | Reproducible versions, assets, and builds; tracked licenses                                                                                                                                                   | Lockfile/hashes/CI, L01/L07/L15                     |
+| NFR-07 | Bounded inputs; no code execution or loading of user URLs                                                                                                                                                     | Negative tests, L06/L13/L17/L18/L21                 |
+| NFR-08 | Installation outside the monorepo without private imports or a docn-ui runtime dependency                                                                                                                     | Consumer fixtures, L07/L14                          |
+| NFR-09 | Explicit registry URL and version; no implicit publication                                                                                                                                                    | L07/L15/L16                                         |
+| NFR-10 | No untested printing or browser support advertised as guaranteed                                                                                                                                              | QA and documentation, L12/L14/L16                   |
+| NFR-11 | Registry source has no required import-prefix convention and does not replace the consumer's shadcn UI aliases or configuration                                                                               | Custom-alias consumer fixture, L07/L14              |
+| NFR-12 | The simple facade preserves strict validation, local-only qualified fonts, a separate validated local-image channel, dimensions, print boxes, pagination, the existing `RenderResult` fields and fingerprints | L17–L22                                             |
+| NFR-13 | Individual component installation does not acquire the complete template/rendering pipeline transitively                                                                                                      | L19/L22                                             |
+| NFR-14 | The caller or render coordinator owns monotonically increasing revisions; worker and UI layers reject stale results and can interrupt timed-out or superseded work                                            | L18/L21/L22                                         |
 
 ## Governance requirements added before L01
 
@@ -79,6 +96,10 @@ No accounts, cloud storage, document history, rendering server, payments, freefo
 
 No tax certification for invoices; consumers must adapt legal fields. No CMYK/PDF-X/PDF-UA guarantee. No automatic persistence of contact details or logos. No guaranteed PWA/offline support at this stage.
 
-## Definition of done
+## V1 definition of done
 
-All 18 compositions exist and are distinct; every template has a schema, nominal example, formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.
+All 18 compositions exist and are distinct; every template has a schema, nominal example, declared formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.
+
+## Post-V1 program definition of done
+
+L17–L22 are complete when all 18 templates share the unified contract, the component prerequisites remove audited duplication, Theme Studio exports the real validated syntax, external Node/browser consumers render through the public facade, and representative fixed, flowing and continuous evidence preserves V1 guarantees. Local verification does not authorize merge, deployment or publication.
