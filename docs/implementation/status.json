@@ -425,18 +425,21 @@
         "fe13298a17d4e17fbd80041efedc7563f358b26b",
         "0e38d30b2e8b99ab40a5d138d128da0fe5e92201",
         "3fea729b8e81a8da8f9e1f70f6fd130bc8f350d0",
-        "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65"
+        "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
+        "d40273cbb7d8ea49243931a694742475ff6e6e30",
+        "c9a4023087fc403e3aa593570b391b1612ed6141"
       ],
       "evidence": "../qa/L16.md",
+      "synchronizedDevCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
       "verifiedCandidate": {
-        "commit": "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
+        "commit": "c9a4023087fc403e3aa593570b391b1612ed6141",
         "inputSha256": "f184499a192e7c10dc74a0c87f0a3e22f571f62b92bac3bdaccc784dc125ba90",
-        "outputSha256": "ea9b272e0184f76ce1f7138663f03a9eb76f33c95f775ea253ef37789716a9fc",
+        "outputSha256": "36fb2d5ec597438949b1b333a9816bdeb884f717128d72a3f5e368a726a7ee94",
         "outputFiles": 465,
-        "outputBytes": 40002521,
+        "outputBytes": 40002524,
         "registryVersion": "v1.0.0"
       },
-      "blocker": "Local candidate verification is complete, but PR #69 and this branch base are not merged to dev; official v1 release authorization, release PRs and merges, deployment, tag, GitHub Release, and public v1 smoke verification are absent; protect-main does not yet require release-policy."
+      "blocker": "The synchronized local candidate is verified, but official v1 release authorization, release PR review and merges, production deployment, tag, GitHub Release, and public v1 smoke verification are absent; protect-main does not yet require release-policy."
     }
   ],
   "github": {
