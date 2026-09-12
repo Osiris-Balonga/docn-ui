@@ -32,6 +32,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 - [ ] Export the same call shape from the browser entry.
 - [ ] Implement exact `BrowserRenderRuntimeOptions`: default font assets to `globalThis.location.origin`, allow only an explicit same-origin base URL, and keep the local-image resolver runtime-only.
 - [ ] Resolve document images only through the separate validated local-image resolver in `runtimeOptions`; template data contains IDs, never URLs.
+- [ ] Create the runtime-owned `ResolvedLocalImage` lookup consumed by plan factories and dispose every resolved source centrally on success, failure, cancellation, supersession, timeout, or worker termination.
 - [ ] Keep bytes suitable for caller-owned preview and download copies.
 
 **Acceptance:** Source-compatible input produces the same normalized fingerprint and expected document geometry in Node and browser.
@@ -51,7 +52,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S04 — `feat(worker): add interruptible render protocol v2`
 
 - [ ] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
-- [ ] Transfer validated local PNG/JPEG bytes in a separate bounded message channel keyed by image ID and digest.
+- [ ] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by canonical image ID and digest; detachment must not mutate the preflight-owned copy.
 - [ ] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
 - [ ] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
 - [ ] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.

@@ -287,21 +287,25 @@ interface TemplateDescriptor<TData extends JsonObject> {
     bodyFontFamilies?: readonly QualifiedPdfFontFamily[];
     headingFontFamilies?: readonly QualifiedPdfFontFamily[];
   };
-  extractLocalImageIds(data: TData): readonly string[];
+  extractLocalImageIds(data: TData): readonly LocalImageId[];
 }
 ```
 
 `TData` is constrained as `TData extends JsonObject`. The schema must be strict.
-Registration parses both `defaultData` and `exampleData`, passes each parsed
-output through the existing `inspectDocumentData`, then parses the inspected
-value again. Normalization applies the same parse → inspect → parse sequence to
-the caller's required `data`. This preserves size/depth limits, finite JSON
-numbers, JSON-only prototypes and NFC normalization even when a Zod transform
-created the first parsed output. Any inspection issue rejects the value.
+Registration and normalization use one non-reentrant pipeline for caller data,
+`defaultData`, and `exampleData`: inspect the raw value as JSON, call
+`schema.parse` exactly once with the inspected value, then inspect the schema
+output as JSON. The final inspected schema output is the normalized data; it is
+not parsed again. This preserves size/depth limits, finite JSON numbers,
+JSON-only prototypes and NFC normalization without applying schema transforms
+twice. Any raw or output inspection issue rejects the value before composition.
+Raw/output inspection issues keep `INVALID_DATA` or `LIMIT_EXCEEDED`; schema
+issues use `INVALID_DATA`. Paths are rooted at `data`, `defaultData`, or
+`exampleData` and append the original inspection/Zod path without flattening it.
 
 `defaultData` is only an explicit form initializer and `exampleData` is only a
 demonstration fixture; neither is a render fallback. Image IDs are extracted
-from the final inspected/parsed caller data, canonicalized, deduplicated,
+from the final inspected schema output, canonicalized, deduplicated,
 limited to the existing maximum of two, and sorted by ID. `supportedFormatIds`,
 `supportedThemeIds`, locale defaults, family, and print-profile declarations
 are checked as descriptor invariants. `defaultPrintProfile.kind` must occur in
@@ -322,6 +326,17 @@ asynchronous and returns bytes plus an untrusted declared MIME type, never a
 URL, path, `File`, or worker object:
 
 ```ts
+declare const localImageIdBrand: unique symbol;
+
+type LocalImageId = string & {
+  readonly [localImageIdBrand]: "LocalImageId";
+};
+
+function parseLocalImageId(
+  value: unknown,
+  path?: readonly (number | string)[],
+): LocalImageId;
+
 type LocalImageMimeType = "image/png" | "image/jpeg";
 
 interface LocalImageSource {
@@ -329,10 +344,10 @@ interface LocalImageSource {
   declaredMimeType: LocalImageMimeType;
 }
 
-type LocalImageResolver = (id: string) => Promise<LocalImageSource>;
+type LocalImageResolver = (id: LocalImageId) => Promise<LocalImageSource>;
 
 interface LocalImageDescriptor {
-  id: string;
+  id: LocalImageId;
   mimeType: LocalImageMimeType;
   byteLength: number;
   widthPx: number;
@@ -348,23 +363,60 @@ interface PreparedLocalImage {
 type PreparedLocalImages = readonly PreparedLocalImage[];
 
 function preflightLocalImages(
-  imageIds: readonly string[],
+  imageIds: readonly LocalImageId[],
   resolver: LocalImageResolver,
 ): Promise<PreparedLocalImages>;
+
+interface ResolvedLocalImage {
+  id: LocalImageId;
+  resolvedSource: string;
+}
+
+type ResolvedLocalImageLookup = ReadonlyMap<LocalImageId, ResolvedLocalImage>;
+
+interface LocalImageRenderScope {
+  lookup: ResolvedLocalImageLookup;
+  dispose(): void;
+}
+
+function createLocalImageRenderScope(
+  images: PreparedLocalImages,
+  platform: "browser" | "node",
+): Promise<LocalImageRenderScope>;
 ```
 
-An async shared preflight calls the resolver, sniffs and decodes the bytes,
-checks that the claimed MIME matches the content, enforces byte/pixel/count
-limits, normalizes supported image orientation deterministically, and
-recomputes SHA-256 from the final bytes. It returns immutable prepared bytes
-plus a pure JSON descriptor. The descriptor set must match the canonical
-extracted IDs exactly; missing and extra descriptors are errors.
+`parseLocalImageId` NFC-normalizes and accepts only 1–120 lowercase kebab-case
+ASCII characters (`^[a-z0-9]+(?:-[a-z0-9]+)*$`). Invalid identifiers produce
+`INVALID_DATA` at the supplied data path. Schema fields that identify local
+images use this parser, so extraction never brands an unchecked string.
 
-`PreparedLocalImages` is sorted by descriptor ID and contains one immutable
-entry per canonical ID. The coordinator passes only its descriptor projection
-to normalization. L18 copies each prepared `Uint8Array` to a dedicated
-transferable `ArrayBuffer`; the source array, resolver, and declared MIME value
-are not serialized into normalized input or protocol messages.
+An async shared preflight calls the resolver and immediately copies its
+`Uint8Array` into a private owned buffer before any decode or digest operation.
+It never retains or trusts the resolver's view. It sniffs and decodes the owned
+bytes, checks that the claimed MIME matches the content, enforces
+byte/pixel/count limits, normalizes supported image orientation
+deterministically, and recomputes SHA-256 from the final owned bytes. It returns
+logically immutable prepared bytes plus a pure JSON descriptor. The descriptor
+set must match the canonical extracted IDs exactly; missing and extra
+descriptors are errors.
+
+`PreparedLocalImages` is sorted by descriptor ID and contains one logically
+immutable entry per canonical ID. Immutability means no external alias to its
+owned bytes is exposed or reused; `readonly` alone is not treated as protection
+for a mutable typed array. The coordinator passes only its descriptor
+projection to normalization. L18 creates another private copy for each
+transferable `ArrayBuffer`, so transfer/detachment cannot mutate the preflight
+copy. The resolver and declared MIME value are not serialized into normalized
+input or protocol messages.
+
+The rendering runtime owns `createLocalImageRenderScope`. It converts prepared
+bytes to engine-consumable sources and gives `TemplatePlanContext` only the
+`ResolvedLocalImageLookup`. Browser sources are bounded object URLs; Node
+sources are bounded engine-supported data sources. The coordinator creates one
+scope per render; `dispose` is idempotent and is called in `finally` on success, validation/render
+failure, cancellation, supersession, timeout, or worker termination. Templates
+only look up `resolvedSource` by validated ID and never create, cache, transfer,
+or revoke a source themselves.
 
 The pure S02 normalizer receives descriptors, not the resolver or bytes. Its
 normalized input contains the descriptors in stable ID order and fingerprints
@@ -456,7 +508,7 @@ S03 adds the React/plan extension:
 
 ```ts
 interface LegacyTemplateStyleProjection {
-  colors: DeepReadonly<PdfTheme["colors"]>;
+  colors?: Partial<DeepReadonly<PdfTheme["colors"]>>;
   fontFamilies?: {
     body?: QualifiedPdfFontFamily;
     heading?: QualifiedPdfFontFamily;
@@ -466,8 +518,8 @@ interface LegacyTemplateStyleProjection {
 interface TemplatePlanContext<TData extends JsonObject> {
   data: TData;
   format: ResolvedFormat;
-  legacyStyle: LegacyTemplateStyleProjection;
-  localImages: PreparedLocalImages;
+  legacyStyle?: LegacyTemplateStyleProjection;
+  localImages: ResolvedLocalImageLookup;
   locale: DocumentLocale;
   printProfile: PrintProfile;
   resolvedTheme: ResolvedTemplateTheme;
@@ -493,13 +545,18 @@ from a non-wrapping fixed composition at the template level.
 
 `resolvedTheme` is the deep-frozen, fingerprinted full theme used by public
 theme-aware components. Because its weights, type scale, and spacing equal the
-base preset, new compositions preserve the qualified geometry. A legacy
-adapter receives the separate `legacyStyle` projection and may apply only its
-colors plus the body/heading family entries that the selected template
-explicitly qualified. It must not translate weights, type scale, spacing, page
-geometry, or any other theme field into the source-owned legacy `style` prop.
-This projection is created after compatibility validation; an absent
-`fontFamilies` entry means no legacy family override.
+base preset, new compositions preserve the qualified geometry. `legacyStyle`
+is optional and differential. When the caller omits `theme`, it is `undefined`,
+so an adapter does not modify the source-owned composition or palette. When a
+theme is explicit, the coordinator compares it with the descriptor's default
+resolved theme and includes only requested color roles whose values differ plus
+requested, differing body/heading families allowed by that template's
+compatibility envelope. An empty difference is normalized to `undefined`.
+
+A legacy adapter may merge only this projection into its source-owned legacy
+`style` prop. It must not replace the complete palette from `resolvedTheme` or
+translate weights, type scale, spacing, page geometry, or any other theme field.
+An absent `fontFamilies` entry means no legacy family override.
 
 L17 evidence uses one additive fixed-template adapter, the existing
 `ComponentDocument`/`DocumentFrame` flow specimen, and the continuous

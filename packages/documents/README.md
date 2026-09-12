@@ -25,19 +25,23 @@ their implementation stories:
   exact normalization/fingerprint contracts, print-profile compatibility, and
   pure normalization of already-preflighted image descriptors. Caller data is
   mandatory; descriptor defaults/examples are validated fixtures, never render
-  fallbacks. `core` gains no dependency on themes or assets.
+  fallbacks. Validation inspects raw JSON, parses once, then inspects schema
+  output without rerunning transforms. `core` gains no dependency on themes or
+  assets.
 - S03 extends that descriptor as `RenderableTemplate<TData>` with a plan
   factory. Its `fixed | flow | continuous` union wraps the existing
   `FixedDocumentRenderPlan` and `ContinuousDocumentRenderPlan` APIs without
   renaming them. The plan context separates the full frozen theme from the
-  narrower colors/qualified-family projection allowed for legacy style props.
+  optional differential colors/qualified-family projection allowed for legacy
+  style props and consumes only runtime-owned resolved image sources.
 - The released React `TemplateDefinition` used by the catalog/generator remains
   a separate compatibility surface. It is not an alias for the new descriptor
   or renderable contract.
 - Browser workers resolve a template from a static trusted ID map. A
   `RenderableTemplate`, Zod schema, plan factory, runtime option, or local-image
   resolver never crosses `postMessage`; V2 carries JSON and separate
-  `ArrayBuffer` transfers only.
+  private-copy `ArrayBuffer` transfers only. The runtime owns resolved-image
+  lookup creation and cleanup.
 
 Templates depend on core, themes, primitives, and an explicit renderer entry. They never import Next.js, shadcn/ui, Tailwind, site CSS, or a user-provided module path. `pdfjs-dist` remains in the feasibility/inspection path; it is not required by the reusable fixed-document Node adapter.
 

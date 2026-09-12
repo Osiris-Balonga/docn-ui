@@ -35,10 +35,11 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 - [ ] Add the minimal non-React `TemplateDescriptor<TData>` and canonical six-family union without changing legacy `TemplateMetadata` or the React catalog `TemplateDefinition`.
 - [ ] Add the canonical 18-ID `TemplateId` source; assert exact, duplicate-free coverage for legacy definitions/catalog output and valid unique membership for the partial L17 descriptor/loader maps, reserving their exact-set assertion for L20.
 - [ ] Resolve defaults and validate strict data, the discriminated format input, theme/base/envelope, locale, print profile, revision, and descriptor invariants before composition.
-- [ ] Require caller `data`; validate schema outputs, default data, and example data through parse → `inspectDocumentData` → parse without implicit default/example merging.
+- [ ] Require caller `data`; validate caller/default/example through raw `inspectDocumentData` → one schema parse → output `inspectDocumentData`, preserving rooted paths and never implicitly merging fixtures or re-running schema transforms.
 - [ ] Declare and enforce `supportedPrintProfileKinds`; reject unsupported profiles before plan creation, including `print` for L17 continuous feasibility evidence.
 - [ ] Extract image IDs only after data validation; canonicalize, deduplicate, limit to two, sort, and require the exact preflight descriptor set.
 - [ ] Keep image resolution asynchronous and platform-owned; give the pure normalizer only `{ id, mimeType, byteLength, widthPx, heightPx, sha256 }` descriptors.
+- [ ] Validate/brand canonical `LocalImageId` values, privately copy resolver bytes before digest/transfer, and keep plan-facing resolved-source lookup ownership and cleanup in the runtime.
 - [ ] Deep-clone and deep-freeze the resolved theme, then fingerprint the complete normalized input, font-manifest identity, and sorted local-image descriptors.
 - [ ] Keep the existing `RenderResult` names: `pdfBytes`, `finalDimensions`, `pageCount`, `diagnostics`, `fingerprint` and `revision`.
 - [ ] Preserve structured paths and stable error codes.
@@ -55,7 +56,7 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 - [ ] Add an additive adapter for one fixed current template without changing its visual composition.
 - [ ] Qualify flow with the existing `ComponentDocument`/`DocumentFrame` specimen and continuous behavior with the feasibility fixture; do not adapt a catalog receipt in L17.
 - [ ] Preserve every adapted component export and keep static trusted template resolution possible for L18.
-- [ ] Give plan factories a bounded context containing the frozen resolved theme and a separate legacy-style projection; adapters apply only colors and qualified family changes, never type scale, spacing, weights, or geometry.
+- [ ] Give plan factories a bounded context containing the frozen resolved theme, runtime-owned resolved-image lookup, and an optional differential legacy-style projection; omitted theme changes nothing, while explicit input applies only differing requested colors and qualified family changes, never type scale, spacing, weights, or geometry.
 
 **Acceptance:** Fixed, flow, and continuous evidence satisfies one generic contract, the current template adapter preserves its component export, and no catalog receipt geometry or version changes.
 
