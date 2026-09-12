@@ -318,6 +318,20 @@ describe("unified template descriptors", () => {
         issues: [expect.objectContaining({ path: ["data", "name"] })],
       }),
     );
+    expect(() =>
+      normalizeTemplateInput(
+        template,
+        {
+          data: { imageIds: [], name: "Ada" },
+          options: { theme: "neutral" },
+        } as never,
+        { fontManifestIdentity: identity, localImageDescriptors: [] },
+      ),
+    ).toThrowError(
+      expect.objectContaining({
+        issues: [expect.objectContaining({ path: ["options"] })],
+      }),
+    );
   });
 
   it("resolves discriminated formats and rejects unsupported continuous print", async () => {

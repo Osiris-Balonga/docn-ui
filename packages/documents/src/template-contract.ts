@@ -166,6 +166,16 @@ const localImageDescriptorSchema = z
     sha256: sha256Schema,
   })
   .strict();
+const templateRenderInputSchema = z
+  .object({
+    data: z.unknown(),
+    theme: z.unknown().optional(),
+    format: z.unknown().optional(),
+    locale: z.unknown().optional(),
+    printProfile: z.unknown().optional(),
+    revision: z.unknown().optional(),
+  })
+  .strict();
 
 const knownFontFamilies = new Set(
   assetManifest.assets.map((asset) => asset.family),
@@ -928,17 +938,38 @@ export function normalizeTemplateInput<TData extends JsonObject>(
       ),
     ]);
   }
-  if (!input || typeof input !== "object" || !("data" in input)) {
+  const parsedInput = templateRenderInputSchema.safeParse(input);
+  if (!parsedInput.success) {
+    throwIssues(
+      parsedInput.error.issues.flatMap((item) =>
+        item.code === "unrecognized_keys"
+          ? item.keys.map((key) =>
+              issue("INVALID_DATA", `Unknown template input field "${key}".`, [
+                key,
+              ]),
+            )
+          : [
+              issue(
+                "INVALID_DATA",
+                item.message,
+                normalizeDocumentPath(item.path),
+              ),
+            ],
+      ),
+    );
+  }
+  if (!("data" in parsedInput.data)) {
     throwIssues([
       issue("INVALID_DATA", "Template data is required.", ["data"]),
     ]);
   }
+  const validatedInput = parsedInput.data as TemplateRenderInput<TData>;
   const data = deepFreeze(
-    clone(validateFixture(descriptor.schema, input.data, "data")),
+    clone(validateFixture(descriptor.schema, validatedInput.data, "data")),
   ) as TData;
-  const theme = resolveTheme(descriptor, input.theme);
-  const format = normalizeFormat(descriptor, input.format);
-  const locale = input.locale ?? descriptor.defaultLocale;
+  const theme = resolveTheme(descriptor, validatedInput.theme);
+  const format = normalizeFormat(descriptor, validatedInput.format);
+  const locale = validatedInput.locale ?? descriptor.defaultLocale;
   if (!descriptor.supportedLocales.includes(locale)) {
     throwIssues([
       issue(
@@ -949,7 +980,7 @@ export function normalizeTemplateInput<TData extends JsonObject>(
     ]);
   }
   const printProfile = resolvePrintProfile(
-    input.printProfile ?? descriptor.defaultPrintProfile,
+    validatedInput.printProfile ?? descriptor.defaultPrintProfile,
   );
   if (!descriptor.supportedPrintProfileKinds.includes(printProfile.kind)) {
     throwIssues([
@@ -969,7 +1000,7 @@ export function normalizeTemplateInput<TData extends JsonObject>(
       ),
     ]);
   }
-  const revision = input.revision ?? 1;
+  const revision = validatedInput.revision ?? 1;
   if (!Number.isInteger(revision) || revision < 1) {
     throwIssues([
       issue("INVALID_DATA", "revision must be a positive integer.", [
