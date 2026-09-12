@@ -93,8 +93,8 @@ The release scope and limitations are recorded in the [changelog](../CHANGELOG.m
    verified through stable public probes and one public shadcn installation.
 5. Annotated tag `v1.0.0` object `5e1dc795` targets exact `main` merge
    `bfa2d6b`; the public GitHub Release and stable v1.0.0 origin were verified.
-   L16 is released. Issue and Project closure remain a separate remote tracking
-   action.
+   L16 is released. The final publication record merged through PR #78; issue
+   #20 is closed and its Project item is Done.
 
 ## Rollback
 

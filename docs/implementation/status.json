@@ -430,7 +430,8 @@
         "d40273cbb7d8ea49243931a694742475ff6e6e30",
         "c9a4023087fc403e3aa593570b391b1612ed6141",
         "7bdd1c36cc31830b861449f61289fc6a0aed7b78",
-        "e8b82082b1f75af81628e585f081f9f01e99e5c3"
+        "e8b82082b1f75af81628e585f081f9f01e99e5c3",
+        "2943e92132a93617fc4b1a71128f8f9713e24990"
       ],
       "evidence": "../qa/L16.md",
       "synchronizedDevCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
@@ -481,6 +482,9 @@
         "publishedAt": "2026-09-12T18:10:06Z"
       },
       "releasedAt": "2026-09-12T18:10:06Z",
+      "finalPublicationRecordMergeCommit": "c9cd116b830ba78d349059d920bef8236af566a2",
+      "finalPublicationRecordMergedAt": "2026-09-12T18:23:41Z",
+      "trackingClosedAt": "2026-09-12T18:24:39Z",
       "blocker": null
     }
   ],
