@@ -410,7 +410,7 @@
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L15"],
       "branch": "codex/l16-v1-candidate",
       "baseCommit": "6207e72bde54453069ef69bfa3f048556dd595ca",
@@ -420,10 +420,23 @@
         "8a999444c1b235a6d90ae0e95f6b6b593b62a973",
         "c1b3a9b15e83ad2fda5a934aa534489ce8a17af4",
         "33c68a723dd809976319b6ed3b21a007f0af952a",
-        "bde1f86aeb31e064dfce4de5e3908b11226cfbd6"
+        "bde1f86aeb31e064dfce4de5e3908b11226cfbd6",
+        "486b3201591f41f34c39d5214ef923693a1d63a1",
+        "fe13298a17d4e17fbd80041efedc7563f358b26b",
+        "0e38d30b2e8b99ab40a5d138d128da0fe5e92201",
+        "3fea729b8e81a8da8f9e1f70f6fd130bc8f350d0",
+        "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65"
       ],
       "evidence": "../qa/L16.md",
-      "blocker": null
+      "verifiedCandidate": {
+        "commit": "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
+        "inputSha256": "f184499a192e7c10dc74a0c87f0a3e22f571f62b92bac3bdaccc784dc125ba90",
+        "outputSha256": "ea9b272e0184f76ce1f7138663f03a9eb76f33c95f775ea253ef37789716a9fc",
+        "outputFiles": 465,
+        "outputBytes": 40002521,
+        "registryVersion": "v1.0.0"
+      },
+      "blocker": "Local candidate verification is complete, but PR #69 and this branch base are not merged to dev; official v1 release authorization, release PRs and merges, deployment, tag, GitHub Release, and public v1 smoke verification are absent; protect-main does not yet require release-policy."
     }
   ],
   "github": {
