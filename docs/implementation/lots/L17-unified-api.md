@@ -1,6 +1,6 @@
 # L17 — Unified template and theme contract
 
-Initial status: **planned**. Proposed branch: `feat/unified-template-api`.
+Initial status: **planned**. Active branch: `feat/unified-template-api`; current state is tracked in [`status.json`](../status.json).
 
 Dependencies: L16. Requirements: FR-18, FR-20, NFR-12; ADR 0006.
 
@@ -10,7 +10,7 @@ Read the [master plan](../../../IMPLEMENTATION_PLAN.md), [agent rules](../../../
 
 ## Scope and files
 
-Define the public contract before changing template layouts. Reconcile the current theme, template metadata, request/result and compatibility surfaces. Introduce additive adapters for one fixed template and one continuous template, and use the existing `ComponentDocument`/`DocumentFrame` specimen for flow-contract evidence; do not claim a current catalog template is flowing or migrate the catalog in this lot.
+Define the public contract before changing template layouts. Reconcile the current theme, template metadata, request/result and compatibility surfaces. Introduce an additive adapter for one fixed catalog template, use the existing `ComponentDocument`/`DocumentFrame` specimen for flow-contract evidence, and use the existing continuous feasibility fixture for continuous-contract evidence; do not claim a current catalog template is flowing or continuously measured, and do not migrate the catalog in this lot.
 
 Target responsibilities: `packages/documents/src/core`, `themes`, template contracts, focused contract tests, public exports and API documentation.
 
@@ -18,22 +18,32 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ### L17-S01 — `docs(api): specify the unified template and theme contract`
 
-- [ ] Specify `RenderableTemplate<TData>`, normalized inputs, defaults, compatibility and fixed/flow/continuous plan kinds.
-- [ ] Fix the public call as `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)`; prohibit a nested `options` object.
-- [ ] Specify `theme` as `ThemeId | PdfTheme`, require custom themes to carry `baseThemeId`, define per-template compatibility envelopes, and keep `printProfile` separate.
-- [ ] Separate fixed font-manifest assets from bounded local document-image IDs and the platform resolver supplied through `runtimeOptions`.
-- [ ] Define legacy-request and legacy-template compatibility boundaries, including the protocol-version consequence of serializing a complete theme.
+- [x] Specify the non-React `TemplateDescriptor<TData>` normalization contract and the later `RenderableTemplate<TData>` extension with fixed/flow/continuous plan kinds.
+- [x] Fix the public call as `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)`; prohibit a nested `options` object.
+- [x] Specify the discriminated format input, descriptor-owned defaults, safe `CustomPdfTheme` subtype/object overload, per-template compatibility envelopes, and separate `printProfile`.
+- [x] Preserve the advanced theme API while limiting the quick path to preset-equivalent themes, color overrides, and explicitly qualified per-template font-family opt-ins.
+- [x] Separate fixed font-manifest assets from bounded local document-image IDs, asynchronous preflight, pure descriptors, and the platform resolver supplied through `runtimeOptions`.
+- [x] Define legacy request/template compatibility boundaries, preserve protocol V1, and reserve serializable protocol V2 plus worker interruption for L18.
+- [x] Constrain render data to JSON, keep required caller data separate from explicit default/example fixtures, declare print-profile compatibility, and specify exact normalization, image-preflight, plan-context, runtime-option, and fingerprint signatures.
 
 **Acceptance:** Reviewers can implement the contract without deciding new public names or silently weakening a V1 guarantee.
 
 **Targeted verification:** Documentation link and terminology review; no application suite.
 
-### L17-S02 — `feat(core): normalize unified render inputs`
+### L17-S02 — `feat(api): define and normalize template descriptors`
 
-- [ ] Resolve defaults and validate theme, `baseThemeId`, the template envelope, format, locale, print profile, bounded data and compatibility before composition.
-- [ ] Fingerprint the normalized complete input, including the resolved theme, font manifest identity and validated local-image digests.
-- [ ] Keep the existing `RenderResult` names: `pdfBytes`, `finalDimensions`, `pageCount`, `diagnostics`, `fingerprint` and `revision`.
-- [ ] Preserve structured paths and stable error codes.
+- [x] Add the minimal non-React `TemplateDescriptor<TData>` and canonical six-family union without changing legacy `TemplateMetadata` or the React catalog `TemplateDefinition`.
+- [x] Add the canonical 18-ID `TemplateId` source; assert exact, duplicate-free coverage for legacy definitions/catalog output and valid unique membership for the partial L17 descriptor/loader maps, reserving their exact-set assertion for L20.
+- [x] Resolve defaults and validate strict data, the discriminated format input, theme/base/envelope, locale, print profile, revision, and descriptor invariants before composition.
+- [x] Require caller `data`; validate caller/default/example through raw `inspectDocumentData` → one schema parse → output `inspectDocumentData`, preserving rooted paths and never implicitly merging fixtures or re-running schema transforms.
+- [x] Declare and enforce `supportedPrintProfileKinds`; reject unsupported profiles before plan creation, including `print` for continuous formats.
+- [x] Extract image IDs only after data validation; canonicalize, deduplicate, limit to two, sort, and require the exact preflight descriptor set.
+- [x] Keep image resolution asynchronous and platform-owned; give the pure normalizer only `{ id, mimeType, byteLength, widthPx, heightPx, sha256 }` descriptors.
+- [x] Validate and brand canonical `LocalImageId` values while leaving byte copying, digesting, transfer, resolved-source lookup, and cleanup to the L18 binary preflight/runtime implementation.
+- [x] Deep-clone and deep-freeze the resolved theme, then fingerprint the complete normalized input, font-manifest identity, and sorted local-image descriptors.
+- [x] Keep the existing `RenderResult` names: `pdfBytes`, `finalDimensions`, `pageCount`, `diagnostics`, `fingerprint` and `revision`.
+- [x] Preserve structured paths and stable error codes.
+- [x] Leave `PDF_RENDER_PROTOCOL_VERSION`, `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` unchanged; do not add `renderPdf` here.
 
 **Acceptance:** Equivalent inputs normalize identically; every render-affecting change invalidates the fingerprint.
 
@@ -41,19 +51,24 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ### L17-S03 — `feat(templates): define renderable template contracts`
 
-- [ ] Add typed metadata, strict schema, defaults, permitted local-image ID extraction, theme envelope and plan creation contracts.
-- [ ] Cover the actual six-family, 18-template catalog in the metadata unions.
-- [ ] Add additive adapters for one fixed and one continuous current template without changing visual composition; qualify the flow shape with the existing component specimen.
+- [x] Extend `TemplateDescriptor<TData>` as `RenderableTemplate<TData>` with a plan factory and a `fixed | flow | continuous` discriminant that wraps the existing two advanced plan types.
+- [x] Cover the actual six-family, 18-template catalog in the new metadata union without altering legacy unions.
+- [x] Add an additive adapter for one fixed current template without changing its visual composition.
+- [x] Qualify flow with the existing `ComponentDocument`/`DocumentFrame` specimen and continuous behavior with the feasibility fixture; do not adapt a catalog receipt in L17.
+- [x] Preserve every adapted component export and keep static trusted template resolution possible for L18.
+- [x] Give plan factories a bounded context containing the frozen resolved theme, runtime-owned resolved-image lookup, and an optional differential legacy-style projection; omitted theme changes nothing, while explicit input applies only differing requested colors and qualified family changes, never type scale, spacing, weights, or geometry.
 
-**Acceptance:** The three adapters satisfy one generic contract and preserve their existing component exports.
+**Acceptance:** Fixed, flow, and continuous evidence satisfies one generic contract, the current template adapter preserves its component export, and no catalog receipt geometry or version changes.
 
 **Targeted verification:** Typecheck plus focused schema/default/adapter tests; one existing PDF smoke per plan kind only if adapter code affects composition.
 
 ### L17-S04 — `test(api): qualify compatibility adapters and migration boundaries`
 
-- [ ] Prove that legacy `style` and flattened props remain callable during the declared transition.
-- [ ] Record which public fields require a future major removal and which changes are additive.
-- [ ] Update the L17 QA evidence and status without claiming catalog migration.
+- [x] Prove that legacy `style` and flattened props remain callable during the declared transition.
+- [x] Record which public fields require a future major removal and which changes are additive.
+- [x] Prove that protocol V1 and advanced plan/theme exports remain callable and unchanged.
+- [x] Do not call, type, or test `renderPdf`; that public facade and protocol V2 belong to L18.
+- [x] Update the L17 QA evidence and status without claiming catalog migration.
 
 **Acceptance:** L18 can consume the contract, while current consumers receive no undocumented break.
 
@@ -61,7 +76,7 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ## Exit criteria
 
-The unified contract is locally verified, fixed and continuous adapters plus the existing flow specimen cover the three plan kinds, and unresolved API choices are closed in documentation. No template-family refactor or Theme Studio UI belongs here.
+The unified contract is locally verified, a fixed adapter plus the existing flow and continuous feasibility specimens cover the three plan kinds, and unresolved API choices are closed in documentation. No template-family refactor, receipt geometry migration, render facade, worker V2, or Theme Studio UI belongs here.
 
 Update [status](../status.json) and create `docs/qa/L17.md` from the QA template. Local verification does not authorize merge, deployment or publication.
 

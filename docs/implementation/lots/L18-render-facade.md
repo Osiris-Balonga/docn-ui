@@ -19,8 +19,8 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S01 — `feat(render): add the unified Node renderPdf facade`
 
 - [ ] Normalize and validate through L17, register manifest-bound local fonts once, dispatch the plan kind and finalize the PDF.
-- [ ] Use the documented local asset convention by default and retain an explicit safe resolver option.
-- [ ] Return the existing `RenderResult` fields without aliases; never return raw bytes from the primary facade.
+- [ ] Implement exact `NodeRenderRuntimeOptions`: the optional module-relative `../../assets/` font directory default and the runtime-only local-image resolver, with an explicit contained directory override.
+- [ ] Return the existing `RenderResult` fields without aliases; never return bare bytes in place of `RenderResult` from the primary facade.
 - [ ] Copy a caller-supplied revision unchanged, default a one-shot omitted revision to 1, and never infer stale state in the runtime.
 
 **Acceptance:** A Node consumer renders a representative template without importing React, React PDF, format resolution, font registration or plan helpers.
@@ -30,8 +30,9 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S02 — `feat(render): add the matching browser renderPdf facade`
 
 - [ ] Export the same call shape from the browser entry.
-- [ ] Default to same-origin font-manifest assets and reject cross-origin font resolution.
+- [ ] Implement exact `BrowserRenderRuntimeOptions`: default font assets to `globalThis.location.origin`, allow only an explicit same-origin base URL, and keep the local-image resolver runtime-only.
 - [ ] Resolve document images only through the separate validated local-image resolver in `runtimeOptions`; template data contains IDs, never URLs.
+- [ ] Create the runtime-owned `ResolvedLocalImage` lookup consumed by plan factories and dispose every resolved source centrally on success, failure, cancellation, supersession, timeout, or worker termination.
 - [ ] Keep bytes suitable for caller-owned preview and download copies.
 
 **Acceptance:** Source-compatible input produces the same normalized fingerprint and expected document geometry in Node and browser.
@@ -46,12 +47,14 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 **Acceptance:** Fixed, flow and continuous plans all return the same result contract in both environments where supported.
 
-**Targeted verification:** One bounded receipt in Node and browser, one overflow failure, page/dimension/result assertions.
+**Targeted verification:** The bounded continuous feasibility fixture in Node and browser, one overflow failure, page/dimension/result assertions; no catalog receipt migration.
 
 ### L18-S04 — `feat(worker): add interruptible render protocol v2`
 
 - [ ] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
-- [ ] Transfer validated local PNG/JPEG bytes in a separate bounded message channel keyed by image ID and digest.
+- [ ] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by canonical image ID and digest; detachment must not mutate the preflight-owned copy.
+- [ ] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
+- [ ] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
 - [ ] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.
 - [ ] Let the worker drop completions whose revision is no longer current and let the UI mark a retained last-valid result stale; do not add `stale` to `RenderResult`.
 

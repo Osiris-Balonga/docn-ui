@@ -380,7 +380,7 @@ function TableDocument({ theme }: { theme: PdfTheme }) {
   );
 }
 
-function ReceiptDocument({
+export function ReceiptDocument({
   finalText,
   height,
   lineCount,

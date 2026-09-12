@@ -1,4 +1,5 @@
 import { generatedTemplateCatalog } from "./generated-templates";
+import { assertTemplateIdSet } from "../template-ids";
 
 export type TemplateFamily =
   "badge" | "business-card" | "invoice" | "receipt" | "report" | "resume";
@@ -53,6 +54,11 @@ export interface TemplateCatalogEntry {
 
 export const templateCatalog: readonly TemplateCatalogEntry[] =
   generatedTemplateCatalog;
+
+assertTemplateIdSet(
+  templateCatalog.map((template) => template.id),
+  ["templateCatalog"],
+);
 
 export function getTemplateCatalogEntry(slug: string) {
   return templateCatalog.find((template) => template.slug === slug);

@@ -4,16 +4,44 @@
 
 ## Entry points
 
-| Entry point | Responsibility | Runtime boundary |
-| --- | --- | --- |
-| `@docn-ui/documents/core` | Serializable render contracts, formats, validation, units, limits, and input fingerprints | No React, browser, Node filesystem, DOM, or CSS |
-| `@docn-ui/documents/themes` | The three PDF token sets | Core only; hex colors and point values, no website tokens |
-| `@docn-ui/documents/primitives` | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers | React and `@react-pdf/renderer`; no site imports |
-| `@docn-ui/documents/templates/business-cards` | Typed business-card schemas, metadata, examples, and render plans | Core, themes, primitives, and React-pdf only; no site imports |
-| `@docn-ui/documents/browser` | Browser fixed-document adapter and same-origin asset resolver | React-pdf browser renderer and manifest assets |
-| `@docn-ui/documents/node` | Node fixed-document adapter and absolute-path asset resolver | React-pdf Node renderer and pdf-lib box finalization |
-| `@docn-ui/documents` | Node-oriented convenience surface for repository tooling | Core, themes, manifest, measurement, and Node adapter |
-| `@docn-ui/documents/feasibility/browser` | Hidden L02/L04 qualification page only | Internal evidence; never a registry dependency |
+| Entry point                                           | Responsibility                                                                             | Runtime boundary                                              |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `@docn-ui/documents/core`                             | Serializable render contracts, formats, validation, units, limits, and input fingerprints  | No React, browser, Node filesystem, DOM, or CSS               |
+| `@docn-ui/documents/themes`                           | The three PDF token sets                                                                   | Core only; hex colors and point values, no website tokens     |
+| `@docn-ui/documents/primitives`                       | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers | React and `@react-pdf/renderer`; no site imports              |
+| `@docn-ui/documents/templates/business-card-coral-qr` | One source-owned business-card composition and definition                                  | Core, themes, primitives, and React-pdf only; no site imports |
+| `@docn-ui/documents/browser`                          | Browser fixed-document adapter and same-origin asset resolver                              | React-pdf browser renderer and manifest assets                |
+| `@docn-ui/documents/node`                             | Node fixed-document adapter and absolute-path asset resolver                               | React-pdf Node renderer and pdf-lib box finalization          |
+| `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                   | Core, themes, manifest, measurement, and Node adapter         |
+| `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                     | Internal evidence; never a registry dependency                |
+
+## Planned L17 contract layers
+
+L17-S01 specifies these additive layers; it does not claim they exist before
+their implementation stories:
+
+- S02 adds a non-React template-contract layer above `core` and `themes`. It
+  owns JSON-constrained `TemplateDescriptor<TData>`, the canonical 18-ID tuple,
+  exact normalization/fingerprint contracts, print-profile compatibility, and
+  pure normalization of already-preflighted image descriptors. Caller data is
+  mandatory; descriptor defaults/examples are validated fixtures, never render
+  fallbacks. Validation inspects raw JSON, parses once, then inspects schema
+  output without rerunning transforms. `core` gains no dependency on themes or
+  assets.
+- S03 extends that descriptor as `RenderableTemplate<TData>` with a plan
+  factory. Its `fixed | flow | continuous` union wraps the existing
+  `FixedDocumentRenderPlan` and `ContinuousDocumentRenderPlan` APIs without
+  renaming them. The plan context separates the full frozen theme from the
+  optional differential colors/qualified-family projection allowed for legacy
+  style props and consumes only runtime-owned resolved image sources.
+- The released React `TemplateDefinition` used by the catalog/generator remains
+  a separate compatibility surface. It is not an alias for the new descriptor
+  or renderable contract.
+- Browser workers resolve a template from a static trusted ID map. A
+  `RenderableTemplate`, Zod schema, plan factory, runtime option, or local-image
+  resolver never crosses `postMessage`; V2 carries JSON and separate
+  private-copy `ArrayBuffer` transfers only. The runtime owns resolved-image
+  lookup creation and cleanup.
 
 Templates depend on core, themes, primitives, and an explicit renderer entry. They never import Next.js, shadcn/ui, Tailwind, site CSS, or a user-provided module path. `pdfjs-dist` remains in the feasibility/inspection path; it is not required by the reusable fixed-document Node adapter.
 

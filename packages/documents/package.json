@@ -18,6 +18,8 @@
     "./primitives/barcode": "./src/primitives/barcode.tsx",
     "./themes": "./src/themes/themes.ts",
     "./templates": "./src/templates/index.ts",
+    "./template-contract": "./src/template-contract.ts",
+    "./renderable-template": "./src/renderable-template.ts",
     "./templates/style-policy": "./src/templates/style-policy.ts",
     "./templates/resume-classic": "./src/templates/resume/classic-resume.tsx",
     "./templates/resume-accountant": "./src/templates/resume/accountant-resume.tsx",

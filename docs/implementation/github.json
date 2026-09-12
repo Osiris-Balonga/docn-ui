@@ -175,6 +175,12 @@
       "title": "G6 — v1.0.0 delivery",
       "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/7",
       "lots": ["L15", "L16"]
+    },
+    "G7": {
+      "number": 8,
+      "title": "G7 — Unified API adoption",
+      "url": "https://github.com/Osiris-Balonga/docn-ui/milestone/8",
+      "lots": ["L17", "L18", "L19", "L20", "L21", "L22"]
     }
   },
   "lots": {
@@ -824,6 +830,17 @@
         "mergeCommit": "c9cd116b830ba78d349059d920bef8236af566a2",
         "mergedAt": "2026-09-12T18:23:41Z"
       },
+      "initialized": true
+    },
+    "L17": {
+      "issueNumber": 82,
+      "issueId": "I_kwDOUHjPN88AAAABQ_gG_Q",
+      "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/82",
+      "issueState": "OPEN",
+      "itemId": "PVTI_lAHOCZDjCM4BhyZuzg6qepU",
+      "projectStatus": "In progress",
+      "priority": "P0",
+      "branch": "feat/unified-template-api",
       "initialized": true
     }
   },

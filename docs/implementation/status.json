@@ -490,11 +490,21 @@
     {
       "id": "L17",
       "file": "lots/L17-unified-api.md",
-      "state": "planned",
+      "state": "verified_local",
       "dependsOn": ["L16"],
       "branch": "feat/unified-template-api",
-      "baseCommit": null,
-      "actualCommits": [],
+      "baseCommit": "c82d3f1d73e8ce864d0669125bc3df0746ff8b3f",
+      "actualCommits": [
+        "02426c388b0585bbfc1e744f50ad3cecf25d5909",
+        "7b2215873015ea39b1d81944e21b0e66b3a7777d",
+        "dc54852921d5daa9c77e880bcfde1051946970ef",
+        "7eeaa0510670558ba20a03bd94a246f07bb962dc",
+        "6731572d47eff27f42cc3179109e6e98f6673585",
+        "772c91ee6357f2baafa913f07665ae3abacc352e",
+        "aab592e0c76f3b6f25b36bbdf9df6d0c07c1e443",
+        "11c5b6907f8133fc415bdfaf522d3dfe3aa0abbb",
+        "bad0b2c02d3516f112c7bdce86e46779b5f654bc"
+      ],
       "evidence": "../qa/L17.md",
       "blocker": null
     },

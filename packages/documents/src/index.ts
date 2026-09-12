@@ -2,7 +2,18 @@ export * from "./core";
 export { assetManifest, getAssetDefinition } from "./assets/manifest";
 export { createNodeAssetResolver } from "./render/assets.node";
 export type { AssetResolver, ResolvedAsset } from "./render/assets";
-export { getPdfTheme, themes, type PdfTheme } from "./themes/themes";
+export {
+  createPdfTheme,
+  getPdfTheme,
+  themes,
+  type CustomPdfTheme,
+  type CustomPdfThemeOptions,
+  type PdfTheme,
+  type PdfThemeOverrides,
+} from "./themes/themes";
+export * from "./template-contract";
+export * from "./template-ids";
+export * from "./renderable-template";
 export {
   assertWithinSafeFrame,
   createSafeFrame,
