@@ -28,7 +28,7 @@ Extend the shadcn source-ownership workflow to printable documents and PDFs. Dev
 
 ## Working assumptions in the plan
 
-These are explicit agent proposals, changeable through an ADR before their lot; they are not attributed to the maintainer: document data support in French and English; fifteen V1 compositions; a static Next.js site; local generation; distribution through the existing shadcn CLI; a permissive license recommended but not yet approved. The English language of the site and project documentation is now a confirmed requirement, not an assumption.
+The original planning assumptions were explicit agent proposals, not maintainer statements: document data support in French and English; fifteen V1 compositions; a static Next.js site; local generation; distribution through the existing shadcn CLI; and a permissive license recommendation. Subsequent maintainer decisions and implemented scope supersede two of those assumptions: the current V1 catalog contains eighteen compositions across six families, and MIT is confirmed. The English language of the site and project documentation is also a confirmed requirement, not an assumption.
 
 ## Brand personality
 

@@ -82,11 +82,11 @@ No full suite after every text edit. Do not run coverage and repeat lightweight 
 
 One shared suite per family generates the three nominal examples and verifies useful invariants: readable file, dimensions, essential text, expected pages/sides, no final blank page. Expected values must not be computed by the function under test.
 
-Then add distinct risks: overflowing card, impossible QR, receipt at the height limit, sheet starting cell, multipage invoice. Common image/data/money limits are tested at the shared level, not repeated for fifteen compositions.
+Then add distinct risks: overflowing card, impossible QR, receipt at the height limit, sheet starting cell, multipage invoice. Common image/data/money limits are tested at the shared level, not repeated for eighteen compositions.
 
 Inspect PDFs with a reader independent of the layout. A `%PDF` signature or `Blob.size > 0` does not prove content. Decode QR from a rasterization of the final PDF, not merely from the string sent to the encoder.
 
-Visual snapshots start with one representative example per family. Add a reference only for a distinct structure or visual regression. No automatic 15 × formats × themes × languages × browsers matrix. A contact sheet of all fifteen examples helps human review without fifteen browser suites.
+Visual snapshots start with one representative example per family. Add a reference only for a distinct structure or visual regression. No automatic 18 × formats × themes × languages × browsers matrix. A contact sheet of all eighteen examples helps human review without eighteen browser suites.
 
 File tests verify what unit tests cannot: the engine, pagination, fonts, and placement. Calibrate pixel-diff thresholds on a fixed Linux runner with pinned rasterizer/fonts; do not treat Windows and Linux as bit-identical. Fix temporal metadata in fixtures; do not require arbitrary binary equality between renders.
 

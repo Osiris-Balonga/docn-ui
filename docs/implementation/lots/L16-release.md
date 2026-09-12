@@ -18,9 +18,9 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 
 ### L16-S01 — `docs(release): prepare v1 documentation licenses and release notes`
 
-- [ ] Confirm identity/license before creating notices; complete third-party licenses and the actual README.
-- [ ] Release notes: fifteen compositions, qualified formats, actual features and limitations, migration if needed.
-- [ ] Final QA checklist linking L14/L15 evidence and external decisions; no premature released status.
+- [x] Confirm identity/license before creating notices; complete third-party licenses and the actual README.
+- [x] Release notes: eighteen compositions, qualified formats, actual features and limitations, migration if needed.
+- [x] Final QA checklist linking L14/L15 evidence and external decisions; no premature released status.
 
 **Acceptance:** Public documents match the implemented product and confirmed distribution rights.
 
@@ -46,7 +46,7 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 
 **Acceptance:** G6: verified public product and informed maintainer; otherwise explicitly state delivery is incomplete.
 
-**Targeted verification:** Actual public smoke check, representative public installation, version-ID reads, final report review. Do not repeat fifteen identical public exports.
+**Targeted verification:** Actual public smoke check, representative public installation, version-ID reads, final report review. Do not repeat eighteen identical public exports.
 
 ## Exit criteria
 

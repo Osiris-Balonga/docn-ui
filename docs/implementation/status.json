@@ -18,6 +18,8 @@
     "hosting": "Vercel",
     "siteUrl": "https://docn-ui.vercel.app",
     "publicationAuthorized": true,
+    "publicationScope": "public non-indexed beta only",
+    "officialV1ReleaseAuthorized": false,
     "githubSetupAuthorized": true,
     "projectLanguage": "en",
     "conversationLanguage": "fr",
@@ -410,14 +412,15 @@
       "file": "lots/L16-release.md",
       "state": "in_progress",
       "dependsOn": ["L15"],
-      "branch": "release/v1.0.0",
-      "baseCommit": "5dbec34bcfae5fedc774a9b187d67d02be785de4",
+      "branch": "codex/l16-v1-candidate",
+      "baseCommit": "6207e72bde54453069ef69bfa3f048556dd595ca",
       "actualCommits": [
         "149c027ba7b4c2927715dba9e3181c0dd06ed718",
         "bbf88fb5fe41360f7c52f81cff9279ec97e77abd",
         "8a999444c1b235a6d90ae0e95f6b6b593b62a973",
         "c1b3a9b15e83ad2fda5a934aa534489ce8a17af4",
-        "33c68a723dd809976319b6ed3b21a007f0af952a"
+        "33c68a723dd809976319b6ed3b21a007f0af952a",
+        "bde1f86aeb31e064dfce4de5e3908b11226cfbd6"
       ],
       "evidence": "../qa/L16.md",
       "blocker": null
