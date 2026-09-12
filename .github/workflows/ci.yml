@@ -106,7 +106,7 @@ jobs:
       - if: steps.distribution-changes.outputs.run == 'true'
         run: pnpm test:consumers
       - if: always() && steps.distribution-changes.outputs.run == 'true'
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: consumer-tests-${{ github.event.pull_request.head.sha }}
           path: .artifacts/consumers
@@ -130,7 +130,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm verify:docs
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: www-static-${{ github.event.pull_request.head.sha }}
           path: |
@@ -165,7 +165,7 @@ jobs:
         env:
           E2E_USE_BUILD: "1"
       - if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: e2e-chromium-${{ github.event.pull_request.head.sha }}
           path: .artifacts/e2e
