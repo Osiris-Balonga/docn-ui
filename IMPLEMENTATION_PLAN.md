@@ -1,6 +1,6 @@
 # docn-ui — implementation and delivery plan
 
-Date: 2026-08-28. Status: **L00G through L14 are merged; L15 is in review in PR #53**. The plan contains **18 lots and 67 planned stories/commits**, excluding documentation commits for traceability. The [lot status](docs/implementation/status.json) records actual progress. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration. Component revision: 2026-08-31; L12-S02 was split into sequential stories to cover PDFx's component categories, barcodes, individual source installation and usable documentation. Template redesign is paused.
+Date: 2026-08-28. Status: the V1 sequence remains active through L16. On 2026-09-12 the maintainer requested a sequential post-V1 integration program, L17 through L22, with 49 planned stories. The [lot status](docs/implementation/status.json) records actual progress; `currentLot` remains L16 until its real exit criteria are met. Language revision: 2026-08-29; all project content must be in English, while conversation with the maintainer is in French. Product-direction clarification: 2026-08-30; docn-ui extends an existing shadcn project through an additional registry and does not introduce a parallel project configuration. Component revision: 2026-08-31; L12-S02 was split into sequential stories to cover PDFx's component categories, barcodes, individual source installation and usable documentation. Post-V1 direction: preserve the qualified document guarantees while making the normal template API materially simpler than the current low-level render path.
 
 ## 1. Execution contract
 
@@ -36,26 +36,34 @@ Revision requested on 2026-08-28: adapt Munganga's GitHub governance, tighten PR
 
 Execution is sequential by default. `Depends on` identifies the preceding lot required to begin; its own prerequisites are transitive. Lot specifications and `status.json` use the same sequence. Do not add parallel agents or branches without a maintainer request.
 
-| Lot  | Deliverable                                            | Depends on | Specification                                                       |
-| ---- | ------------------------------------------------------ | ---------- | ------------------------------------------------------------------- |
-| L00  | Governance and first documentation commit              | —          | [Governance](docs/implementation/lots/L00-governance.md)            |
-| L00G | Public repository, protections, Project, and issues    | L00        | [GitHub](docs/implementation/lots/L00G-github-governance.md)        |
-| L01  | Workspace, Next.js, shadcn, tests, and minimal CI      | L00G       | [Bootstrap](docs/implementation/lots/L01-bootstrap.md)              |
-| L02  | PDF feasibility proven in the actual build             | L01        | [PDF rendering](docs/implementation/lots/L02-pdf-feasibility.md)    |
-| L03  | shadcn site shell and navigation                       | L02        | [Interface](docs/implementation/lots/L03-site-shell.md)             |
-| L04  | PDF contracts, formats, themes, and primitives         | L03        | [Foundations](docs/implementation/lots/L04-document-foundations.md) |
-| L05  | First complete business card, then three compositions  | L04        | [Business cards](docs/implementation/lots/L05-business-cards.md)    |
-| L06  | Catalog and reusable data editor                       | L05        | [Catalog](docs/implementation/lots/L06-catalog-playground.md)       |
-| L07  | Real source installation outside the monorepo          | L06        | [Registry](docs/implementation/lots/L07-registry.md)                |
-| L08  | Three event tickets                                    | L07        | [Tickets](docs/implementation/lots/L08-event-tickets.md)            |
-| L09  | Three thermal receipts                                 | L08        | [Receipts](docs/implementation/lots/L09-thermal-receipts.md)        |
-| L10  | Three labels and label sheets                          | L09        | [Labels](docs/implementation/lots/L10-labels.md)                    |
-| L11  | Three multipage invoices                               | L10        | [Invoices](docs/implementation/lots/L11-invoices.md)                |
-| L12  | Reusable PDF components, barcodes, gallery, and guides | L11        | [Documentation](docs/implementation/lots/L12-documentation.md)      |
-| L13  | Accessibility, security, and performance               | L12        | [Hardening](docs/implementation/lots/L13-hardening.md)              |
-| L14  | Full qualification and installations                   | L13        | [Qualification](docs/implementation/lots/L14-qualification.md)      |
-| L15  | Final CI, preview, and delivery preparation            | L14        | [Delivery](docs/implementation/lots/L15-delivery.md)                |
-| L16  | Final QA, authorized publication, and v1.0.0           | L15        | [Release](docs/implementation/lots/L16-release.md)                  |
+The maintainer explicitly authorized supervised sub-agents for the L17–L22 integration on 2026-09-12. They may divide bounded stories or perform read-only cross-reviews inside the current lot, but one integration owner remains accountable for shared files, verification and the lot branch. This authorization does not permit overlapping dependent lots, independent remote branches, merges, deployment or publication.
+
+| Lot  | Deliverable                                             | Depends on | Specification                                                                      |
+| ---- | ------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------- |
+| L00  | Governance and first documentation commit               | —          | [Governance](docs/implementation/lots/L00-governance.md)                           |
+| L00G | Public repository, protections, Project, and issues     | L00        | [GitHub](docs/implementation/lots/L00G-github-governance.md)                       |
+| L01  | Workspace, Next.js, shadcn, tests, and minimal CI       | L00G       | [Bootstrap](docs/implementation/lots/L01-bootstrap.md)                             |
+| L02  | PDF feasibility proven in the actual build              | L01        | [PDF rendering](docs/implementation/lots/L02-pdf-feasibility.md)                   |
+| L03  | shadcn site shell and navigation                        | L02        | [Interface](docs/implementation/lots/L03-site-shell.md)                            |
+| L04  | PDF contracts, formats, themes, and primitives          | L03        | [Foundations](docs/implementation/lots/L04-document-foundations.md)                |
+| L05  | First complete business card, then three compositions   | L04        | [Business cards](docs/implementation/lots/L05-business-cards.md)                   |
+| L06  | Catalog and reusable data editor                        | L05        | [Catalog](docs/implementation/lots/L06-catalog-playground.md)                      |
+| L07  | Real source installation outside the monorepo           | L06        | [Registry](docs/implementation/lots/L07-registry.md)                               |
+| L08  | Three event tickets                                     | L07        | [Tickets](docs/implementation/lots/L08-event-tickets.md)                           |
+| L09  | Three thermal receipts                                  | L08        | [Receipts](docs/implementation/lots/L09-thermal-receipts.md)                       |
+| L10  | Three labels and label sheets                           | L09        | [Labels](docs/implementation/lots/L10-labels.md)                                   |
+| L11  | Three multipage invoices                                | L10        | [Invoices](docs/implementation/lots/L11-invoices.md)                               |
+| L12  | Reusable PDF components, barcodes, gallery, and guides  | L11        | [Documentation](docs/implementation/lots/L12-documentation.md)                     |
+| L13  | Accessibility, security, and performance                | L12        | [Hardening](docs/implementation/lots/L13-hardening.md)                             |
+| L14  | Full qualification and installations                    | L13        | [Qualification](docs/implementation/lots/L14-qualification.md)                     |
+| L15  | Final CI, preview, and delivery preparation             | L14        | [Delivery](docs/implementation/lots/L15-delivery.md)                               |
+| L16  | Final QA, authorized publication, and v1.0.0            | L15        | [Release](docs/implementation/lots/L16-release.md)                                 |
+| L17  | Unified template and theme contract                     | L16        | [Unified API](docs/implementation/lots/L17-unified-api.md)                         |
+| L18  | One Node/browser rendering facade                       | L17        | [Render facade](docs/implementation/lots/L18-render-facade.md)                     |
+| L19  | Table and graph prerequisites for template migration    | L18        | [Component prerequisites](docs/implementation/lots/L19-component-prerequisites.md) |
+| L20  | Migrate all eighteen templates to public components     | L19        | [Template migration](docs/implementation/lots/L20-template-migration.md)           |
+| L21  | Theme Studio backed by the unified theme contract       | L20        | [Theme Studio](docs/implementation/lots/L21-theme-studio.md)                       |
+| L22  | Registry, consumer migration, and post-V1 qualification | L21        | [Distribution](docs/implementation/lots/L22-distribution-qualification.md)         |
 
 ## 5. Decision gates
 
@@ -66,6 +74,7 @@ Execution is sequential by default. `Depends on` identifies the preceding lot re
 - **G4 / L11**: fifteen real compositions across five families, with fixtures and registry entries.
 - **G5 / L14**: requirements and risks covered by targeted sampling, with documented limits and exceptions; no combinatorial matrix.
 - **G6 / L16**: authorized publication, immutable version and assets, and public-site verification. A local build does not satisfy this gate.
+- **G7 / L22**: every public template follows the unified contract, the source registry installs the same API in isolated consumers, and representative fixed, flowing, and continuous documents preserve V1 guarantees. Passing locally does not authorize a merge, deployment, new release, npm publication, or registry-directory submission.
 
 ## 6. Git and commits
 
@@ -87,4 +96,6 @@ The maintainer requires GitHub before L01 and confirms a public `Osiris-Balonga/
 
 ## 9. Completion and extensions
 
-V1 is complete when the [PRD](docs/PRD.md) and L16 criteria are satisfied. Reports, quotes, CVs, certificates, menus, brochures, badges, RTL, font import, a freeform editor, AI generation, and a hosted API belong to a later roadmap. None may implicitly delay V1 or be advertised as available.
+V1 is complete only when the [PRD](docs/PRD.md) and L16 criteria are satisfied. L17–L22 are a post-V1 compatibility and usability program; planning or implementing them must not rewrite V1 evidence or allow an incomplete L16 to be described as released.
+
+The post-V1 program standardizes the existing eighteen-template catalog instead of adding families. It introduces one validated theme input, one template definition shape, matching Node/browser `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)` entry points, an interruptible worker protocol, automatic qualified local-font registration, a separate validated local-image channel, component prerequisites identified by the template audit, migration of all eighteen templates, a Theme Studio that exports the real API syntax, and isolated consumer qualification. It does not authorize a hosted rendering service, arbitrary font upload, remote document assets, a freeform editor, AI generation, automatic publication, or a proprietary CLI.

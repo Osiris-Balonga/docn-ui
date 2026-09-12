@@ -100,3 +100,36 @@ The build must prepare assets before Next copies `public`. Examples and licenses
 ## Extensions without premature implementation
 
 Schemas carry `schemaVersion`; template and registry versions are explicit. This supports evolution without requiring a universal engine. A hosted API or visual editor would need a separate PRD and ADRs, particularly for privacy and security. Analytics is the narrow exception documented by ADR 0005; it does not authorize those broader services.
+
+## Post-V1 unified authoring architecture
+
+L17–L22 converge the existing layers without replacing them. The accepted direction is recorded in [ADR 0006](adr/0006-unified-template-rendering-api.md).
+
+```text
+typed data + template + optional {theme, format, locale, printProfile, revision}
+  -> normalize defaults
+  -> strict template data and compatibility validation
+  -> resolve qualified theme, physical format and permitted asset IDs
+  -> create fixed, flow or continuous plan
+  -> platform renderPdf adapter registers local fonts and renders
+  -> finalize PDF boxes and bounded output
+  -> RenderResult {pdfBytes, finalDimensions, pageCount, diagnostics, fingerprint, revision}
+```
+
+`RenderableTemplate<TData>` becomes the single owner of metadata, strict schema, defaults, supported formats/themes, permitted asset extraction and plan creation. Sample data remains separate from the serializable metadata surface. Template modules may export advanced React compositions, but the primary consumer path passes a renderable definition to `renderPdf` and never constructs React elements or plans.
+
+Node and browser keep separate source entry points because their engines and asset resolution differ, but both export `renderPdf(template, { data, theme?, format?, locale?, printProfile?, revision? }, runtimeOptions?)`. The second argument is flat; there is no nested `options` object. The browser may default to the current same-origin font-asset convention; Node may default to the documented local font-asset directory. Font registration stays automatic, manifest-bound and local. Missing or unqualified fonts fail before a successful result.
+
+The public `theme` input is either a preset `ThemeId` or an already validated `PdfTheme`. A custom theme carries `baseThemeId`; template compatibility first checks that preset identity, then the template's theme envelope. The initial shared envelope permits color-role changes and qualified body/heading family changes while keeping weights, type scale and spacing equal to the base preset. `createPdfTheme` remains the only customization constructor and Theme Studio exports a compiling source module that calls it. The normalized request fingerprints the complete resolved theme, not only the preset ID and accent.
+
+The caller or render coordinator owns the positive monotonically increasing `revision`; a one-shot direct call may omit it and receives revision 1. The facade copies, but never increments, a supplied revision into `RenderResult`. The worker compares revisions, drops stale completions, and interrupts/recreates work on supersession, timeout or navigation. The UI compares the accepted result with its current revision and presents the last valid PDF as stale when appropriate. `stale` is worker/UI coordination state, not a field added to `RenderResult`.
+
+Fonts and document images use separate channels. Font assets remain fixed manifest entries prepared by the existing asset installer. Serializable template data contains only bounded local image IDs. `runtimeOptions` supplies a platform-specific validated local-image resolver; worker messages transfer validated PNG/JPEG bytes and content descriptors separately from the render request. Descriptors include an ID, MIME type, dimensions, byte count and digest, and their digests participate in the fingerprint. Neither data nor worker requests contain arbitrary URLs or filesystem paths.
+
+Registry installation and asset preparation are distinct. A source closure installs TypeScript, the visible installer, manifests and licenses. It does not imply that binary fonts or sample images have been fetched. The documented preparation step verifies and writes those binaries before the first render, after which runtime use is independent of the registry origin.
+
+Tables gain explicit container width, row-height bounds, compact density, banding/emphasis and bounded-cell behavior for fixed and continuous frames in addition to their existing flow-aware pagination mode. Graph gains grouped bars, label/value formatter hooks owned by the trusted composition, and bounded multi-series data up to 6 series × 30 points while preserving current single-series and radial contracts. These capabilities remain individually installable and do not import the render facade.
+
+No current catalog template is assumed to be flowing. Flow-facade evidence uses the existing `ComponentDocument`/`DocumentFrame` specimen unless a later template story explicitly changes a template's geometry and version. L20 makes the receipt decision explicit: the three roll-receipt compositions move from hard-coded page heights to continuous measured plans and receive the version change required by that physical-output contract.
+
+The migration uses additive definitions and legacy wrappers first. Removal or renaming of flattened template props, `style`, render functions, request fields or immutable registry paths requires a documented major version. No source update silently overwrites consumer-owned modifications.
