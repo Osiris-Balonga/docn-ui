@@ -63,6 +63,18 @@ export interface PdfThemeOverrides {
   typeScale?: Partial<PdfTheme["typeScale"]>;
 }
 
+export interface CustomPdfThemeOptions {
+  baseThemeId: ThemeId;
+  colors?: Partial<PdfTheme["colors"]>;
+  fonts?: Partial<Pick<PdfTheme["fonts"], "body" | "heading">>;
+}
+
+export type CustomPdfTheme = Readonly<
+  PdfTheme & {
+    readonly baseThemeId: ThemeId;
+  }
+>;
+
 const themeInputs: Record<ThemeId, unknown> = {
   neutral: {
     id: "neutral",
@@ -167,9 +179,99 @@ function validateTheme(input: unknown): PdfTheme {
   return parsed.data;
 }
 
-export const themes = Object.fromEntries(
+const canonicalThemes = Object.fromEntries(
   THEME_IDS.map((themeId) => [themeId, validateTheme(themeInputs[themeId])]),
 ) as Record<ThemeId, PdfTheme>;
+
+function cloneTheme<TTheme extends PdfTheme>(theme: TTheme): TTheme {
+  return structuredClone(theme);
+}
+
+function deepFreeze<TValue>(value: TValue): Readonly<TValue> {
+  if (value !== null && typeof value === "object" && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) deepFreeze(child);
+    Object.freeze(value);
+  }
+  return value;
+}
+
+export const themes = Object.fromEntries(
+  THEME_IDS.map((themeId) => [themeId, cloneTheme(canonicalThemes[themeId])]),
+) as Record<ThemeId, PdfTheme>;
+
+export function getCanonicalPdfTheme(themeId: ThemeId): Readonly<PdfTheme> {
+  return deepFreeze(cloneTheme(canonicalThemes[themeId]));
+}
+
+export function isCanonicalPdfTheme(theme: PdfTheme): boolean {
+  const parsed = validateTheme(theme);
+  return JSON.stringify(parsed) === JSON.stringify(canonicalThemes[parsed.id]);
+}
+
+export function validateCustomPdfTheme(input: unknown): CustomPdfTheme {
+  const customThemeSchema = pdfThemeSchema.extend({
+    baseThemeId: z.enum(THEME_IDS),
+  });
+  const parsed = customThemeSchema.safeParse(input);
+  if (!parsed.success) {
+    const issues = parsed.error.issues.map((issue) => ({
+      code: "INVALID_DATA" as const,
+      message: issue.message,
+      path: ["theme", ...normalizeDocumentPath(issue.path)],
+    }));
+    const [first, ...rest] = issues;
+    if (!first) throw new Error("Theme validation failed without an issue.");
+    throw new DocumentValidationError([first, ...rest]);
+  }
+  const { baseThemeId, ...theme } = parsed.data;
+  const validatedTheme = validateTheme(theme);
+  const base = canonicalThemes[baseThemeId];
+  const issues = [];
+  if (validatedTheme.id !== baseThemeId) {
+    issues.push({
+      code: "INVALID_DATA" as const,
+      message: "Custom theme id must equal baseThemeId.",
+      path: ["theme", "id"],
+    });
+  }
+  for (const key of ["regularWeight", "strongWeight"] as const) {
+    if (validatedTheme.fonts[key] !== base.fonts[key]) {
+      issues.push({
+        code: "INVALID_DATA" as const,
+        message: `Custom theme ${key} must equal the base preset.`,
+        path: ["theme", "fonts", key],
+      });
+    }
+  }
+  for (const key of Object.keys(
+    base.typeScale,
+  ) as (keyof PdfTheme["typeScale"])[]) {
+    if (validatedTheme.typeScale[key] !== base.typeScale[key]) {
+      issues.push({
+        code: "INVALID_DATA" as const,
+        message: `Custom theme typeScale.${key} must equal the base preset.`,
+        path: ["theme", "typeScale", key],
+      });
+    }
+  }
+  for (const key of Object.keys(
+    base.spacing,
+  ) as (keyof PdfTheme["spacing"])[]) {
+    if (validatedTheme.spacing[key] !== base.spacing[key]) {
+      issues.push({
+        code: "INVALID_DATA" as const,
+        message: `Custom theme spacing.${key} must equal the base preset.`,
+        path: ["theme", "spacing", key],
+      });
+    }
+  }
+  if (issues.length > 0) {
+    throw new DocumentValidationError(
+      issues as [(typeof issues)[number], ...(typeof issues)[number][]],
+    );
+  }
+  return deepFreeze({ ...cloneTheme(validatedTheme), baseThemeId });
+}
 
 export function getPdfTheme(
   themeId: string,
@@ -203,9 +305,44 @@ export function getPdfTheme(
 
 export function createPdfTheme(
   themeId: ThemeId,
+  overrides?: PdfThemeOverrides,
+): PdfTheme;
+export function createPdfTheme(options: CustomPdfThemeOptions): CustomPdfTheme;
+export function createPdfTheme(
+  themeIdOrOptions: ThemeId | CustomPdfThemeOptions,
   overrides: PdfThemeOverrides = {},
-): PdfTheme {
-  const base = getPdfTheme(themeId);
+): PdfTheme | CustomPdfTheme {
+  if (typeof themeIdOrOptions !== "string") {
+    const options = z
+      .object({
+        baseThemeId: z.enum(THEME_IDS),
+        colors: pdfThemeSchema.shape.colors.partial().optional(),
+        fonts: pdfThemeSchema.shape.fonts
+          .pick({ body: true, heading: true })
+          .partial()
+          .optional(),
+      })
+      .strict()
+      .safeParse(themeIdOrOptions);
+    if (!options.success) {
+      const issues = options.error.issues.map((issue) => ({
+        code: "INVALID_DATA" as const,
+        message: issue.message,
+        path: ["theme", ...normalizeDocumentPath(issue.path)],
+      }));
+      const [first, ...rest] = issues;
+      if (!first) throw new Error("Theme validation failed without an issue.");
+      throw new DocumentValidationError([first, ...rest]);
+    }
+    const base = canonicalThemes[options.data.baseThemeId];
+    return validateCustomPdfTheme({
+      ...base,
+      baseThemeId: options.data.baseThemeId,
+      colors: { ...base.colors, ...options.data.colors },
+      fonts: { ...base.fonts, ...options.data.fonts },
+    });
+  }
+  const base = getPdfTheme(themeIdOrOptions);
   return validateTheme({
     ...base,
     colors: { ...base.colors, ...overrides.colors },

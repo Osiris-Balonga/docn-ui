@@ -47,6 +47,12 @@ export {
   type TemplateStyleDefinition,
   type TemplateStyleOverrides,
 } from "./style-policy";
+export {
+  TEMPLATE_IDS,
+  assertTemplateIdSet,
+  isTemplateId,
+  type TemplateId,
+} from "../template-ids";
 
 import { spaciousInvoiceDefinition } from "./invoices/spacious-invoice";
 import { photoHeaderInvoiceDefinition } from "./invoices/photo-header-invoice";
@@ -66,6 +72,7 @@ import { violetFounderBusinessCardDefinition } from "./business-cards/violet-fou
 import { classicResumeDefinition } from "./resume/classic-resume";
 import { accountantResumeDefinition } from "./resume/accountant-resume";
 import { designerResumeDefinition } from "./resume/designer-resume";
+import { assertTemplateIdSet } from "../template-ids";
 
 export const templateDefinitions = [
   classicResumeDefinition,
@@ -87,3 +94,8 @@ export const templateDefinitions = [
   coralQrBusinessCardDefinition,
   violetFounderBusinessCardDefinition,
 ] as const;
+
+assertTemplateIdSet(
+  templateDefinitions.map((definition) => definition.id),
+  ["templateDefinitions"],
+);

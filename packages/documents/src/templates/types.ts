@@ -2,6 +2,7 @@ import type { DocumentProps } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
 import type { ThemeId } from "../core/contracts";
 import type { FormatId } from "../core/formats";
+import type { TemplateId } from "../template-ids";
 
 export interface TemplateSampleAssets {
   badgeCreativePortraitSource: string;
@@ -25,7 +26,7 @@ export interface TemplateDefinition {
   family:
     "badge" | "business-card" | "invoice" | "receipt" | "report" | "resume";
   familyLabel: string;
-  id: string;
+  id: TemplateId;
   renderSample(assets: TemplateSampleAssets): ReactElement<DocumentProps>;
   sides: number;
   slug: string;

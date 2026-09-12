@@ -32,18 +32,18 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ### L17-S02 — `feat(api): define and normalize template descriptors`
 
-- [ ] Add the minimal non-React `TemplateDescriptor<TData>` and canonical six-family union without changing legacy `TemplateMetadata` or the React catalog `TemplateDefinition`.
-- [ ] Add the canonical 18-ID `TemplateId` source; assert exact, duplicate-free coverage for legacy definitions/catalog output and valid unique membership for the partial L17 descriptor/loader maps, reserving their exact-set assertion for L20.
-- [ ] Resolve defaults and validate strict data, the discriminated format input, theme/base/envelope, locale, print profile, revision, and descriptor invariants before composition.
-- [ ] Require caller `data`; validate caller/default/example through raw `inspectDocumentData` → one schema parse → output `inspectDocumentData`, preserving rooted paths and never implicitly merging fixtures or re-running schema transforms.
-- [ ] Declare and enforce `supportedPrintProfileKinds`; reject unsupported profiles before plan creation, including `print` for L17 continuous feasibility evidence.
-- [ ] Extract image IDs only after data validation; canonicalize, deduplicate, limit to two, sort, and require the exact preflight descriptor set.
-- [ ] Keep image resolution asynchronous and platform-owned; give the pure normalizer only `{ id, mimeType, byteLength, widthPx, heightPx, sha256 }` descriptors.
-- [ ] Validate/brand canonical `LocalImageId` values, privately copy resolver bytes before digest/transfer, and keep plan-facing resolved-source lookup ownership and cleanup in the runtime.
-- [ ] Deep-clone and deep-freeze the resolved theme, then fingerprint the complete normalized input, font-manifest identity, and sorted local-image descriptors.
-- [ ] Keep the existing `RenderResult` names: `pdfBytes`, `finalDimensions`, `pageCount`, `diagnostics`, `fingerprint` and `revision`.
-- [ ] Preserve structured paths and stable error codes.
-- [ ] Leave `PDF_RENDER_PROTOCOL_VERSION`, `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` unchanged; do not add `renderPdf` here.
+- [x] Add the minimal non-React `TemplateDescriptor<TData>` and canonical six-family union without changing legacy `TemplateMetadata` or the React catalog `TemplateDefinition`.
+- [x] Add the canonical 18-ID `TemplateId` source; assert exact, duplicate-free coverage for legacy definitions/catalog output and valid unique membership for the partial L17 descriptor/loader maps, reserving their exact-set assertion for L20.
+- [x] Resolve defaults and validate strict data, the discriminated format input, theme/base/envelope, locale, print profile, revision, and descriptor invariants before composition.
+- [x] Require caller `data`; validate caller/default/example through raw `inspectDocumentData` → one schema parse → output `inspectDocumentData`, preserving rooted paths and never implicitly merging fixtures or re-running schema transforms.
+- [x] Declare and enforce `supportedPrintProfileKinds`; reject unsupported profiles before plan creation, including `print` for continuous formats.
+- [x] Extract image IDs only after data validation; canonicalize, deduplicate, limit to two, sort, and require the exact preflight descriptor set.
+- [x] Keep image resolution asynchronous and platform-owned; give the pure normalizer only `{ id, mimeType, byteLength, widthPx, heightPx, sha256 }` descriptors.
+- [x] Validate and brand canonical `LocalImageId` values while leaving byte copying, digesting, transfer, resolved-source lookup, and cleanup to the L18 binary preflight/runtime implementation.
+- [x] Deep-clone and deep-freeze the resolved theme, then fingerprint the complete normalized input, font-manifest identity, and sorted local-image descriptors.
+- [x] Keep the existing `RenderResult` names: `pdfBytes`, `finalDimensions`, `pageCount`, `diagnostics`, `fingerprint` and `revision`.
+- [x] Preserve structured paths and stable error codes.
+- [x] Leave `PDF_RENDER_PROTOCOL_VERSION`, `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` unchanged; do not add `renderPdf` here.
 
 **Acceptance:** Equivalent inputs normalize identically; every render-affecting change invalidates the fingerprint.
 
