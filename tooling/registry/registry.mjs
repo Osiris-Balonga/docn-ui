@@ -2,10 +2,10 @@ import { readFile } from "node:fs/promises";
 import { isAbsolute, posix, relative, resolve, sep } from "node:path";
 import { registryItemSchema, registrySchema } from "shadcn/schema";
 import {
-  DEVELOPMENT_REGISTRY_VERSION,
   PINNED_SHADCN_VERSION,
   registrySourceManifest,
 } from "./source-manifest.mjs";
+import { assertRegistryOrigin, readReleaseMetadata } from "./release.mjs";
 
 const registrySchemaUrl = "https://ui.shadcn.com/schema/registry.json";
 const registryItemSchemaUrl = "https://ui.shadcn.com/schema/registry-item.json";
@@ -164,10 +164,17 @@ function assertInsideRoot(root, source) {
 
 export async function buildRegistry({
   root,
-  origin = "http://127.0.0.1:4173/r/dev/",
+  origin,
+  registryVersion,
   manifest = registrySourceManifest,
 } = {}) {
   if (!root) throw new Error("A repository root is required.");
+  const release = await readReleaseMetadata(root);
+  const selectedRegistryVersion = registryVersion ?? release.registryVersion;
+  const registryOrigin = assertRegistryOrigin(
+    origin ?? `http://127.0.0.1:4173/r/${selectedRegistryVersion}/`,
+    selectedRegistryVersion,
+  );
   const rootPackage = JSON.parse(
     await readFile(resolve(root, "package.json"), "utf8"),
   );
@@ -231,12 +238,15 @@ export async function buildRegistry({
         ? { devDependencies: sourceItem.devDependencies }
         : {}),
       registryDependencies: sourceItem.registryDependencies.map((name) =>
-        dependencyUrl(origin, name),
+        dependencyUrl(registryOrigin, name),
       ),
       files,
-      docs: "Development registry item. Review installed source before updating; assets are prepared separately.",
+      docs:
+        selectedRegistryVersion === "dev"
+          ? "Development registry item. Review installed source before updating; assets are prepared separately."
+          : `Immutable registry item for docn-ui ${release.packageVersion}. Review installed source before updating; assets are prepared separately.`,
       meta: {
-        registryVersion: DEVELOPMENT_REGISTRY_VERSION,
+        registryVersion: selectedRegistryVersion,
         schemaPackage: `shadcn@${PINNED_SHADCN_VERSION}`,
         assetsIncluded: closure.has("docn-fonts"),
         ...(sourceItem.component ? { component: sourceItem.component } : {}),
@@ -277,9 +287,11 @@ export async function buildRegistry({
   return { catalog, items: generatedItems };
 }
 
-export function registryOutputPaths(root) {
+export function registryOutputPaths(root, registryVersion) {
   const publicRoot = resolve(root, "apps/www/public/r");
-  const versionRoot = resolve(publicRoot, DEVELOPMENT_REGISTRY_VERSION);
+  if (!/^(?:dev|v\d+\.\d+\.\d+)$/.test(registryVersion))
+    throw new Error(`Invalid registry output version: ${registryVersion}.`);
+  const versionRoot = resolve(publicRoot, registryVersion);
   const fromRoot = asPosix(relative(root, versionRoot));
   if (!fromRoot.startsWith("apps/www/public/r/"))
     throw new Error("The registry output directory escaped apps/www/public/r.");

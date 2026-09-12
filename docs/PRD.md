@@ -98,7 +98,7 @@ No tax certification for invoices; consumers must adapt legal fields. No CMYK/PD
 
 ## V1 definition of done
 
-All 18 compositions exist and are distinct; every template has a nominal example, declared formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.
+All 18 compositions exist and are distinct; every template has a schema, nominal example, declared formats, source, generated preview/PDF checks, and a registry entry. Both consumption modes are verified, current journeys pass on qualified browsers, limitations are published, and no document data is transmitted. L16 additionally requires authorization, a verified public version, and a documented rollback. Every exception must be explicit and narrow the corresponding public promise.
 
 ## Post-V1 program definition of done
 

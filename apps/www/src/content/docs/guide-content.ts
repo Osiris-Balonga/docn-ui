@@ -37,16 +37,16 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       ],
     },
     {
-      id: "development-registry",
-      title: "Serve the development registry",
+      id: "versioned-registry",
+      title: "Serve the versioned registry",
       blocks: [
         {
           type: "paragraph",
-          text: "Until the public namespace is released, serve a docn-ui checkout locally and leave it running while the shadcn CLI installs from a second terminal. This flow is qualified with Node 24.18.0, pnpm 11.24.0, shadcn 4.19.1 and React 19.2.8.",
+          text: "To inspect the immutable release locally, serve a docn-ui checkout and leave it running while the shadcn CLI installs from a second terminal. This flow is qualified with Node 24.18.0, pnpm 11.24.0, shadcn 4.19.1 and React 19.2.8.",
         },
         {
           type: "code",
-          label: "Serve the development registry",
+          label: "Serve the versioned registry",
           highlight: false,
           code: "corepack pnpm install --frozen-lockfile\ncorepack pnpm build\ncorepack pnpm preview",
         },
@@ -58,7 +58,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
       blocks: [
         {
           type: "paragraph",
-          text: "Run the command from the application that owns components.json. Start with the text example before choosing a full template. The URL defaults to the local registry on port 4173; set DOCN_REGISTRY_ORIGIN before building only when the development registry uses another complete /r/dev/ origin.",
+          text: "Run the command from the application that owns components.json. Start with the text example before choosing a full template. The URL defaults to the local registry on port 4173; set DOCN_REGISTRY_ORIGIN before building only when the immutable registry uses another complete /r/v1.0.0/ origin.",
         },
         { type: "install", item: "docn-text-example" },
         {
@@ -378,7 +378,7 @@ export const guideContent: Record<GuideSlug, readonly GuideSection[]> = {
         {
           type: "list",
           items: [
-            "Record the registry origin, item name and source revision you are adopting. /r/dev/ is mutable and must not be treated as an immutable release.",
+            "Record the registry origin, item name and source revision you are adopting. Keep the complete /r/v1.0.0/ path so every dependency stays on the same immutable release.",
             "Install into the separate checkout using the same qualified CLI and your existing shadcn configuration. Do not add --overwrite to your normal project.",
             "Compare code, dependency versions, schemas, defaults, fonts and asset manifest hashes. Preserve your own changes when applying the diff.",
             "Render one representative document and your application's relevant edge cases. Inspect dimensions, text, final totals, pagination and machine-readable codes where used.",

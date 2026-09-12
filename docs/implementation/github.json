@@ -76,6 +76,10 @@
         {
           "context": "consumer-tests",
           "integration_id": 15368
+        },
+        {
+          "context": "release-policy",
+          "integration_id": 15368
         }
       ]
     }
@@ -690,7 +694,10 @@
       "issueNumber": 20,
       "issueId": "I_kwDOUHjPN88AAAABOuNP_g",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/20",
+      "issueState": "CLOSED",
+      "issueClosedAt": "2026-09-12T18:24:39Z",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVt4",
+      "projectStatus": "Done",
       "pullRequest": {
         "number": 54,
         "url": "https://github.com/Osiris-Balonga/docn-ui/pull/54",
@@ -703,8 +710,120 @@
           "url": "https://github.com/Osiris-Balonga/docn-ui/pull/55",
           "mergeCommit": "c7c16b4326013d820aebe4d519faaf10fc491f10",
           "mergedAt": "2026-09-01T23:09:33Z"
+        },
+        {
+          "number": 56,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/56",
+          "mergeCommit": "cfed4e55434cae48a8b4dd6f8c69fa07eac5f218",
+          "mergedAt": "2026-09-01T23:24:04Z"
+        },
+        {
+          "number": 57,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/57",
+          "mergeCommit": "2b589154686f75b27b96eac2d0014b72d21ac158",
+          "mergedAt": "2026-09-01T23:52:03Z"
+        },
+        {
+          "number": 58,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/58",
+          "mergeCommit": "09c5906c0fc0fbfe83d6260b36d8fed45af282b6",
+          "mergedAt": "2026-09-02T00:03:31Z"
         }
       ],
+      "interimPromotionPullRequests": [
+        {
+          "number": 60,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/60",
+          "headCommit": "d739d7aa4c1b33377e58be551f5cd2df7139ae1b",
+          "mergeCommit": "b5c0e8f8a0aaa105315b36d240dfdd503184e73c",
+          "mergedAt": "2026-09-02T01:47:25Z",
+          "officialV1Delivery": false
+        },
+        {
+          "number": 62,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/62",
+          "headCommit": "8412269140cc8b9351e636b42a599f731f0462cf",
+          "mergeCommit": "c248f324864fe1655f29030a7a7aacadd1ac9e1c",
+          "mergedAt": "2026-09-02T12:28:47Z",
+          "officialV1Delivery": false
+        },
+        {
+          "number": 64,
+          "url": "https://github.com/Osiris-Balonga/docn-ui/pull/64",
+          "headCommit": "17b0f71ab34173bb67419cfe3009e91766ebb9e2",
+          "mergeCommit": "25e22faae51797b9d2a0fd4634315061e2d66d50",
+          "mergedAt": "2026-09-02T13:09:11Z",
+          "officialV1Delivery": false
+        }
+      ],
+      "candidateBasePullRequest": {
+        "number": 69,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/69",
+        "headCommit": "6207e72bde54453069ef69bfa3f048556dd595ca",
+        "mergeCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
+        "mergedAt": "2026-09-12T16:55:33Z"
+      },
+      "releasePreparationPullRequest": {
+        "number": 74,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/74",
+        "baseBranch": "dev",
+        "headBranch": "release/v1.0.0",
+        "headCommit": "7bdd1c36cc31830b861449f61289fc6a0aed7b78",
+        "mergeCommit": "ad9e4af925ac93f77775c9bd3a1cfab0ccd8833f",
+        "mergedAt": "2026-09-12T17:12:54Z"
+      },
+      "releasePromotionPullRequest": {
+        "number": 75,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/75",
+        "baseBranch": "main",
+        "headBranch": "dev",
+        "headCommit": "ad9e4af925ac93f77775c9bd3a1cfab0ccd8833f",
+        "mergeCommit": "7a3d562ebbad71bff0e3cda63e6a6df3ee1e74fb",
+        "mergedAt": "2026-09-12T17:16:48Z",
+        "authorizationLabel": "release-approved"
+      },
+      "releaseRecordPullRequest": {
+        "number": 76,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/76",
+        "baseBranch": "dev",
+        "headBranch": "docs/l16-production-record",
+        "headCommit": "e8b82082b1f75af81628e585f081f9f01e99e5c3",
+        "mergeCommit": "542e625d835fd836d7c56c624b99db153076c22b",
+        "mergedAt": "2026-09-12T17:55:57Z"
+      },
+      "finalReleasePromotionPullRequest": {
+        "number": 77,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/77",
+        "baseBranch": "main",
+        "headBranch": "dev",
+        "headCommit": "542e625d835fd836d7c56c624b99db153076c22b",
+        "mergeCommit": "bfa2d6bb3b51a872357155097d5b08f47f15c32e",
+        "mergedAt": "2026-09-12T17:58:48Z"
+      },
+      "annotatedTag": {
+        "name": "v1.0.0",
+        "object": "5e1dc795d53b3b59741744f44f39bd94ea5aaffc",
+        "targetCommit": "bfa2d6bb3b51a872357155097d5b08f47f15c32e",
+        "taggedAt": "2026-09-12T18:09:58Z"
+      },
+      "githubRelease": {
+        "id": 387659081,
+        "name": "docn-ui v1.0.0",
+        "url": "https://github.com/Osiris-Balonga/docn-ui/releases/tag/v1.0.0",
+        "tag": "v1.0.0",
+        "publishedAt": "2026-09-12T18:10:06Z",
+        "draft": false,
+        "prerelease": false
+      },
+      "finalPublicationRecordPullRequest": {
+        "number": 78,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/78",
+        "baseBranch": "dev",
+        "headBranch": "docs/l16-release-record",
+        "headCommit": "2943e92132a93617fc4b1a71128f8f9713e24990",
+        "mergeCommit": "c9cd116b830ba78d349059d920bef8236af566a2",
+        "mergedAt": "2026-09-12T18:23:41Z"
+      },
       "initialized": true
     }
   },
@@ -720,7 +839,7 @@
       "merged": false
     }
   },
-  "lastVerifiedAt": "2026-08-30T00:08:23Z",
+  "lastVerifiedAt": "2026-09-12T18:24:39Z",
   "verification": {
     "directPushDev": "rejected GH013",
     "directPushMain": "rejected GH013",

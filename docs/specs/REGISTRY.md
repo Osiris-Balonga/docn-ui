@@ -35,19 +35,19 @@ After installation and local asset preparation, rendering no longer depends on t
 
 Contract paths: `/r/registry.json` for the current catalog and `/r/v1.0.0/<item>.json` for files immutable after release. Local development uses a clearly named development version, not `v1.0.0` before publication. A versioned item's dependencies target the same release.
 
-Documentation domains remain placeholders, not copy-ready commands, until `SITE_URL` is configured. Actually executable local examples use the test server's origin.
+Published commands use the approved `SITE_URL`; executable local qualification examples use the static test server's origin.
 
-### Current development implementation
+### Current versioned implementation
 
-L07-S01 generates `/r/registry.json`, `/r/dev/registry.json`, and eight item files under `/r/dev/`. The default dependency origin is the executable local URL `http://127.0.0.1:4173/r/dev/`; builds for another controlled origin set `DOCN_REGISTRY_ORIGIN`. Generation validates in memory before writing, removes stale development output, writes items in stable order, and leaves `apps/www/public/r/` ignored as reproducible build output. The release path remains intentionally unavailable until a real version and public origin are approved.
+The root build derives the immutable registry segment from the aligned package version and generates `/r/registry.json`, `/r/v1.0.0/registry.json`, and every item under `/r/v1.0.0/`. The default dependency origin is the executable local URL `http://127.0.0.1:4173/r/v1.0.0/`; builds for another controlled origin set `DOCN_REGISTRY_ORIGIN` to that complete versioned path. Generation rejects an origin/version mismatch, validates in memory before writing, removes stale output, writes items in stable order, and leaves `apps/www/public/r/` ignored as reproducible build output. `pnpm dev` selects the separate explicit development generation mode and `/r/dev/`; it is not part of the release artifact.
 
-L07-S02 also publishes `/r/dev/assets/manifest.json`, four local WOFF files, and their OFL license. The visible installed script `docn/assets/install.mjs` prepares either `public/generated` for browser use or `assets` for Node use. It is never executed by generation, installation, or a package lifecycle hook. See the [browser and Node asset guide](../guides/REGISTRY_ASSETS.md).
+The release also publishes `/r/v1.0.0/assets/manifest.json`, four local WOFF files, and their OFL license. The distribution manifest and every asset URL carry the same registry version. The visible installed script `docn/assets/install.mjs` prepares either `public/generated` for browser use or `assets` for Node use. It is never executed by generation, installation, or a package lifecycle hook. See the [browser and Node asset guide](../guides/REGISTRY_ASSETS.md).
 
 ## Consumption evidence
 
 ### Component-sized distribution (L12-S02g)
 
-The development registry now contains 62 items, including 28 individual component entries, two opt-in document examples, the current 18 templates and their shared dependencies. `tooling/registry/component-items.mjs` is the component inventory. Exact dependency versions remain pinned to the qualified project versions. Registry `devDependencies` include the existing React/Node/QRCode types where needed for strict consumer TypeScript; no new runtime package is introduced.
+The v1.0.0 registry contains 62 items, including 28 individual component entries, two opt-in document examples, the current 18 templates and their shared dependencies. `tooling/registry/component-items.mjs` is the component inventory. Exact dependency versions remain pinned to the qualified project versions. Registry `devDependencies` include the existing React/Node/QRCode types where needed for strict consumer TypeScript; no new runtime package is introduced.
 
 `docn-text`, `docn-heading`, `docn-key-value`, `docn-stack`, `docn-row`, `docn-divider`, `docn-section`, `docn-card`, `docn-link`, `docn-list`, `docn-image`, `docn-qr-code`, `docn-page-frame`, `docn-document-frame`, `docn-keep-together`, `docn-page-break`, `docn-page-number`, `docn-page-header`, `docn-page-footer`, `docn-table`, `docn-data-table`, `docn-alert`, `docn-badge`, `docn-form`, `docn-signature`, `docn-watermark`, `docn-graph` and `docn-barcode` install independently. Their `meta.component` identifies the primary implementation. Every dependency closure includes the MIT notice at `docn/LICENSE`; font licenses remain separate installed assets. The private workspace package exports matching subpaths, but installation remains source-based, not an npm package publication.
 

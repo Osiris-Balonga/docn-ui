@@ -18,9 +18,9 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 
 ### L16-S01 — `docs(release): prepare v1 documentation licenses and release notes`
 
-- [ ] Confirm identity/license before creating notices; complete third-party licenses and the actual README.
-- [ ] Release notes: fifteen compositions, qualified formats, actual features and limitations, migration if needed.
-- [ ] Final QA checklist linking L14/L15 evidence and external decisions; no premature released status.
+- [x] Confirm identity/license before creating notices; complete third-party licenses and the actual README.
+- [x] Release notes: eighteen compositions, qualified formats, actual features and limitations, migration if needed.
+- [x] Final QA checklist linking L14/L15 evidence and external decisions; no premature released status.
 
 **Acceptance:** Public documents match the implemented product and confirmed distribution rights.
 
@@ -28,10 +28,10 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 
 ### L16-S02 — `chore(release): prepare docn-ui version 1.0.0`
 
-- [ ] Version catalog/registry/metadata and immutable release paths; item dependencies target the same version.
-- [ ] Fully validate the candidate SHA; verify preview/download comparison and installation from the candidate registry.
-- [ ] Handle defects with separate referenced fixes; invalidate only affected evidence before final candidate validation.
-- [ ] PR release/v1.0.0 to dev, then only same-repository dev to main promotion according to authorization. Preserve the exact artifact and SHA relationship; do not use Closes on L16 before public delivery.
+- [x] Version catalog/registry/metadata and immutable release paths; item dependencies target the same version.
+- [x] Fully validate the candidate SHA; verify preview/download comparison and installation from the candidate registry.
+- [x] Handle defects with separate referenced fixes; invalidate only affected evidence before final candidate validation.
+- [x] PR release/v1.0.0 to dev, then only same-repository dev to main promotion according to authorization. Preserve the exact artifact and SHA relationship; do not use Closes on L16 before public delivery.
 
 **Acceptance:** The v1.0.0 candidate is verified; no development path or placeholder in public files.
 
@@ -39,14 +39,14 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 
 ### L16-S03 — `docs(release): record verified v1 delivery and handoff`
 
-- [ ] After authorized promotion/deployment, verify public origin, deep links, assets, download, and one public installation.
-- [ ] Create tag/release only if authorized; record exact SHAs/tag/URL and report, no fabricated values.
-- [ ] Set L16 released only when G6 is satisfied. If authorization is missing, remain verified_local or blocked with a clear next action.
-- [ ] Write the maintenance guide, next family in the backlog, and rollback/fix-return procedure through dev. Close L16, set Project Done, and record actual links only after G6; post-release records also follow a PR to dev.
+- [x] After authorized promotion/deployment, verify public origin, deep links, assets, download, and one public installation.
+- [x] Create tag/release only if authorized; record exact SHAs/tag/URL and report, no fabricated values.
+- [x] Set L16 released only when G6 is satisfied. Until the tag, GitHub Release, and final record exist, remain merged with a clear blocker.
+- [x] Write the maintenance guide, next family in the backlog, and rollback/fix-return procedure through dev. Close L16, set Project Done, and record actual links only after G6; post-release records also follow a PR to dev.
 
 **Acceptance:** G6: verified public product and informed maintainer; otherwise explicitly state delivery is incomplete.
 
-**Targeted verification:** Actual public smoke check, representative public installation, version-ID reads, final report review. Do not repeat fifteen identical public exports.
+**Targeted verification:** Actual public smoke check, representative public installation, version-ID reads, final report review. Do not repeat eighteen identical public exports.
 
 ## Exit criteria
 
