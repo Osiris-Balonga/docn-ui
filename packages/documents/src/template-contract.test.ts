@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
+import { assetManifest } from "./assets/manifest";
 import { templateCatalog } from "./catalog/manifest";
 import {
   PDF_RENDER_PROTOCOL_VERSION,
@@ -85,6 +86,25 @@ function imageDescriptor(
   };
 }
 
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  return `{${Object.entries(value)
+    .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+    .map(([key, item]) => `${JSON.stringify(key)}:${canonicalJson(item)}`)
+    .join(",")}}`;
+}
+
+async function platformSha256(value: unknown): Promise<string> {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(canonicalJson(value)),
+  );
+  return `sha256:${Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("")}`;
+}
+
 describe("unified template descriptors", () => {
   it("keeps one exact canonical ID inventory for definitions and catalog output", () => {
     expect(TEMPLATE_IDS).toHaveLength(18);
@@ -138,7 +158,7 @@ describe("unified template descriptors", () => {
     ).toThrowError(expect.objectContaining({ code: "INVALID_DATA" }));
   });
 
-  it("derives sorted, non-forgeable manifest identities from selected fonts", async () => {
+  it("derives sorted, value-authenticated manifest identities from selected fonts", async () => {
     const neutral = await createFontManifestIdentity(getPdfTheme("neutral"));
     const editorial = await createFontManifestIdentity(
       getPdfTheme("editorial"),
@@ -146,14 +166,46 @@ describe("unified template descriptors", () => {
     expect(neutral.assetIds).toEqual([...neutral.assetIds].sort());
     expect(neutral.assetIds).toHaveLength(2);
     expect(editorial.assetIds).toHaveLength(4);
+    const neutralProjection = assetManifest.assets
+      .filter((asset) => asset.family === "Noto Sans")
+      .sort((left, right) =>
+        left.id < right.id ? -1 : left.id > right.id ? 1 : 0,
+      )
+      .map((asset) => ({
+        byteLength: asset.bytes,
+        family: asset.family,
+        format: asset.format,
+        id: asset.id,
+        sha256: asset.sha256,
+        weight: asset.weight,
+      }));
+    expect(neutral.sha256).toBe(
+      await platformSha256({
+        assets: neutralProjection,
+        schemaVersion: assetManifest.schemaVersion,
+      }),
+    );
 
     const template = descriptor();
+    expect(
+      normalizeTemplateInput(
+        template,
+        { data: { imageIds: [], name: "Ada" } },
+        {
+          fontManifestIdentity: structuredClone(neutral),
+          localImageDescriptors: [],
+        },
+      ).fontManifestIdentity,
+    ).toEqual(neutral);
     expect(() =>
       normalizeTemplateInput(
         template,
         { data: { imageIds: [], name: "Ada" } },
         {
-          fontManifestIdentity: { ...neutral },
+          fontManifestIdentity: {
+            ...neutral,
+            sha256: `sha256:${"f".repeat(64)}`,
+          },
           localImageDescriptors: [],
         },
       ),
@@ -162,6 +214,22 @@ describe("unified template descriptors", () => {
         issues: [expect.objectContaining({ path: ["fontManifestIdentity"] })],
       }),
     );
+  });
+
+  it("copies and freezes mutable descriptor defaults at registration", () => {
+    const defaultPrintProfile = {
+      kind: "print" as const,
+      bleedMm: 0 as const,
+      cropMarks: false,
+    };
+    const template = descriptor({ defaultPrintProfile });
+    defaultPrintProfile.cropMarks = true;
+    expect(template.defaultPrintProfile).toEqual({
+      kind: "print",
+      bleedMm: 0,
+      cropMarks: false,
+    });
+    expect(Object.isFrozen(template.defaultPrintProfile)).toBe(true);
   });
 
   it("inspects raw data, parses once, then inspects output without applying transforms twice", async () => {
@@ -369,6 +437,17 @@ describe("unified template descriptors", () => {
       { localImageDescriptors: [], fontManifestIdentity: neutralIdentity },
     );
     expect(await fingerprintNormalizedTemplateInput(equivalent)).toBe(baseline);
+    const unicodeOrderA = {
+      ...base,
+      data: { imageIds: [], name: "Ada", é: 1, "!": 2 },
+    };
+    const unicodeOrderB = {
+      ...base,
+      data: { "!": 2, é: 1, name: "Ada", imageIds: [] },
+    };
+    expect(await fingerprintNormalizedTemplateInput(unicodeOrderA)).toBe(
+      await fingerprintNormalizedTemplateInput(unicodeOrderB),
+    );
 
     const variants = [
       normalizeTemplateInput(
