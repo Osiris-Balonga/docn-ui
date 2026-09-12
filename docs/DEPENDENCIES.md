@@ -153,7 +153,7 @@ Sources: [JsBarcode object output](https://github.com/lindell/JsBarcode#retrieve
 | ------------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | @pdf-lib/upng | 1.0.1   | MIT          | Isomorphic PNG pixel decode and deterministic metadata-free PNG re-encode; already locked transitively through pdf-lib, now a direct runtime dependency |
 | jpeg-js       | 0.4.4   | BSD-3-Clause | Isomorphic JPEG pixel decode with explicit resolution and memory bounds; a new direct runtime dependency with no runtime dependencies                   |
-| pako          | 1.0.11  | MIT AND Zlib | Existing transitive dependency of @pdf-lib/upng used for bounded PNG inflate/deflate; no new locked version                                             |
+| pako          | 1.0.11  | MIT AND Zlib | Exact direct dependency used to abort PNG inflate beyond the declared raster budget; it remains the version already locked through @pdf-lib/upng        |
 
 The exact installed manifests and license files were inspected. The published
 unpacked sizes reported by npm are 707,597 bytes for `@pdf-lib/upng` and 76,029

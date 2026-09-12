@@ -11,7 +11,32 @@ export {
   type PdfTheme,
   type PdfThemeOverrides,
 } from "./themes/themes";
-export * from "./template-contract";
+export {
+  createFontManifestIdentity,
+  defineTemplateDescriptor,
+  fingerprintNormalizedTemplateInput,
+  normalizeTemplateInput,
+  parseLocalImageId,
+  type DeepReadonly,
+  type FontManifestIdentity,
+  type FormatInput,
+  type JsonObject,
+  type JsonPrimitive,
+  type JsonValue,
+  type LocalImageDescriptor,
+  type LocalImageId,
+  type LocalImageMimeType,
+  type NormalizationContext,
+  type NormalizedTemplateInput,
+  type PresetFormatId,
+  type PrintProfileKind,
+  type QualifiedPdfFontFamily,
+  type ResolvedTemplateTheme,
+  type TemplateDescriptor,
+  type TemplateFamily,
+  type TemplateRenderInput,
+  type ThemeInput,
+} from "./template-contract";
 export * from "./template-ids";
 export * from "./renderable-template";
 export {

@@ -147,6 +147,9 @@ importers:
       jsbarcode:
         specifier: 3.12.3
         version: 3.12.3
+      pako:
+        specifier: 1.0.11
+        version: 1.0.11
       pdf-lib:
         specifier: 1.17.1
         version: 1.17.1

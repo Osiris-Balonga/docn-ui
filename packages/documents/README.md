@@ -87,3 +87,9 @@ pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
 compressed image stream while bounded metadata segments are removed, avoiding
 an unbounded JPEG-to-PNG size increase. The browser facade and worker
 coordinator remain L18 follow-up work.
+
+The package currently distributes TypeScript source. Use the `./node` subpath
+through a TypeScript-aware loader or bundler, as the qualified registry consumer
+does before invoking Node. Native `node --experimental-strip-types` is not a
+supported execution path: it does not resolve the source tree's extensionless
+TypeScript imports, and this lot does not rewrite stable V1 module specifiers.

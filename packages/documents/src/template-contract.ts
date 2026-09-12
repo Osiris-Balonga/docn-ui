@@ -939,6 +939,7 @@ interface PreparedTemplateNormalization<TData extends JsonObject> {
   readonly printProfile: PrintProfile;
   readonly revision: number;
   readonly theme: ResolvedTemplateTheme;
+  readonly themeWasExplicit: boolean;
 }
 
 function prepareTemplateNormalization<TData extends JsonObject>(
@@ -1024,15 +1025,17 @@ function prepareTemplateNormalization<TData extends JsonObject>(
       ]),
     ]);
   }
-  return {
+  const imageIds = Object.freeze([...extractLocalImageIds(descriptor, data)]);
+  return Object.freeze({
     data,
     format,
-    imageIds: extractLocalImageIds(descriptor, data),
+    imageIds,
     locale,
     printProfile,
     revision,
     theme,
-  };
+    themeWasExplicit: validatedInput.theme !== undefined,
+  });
 }
 
 function completeTemplateNormalization<TData extends JsonObject>(
@@ -1083,13 +1086,19 @@ export async function normalizeTemplateInputForRender<TData extends JsonObject>(
     readonly imageIds: readonly LocalImageId[];
     readonly resolvedTheme: ResolvedTemplateTheme;
   }) => Promise<NormalizationContext>,
-): Promise<NormalizedTemplateInput<TData>> {
+): Promise<{
+  readonly normalized: NormalizedTemplateInput<TData>;
+  readonly themeWasExplicit: boolean;
+}> {
   const prepared = prepareTemplateNormalization(descriptor, input);
   const context = await createContext({
     imageIds: prepared.imageIds,
     resolvedTheme: prepared.theme,
   });
-  return completeTemplateNormalization(descriptor, prepared, context);
+  return {
+    normalized: completeTemplateNormalization(descriptor, prepared, context),
+    themeWasExplicit: prepared.themeWasExplicit,
+  };
 }
 
 export async function fingerprintNormalizedTemplateInput<

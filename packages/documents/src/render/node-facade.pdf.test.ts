@@ -2,10 +2,16 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { renderPdf } from "@docn-ui/documents/node";
 import { createComponentDocumentFlowEvidencePlan } from "../examples/renderable-plan-evidence";
-import { defineTemplateDescriptor } from "../template-contract";
+import {
+  defineTemplateDescriptor,
+  parseLocalImageId,
+  type TemplateRenderInput,
+} from "../template-contract";
 import { violetFounderBusinessCardRenderable } from "../templates/renderable";
-import { renderPdf } from "./node";
+import { createPdfTheme } from "../themes/themes";
+import type { TemplatePlanContext } from "../renderable-template";
 
 const temporaryDirectories: string[] = [];
 const flowEvidenceRenderable = defineTemplateDescriptor({
@@ -25,6 +31,9 @@ afterEach(async () => {
 
 describe("Node renderPdf facade", () => {
   it("returns the exact structured result for a fixed template", async () => {
+    const rootEntry = await import("../index");
+    expect(rootEntry).not.toHaveProperty("normalizeTemplateInputForRender");
+
     const result = await renderPdf(violetFounderBusinessCardRenderable, {
       data: {},
       revision: 17,
@@ -80,5 +89,42 @@ describe("Node renderPdf facade", () => {
         { fontAssetDirectory: emptyDirectory },
       ),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+  });
+
+  it("captures explicit theme intent before awaiting runtime preparation", async () => {
+    const imageId = parseLocalImageId("brand-mark");
+    let projectedAccent: string | undefined;
+    const imageTemplate = defineTemplateDescriptor({
+      ...violetFounderBusinessCardRenderable,
+      extractLocalImageIds: () => [imageId],
+      createPlan(context: TemplatePlanContext<Record<string, never>>) {
+        projectedAccent = context.legacyStyle?.colors?.accent;
+        return violetFounderBusinessCardRenderable.createPlan(context);
+      },
+    });
+    const input: TemplateRenderInput<Record<string, never>> = {
+      data: {},
+      theme: createPdfTheme({
+        baseThemeId: "neutral",
+        colors: { accent: "#6d28d9" },
+      }),
+    };
+
+    await renderPdf(imageTemplate, input, {
+      localImageResolver: async () => {
+        delete input.theme;
+        return {
+          bytes: new Uint8Array(
+            Buffer.from(
+              "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABAQMAAADO7O3JAAAABlBMVEX/AAAAAP9sof2OAAAACklEQVR4nGNwAAAAQgBBKTf07wAAAABJRU5ErkJggg==",
+              "base64",
+            ),
+          ),
+          declaredMimeType: "image/png",
+        };
+      },
+    });
+
+    expect(projectedAccent).toBe("#6d28d9");
   });
 });

@@ -400,12 +400,19 @@ logically immutable prepared bytes plus a pure JSON descriptor. The descriptor
 set must match the canonical extracted IDs exactly; missing and extra
 descriptors are errors.
 
+PNG structural validation covers every chunk CRC and aborts zlib inflation as
+soon as output exceeds the exact non-interlaced or Adam7 raster budget declared
+by IHDR. Resolver results are strict plain data objects snapshotted once under a
+structured error boundary; accessors and abnormal proxies are rejected.
+
 PNG inputs and JPEG inputs with a non-identity EXIF orientation are emitted as
 deterministic metadata-free PNGs. An identity-oriented JPEG is fully decoded
 for pixel validation, then retains its compressed scan while EXIF, ancillary
 APP metadata, and comments are stripped; APP0 and APP14 decoder-control
-segments are retained. The final normalized representation, not just the
-resolver input, must remain within the five-MiB limit.
+segments are retained. The scan-aware parser removes metadata between scans,
+requires a terminal EOI, and rejects trailing bytes. The final normalized
+representation, not just the resolver input, must remain within the five-MiB
+limit.
 
 `PreparedLocalImages` is sorted by descriptor ID and contains one logically
 immutable entry per canonical ID. Immutability means no external alias to its

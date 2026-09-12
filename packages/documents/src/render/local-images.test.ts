@@ -1,8 +1,41 @@
-import { encode as encodeJpeg } from "jpeg-js";
+import * as upngNamespace from "@pdf-lib/upng";
+import { deflateSync } from "node:zlib";
+import { decode as decodeJpeg, encode as encodeJpeg } from "jpeg-js";
 import { describe, expect, it } from "vitest";
 import { parseLocalImageId } from "../template-contract";
 import { createNodeLocalImageRenderScope } from "./local-images.node";
 import { preflightLocalImages } from "./local-images";
+
+type UpngApi = typeof import("@pdf-lib/upng");
+
+function resolveUpngApi(value: unknown): UpngApi {
+  let candidate = value;
+  for (let depth = 0; depth < 3; depth += 1) {
+    if (
+      candidate !== null &&
+      typeof candidate === "object" &&
+      "decode" in candidate &&
+      typeof candidate.decode === "function" &&
+      "toRGBA8" in candidate &&
+      typeof candidate.toRGBA8 === "function"
+    ) {
+      return candidate as UpngApi;
+    }
+    candidate =
+      candidate !== null &&
+      typeof candidate === "object" &&
+      "default" in candidate
+        ? candidate.default
+        : undefined;
+  }
+  throw new Error("UPNG test decoder is unavailable.");
+}
+
+const upng = resolveUpngApi(upngNamespace);
+const asymmetricPixels = new Uint8Array([
+  255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 0, 255, 255, 0, 255,
+  255, 0, 255, 255, 255,
+]);
 
 function png() {
   return new Uint8Array(
@@ -13,10 +46,59 @@ function png() {
   );
 }
 
+function crc32(bytes: Uint8Array) {
+  let crc = 0xffffffff;
+  for (const byte of bytes) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ (crc & 1 ? 0xedb88320 : 0);
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function concat(parts: readonly Uint8Array[]) {
+  const result = new Uint8Array(
+    parts.reduce((total, part) => total + part.byteLength, 0),
+  );
+  let offset = 0;
+  for (const part of parts) {
+    result.set(part, offset);
+    offset += part.byteLength;
+  }
+  return result;
+}
+
+function pngChunk(type: string, data: Uint8Array) {
+  const result = new Uint8Array(12 + data.byteLength);
+  const view = new DataView(result.buffer);
+  view.setUint32(0, data.byteLength);
+  result.set(new TextEncoder().encode(type), 4);
+  result.set(data, 8);
+  view.setUint32(
+    8 + data.byteLength,
+    crc32(result.slice(4, 8 + data.byteLength)),
+  );
+  return result;
+}
+
+function decompressionBombPng() {
+  const header = new Uint8Array(13);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, 1);
+  view.setUint32(4, 1);
+  header.set([8, 6, 0, 0, 0], 8);
+  return concat([
+    new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+    pngChunk("IHDR", header),
+    pngChunk("IDAT", new Uint8Array(deflateSync(Buffer.alloc(64 * 1024)))),
+    pngChunk("IEND", new Uint8Array()),
+  ]);
+}
+
 function jpegWithOrientation(orientation: number) {
-  const pixels = new Uint8Array([255, 0, 0, 255, 0, 0, 255, 255]);
   const encoded = new Uint8Array(
-    encodeJpeg({ data: pixels, width: 2, height: 1 }, 90).data,
+    encodeJpeg({ data: asymmetricPixels, width: 2, height: 3 }, 100).data,
   );
   const tiff = new Uint8Array([
     0x49,
@@ -50,12 +132,78 @@ function jpegWithOrientation(orientation: number) {
   payload.set([0x45, 0x78, 0x69, 0x66, 0x00, 0x00]);
   payload.set(tiff, 6);
   const segmentLength = payload.byteLength + 2;
-  const result = new Uint8Array(encoded.byteLength + payload.byteLength + 4);
-  result.set(encoded.subarray(0, 2));
-  result.set([0xff, 0xe1, segmentLength >> 8, segmentLength & 0xff], 2);
-  result.set(payload, 6);
-  result.set(encoded.subarray(2), 6 + payload.byteLength);
-  return result;
+  return concat([
+    encoded.slice(0, 2),
+    new Uint8Array([0xff, 0xe1, segmentLength >> 8, segmentLength & 0xff]),
+    payload,
+    encoded.slice(2),
+  ]);
+}
+
+function jpegSegment(marker: number, text: string) {
+  const payload = new TextEncoder().encode(text);
+  const length = payload.byteLength + 2;
+  return concat([
+    new Uint8Array([0xff, marker, length >> 8, length & 0xff]),
+    payload,
+  ]);
+}
+
+function addPostScanMetadata(bytes: Uint8Array) {
+  const endOffset = bytes.byteLength - 2;
+  expect(Array.from(bytes.slice(endOffset))).toEqual([0xff, 0xd9]);
+  return concat([
+    bytes.slice(0, endOffset),
+    jpegSegment(0xe1, "late-app"),
+    jpegSegment(0xfe, "late-comment"),
+    bytes.slice(endOffset),
+  ]);
+}
+
+function orientForTest(
+  pixels: Uint8Array,
+  width: number,
+  height: number,
+  orientation: number,
+) {
+  const swapsAxes = orientation >= 5;
+  const outputWidth = swapsAxes ? height : width;
+  const outputHeight = swapsAxes ? width : height;
+  const output = new Uint8Array(outputWidth * outputHeight * 4);
+  for (let y = 0; y < outputHeight; y += 1) {
+    for (let x = 0; x < outputWidth; x += 1) {
+      let sourceX = x;
+      let sourceY = y;
+      if (orientation === 2) sourceX = width - 1 - x;
+      if (orientation === 3) {
+        sourceX = width - 1 - x;
+        sourceY = height - 1 - y;
+      }
+      if (orientation === 4) sourceY = height - 1 - y;
+      if (orientation === 5) {
+        sourceX = y;
+        sourceY = x;
+      }
+      if (orientation === 6) {
+        sourceX = y;
+        sourceY = height - 1 - x;
+      }
+      if (orientation === 7) {
+        sourceX = width - 1 - y;
+        sourceY = height - 1 - x;
+      }
+      if (orientation === 8) {
+        sourceX = width - 1 - y;
+        sourceY = x;
+      }
+      const sourceOffset = (sourceY * width + sourceX) * 4;
+      output.set(
+        pixels.subarray(sourceOffset, sourceOffset + 4),
+        (y * outputWidth + x) * 4,
+      );
+    }
+  }
+  return { height: outputHeight, pixels: output, width: outputWidth };
 }
 
 describe("local image preflight", () => {
@@ -67,7 +215,6 @@ describe("local image preflight", () => {
     );
     const baseline = new Uint8Array(prepared[0]!.bytes);
     source.fill(0);
-
     expect(prepared[0]?.descriptor).toMatchObject({
       heightPx: 1,
       id: "brand-mark",
@@ -78,36 +225,56 @@ describe("local image preflight", () => {
     expect(prepared[0]?.bytes).toEqual(baseline);
   });
 
-  it("applies bounded JPEG EXIF orientation and strips metadata into PNG", async () => {
-    const prepared = await preflightLocalImages(
-      [parseLocalImageId("portrait")],
-      async () => ({
-        bytes: jpegWithOrientation(6),
-        declaredMimeType: "image/jpeg",
-      }),
-    );
-
-    expect(prepared[0]?.descriptor).toMatchObject({
-      heightPx: 2,
-      mimeType: "image/png",
-      widthPx: 1,
-    });
-    expect(Array.from(prepared[0]!.bytes.slice(0, 8))).toEqual([
-      137, 80, 78, 71, 13, 10, 26, 10,
-    ]);
+  it("applies every non-identity EXIF orientation to asymmetric pixels", async () => {
+    for (let orientation = 2; orientation <= 8; orientation += 1) {
+      const source = jpegWithOrientation(orientation);
+      const decodedSource = decodeJpeg(source, {
+        formatAsRGBA: true,
+        tolerantDecoding: false,
+        useTArray: true,
+      });
+      const expected = orientForTest(
+        new Uint8Array(decodedSource.data),
+        decodedSource.width,
+        decodedSource.height,
+        orientation,
+      );
+      const prepared = await preflightLocalImages(
+        [parseLocalImageId(`portrait-${orientation}`)],
+        async () => ({ bytes: source, declaredMimeType: "image/jpeg" }),
+      );
+      const decodedPng = upng.decode(prepared[0]!.bytes.slice().buffer);
+      const frame = upng.toRGBA8(decodedPng)[0];
+      if (!frame) throw new Error("Expected one decoded PNG frame.");
+      expect(prepared[0]?.descriptor).toMatchObject({
+        heightPx: expected.height,
+        mimeType: "image/png",
+        widthPx: expected.width,
+      });
+      expect(new Uint8Array(frame)).toEqual(expected.pixels);
+    }
   });
 
-  it("keeps an unrotated JPEG compact while stripping its EXIF segment", async () => {
-    const source = jpegWithOrientation(1);
+  it("strips JPEG metadata before and after scans and rejects trailing bytes", async () => {
+    const source = addPostScanMetadata(jpegWithOrientation(1));
     const prepared = await preflightLocalImages(
       [parseLocalImageId("photo")],
       async () => ({ bytes: source, declaredMimeType: "image/jpeg" }),
     );
-
+    const normalizedText = new TextDecoder().decode(prepared[0]!.bytes);
     expect(prepared[0]?.descriptor.mimeType).toBe("image/jpeg");
     expect(Array.from(prepared[0]!.bytes.slice(0, 2))).toEqual([255, 216]);
     expect(prepared[0]!.bytes.byteLength).toBeLessThan(source.byteLength);
-    expect(new TextDecoder().decode(prepared[0]!.bytes)).not.toContain("Exif");
+    expect(normalizedText).not.toContain("Exif");
+    expect(normalizedText).not.toContain("late-app");
+    expect(normalizedText).not.toContain("late-comment");
+
+    await expect(
+      preflightLocalImages([parseLocalImageId("trailing")], async () => ({
+        bytes: concat([jpegWithOrientation(1), new Uint8Array([1, 2, 3])]),
+        declaredMimeType: "image/jpeg",
+      })),
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
   });
 
   it("rejects an EXIF orientation outside the bounded 1–8 range", async () => {
@@ -119,14 +286,67 @@ describe("local image preflight", () => {
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
   });
 
-  it("rejects a declared MIME mismatch and isolates the Node scope", async () => {
+  it("rejects invalid PNG CRCs and bounded-inflate violations", async () => {
+    const invalidCrc = png();
+    invalidCrc[20] = (invalidCrc[20] ?? 0) ^ 1;
+    await expect(
+      preflightLocalImages([parseLocalImageId("bad-crc")], async () => ({
+        bytes: invalidCrc,
+        declaredMimeType: "image/png",
+      })),
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+    await expect(
+      preflightLocalImages([parseLocalImageId("bomb")], async () => ({
+        bytes: decompressionBombPng(),
+        declaredMimeType: "image/png",
+      })),
+    ).rejects.toMatchObject({ code: "LIMIT_EXCEEDED" });
+  });
+
+  it("snapshots plain resolver data and rejects accessors or proxy failures", async () => {
+    let getterReads = 0;
+    const accessorSource = Object.defineProperty(
+      { declaredMimeType: "image/png" },
+      "bytes",
+      {
+        enumerable: true,
+        get() {
+          getterReads += 1;
+          return png();
+        },
+      },
+    );
+    await expect(
+      preflightLocalImages(
+        [parseLocalImageId("accessor")],
+        async () => accessorSource as never,
+      ),
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+    expect(getterReads).toBe(0);
+
+    await expect(
+      preflightLocalImages(
+        [parseLocalImageId("proxy")],
+        async () =>
+          new Proxy(
+            {},
+            {
+              ownKeys() {
+                throw new Error("untrusted proxy");
+              },
+            },
+          ) as never,
+      ),
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+  });
+
+  it("rejects a MIME mismatch and isolates the Node render scope", async () => {
     await expect(
       preflightLocalImages([parseLocalImageId("brand-mark")], async () => ({
         bytes: png(),
         declaredMimeType: "image/jpeg",
       })),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
-
     const prepared = await preflightLocalImages(
       [parseLocalImageId("brand-mark")],
       async () => ({ bytes: png(), declaredMimeType: "image/png" }),
