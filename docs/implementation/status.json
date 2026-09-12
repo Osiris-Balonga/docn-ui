@@ -4,7 +4,7 @@
   "planDate": "2026-08-28",
   "phase": "implementation",
   "implementationStarted": true,
-  "currentLot": "L17",
+  "currentLot": "L18",
   "git": {
     "initialized": true,
     "remote": "https://github.com/Osiris-Balonga/docn-ui.git",
@@ -514,10 +514,10 @@
     {
       "id": "L18",
       "file": "lots/L18-render-facade.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L17"],
       "branch": "feat/unified-render-facade",
-      "baseCommit": null,
+      "baseCommit": "67b8d2577dab3332e4eca51f8c242e4b8bfe6278",
       "actualCommits": [],
       "evidence": "../qa/L18.md",
       "blocker": null
