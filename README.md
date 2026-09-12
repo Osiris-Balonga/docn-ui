@@ -2,7 +2,7 @@
 
 A source-owned PDF component and template registry for existing shadcn projects.
 
-**Status on September 12, 2026: public beta verified; official v1.0.0 release preparation in progress.** The V1 catalog contains eighteen compositions across invoices, receipts, resumes, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The beta is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license. It remains non-indexed and uses the mutable `/r/dev/` registry; no immutable v1.0.0 registry, tag, or GitHub release is claimed. See the [candidate release notes](CHANGELOG.md), [lot status](docs/implementation/status.json), and [L16 evidence](docs/qa/L16.md).
+**Status on September 12, 2026: v1.0.0 is merged and deployed to the non-indexed production site; the annotated tag and GitHub Release record are not yet created.** The V1 catalog contains eighteen compositions across invoices, receipts, resumes, reports, badges, and business cards. Exact PDF geometry, local licensed fonts, print boxes, PDF-derived previews, bounded data contracts, deterministic calculations, and installable source through an additional shadcn registry are implemented. The production site is available at [docn-ui.vercel.app](https://docn-ui.vercel.app) under the MIT license and serves the immutable `/r/v1.0.0/` registry. See the [release notes](CHANGELOG.md), [lot status](docs/implementation/status.json), and [L16 evidence](docs/qa/L16.md).
 
 [Documentation](https://docn-ui.vercel.app/docs/) · [Templates](https://docn-ui.vercel.app/templates/) · [docn-ui V1 Project](https://github.com/users/Osiris-Balonga/projects/2) · [Issues](https://github.com/Osiris-Balonga/docn-ui/issues) · [L16 issue #20](https://github.com/Osiris-Balonga/docn-ui/issues/20)
 
@@ -11,10 +11,10 @@ A source-owned PDF component and template registry for existing shadcn projects.
 Run the official shadcn CLI from the application that already owns `components.json`:
 
 ```sh
-corepack pnpm dlx shadcn@4.19.1 add https://docn-ui.vercel.app/r/dev/docn-text-example.json
+corepack pnpm dlx shadcn@4.19.1 add https://docn-ui.vercel.app/r/v1.0.0/docn-text-example.json
 ```
 
-The command installs inspectable PDF source below `docn/`, preserves the existing shadcn aliases and UI components, and adds only the dependencies required by the selected item. The mutable `/r/dev/` path is for beta evaluation; the official release will provide an immutable versioned registry. Prepare the verified local fonts after installation as described in the [asset guide](docs/guides/REGISTRY_ASSETS.md).
+The command installs inspectable PDF source below `docn/`, preserves the existing shadcn aliases and UI components, and adds only the dependencies required by the selected item. The versioned path is immutable. Prepare the verified local fonts after installation as described in the [asset guide](docs/guides/REGISTRY_ASSETS.md).
 
 ## Local development
 
@@ -29,7 +29,7 @@ pnpm build
 pnpm preview
 ```
 
-`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. The public beta is a separately fingerprinted Vercel deployment.
+`preview` serves `apps/www/out` at `http://127.0.0.1:4173`; it does not start Next.js or rebuild. Missing routes return the exported 404. Stop it before reusing its port. The public production site is a separately fingerprinted Vercel deployment.
 
 See [Testing](docs/TESTING.md) for separate scopes and current activation. `pnpm test` runs each active lightweight project once. PDF tests remain a separate actual-document scope; browser and consumer suites activate only with the lots that need them.
 
