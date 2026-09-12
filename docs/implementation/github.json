@@ -694,9 +694,10 @@
       "issueNumber": 20,
       "issueId": "I_kwDOUHjPN88AAAABOuNP_g",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/20",
-      "issueState": "OPEN",
+      "issueState": "CLOSED",
+      "issueClosedAt": "2026-09-12T18:24:39Z",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg4fVt4",
-      "projectStatus": "In progress",
+      "projectStatus": "Done",
       "pullRequest": {
         "number": 54,
         "url": "https://github.com/Osiris-Balonga/docn-ui/pull/54",
@@ -814,6 +815,15 @@
         "draft": false,
         "prerelease": false
       },
+      "finalPublicationRecordPullRequest": {
+        "number": 78,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/78",
+        "baseBranch": "dev",
+        "headBranch": "docs/l16-release-record",
+        "headCommit": "2943e92132a93617fc4b1a71128f8f9713e24990",
+        "mergeCommit": "c9cd116b830ba78d349059d920bef8236af566a2",
+        "mergedAt": "2026-09-12T18:23:41Z"
+      },
       "initialized": true
     }
   },
@@ -829,7 +839,7 @@
       "merged": false
     }
   },
-  "lastVerifiedAt": "2026-09-12T18:14:36Z",
+  "lastVerifiedAt": "2026-09-12T18:24:39Z",
   "verification": {
     "directPushDev": "rejected GH013",
     "directPushMain": "rejected GH013",
