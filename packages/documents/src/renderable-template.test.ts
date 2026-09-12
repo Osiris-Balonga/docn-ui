@@ -88,6 +88,8 @@ describe("renderable template contracts", () => {
       violetFounderBusinessCardRenderable,
     );
     expect(getRenderableTemplate("resume-classic")).toBeUndefined();
+    expect(getRenderableTemplate("constructor")).toBeUndefined();
+    expect(getRenderableTemplate("__proto__")).toBeUndefined();
   });
 
   it("preserves the fixed component and source-owned style when theme is omitted", async () => {

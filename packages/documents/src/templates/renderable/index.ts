@@ -1,4 +1,4 @@
-import { assertTemplateIdSubset, type TemplateId } from "../../template-ids";
+import { assertTemplateIdSubset } from "../../template-ids";
 import { violetFounderBusinessCardRenderable } from "./violet-founder-business-card";
 
 export { violetFounderBusinessCardRenderable } from "./violet-founder-business-card";
@@ -14,8 +14,8 @@ assertTemplateIdSubset(Object.keys(renderableTemplates), [
 
 export type RenderableTemplateId = keyof typeof renderableTemplates;
 
-export function getRenderableTemplate(templateId: TemplateId) {
-  return templateId in renderableTemplates
+export function getRenderableTemplate(templateId: string) {
+  return Object.hasOwn(renderableTemplates, templateId)
     ? renderableTemplates[templateId as RenderableTemplateId]
     : undefined;
 }
