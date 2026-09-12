@@ -1,15 +1,14 @@
 # Changelog
 
-All notable changes to docn-ui are documented in this file. A section without
-a release date describes candidate scope only; it is not evidence that a tag,
-deployment, or GitHub release exists.
+All notable changes to docn-ui are documented in this file. A release date
+records the production version represented by these notes; the authoritative
+tag and GitHub Release state remains in the release evidence.
 
-## 1.0.0 — Unreleased
+## 1.0.0 — 2026-09-12
 
-The public site remains a non-indexed beta and its install examples continue to
-use the mutable `/r/dev/` registry. This section records the intended v1.0.0
-scope for review. The immutable registry, exact candidate qualification,
-authorized promotion, deployment, tag, and GitHub release are still pending.
+The non-indexed production site serves the qualified v1.0.0 product and the
+immutable `/r/v1.0.0/` registry. The annotated tag and GitHub Release have not
+yet been created; this dated changelog is not evidence that either exists.
 
 ### Added
 
@@ -41,13 +40,12 @@ authorized promotion, deployment, tag, and GitHub release are still pending.
 ### Migration from the public beta
 
 There is no earlier immutable docn-ui release to upgrade. Beta consumers must
-not treat `/r/dev/` as frozen. After an authorized v1.0.0 publication, reinstall
-the selected items from `/r/v1.0.0/` and review the installed source diff before
-adopting it. No npm package publication is required for v1.
+not treat `/r/dev/` as frozen. Reinstall selected items from `/r/v1.0.0/` and
+review the installed source diff before adopting it. No npm package publication
+is required for v1.
 
 ### Known limitations
 
-- The current public registry is mutable and is not yet a versioned release.
 - The catalog is a static preview, download, and source-installation experience;
   it does not include a public document-data editor, accounts, remote storage,
   or server-side PDF generation.

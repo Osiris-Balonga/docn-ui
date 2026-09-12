@@ -18,8 +18,9 @@
     "hosting": "Vercel",
     "siteUrl": "https://docn-ui.vercel.app",
     "publicationAuthorized": true,
-    "publicationScope": "public non-indexed beta only",
-    "officialV1ReleaseAuthorized": false,
+    "publicationScope": "official v1.0.0 production promotion and non-indexed deployment",
+    "officialV1ReleaseAuthorized": true,
+    "officialV1AuthorizedAt": "2026-09-12",
     "githubSetupAuthorized": true,
     "projectLanguage": "en",
     "conversationLanguage": "fr",
@@ -410,10 +411,10 @@
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "verified_local",
+      "state": "merged",
       "dependsOn": ["L15"],
-      "branch": "codex/l16-v1-candidate",
-      "baseCommit": "6207e72bde54453069ef69bfa3f048556dd595ca",
+      "branch": "release/v1.0.0",
+      "baseCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
       "actualCommits": [
         "149c027ba7b4c2927715dba9e3181c0dd06ed718",
         "bbf88fb5fe41360f7c52f81cff9279ec97e77abd",
@@ -427,10 +428,15 @@
         "3fea729b8e81a8da8f9e1f70f6fd130bc8f350d0",
         "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
         "d40273cbb7d8ea49243931a694742475ff6e6e30",
-        "c9a4023087fc403e3aa593570b391b1612ed6141"
+        "c9a4023087fc403e3aa593570b391b1612ed6141",
+        "7bdd1c36cc31830b861449f61289fc6a0aed7b78"
       ],
       "evidence": "../qa/L16.md",
       "synchronizedDevCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
+      "releasePreparationMergeCommit": "ad9e4af925ac93f77775c9bd3a1cfab0ccd8833f",
+      "releasePreparationMergedAt": "2026-09-12T17:12:54Z",
+      "mainPromotionCommit": "7a3d562ebbad71bff0e3cda63e6a6df3ee1e74fb",
+      "mainPromotedAt": "2026-09-12T17:16:48Z",
       "verifiedCandidate": {
         "commit": "c9a4023087fc403e3aa593570b391b1612ed6141",
         "inputSha256": "f184499a192e7c10dc74a0c87f0a3e22f571f62b92bac3bdaccc784dc125ba90",
@@ -439,7 +445,20 @@
         "outputBytes": 40002524,
         "registryVersion": "v1.0.0"
       },
-      "blocker": "The synchronized local candidate is verified, but official v1 release authorization, release PR review and merges, production deployment, tag, GitHub Release, and public v1 smoke verification are absent; protect-main does not yet require release-policy."
+      "productionDeployment": {
+        "id": "dpl_634ccSRu3BqhgHRyeBnGmzqdK423",
+        "sourceCommit": "7a3d562ebbad71bff0e3cda63e6a6df3ee1e74fb",
+        "status": "READY",
+        "siteUrl": "https://docn-ui.vercel.app",
+        "registryOrigin": "https://docn-ui.vercel.app/r/v1.0.0/",
+        "indexing": false,
+        "inputSha256": "f184499a192e7c10dc74a0c87f0a3e22f571f62b92bac3bdaccc784dc125ba90",
+        "inputFiles": 254,
+        "outputSha256": "33f5d6c4253e9ffb72b72b37858fc9ebe3e43c728a81d713ba499c2a76af7f65",
+        "outputFiles": 465,
+        "outputBytes": 40007456
+      },
+      "blocker": "The qualified v1.0.0 source is merged to main and its matching non-indexed production artifact is deployed and publicly verified. The annotated v1.0.0 tag, GitHub Release, and final release record remain absent, so L16 is not released and issue #20 and its Project item remain open/In progress."
     }
   ],
   "github": {
