@@ -1,4 +1,6 @@
 import { createHash } from "node:crypto";
+import { Buffer } from "node:buffer";
+import { Font } from "@react-pdf/renderer";
 import { readFile, realpath, stat } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -65,7 +67,10 @@ export async function createVerifiedNodeAssetResolver(
           "A font asset does not match the qualified manifest.",
         );
       }
-      verifiedSources.set(definition.id, source);
+      verifiedSources.set(
+        definition.id,
+        `data:font/woff;base64,${Buffer.from(bytes).toString("base64")}`,
+      );
     } catch (error) {
       if (error instanceof DocumentValidationError) throw error;
       assetFailure(
@@ -83,4 +88,27 @@ export async function createVerifiedNodeAssetResolver(
       return { definition, source };
     },
   };
+}
+
+export function assertVerifiedNodeFontRegistrationBoundary(
+  resolver: AssetResolver,
+): void {
+  const registered = Font.getRegisteredFonts();
+  for (const asset of assetManifest.assets) {
+    const expectedSource = resolver.resolve(asset.id).source;
+    const family = registered[asset.family];
+    const conflicts =
+      family?.sources.filter(
+        (source) =>
+          source.fontStyle === asset.style &&
+          source.fontWeight === asset.weight &&
+          source.src !== expectedSource,
+      ) ?? [];
+    if (conflicts.length > 0) {
+      assetFailure(
+        asset.id,
+        "A conflicting font source was registered before the verified facade render.",
+      );
+    }
+  }
 }

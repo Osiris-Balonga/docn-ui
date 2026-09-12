@@ -30,6 +30,9 @@ const PNG_SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10] as const;
 const MAX_JPEG_MEMORY_MB = 128;
 const MAX_PNG_CHUNKS = 4_096;
 const PNG_INFLATE_CHUNK_BYTES = 16 * 1024;
+const JPEG_FRAME_MARKERS = new Set([
+  0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf,
+]);
 
 type UpngApi = typeof import("@pdf-lib/upng");
 
@@ -394,63 +397,23 @@ function inspectPng(bytes: Uint8Array, path: readonly (number | string)[]) {
   return { height, orientation, width };
 }
 
-function inspectJpeg(bytes: Uint8Array, path: readonly (number | string)[]) {
+function inspectAndStripJpeg(
+  bytes: Uint8Array,
+  path: readonly (number | string)[],
+): {
+  readonly bytes: Uint8Array;
+  readonly height: number;
+  readonly orientation: number;
+  readonly width: number;
+} {
   if (bytes.byteLength < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) {
     fail("ASSET_REJECTED", "Image bytes are not a valid JPEG.", path);
   }
+  const parts: Uint8Array[] = [bytes.slice(0, 2)];
   let width = 0;
   let height = 0;
   let orientation = 1;
-  let offset = 2;
-  while (offset < bytes.byteLength) {
-    while (bytes[offset] === 0xff) offset += 1;
-    const marker = bytes[offset];
-    offset += 1;
-    if (marker === undefined || marker === 0xd9 || marker === 0xda) break;
-    if (marker === 0x00 || (marker >= 0xd0 && marker <= 0xd7)) continue;
-    if (offset > bytes.byteLength - 2) {
-      fail("ASSET_REJECTED", "JPEG contains a truncated segment.", path);
-    }
-    const length = readUint16(bytes, offset, false);
-    if (length < 2 || offset + length > bytes.byteLength) {
-      fail("ASSET_REJECTED", "JPEG contains an invalid segment length.", path);
-    }
-    const dataOffset = offset + 2;
-    const dataLength = length - 2;
-    if (
-      marker === 0xe1 &&
-      dataLength >= 6 &&
-      String.fromCharCode(...bytes.slice(dataOffset, dataOffset + 6)) ===
-        "Exif\u0000\u0000"
-    ) {
-      orientation = readExifOrientation(
-        bytes.slice(dataOffset + 6, dataOffset + dataLength),
-        path,
-      );
-    }
-    if (
-      [
-        0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce,
-        0xcf,
-      ].includes(marker)
-    ) {
-      if (dataLength < 6) fail("ASSET_REJECTED", "Invalid JPEG frame.", path);
-      height = readUint16(bytes, dataOffset + 1, false);
-      width = readUint16(bytes, dataOffset + 3, false);
-    }
-    offset += length;
-  }
-  if (width < 1 || height < 1) {
-    fail("ASSET_REJECTED", "JPEG dimensions could not be read.", path);
-  }
-  return { height, orientation, width };
-}
-
-function stripJpegMetadata(
-  bytes: Uint8Array,
-  path: readonly (number | string)[],
-): Uint8Array {
-  const parts: Uint8Array[] = [bytes.slice(0, 2)];
+  let sawExif = false;
   let offset = 2;
   let sawScan = false;
   let sawEnd = false;
@@ -552,6 +515,36 @@ function stripJpegMetadata(
       fail("ASSET_REJECTED", "JPEG contains an invalid segment length.", path);
     }
     const end = offset + length;
+    const dataOffset = offset + 2;
+    const dataLength = length - 2;
+    if (
+      marker === 0xe1 &&
+      dataLength >= 6 &&
+      String.fromCharCode(...bytes.slice(dataOffset, dataOffset + 6)) ===
+        "Exif\u0000\u0000"
+    ) {
+      if (sawExif) {
+        fail("ASSET_REJECTED", "JPEG contains multiple EXIF payloads.", path);
+      }
+      sawExif = true;
+      orientation = readExifOrientation(
+        bytes.slice(dataOffset + 6, dataOffset + dataLength),
+        path,
+      );
+    }
+    if (JPEG_FRAME_MARKERS.has(marker)) {
+      if (dataLength < 6) fail("ASSET_REJECTED", "Invalid JPEG frame.", path);
+      const frameHeight = readUint16(bytes, dataOffset + 1, false);
+      const frameWidth = readUint16(bytes, dataOffset + 3, false);
+      if (
+        (width !== 0 || height !== 0) &&
+        (width !== frameWidth || height !== frameHeight)
+      ) {
+        fail("ASSET_REJECTED", "JPEG frame dimensions are inconsistent.", path);
+      }
+      width = frameWidth;
+      height = frameHeight;
+    }
     const metadata =
       (marker >= 0xe1 && marker <= 0xed) || marker === 0xef || marker === 0xfe;
     if (!metadata) parts.push(bytes.slice(markerStart, end));
@@ -560,6 +553,9 @@ function stripJpegMetadata(
   if (!sawEnd) {
     fail("ASSET_REJECTED", "JPEG is missing its end marker.", path);
   }
+  if (width < 1 || height < 1) {
+    fail("ASSET_REJECTED", "JPEG dimensions could not be read.", path);
+  }
   const byteLength = parts.reduce((total, part) => total + part.byteLength, 0);
   const result = new Uint8Array(byteLength);
   let cursor = 0;
@@ -567,7 +563,7 @@ function stripJpegMetadata(
     result.set(part, cursor);
     cursor += part.byteLength;
   }
-  return result;
+  return { bytes: result, height, orientation, width };
 }
 
 function sniffMimeType(
@@ -673,10 +669,9 @@ function decodeAndNormalize(
   readonly mimeType: LocalImageMimeType;
   readonly width: number;
 } {
-  const inspection =
-    mimeType === "image/png"
-      ? inspectPng(bytes, path)
-      : inspectJpeg(bytes, path);
+  const jpegInspection =
+    mimeType === "image/jpeg" ? inspectAndStripJpeg(bytes, path) : undefined;
+  const inspection = jpegInspection ?? inspectPng(bytes, path);
   assertDimensions(inspection.width, inspection.height, path);
   let rgba: Uint8Array;
   try {
@@ -718,8 +713,8 @@ function decodeAndNormalize(
     inspection.orientation,
   );
   const encoded =
-    mimeType === "image/jpeg" && inspection.orientation === 1
-      ? stripJpegMetadata(bytes, path)
+    jpegInspection && inspection.orientation === 1
+      ? jpegInspection.bytes
       : new Uint8Array(
           upng.encode(
             [exactArrayBuffer(oriented.pixels)],

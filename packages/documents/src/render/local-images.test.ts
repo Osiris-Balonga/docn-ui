@@ -96,10 +96,13 @@ function decompressionBombPng() {
   ]);
 }
 
-function jpegWithOrientation(orientation: number) {
-  const encoded = new Uint8Array(
+function encodedJpeg() {
+  return new Uint8Array(
     encodeJpeg({ data: asymmetricPixels, width: 2, height: 3 }, 100).data,
   );
+}
+
+function exifSegment(orientation: number) {
   const tiff = new Uint8Array([
     0x49,
     0x49,
@@ -133,10 +136,27 @@ function jpegWithOrientation(orientation: number) {
   payload.set(tiff, 6);
   const segmentLength = payload.byteLength + 2;
   return concat([
-    encoded.slice(0, 2),
     new Uint8Array([0xff, 0xe1, segmentLength >> 8, segmentLength & 0xff]),
     payload,
+  ]);
+}
+
+function jpegWithOrientation(orientation: number) {
+  const encoded = encodedJpeg();
+  return concat([
+    encoded.slice(0, 2),
+    exifSegment(orientation),
     encoded.slice(2),
+  ]);
+}
+
+function jpegWithPostScanOrientation(orientation: number) {
+  const encoded = encodedJpeg();
+  const endOffset = encoded.byteLength - 2;
+  return concat([
+    encoded.slice(0, endOffset),
+    exifSegment(orientation),
+    encoded.slice(endOffset),
   ]);
 }
 
@@ -253,6 +273,35 @@ describe("local image preflight", () => {
       });
       expect(new Uint8Array(frame)).toEqual(expected.pixels);
     }
+  });
+
+  it("applies EXIF orientation discovered after an entropy scan", async () => {
+    const source = jpegWithPostScanOrientation(6);
+    const baseline = decodeJpeg(encodedJpeg(), {
+      formatAsRGBA: true,
+      tolerantDecoding: false,
+      useTArray: true,
+    });
+    const expected = orientForTest(
+      new Uint8Array(baseline.data),
+      baseline.width,
+      baseline.height,
+      6,
+    );
+    const prepared = await preflightLocalImages(
+      [parseLocalImageId("post-scan-exif")],
+      async () => ({ bytes: source, declaredMimeType: "image/jpeg" }),
+    );
+    const decodedPng = upng.decode(prepared[0]!.bytes.slice().buffer);
+    const frame = upng.toRGBA8(decodedPng)[0];
+    if (!frame) throw new Error("Expected one decoded PNG frame.");
+
+    expect(prepared[0]?.descriptor).toMatchObject({
+      heightPx: expected.height,
+      mimeType: "image/png",
+      widthPx: expected.width,
+    });
+    expect(new Uint8Array(frame)).toEqual(expected.pixels);
   });
 
   it("strips JPEG metadata before and after scans and rejects trailing bytes", async () => {

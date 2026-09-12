@@ -8,8 +8,8 @@ import type {
 import {
   createFontManifestIdentity,
   fingerprintNormalizedTemplateInput,
-  normalizeTemplateInputForRender,
 } from "../template-contract";
+import { normalizeTemplateInputForRender } from "../template-normalization.internal";
 import {
   createLegacyTemplateStyleProjection,
   type RenderableTemplate,
@@ -20,7 +20,10 @@ import type { LocalImageResolver, PreparedLocalImages } from "./local-images";
 import { createNodeLocalImageRenderScope } from "./local-images.node";
 import { renderContinuousDocumentInNode, renderDocumentInNode } from "./node";
 import { createRenderResult } from "./result";
-import { createVerifiedNodeAssetResolver } from "./verified-assets.node";
+import {
+  assertVerifiedNodeFontRegistrationBoundary,
+  createVerifiedNodeAssetResolver,
+} from "./verified-assets.node";
 
 export type { LocalImageResolver, LocalImageSource } from "./local-images";
 
@@ -208,6 +211,7 @@ export async function renderPdf<TData extends JsonObject>(
       printProfile: normalized.printProfile,
       resolvedTheme: normalized.theme,
     });
+    assertVerifiedNodeFontRegistrationBoundary(assetResolver);
     const pdfBytes = await renderPlanInNode(
       renderPlan,
       normalized,

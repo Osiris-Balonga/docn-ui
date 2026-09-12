@@ -30,6 +30,7 @@ import {
   type CustomPdfTheme,
   type PdfTheme,
 } from "./themes/themes";
+import { registerTemplateNormalizationInternals } from "./template-normalization.internal";
 
 export type JsonPrimitive = boolean | null | number | string;
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
@@ -1078,28 +1079,24 @@ export function normalizeTemplateInput<TData extends JsonObject>(
   );
 }
 
-/** @internal Runtime orchestration hook; use normalizeTemplateInput publicly. */
-export async function normalizeTemplateInputForRender<TData extends JsonObject>(
-  descriptor: TemplateDescriptor<TData>,
-  input: TemplateRenderInput<TData>,
-  createContext: (prepared: {
-    readonly imageIds: readonly LocalImageId[];
-    readonly resolvedTheme: ResolvedTemplateTheme;
-  }) => Promise<NormalizationContext>,
-): Promise<{
-  readonly normalized: NormalizedTemplateInput<TData>;
-  readonly themeWasExplicit: boolean;
-}> {
-  const prepared = prepareTemplateNormalization(descriptor, input);
-  const context = await createContext({
-    imageIds: prepared.imageIds,
-    resolvedTheme: prepared.theme,
-  });
-  return {
-    normalized: completeTemplateNormalization(descriptor, prepared, context),
-    themeWasExplicit: prepared.themeWasExplicit,
-  };
-}
+registerTemplateNormalizationInternals({
+  complete(descriptor, opaque, context) {
+    return completeTemplateNormalization(
+      descriptor,
+      opaque as PreparedTemplateNormalization<JsonObject>,
+      context,
+    );
+  },
+  prepare(descriptor, input) {
+    const prepared = prepareTemplateNormalization(descriptor, input);
+    return {
+      imageIds: prepared.imageIds,
+      opaque: prepared,
+      resolvedTheme: prepared.theme,
+      themeWasExplicit: prepared.themeWasExplicit,
+    };
+  },
+});
 
 export async function fingerprintNormalizedTemplateInput<
   TData extends JsonObject,

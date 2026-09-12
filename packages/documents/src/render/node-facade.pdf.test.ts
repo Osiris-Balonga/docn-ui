@@ -12,6 +12,8 @@ import {
 import { violetFounderBusinessCardRenderable } from "../templates/renderable";
 import { createPdfTheme } from "../themes/themes";
 import type { TemplatePlanContext } from "../renderable-template";
+import { createNodeAssetResolver } from "./assets.node";
+import { registerDocumentFonts } from "./fonts";
 
 const temporaryDirectories: string[] = [];
 const flowEvidenceRenderable = defineTemplateDescriptor({
@@ -32,7 +34,9 @@ afterEach(async () => {
 describe("Node renderPdf facade", () => {
   it("returns the exact structured result for a fixed template", async () => {
     const rootEntry = await import("../index");
+    const contractEntry = await import("../template-contract");
     expect(rootEntry).not.toHaveProperty("normalizeTemplateInputForRender");
+    expect(contractEntry).not.toHaveProperty("normalizeTemplateInputForRender");
 
     const result = await renderPdf(violetFounderBusinessCardRenderable, {
       data: {},
@@ -126,5 +130,13 @@ describe("Node renderPdf facade", () => {
     });
 
     expect(projectedAccent).toBe("#6d28d9");
+  });
+
+  it("rejects a previously registered non-verified font source", async () => {
+    registerDocumentFonts(createNodeAssetResolver());
+
+    await expect(
+      renderPdf(violetFounderBusinessCardRenderable, { data: {} }),
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
   });
 });

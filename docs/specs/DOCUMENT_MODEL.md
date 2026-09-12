@@ -605,7 +605,13 @@ The Node default is the module-relative `../../assets/` directory already used
 by `createNodeAssetResolver`; installed registry source therefore resolves the
 consumer's root `assets/` directory. An explicit `fontAssetDirectory` is
 resolved to an absolute directory and remains subject to manifest containment
-and digest checks. The browser default is `globalThis.location.origin`; an
+and digest checks. The Node facade snapshots each verified font into an
+immutable data source before plan dispatch, so the renderer cannot reopen a
+changed path after verification. If React PDF's process-global font store
+already contains a conflicting source for the same qualified family, weight,
+and style, the facade rejects the render rather than allowing first-match cache
+semantics to bypass the verified snapshot. The browser default is
+`globalThis.location.origin`; an
 explicit `fontAssetBaseUrl` must resolve to that same origin, and manifest
 public paths remain rooted below it. No remote font fallback is permitted.
 

@@ -76,7 +76,12 @@ const result = await renderPdf(template, {
 `fontAssetDirectory` points to a complete local copy of the qualified manifest
 assets. Every file remains contained below that directory and must match its
 recorded byte length and SHA-256 digest. There is no system-font or network
-fallback.
+fallback. The verified bytes become an immutable data source before rendering;
+React PDF never reopens the caller-controlled filesystem path after validation.
+Because React PDF owns a process-global first-match font store, the facade
+rejects a conflicting source registered earlier for the same qualified family,
+weight, and style. Start facade rendering before legacy manual font
+registration, or isolate those workflows in separate processes.
 
 Template data may carry validated local-image IDs, never paths or URLs. The
 optional `localImageResolver` returns owned PNG/JPEG bytes and a declared MIME
