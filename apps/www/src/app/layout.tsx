@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: "docn-ui — PDF templates, in your codebase",
   description:
-    "A source-owned PDF template toolkit in development. Follow the public implementation plan.",
+    "A source-owned PDF component and template toolkit for existing shadcn projects.",
   robots: {
     index: siteIsIndexable,
     follow: siteIsIndexable,

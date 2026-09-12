@@ -1,13 +1,13 @@
 {
   "name": "@docn-ui/www",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "author": "Emmanuel Osiris Balonga",
   "type": "module",
   "scripts": {
     "predev": "node ../../tooling/assets/copy-pdf-assets.mjs && node ../../tooling/docs/generate.mjs",
-    "dev": "cross-env NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1",
+    "dev": "cross-env NEXT_TELEMETRY_DISABLED=1 DOCN_REGISTRY_ORIGIN=http://127.0.0.1:3000/r/dev/ next dev --hostname 127.0.0.1",
     "prebuild": "node ../../tooling/assets/copy-pdf-assets.mjs && node ../../tooling/docs/generate.mjs",
     "build": "cross-env NEXT_TELEMETRY_DISABLED=1 next build --webpack",
     "typecheck": "cross-env NEXT_TELEMETRY_DISABLED=1 next typegen && tsc --noEmit"

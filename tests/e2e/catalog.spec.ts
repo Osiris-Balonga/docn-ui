@@ -296,7 +296,7 @@ test("browses component examples source formats and themes", async ({
   await page.keyboard.press("Escape");
   await expect(
     page.getByLabel("Install component code", { exact: true }),
-  ).toContainText("http://127.0.0.1:4174/r/dev/docn-barcode.json");
+  ).toContainText("http://127.0.0.1:4174/r/v1.0.0/docn-barcode.json");
   const install = page.getByLabel("Install component code", { exact: true });
   await install.focus();
   await page.keyboard.press("ArrowRight");

@@ -21,8 +21,9 @@ import {
 
 const root = resolve(import.meta.dirname, "../..");
 const registryOrigin = "http://127.0.0.1:4173";
+const registryVersion = "v1.0.0";
 const browserOrigin = "http://127.0.0.1:4176";
-const assetManifestUrl = `${registryOrigin}/r/dev/assets/manifest.json`;
+const assetManifestUrl = `${registryOrigin}/r/${registryVersion}/assets/manifest.json`;
 const artifacts = resolve(root, ".artifacts/consumers");
 const temporaryRoots: string[] = [];
 const openServers: Server[] = [];
@@ -216,7 +217,7 @@ async function installItem(
     [
       resolve(root, "node_modules/shadcn/dist/index.js"),
       "add",
-      `${registryOrigin}/r/dev/${itemName}.json`,
+      `${registryOrigin}/r/${registryVersion}/${itemName}.json`,
       "--cwd",
       directory,
       "--yes",

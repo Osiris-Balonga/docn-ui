@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CodeBlock } from "./docs-article";
+import { registryPath } from "@/lib/registry-version";
 
 const subscribe = () => () => {};
 
@@ -19,7 +20,7 @@ export function ComponentInstall({
     () => "http://127.0.0.1:4173",
   );
   const command = (items: string[]) =>
-    `corepack pnpm dlx shadcn@4.19.1 add ${items.map((item) => `${origin}/r/dev/${item}.json`).join(" ")}`;
+    `corepack pnpm dlx shadcn@4.19.1 add ${items.map((item) => `${origin}${registryPath}/${item}.json`).join(" ")}`;
   return (
     <div className="space-y-4">
       <p className="text-muted-foreground">
@@ -60,7 +61,8 @@ export function ComponentInstall({
         >
           installation guide
         </Link>
-        . The /r/dev registry is mutable and local, not a public release.
+        . The versioned registry is immutable; review source differences before
+        adopting another release.
       </p>
     </div>
   );

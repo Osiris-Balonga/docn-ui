@@ -1,8 +1,11 @@
 import { spawn } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readReleaseMetadata } from "../registry/release.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
+const { registryVersion } = await readReleaseMetadata(root);
+const registryPath = `/r/${registryVersion}`;
 const output = resolve(root, "apps/www/out");
 const origin = "http://127.0.0.1:4173";
 const server = spawn(
@@ -61,7 +64,8 @@ try {
   );
   if (
     fingerprint.configuration?.siteUrl !== origin ||
-    fingerprint.configuration?.registryOrigin !== `${origin}/r/dev/` ||
+    fingerprint.configuration?.registryOrigin !== `${origin}${registryPath}/` ||
+    fingerprint.configuration?.registryVersion !== registryVersion ||
     fingerprint.configuration?.indexing !== false
   )
     throw new Error("The build is not the configured local preview artifact.");
@@ -72,7 +76,7 @@ try {
     "public, max-age=0, must-revalidate",
   );
   const html = await page.text();
-  if (!html.includes(`${origin}/r/dev/`))
+  if (!html.includes(`${origin}${registryPath}/`))
     throw new Error("Installation commands do not target the preview origin.");
   await probe(
     "/generated/templates/invoice-corporate.pdf",
@@ -80,9 +84,29 @@ try {
     "public, max-age=0, must-revalidate",
   );
   await probe(
-    "/r/dev/docn-invoice-corporate.json",
+    "/r/registry.json",
     "application/json",
-    "no-cache, no-store, must-revalidate",
+    "public, max-age=0, must-revalidate",
+  );
+  await probe(
+    `${registryPath}/registry.json`,
+    "application/json",
+    "public, max-age=31536000, immutable",
+  );
+  await probe(
+    `${registryPath}/docn-invoice-corporate.json`,
+    "application/json",
+    "public, max-age=31536000, immutable",
+  );
+  await probe(
+    `${registryPath}/assets/manifest.json`,
+    "application/json",
+    "public, max-age=31536000, immutable",
+  );
+  await probe(
+    `${registryPath}/assets/fonts/noto-sans-latin-400-normal.woff`,
+    "font/woff",
+    "public, max-age=31536000, immutable",
   );
   const font = findOutput("_next/static/media", ".woff2");
   const script = findOutput("_next/static/chunks", ".js");

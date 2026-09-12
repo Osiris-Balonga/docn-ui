@@ -81,14 +81,23 @@ describe("registry asset distribution", () => {
     ]);
     const distribution = await buildDistributionAssets({
       root,
-      origin: "http://127.0.0.1:4173/r/dev/",
+      origin: "http://127.0.0.1:4173/r/v1.0.0/",
+      registryVersion: "v1.0.0",
     });
+    expect(distribution.manifest.registryVersion).toBe("v1.0.0");
     expect(distribution.manifest.files).toHaveLength(5);
     expect(
       distribution.manifest.files.every((file) =>
-        file.url.startsWith("http://127.0.0.1:4173/r/dev/assets/"),
+        file.url.startsWith("http://127.0.0.1:4173/r/v1.0.0/assets/"),
       ),
     ).toBe(true);
+    await expect(
+      buildDistributionAssets({
+        root,
+        origin: "http://127.0.0.1:4173/r/dev/",
+        registryVersion: "v1.0.0",
+      }),
+    ).rejects.toThrow("exact /r/v1.0.0/ path");
 
     const invalidManifest = structuredClone(verified.manifest);
     invalidManifest.assets[0].file = "../font.woff";

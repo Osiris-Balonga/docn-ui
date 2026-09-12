@@ -3,25 +3,44 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildDistributionAssets } from "../assets/assets.mjs";
 import { buildRegistry, registryOutputPaths } from "./registry.mjs";
+import {
+  DEVELOPMENT_REGISTRY_VERSION,
+  readReleaseMetadata,
+} from "./release.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const development = process.argv.includes("--development");
+const release = await readReleaseMetadata(root);
+const registryVersion = development
+  ? DEVELOPMENT_REGISTRY_VERSION
+  : release.registryVersion;
 const origin =
-  process.env.DOCN_REGISTRY_ORIGIN ?? "http://127.0.0.1:4173/r/dev/";
+  process.env.DOCN_REGISTRY_ORIGIN ??
+  `http://127.0.0.1:4173/r/${registryVersion}/`;
 const checkOnly = process.argv.includes("--check");
 const unexpectedArguments = process.argv
   .slice(2)
-  .filter((arg) => arg !== "--check");
+  .filter((arg) => arg !== "--check" && arg !== "--development");
 if (unexpectedArguments.length > 0)
-  throw new Error("Use generate.mjs with no arguments or --check.");
+  throw new Error(
+    "Use generate.mjs with no arguments, --check, or --development.",
+  );
 
-const registry = await buildRegistry({ root, origin });
-const assets = await buildDistributionAssets({ root, origin });
+const registry = await buildRegistry({ root, origin, registryVersion });
+const assets = await buildDistributionAssets({
+  root,
+  origin,
+  registryVersion,
+});
 if (checkOnly) {
   console.log(
     `Verified ${registry.items.length} registry items against the pinned official schema and ${assets.files.length} local asset files.`,
   );
 } else {
-  const { publicRoot, versionRoot } = registryOutputPaths(root);
+  const { publicRoot, versionRoot } = registryOutputPaths(
+    root,
+    registryVersion,
+  );
   await rm(publicRoot, { recursive: true, force: true });
   await mkdir(versionRoot, { recursive: true });
   const serialize = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -50,6 +69,6 @@ if (checkOnly) {
     }),
   ]);
   console.log(
-    `Generated ${registry.items.length} development registry items and ${assets.files.length} verified assets in apps/www/public/r/dev.`,
+    `Generated ${registry.items.length} ${registryVersion} registry items and ${assets.files.length} verified assets in apps/www/public/r/${registryVersion}.`,
   );
 }

@@ -2,14 +2,14 @@
 
 PDF fonts are binary assets and are not embedded into registry JSON. The `docn-render` item installs a visible Node script at `docn/assets/install.mjs`. Run it explicitly after reviewing the installed source. It does not use a postinstall hook and never overwrites an existing file.
 
-The development commands below assume a static build served by `corepack pnpm preview` at `http://127.0.0.1:4173`. Run `corepack pnpm build` first. The Next.js development server instead defaults to port 3000; a different registry origin requires setting `DOCN_REGISTRY_ORIGIN` before generation/build so dependency URLs match the served registry. Published documentation must replace this loopback URL only after an immutable release origin is approved.
+The commands below assume a static v1.0.0 build served by `corepack pnpm preview` at `http://127.0.0.1:4173`. Run `corepack pnpm build` first. The Next.js development server instead defaults to port 3000 and uses its explicit development registry mode; a different release origin requires setting `DOCN_REGISTRY_ORIGIN` to the complete `/r/v1.0.0/` origin before generation/build so dependency URLs match the served registry.
 
 ## Browser project
 
 Install the fonts and OFL license under the consumer's own `public/generated` directory:
 
 ```sh
-node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target browser
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/v1.0.0/assets/manifest.json --target browser
 ```
 
 The manifest paths then match the installed document manifest's `/generated/fonts/*` URLs. The snippets below assume the calling file is directly under `src/`; adjust only the relative first hop when using another location. Create the resolver from the consumer application's origin and pass it to the browser runtime:
@@ -29,7 +29,7 @@ The browser fetches fonts from the consumer origin. It does not contact the regi
 Install the same verified files into a local `assets` directory:
 
 ```sh
-node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/dev/assets/manifest.json --target node
+node docn/assets/install.mjs --manifest http://127.0.0.1:4173/r/v1.0.0/assets/manifest.json --target node
 ```
 
 Pass that directory explicitly to the Node resolver:

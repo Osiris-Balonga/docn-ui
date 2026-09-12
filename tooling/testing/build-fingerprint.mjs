@@ -15,15 +15,25 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const fingerprintPath = resolve(root, ".artifacts/build/fingerprint.json");
 const buildDirectory = resolve(root, "apps/www/out");
 const inputPathspecs = [
+  ".node-version",
   "apps/www",
   "packages/documents",
+  "tooling/assets",
+  "tooling/deployment",
   "tooling/registry",
   "tooling/docs",
+  "tooling/templates",
   "package.json",
   "pnpm-lock.yaml",
   "pnpm-workspace.yaml",
   "tsconfig.base.json",
+  "vercel.json",
 ];
+
+const rootPackage = JSON.parse(
+  readFileSync(resolve(root, "package.json"), "utf8"),
+);
+const releaseRegistryVersion = `v${rootPackage.version}`;
 
 function git(...args) {
   const result = spawnSync("git", args, {
@@ -70,7 +80,8 @@ function buildConfiguration() {
     siteUrl: process.env.SITE_URL?.trim() || "http://127.0.0.1:3000",
     registryOrigin:
       process.env.DOCN_REGISTRY_ORIGIN?.trim() ||
-      "http://127.0.0.1:4173/r/dev/",
+      `http://127.0.0.1:4173/r/${releaseRegistryVersion}/`,
+    registryVersion: releaseRegistryVersion,
     indexing: process.env.DOCN_ALLOW_INDEXING === "true",
   };
 }
@@ -134,7 +145,7 @@ function computeFingerprint() {
       ),
     );
   return {
-    schemaVersion: 4,
+    schemaVersion: 5,
     commit: String(git("rev-parse", "HEAD")).trim(),
     inputMode,
     inputSha256: hash.digest("hex"),
@@ -175,6 +186,7 @@ if (mode === "write") {
     recorded.outputBytes !== current.outputBytes ||
     typeof recorded.configuration?.siteUrl !== "string" ||
     typeof recorded.configuration?.registryOrigin !== "string" ||
+    recorded.configuration?.registryVersion !== releaseRegistryVersion ||
     typeof recorded.configuration?.indexing !== "boolean"
   )
     throw new Error(
