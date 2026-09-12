@@ -836,11 +836,53 @@
       "issueNumber": 82,
       "issueId": "I_kwDOUHjPN88AAAABQ_gG_Q",
       "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/82",
-      "issueState": "OPEN",
+      "issueState": "CLOSED",
+      "issueClosedAt": "2026-09-12T22:11:37Z",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg6qepU",
-      "projectStatus": "In progress",
+      "projectStatus": "Done",
       "priority": "P0",
       "branch": "feat/unified-template-api",
+      "pullRequest": {
+        "number": 83,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/83",
+        "headCommit": "97f2223238e2a6dc19f32585b5cad26329747d3f",
+        "mergeCommit": "d3f0ea432224eaa92c7fc3179ead2c2c28363846",
+        "mergedAt": "2026-09-12T22:11:36Z"
+      },
+      "verification": {
+        "headSha": "97f2223238e2a6dc19f32585b5cad26329747d3f",
+        "checks": [
+          {
+            "name": "branch-policy",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920593/job/103629276933"
+          },
+          {
+            "name": "quality",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629277081"
+          },
+          {
+            "name": "unit-tests",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629276997"
+          },
+          {
+            "name": "pdf-tests",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629276872"
+          },
+          {
+            "name": "consumer-tests",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629276962"
+          },
+          {
+            "name": "build",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629276994"
+          },
+          {
+            "name": "e2e-chromium",
+            "url": "https://github.com/Osiris-Balonga/docn-ui/actions/runs/34721920535/job/103629449751"
+          }
+        ],
+        "verifiedAt": "2026-09-12T22:11:19Z"
+      },
       "initialized": true
     }
   },
@@ -856,7 +898,7 @@
       "merged": false
     }
   },
-  "lastVerifiedAt": "2026-09-12T18:24:39Z",
+  "lastVerifiedAt": "2026-09-12T22:11:37Z",
   "verification": {
     "directPushDev": "rejected GH013",
     "directPushMain": "rejected GH013",
