@@ -490,10 +490,10 @@
     {
       "id": "L17",
       "file": "lots/L17-unified-api.md",
-      "state": "planned",
+      "state": "in_progress",
       "dependsOn": ["L16"],
       "branch": "feat/unified-template-api",
-      "baseCommit": null,
+      "baseCommit": "c82d3f1d73e8ce864d0669125bc3df0746ff8b3f",
       "actualCommits": [],
       "evidence": "../qa/L17.md",
       "blocker": null

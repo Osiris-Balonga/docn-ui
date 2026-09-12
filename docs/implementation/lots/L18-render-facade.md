@@ -20,7 +20,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 - [ ] Normalize and validate through L17, register manifest-bound local fonts once, dispatch the plan kind and finalize the PDF.
 - [ ] Use the documented local asset convention by default and retain an explicit safe resolver option.
-- [ ] Return the existing `RenderResult` fields without aliases; never return raw bytes from the primary facade.
+- [ ] Return the existing `RenderResult` fields without aliases; never return bare bytes in place of `RenderResult` from the primary facade.
 - [ ] Copy a caller-supplied revision unchanged, default a one-shot omitted revision to 1, and never infer stale state in the runtime.
 
 **Acceptance:** A Node consumer renders a representative template without importing React, React PDF, format resolution, font registration or plan helpers.
@@ -46,12 +46,13 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 **Acceptance:** Fixed, flow and continuous plans all return the same result contract in both environments where supported.
 
-**Targeted verification:** One bounded receipt in Node and browser, one overflow failure, page/dimension/result assertions.
+**Targeted verification:** The bounded continuous feasibility fixture in Node and browser, one overflow failure, page/dimension/result assertions; no catalog receipt migration.
 
 ### L18-S04 — `feat(worker): add interruptible render protocol v2`
 
 - [ ] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
 - [ ] Transfer validated local PNG/JPEG bytes in a separate bounded message channel keyed by image ID and digest.
+- [ ] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
 - [ ] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.
 - [ ] Let the worker drop completions whose revision is no longer current and let the UI mark a retained last-valid result stale; do not add `stale` to `RenderResult`.
 

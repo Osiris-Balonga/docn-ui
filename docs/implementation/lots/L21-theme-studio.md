@@ -10,7 +10,7 @@ Read the design specification, styling policy, ADR 0006, migrated template metad
 
 ## Scope and files
 
-Build a bounded static-site configurator for validated PDF theme roles with real local preview, synchronized textual output, contrast diagnostics and a portable TypeScript file export. It is not a document-data or layout editor. The initial geometry-safe scope edits colors and qualified body/heading families only.
+Build a bounded static-site configurator for validated PDF theme roles with real local preview, synchronized textual output, contrast diagnostics and a portable TypeScript file export. It is not a document-data or layout editor. The initial cross-template geometry-safe scope edits colors only. A template exposes a body or heading family control only when its compatibility metadata opts in to that specific manifest-qualified family after overflow and page-count qualification.
 
 Target responsibilities: `/themes/studio/`, theme form metadata, validation, preview coordination, code generation, accessibility and focused E2E.
 
@@ -18,7 +18,7 @@ Target responsibilities: `/themes/studio/`, theme form metadata, validation, pre
 
 ### L21-S01 — `feat(theme-studio): derive controls from the PDF theme contract`
 
-- [ ] Expose `baseThemeId`, supported color roles and qualified body/heading families. Do not expose weight, type-scale or spacing controls.
+- [ ] Expose `baseThemeId` and supported color roles. Expose a body or heading family only for a selected template's explicitly qualified family opt-ins; do not present font switching as cross-template safe.
 - [ ] Keep weights at the qualified 400/700 pair and keep type scale/spacing identical to the base preset.
 - [ ] Keep an invalid draft separate from the last valid `PdfTheme` and provide path-specific messages.
 - [ ] Validate the selected template's `baseThemeId` and theme envelope before preview.
@@ -43,7 +43,7 @@ Target responsibilities: `/themes/studio/`, theme form metadata, validation, pre
 ### L21-S03 — `feat(theme-studio): export a portable theme source file`
 
 - [ ] Normalize a bounded user name to kebab case and download `~/docn/themes/<safe-name>.ts`.
-- [ ] Generate a stable `createPdfTheme(baseThemeId, overrides)` module with a relative `./themes` import, accepted unchanged by `renderPdf`.
+- [ ] Generate a stable `createPdfTheme({ baseThemeId, colors?, fonts? })` module with a relative import from `~/docn/themes/<safe-name>.ts` to the installed local themes module, accepted unchanged by `renderPdf`.
 - [ ] Omit values equal to the selected base without changing the resolved theme.
 - [ ] Compile the exported module in the isolated consumer fixture; never execute generated or user-authored source through `eval`, dynamic `Function` or runtime module loading.
 - [ ] Handle download/copy success and failure accessibly.
