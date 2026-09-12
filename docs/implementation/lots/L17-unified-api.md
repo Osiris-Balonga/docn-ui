@@ -10,7 +10,7 @@ Read the [master plan](../../../IMPLEMENTATION_PLAN.md), [agent rules](../../../
 
 ## Scope and files
 
-Define the public contract before changing template layouts. Reconcile the current theme, template metadata, request/result and compatibility surfaces. Introduce additive adapters for one fixed template and one continuous template, and use the existing `ComponentDocument`/`DocumentFrame` specimen for flow-contract evidence; do not claim a current catalog template is flowing or migrate the catalog in this lot.
+Define the public contract before changing template layouts. Reconcile the current theme, template metadata, request/result and compatibility surfaces. Introduce an additive adapter for one fixed catalog template, use the existing `ComponentDocument`/`DocumentFrame` specimen for flow-contract evidence, and use the existing continuous feasibility fixture for continuous-contract evidence; do not claim a current catalog template is flowing or continuously measured, and do not migrate the catalog in this lot.
 
 Target responsibilities: `packages/documents/src/core`, `themes`, template contracts, focused contract tests, public exports and API documentation.
 
@@ -24,6 +24,7 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 - [x] Preserve the advanced theme API while limiting the quick path to preset-equivalent themes, color overrides, and explicitly qualified per-template font-family opt-ins.
 - [x] Separate fixed font-manifest assets from bounded local document-image IDs, asynchronous preflight, pure descriptors, and the platform resolver supplied through `runtimeOptions`.
 - [x] Define legacy request/template compatibility boundaries, preserve protocol V1, and reserve serializable protocol V2 plus worker interruption for L18.
+- [x] Constrain render data to JSON, keep required caller data separate from explicit default/example fixtures, declare print-profile compatibility, and specify exact normalization, image-preflight, plan-context, runtime-option, and fingerprint signatures.
 
 **Acceptance:** Reviewers can implement the contract without deciding new public names or silently weakening a V1 guarantee.
 
@@ -32,7 +33,10 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 ### L17-S02 — `feat(api): define and normalize template descriptors`
 
 - [ ] Add the minimal non-React `TemplateDescriptor<TData>` and canonical six-family union without changing legacy `TemplateMetadata` or the React catalog `TemplateDefinition`.
+- [ ] Add the canonical 18-ID `TemplateId` source; assert exact, duplicate-free coverage for legacy definitions/catalog output and valid unique membership for the partial L17 descriptor/loader maps, reserving their exact-set assertion for L20.
 - [ ] Resolve defaults and validate strict data, the discriminated format input, theme/base/envelope, locale, print profile, revision, and descriptor invariants before composition.
+- [ ] Require caller `data`; validate schema outputs, default data, and example data through parse → `inspectDocumentData` → parse without implicit default/example merging.
+- [ ] Declare and enforce `supportedPrintProfileKinds`; reject unsupported profiles before plan creation, including `print` for L17 continuous feasibility evidence.
 - [ ] Extract image IDs only after data validation; canonicalize, deduplicate, limit to two, sort, and require the exact preflight descriptor set.
 - [ ] Keep image resolution asynchronous and platform-owned; give the pure normalizer only `{ id, mimeType, byteLength, widthPx, heightPx, sha256 }` descriptors.
 - [ ] Deep-clone and deep-freeze the resolved theme, then fingerprint the complete normalized input, font-manifest identity, and sorted local-image descriptors.
@@ -51,6 +55,7 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 - [ ] Add an additive adapter for one fixed current template without changing its visual composition.
 - [ ] Qualify flow with the existing `ComponentDocument`/`DocumentFrame` specimen and continuous behavior with the feasibility fixture; do not adapt a catalog receipt in L17.
 - [ ] Preserve every adapted component export and keep static trusted template resolution possible for L18.
+- [ ] Give plan factories a bounded context containing the frozen resolved theme and a separate legacy-style projection; adapters apply only colors and qualified family changes, never type scale, spacing, weights, or geometry.
 
 **Acceptance:** Fixed, flow, and continuous evidence satisfies one generic contract, the current template adapter preserves its component export, and no catalog receipt geometry or version changes.
 

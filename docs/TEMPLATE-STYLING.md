@@ -11,6 +11,7 @@ Templates follow the same source-ownership principle as shadcn/ui: the copied te
 - Layout, pagination, physical geometry, safe areas, print boxes and data are not theme values.
 - Site colors, CSS variables, Tailwind classes, OKLCH values and documentation themes must never leak into generated PDFs.
 - Templates consume the resolved theme through shared docn components and frames. They do not recreate public components locally when the public component satisfies the composition.
+- The normalized resolved theme is complete and fingerprinted, but legacy adapters receive a narrower `legacyStyle` projection. They may forward only resolved colors and explicitly template-qualified body/heading family changes to source-owned legacy style props. They preserve the template's existing weights, type scale, spacing, page geometry and other layout constants exactly.
 - During the migration window, legacy `style` props may be preserved by explicit wrappers. New examples and definitions use only `theme`; wrappers must be documented as deprecated and removed only through a declared major-version change.
 
 Qualified fonts remain local assets. Selecting a family in Theme Studio or code does not authorize a remote font request, arbitrary upload or silent system fallback. Theme Studio has no weight control. A new family or weight requires source, license, manifest, registration, glyph and PDF evidence before the schema can expose it; every template that opts in to another existing family also needs overflow and page-count evidence.

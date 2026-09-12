@@ -19,7 +19,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S01 — `feat(render): add the unified Node renderPdf facade`
 
 - [ ] Normalize and validate through L17, register manifest-bound local fonts once, dispatch the plan kind and finalize the PDF.
-- [ ] Use the documented local asset convention by default and retain an explicit safe resolver option.
+- [ ] Implement exact `NodeRenderRuntimeOptions`: the optional module-relative `../../assets/` font directory default and the runtime-only local-image resolver, with an explicit contained directory override.
 - [ ] Return the existing `RenderResult` fields without aliases; never return bare bytes in place of `RenderResult` from the primary facade.
 - [ ] Copy a caller-supplied revision unchanged, default a one-shot omitted revision to 1, and never infer stale state in the runtime.
 
@@ -30,7 +30,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S02 — `feat(render): add the matching browser renderPdf facade`
 
 - [ ] Export the same call shape from the browser entry.
-- [ ] Default to same-origin font-manifest assets and reject cross-origin font resolution.
+- [ ] Implement exact `BrowserRenderRuntimeOptions`: default font assets to `globalThis.location.origin`, allow only an explicit same-origin base URL, and keep the local-image resolver runtime-only.
 - [ ] Resolve document images only through the separate validated local-image resolver in `runtimeOptions`; template data contains IDs, never URLs.
 - [ ] Keep bytes suitable for caller-owned preview and download copies.
 
@@ -53,6 +53,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 - [ ] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
 - [ ] Transfer validated local PNG/JPEG bytes in a separate bounded message channel keyed by image ID and digest.
 - [ ] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
+- [ ] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
 - [ ] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.
 - [ ] Let the worker drop completions whose revision is no longer current and let the UI mark a retained last-valid result stale; do not add `stale` to `RenderResult`.
 

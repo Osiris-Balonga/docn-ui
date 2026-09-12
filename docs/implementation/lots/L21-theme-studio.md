@@ -20,7 +20,7 @@ Target responsibilities: `/themes/studio/`, theme form metadata, validation, pre
 
 - [ ] Expose `baseThemeId` and supported color roles. Expose a body or heading family only for a selected template's explicitly qualified family opt-ins; do not present font switching as cross-template safe.
 - [ ] Keep weights at the qualified 400/700 pair and keep type scale/spacing identical to the base preset.
-- [ ] Keep an invalid draft separate from the last valid `PdfTheme` and provide path-specific messages.
+- [ ] Keep an invalid draft separate from the last valid `CustomPdfTheme` and provide path-specific messages.
 - [ ] Validate the selected template's `baseThemeId` and theme envelope before preview.
 - [ ] Provide deterministic reset without persisting document or theme drafts.
 
@@ -32,6 +32,7 @@ Target responsibilities: `/themes/studio/`, theme form metadata, validation, pre
 
 - [ ] Preview through browser `renderPdf`, not a CSS or HTML approximation.
 - [ ] Offer one fixed template, the existing `ComponentDocument`/`DocumentFrame` flow specimen and one continuous template while respecting compatibility. Do not label the flow specimen as a catalog template.
+- [ ] Pass the selected descriptor's `exampleData` explicitly as required `data` and request only a supported print-profile kind; do not rely on implicit default/example substitution.
 - [ ] Preserve last valid bytes during invalid/rendering states and release object URLs/tasks.
 - [ ] Provide a synchronized textual alternative listing resolved roles, specimen, render state and actual `RenderResult` diagnostics.
 - [ ] Announce validation, render and revision-state changes through restrained live regions; stale is determined by the UI from caller-owned revisions.

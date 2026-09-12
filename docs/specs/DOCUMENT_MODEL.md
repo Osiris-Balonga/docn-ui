@@ -6,7 +6,7 @@ already added runtime code.
 
 ## 1. Identity, formats, and themes
 
-`TemplateDefinition<T>` describes `id`, `version`, `schemaVersion`, `family`, metadata, `supportedFormatIds`, `supportedThemeIds`, `schema`, `defaultData`, fixtures, and a composition function. Serializable metadata lives in a module separate from the React function and Zod.
+The released `TemplateDefinition` is a non-generic catalog/generator record. It describes display metadata, capabilities, supported IDs, and `renderSample`; it does not own a Zod schema, render data, defaults, or a general composition function. Its serializable catalog projection remains separate from React. The post-V1 `TemplateDescriptor<TData>` and `RenderableTemplate<TData>` contracts defined in section 8 are additive and distinct.
 
 `RenderRequest` contains `protocolVersion: 1`, `revision`, `templateId`, `templateVersion`, `data`, `formatId`, permitted format options, `themeId`, bounded overrides, `locale`, `printProfile`, and permitted assets. Incompatibility produces a structured error, never silent conversion.
 
@@ -104,7 +104,38 @@ L17 adds a template-oriented input without changing the released protocol-1
 surface. The public quick-render call remains flat:
 
 ```ts
-interface TemplateRenderInput<TData> {
+type JsonPrimitive = boolean | null | number | string;
+type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
+type JsonObject = { readonly [key: string]: JsonValue };
+
+export const TEMPLATE_IDS = [
+  "resume-classic",
+  "resume-accountant",
+  "resume-designer",
+  "invoice-spacious",
+  "invoice-vertical",
+  "invoice-corporate",
+  "invoice-photo-header",
+  "receipt-order-confirmation",
+  "receipt-product-barcode",
+  "receipt-cash-register",
+  "report-product-analytics",
+  "report-marketplace-revenue",
+  "report-customer-support",
+  "badge-profile-lanyard",
+  "badge-qr-portrait-light",
+  "badge-qr-portrait-blue",
+  "business-card-coral-qr",
+  "business-card-violet-founder",
+] as const;
+
+type TemplateId = (typeof TEMPLATE_IDS)[number];
+
+function assertTemplateIdSet(
+  ids: readonly string[],
+): asserts ids is readonly TemplateId[];
+
+interface TemplateRenderInput<TData extends JsonObject> {
   data: TData;
   theme?: ThemeInput;
   format?: FormatInput;
@@ -113,7 +144,7 @@ interface TemplateRenderInput<TData> {
   revision?: number;
 }
 
-renderPdf<TData>(
+renderPdf<TData extends JsonObject>(
   template: RenderableTemplate<TData>,
   input: TemplateRenderInput<TData>,
   runtimeOptions?,
@@ -130,6 +161,19 @@ increasing `revision`; the facade copies it without incrementing it. A one-shot
 call may omit the field and receives revision 1. A worker drops obsolete
 completions and the UI derives stale state by comparing revisions. `stale` is
 not a `RenderResult` field.
+
+`TEMPLATE_IDS` lives in the non-React template-contract module and is the
+canonical V1 identity inventory. Legacy `TemplateDefinition.id`, new descriptor
+IDs, static worker loaders, and catalog generation use `TemplateId`. In S02, a
+shared `assertTemplateIdSet(ids: readonly string[])` rejects duplicates, missing
+IDs, and extras in `templateDefinitions` and the generated catalog. The partial
+L17 adapter/loader maps are checked for unique `TemplateId` membership; L20
+applies the exact-set assertion once all 18 renderable descriptors exist. This
+is a check against the canonical tuple, not another maintained list.
+
+`data` is always required. Neither `defaultData` nor `exampleData` is substituted
+for it, shallow-merged into it, or applied by `renderPdf`; those two descriptor
+fixtures exist only for explicit form initialization and demonstrations.
 
 ### 8.1 Format selection
 
@@ -223,19 +267,21 @@ type TemplateFamily =
 
 type QualifiedPdfFontFamily = PdfTheme["fonts"]["body"];
 
-interface TemplateDescriptor<TData> {
-  id: string;
+interface TemplateDescriptor<TData extends JsonObject> {
+  id: TemplateId;
   version: string;
   schemaVersion: number;
   family: TemplateFamily;
-  schema: z.ZodType<TData>;
+  schema: z.ZodType<TData, z.ZodTypeDef, unknown>;
   defaultData: TData;
+  exampleData: TData;
   supportedFormatIds: readonly FormatId[];
   defaultFormatId: PresetFormatId;
   supportedThemeIds: readonly ThemeId[];
   defaultThemeId: ThemeId;
   supportedLocales: readonly DocumentLocale[];
   defaultLocale: DocumentLocale;
+  supportedPrintProfileKinds: readonly PrintProfile["kind"][];
   defaultPrintProfile: PrintProfile;
   themeCompatibility: {
     bodyFontFamilies?: readonly QualifiedPdfFontFamily[];
@@ -245,10 +291,23 @@ interface TemplateDescriptor<TData> {
 }
 ```
 
-The schema must be strict and the declared defaults must validate. Image IDs are
-extracted only after data validation, canonicalized, deduplicated, limited to
-the existing maximum of two, and sorted by ID. `supportedFormatIds`,
-`supportedThemeIds`, defaults, and family are checked as descriptor invariants.
+`TData` is constrained as `TData extends JsonObject`. The schema must be strict.
+Registration parses both `defaultData` and `exampleData`, passes each parsed
+output through the existing `inspectDocumentData`, then parses the inspected
+value again. Normalization applies the same parse → inspect → parse sequence to
+the caller's required `data`. This preserves size/depth limits, finite JSON
+numbers, JSON-only prototypes and NFC normalization even when a Zod transform
+created the first parsed output. Any inspection issue rejects the value.
+
+`defaultData` is only an explicit form initializer and `exampleData` is only a
+demonstration fixture; neither is a render fallback. Image IDs are extracted
+from the final inspected/parsed caller data, canonicalized, deduplicated,
+limited to the existing maximum of two, and sorted by ID. `supportedFormatIds`,
+`supportedThemeIds`, locale defaults, family, and print-profile declarations
+are checked as descriptor invariants. `defaultPrintProfile.kind` must occur in
+`supportedPrintProfileKinds`. The continuous feasibility descriptor supports
+only `screen` in L17; any requested `print` profile is rejected before plan
+creation rather than ignored or rewritten.
 
 The released core `TemplateMetadata` union remains unchanged, including its
 historical label/ticket values. The new six-family `TemplateFamily` does not
@@ -280,6 +339,18 @@ interface LocalImageDescriptor {
   heightPx: number;
   sha256: `sha256:${string}`;
 }
+
+interface PreparedLocalImage {
+  bytes: Uint8Array;
+  descriptor: LocalImageDescriptor;
+}
+
+type PreparedLocalImages = readonly PreparedLocalImage[];
+
+function preflightLocalImages(
+  imageIds: readonly string[],
+  resolver: LocalImageResolver,
+): Promise<PreparedLocalImages>;
 ```
 
 An async shared preflight calls the resolver, sniffs and decodes the bytes,
@@ -288,6 +359,12 @@ limits, normalizes supported image orientation deterministically, and
 recomputes SHA-256 from the final bytes. It returns immutable prepared bytes
 plus a pure JSON descriptor. The descriptor set must match the canonical
 extracted IDs exactly; missing and extra descriptors are errors.
+
+`PreparedLocalImages` is sorted by descriptor ID and contains one immutable
+entry per canonical ID. The coordinator passes only its descriptor projection
+to normalization. L18 copies each prepared `Uint8Array` to a dedicated
+transferable `ArrayBuffer`; the source array, resolver, and declared MIME value
+are not serialized into normalized input or protocol messages.
 
 The pure S02 normalizer receives descriptors, not the resolver or bytes. Its
 normalized input contains the descriptors in stable ID order and fingerprints
@@ -300,12 +377,66 @@ orchestrates those dependencies above `core`.
 
 ### 8.5 Normalization and fingerprints
 
-S02 adds `TemplateRenderInput<TData>` and `NormalizedTemplateInput<TData>` as
-library contracts, not worker protocol messages. Normalization is pure once the
-validated image descriptors are supplied. It validates data, descriptor
-invariants, defaults, format, locale, print profile, theme base/envelope, and
-revision; then it deep-clones and deep-freezes the resolved theme before
-fingerprinting.
+S02 adds these library contracts, not worker protocol messages:
+
+```ts
+interface FontManifestIdentity {
+  assetIds: readonly string[];
+  schemaVersion: number;
+  sha256: `sha256:${string}`;
+}
+
+interface NormalizationContext {
+  fontManifestIdentity: FontManifestIdentity;
+  localImageDescriptors: readonly LocalImageDescriptor[];
+}
+
+type DeepReadonly<T> = T extends (...args: never[]) => unknown
+  ? T
+  : T extends readonly unknown[]
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T extends object
+      ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+      : T;
+
+interface ResolvedTemplateTheme {
+  baseThemeId: ThemeId;
+  theme: DeepReadonly<PdfTheme>;
+}
+
+interface NormalizedTemplateInput<TData extends JsonObject> {
+  data: TData;
+  fontManifestIdentity: FontManifestIdentity;
+  format: ResolvedFormat;
+  localImageDescriptors: readonly LocalImageDescriptor[];
+  locale: DocumentLocale;
+  printProfile: PrintProfile;
+  revision: number;
+  templateId: TemplateId;
+  templateVersion: string;
+  schemaVersion: number;
+  theme: ResolvedTemplateTheme;
+}
+
+function normalizeTemplateInput<TData extends JsonObject>(
+  template: TemplateDescriptor<TData>,
+  input: TemplateRenderInput<TData>,
+  context: NormalizationContext,
+): NormalizedTemplateInput<TData>;
+
+function fingerprintNormalizedTemplateInput<TData extends JsonObject>(
+  input: NormalizedTemplateInput<TData>,
+): Promise<`sha256:${string}`>;
+```
+
+`FontManifestIdentity.assetIds` is the sorted set of qualified font assets used
+by the resolved theme. Its `sha256` is recomputed from the canonical projection
+of those manifest entries, including family, weight, format, byte count, and
+asset digest; it is not a caller label. Normalization is pure once the validated
+image descriptors and font-manifest identity are supplied. It validates data,
+descriptor invariants, defaults, format, locale, print profile, theme
+base/envelope, and revision; then it deep-clones and deep-freezes the resolved
+theme, manifest identity, and image descriptors before fingerprinting.
 
 The normalized fingerprint covers template ID/version/schema version,
 normalized data, resolved format, complete frozen theme and base ID, locale,
@@ -324,12 +455,32 @@ to L18 only.
 S03 adds the React/plan extension:
 
 ```ts
+interface LegacyTemplateStyleProjection {
+  colors: DeepReadonly<PdfTheme["colors"]>;
+  fontFamilies?: {
+    body?: QualifiedPdfFontFamily;
+    heading?: QualifiedPdfFontFamily;
+  };
+}
+
+interface TemplatePlanContext<TData extends JsonObject> {
+  data: TData;
+  format: ResolvedFormat;
+  legacyStyle: LegacyTemplateStyleProjection;
+  localImages: PreparedLocalImages;
+  locale: DocumentLocale;
+  printProfile: PrintProfile;
+  resolvedTheme: ResolvedTemplateTheme;
+}
+
 type TemplateRenderPlan =
   | { kind: "fixed"; plan: FixedDocumentRenderPlan }
   | { kind: "flow"; plan: FixedDocumentRenderPlan }
   | { kind: "continuous"; plan: ContinuousDocumentRenderPlan };
 
-interface RenderableTemplate<TData> extends TemplateDescriptor<TData> {
+interface RenderableTemplate<
+  TData extends JsonObject,
+> extends TemplateDescriptor<TData> {
   createPlan(context: TemplatePlanContext<TData>): TemplateRenderPlan;
 }
 ```
@@ -339,6 +490,16 @@ The discriminant describes composition behavior. It wraps the existing
 or weakening either advanced API. Flow uses a `FixedDocumentRenderPlan` whose
 document is the existing wrapping `DocumentFrame` composition; it is distinct
 from a non-wrapping fixed composition at the template level.
+
+`resolvedTheme` is the deep-frozen, fingerprinted full theme used by public
+theme-aware components. Because its weights, type scale, and spacing equal the
+base preset, new compositions preserve the qualified geometry. A legacy
+adapter receives the separate `legacyStyle` projection and may apply only its
+colors plus the body/heading family entries that the selected template
+explicitly qualified. It must not translate weights, type scale, spacing, page
+geometry, or any other theme field into the source-owned legacy `style` prop.
+This projection is created after compatibility validation; an absent
+`fontFamilies` entry means no legacy family override.
 
 L17 evidence uses one additive fixed-template adapter, the existing
 `ComponentDocument`/`DocumentFrame` flow specimen, and the continuous
@@ -352,3 +513,34 @@ and never cross `postMessage`. The worker receives protocol-V2 serializable
 input and transferred image buffers in L18, resolves the template through a
 static trusted ID-to-loader map, and rejects unknown IDs. No dynamic import path
 comes from user data.
+
+### 8.7 Platform runtime options
+
+L18 implements these runtime-only options at the corresponding entry point:
+
+```ts
+interface NodeRenderRuntimeOptions {
+  fontAssetDirectory?: string;
+  localImageResolver?: LocalImageResolver;
+}
+
+interface BrowserRenderRuntimeOptions {
+  fontAssetBaseUrl?: string | URL;
+  localImageResolver?: LocalImageResolver;
+}
+```
+
+The Node default is the module-relative `../../assets/` directory already used
+by `createNodeAssetResolver`; installed registry source therefore resolves the
+consumer's root `assets/` directory. An explicit `fontAssetDirectory` is
+resolved to an absolute directory and remains subject to manifest containment
+and digest checks. The browser default is `globalThis.location.origin`; an
+explicit `fontAssetBaseUrl` must resolve to that same origin, and manifest
+public paths remain rooted below it. No remote font fallback is permitted.
+
+`localImageResolver` is optional only when validated data extracts no image
+IDs. It is consumed by `preflightLocalImages` on the coordinating side and is
+never stored in normalized input. Neither runtime-options interface, resolver,
+Zod schema, template object, plan factory, `URL`, nor any other function or
+platform object is a protocol field. Protocol V2 contains only JSON values,
+validated descriptors, and separately transferred `ArrayBuffer`s.
