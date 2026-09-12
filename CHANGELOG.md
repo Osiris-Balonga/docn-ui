@@ -1,14 +1,14 @@
 # Changelog
 
-All notable changes to docn-ui are documented in this file. A release date
-records the production version represented by these notes; the authoritative
-tag and GitHub Release state remains in the release evidence.
+All notable changes to docn-ui are documented in this file. The authoritative
+tag and GitHub Release state remain in the release evidence.
 
 ## 1.0.0 — 2026-09-12
 
 The non-indexed production site serves the qualified v1.0.0 product and the
-immutable `/r/v1.0.0/` registry. The annotated tag and GitHub Release have not
-yet been created; this dated changelog is not evidence that either exists.
+immutable `/r/v1.0.0/` registry. Annotated tag `v1.0.0` targets exact release
+commit `bfa2d6bb3b51a872357155097d5b08f47f15c32e`; the corresponding GitHub
+Release was published on 2026-09-12.
 
 ### Added
 

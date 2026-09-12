@@ -56,19 +56,21 @@ The maintainer selected MIT on 2026-09-02 for code and documentation copyrighted
 
 ## Release v1.0.0
 
-### Confirmed release decisions and remaining actions
+### Confirmed release decisions and publication record
 
 - No author or code-license decision remains: Emmanuel Osiris Balonga and MIT are confirmed.
 - Any custom domain or billing action. Vercel and the `docn-ui.vercel.app` production origin are confirmed.
 - Permission to make the site indexable. The authorized v1.0.0 production deployment remains non-indexed.
 - Official v1.0.0 continuation is authorized. PR #75 carried
   `release-approved`, merged exact `dev` to `main`, and the matching production
-  artifact was promoted. The annotated tag and GitHub Release are the remaining
-  repository records; neither exists yet.
+  artifact was promoted. PR #76 recorded that production evidence on `dev`,
+  and PR #77 promoted the record to exact `main` commit `bfa2d6b`. Annotated
+  tag `v1.0.0` targets that commit, and the corresponding GitHub Release was
+  published at 2026-09-12T18:10:06Z.
 
 Repository visibility is already public, but that grants none of the decisions above. No npm publication is planned for V1.
 
-The release scope and limitations are recorded in the [changelog](../CHANGELOG.md): eighteen templates across six families. The dated notes do not replace the final tag and GitHub Release record.
+The release scope and limitations are recorded in the [changelog](../CHANGELOG.md): eighteen templates across six families. The authoritative [GitHub Release](https://github.com/Osiris-Balonga/docn-ui/releases/tag/v1.0.0) is public.
 
 1. Verify and integrate all preceding lots, with candidate SHA evidence.
 2. Complete functional/visual QA and document limitations; invent no hardware results.
@@ -89,8 +91,10 @@ The release scope and limitations are recorded in the [changelog](../CHANGELOG.m
    `dev` to `main` without closing L16.
 4. The fingerprint-matched prebuilt artifact was isolated-probed, promoted, and
    verified through stable public probes and one public shadcn installation.
-5. Create the annotated tag and GitHub Release from the recorded `main` merge,
-   verify their immutable URLs, then record the final state and close L16.
+5. Annotated tag `v1.0.0` object `5e1dc795` targets exact `main` merge
+   `bfa2d6b`; the public GitHub Release and stable v1.0.0 origin were verified.
+   L16 is released. Issue and Project closure remain a separate remote tracking
+   action.
 
 ## Rollback
 

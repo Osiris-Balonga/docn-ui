@@ -40,8 +40,8 @@ Target files/responsibilities: Catalog/registry version, CHANGELOG.md, README, c
 ### L16-S03 — `docs(release): record verified v1 delivery and handoff`
 
 - [x] After authorized promotion/deployment, verify public origin, deep links, assets, download, and one public installation.
-- [ ] Create tag/release only if authorized; record exact SHAs/tag/URL and report, no fabricated values.
-- [ ] Set L16 released only when G6 is satisfied. Until the tag, GitHub Release, and final record exist, remain merged with a clear blocker.
+- [x] Create tag/release only if authorized; record exact SHAs/tag/URL and report, no fabricated values.
+- [x] Set L16 released only when G6 is satisfied. Until the tag, GitHub Release, and final record exist, remain merged with a clear blocker.
 - [ ] Write the maintenance guide, next family in the backlog, and rollback/fix-return procedure through dev. Close L16, set Project Done, and record actual links only after G6; post-release records also follow a PR to dev.
 
 **Acceptance:** G6: verified public product and informed maintainer; otherwise explicitly state delivery is incomplete.

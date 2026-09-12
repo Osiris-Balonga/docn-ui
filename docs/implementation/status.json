@@ -411,7 +411,7 @@
     {
       "id": "L16",
       "file": "lots/L16-release.md",
-      "state": "merged",
+      "state": "released",
       "dependsOn": ["L15"],
       "branch": "release/v1.0.0",
       "baseCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
@@ -429,7 +429,8 @@
         "7ccdd10c25d08fa929d805a3c1b09ada9e0aba65",
         "d40273cbb7d8ea49243931a694742475ff6e6e30",
         "c9a4023087fc403e3aa593570b391b1612ed6141",
-        "7bdd1c36cc31830b861449f61289fc6a0aed7b78"
+        "7bdd1c36cc31830b861449f61289fc6a0aed7b78",
+        "e8b82082b1f75af81628e585f081f9f01e99e5c3"
       ],
       "evidence": "../qa/L16.md",
       "synchronizedDevCommit": "49fa97ee3a709be122298ad5dbaa3fa693c15b72",
@@ -458,7 +459,29 @@
         "outputFiles": 465,
         "outputBytes": 40007456
       },
-      "blocker": "The qualified v1.0.0 source is merged to main and its matching non-indexed production artifact is deployed and publicly verified. The annotated v1.0.0 tag, GitHub Release, and final release record remain absent, so L16 is not released and issue #20 and its Project item remain open/In progress."
+      "releaseRecordMergeCommit": "542e625d835fd836d7c56c624b99db153076c22b",
+      "releaseRecordMergedAt": "2026-09-12T17:55:57Z",
+      "releaseRecordPromotionCommit": "bfa2d6bb3b51a872357155097d5b08f47f15c32e",
+      "releaseRecordPromotedAt": "2026-09-12T17:58:48Z",
+      "releaseRecordDeployment": {
+        "id": "dpl_FH1GPKGCd3kWE8nukkbz5m4khqBo",
+        "sourceCommit": "bfa2d6bb3b51a872357155097d5b08f47f15c32e",
+        "siteUrl": "https://docn-ui.vercel.app",
+        "registryOrigin": "https://docn-ui.vercel.app/r/v1.0.0/",
+        "indexing": false,
+        "stableUrlVerifiedAt": "2026-09-12T18:14:36Z"
+      },
+      "release": {
+        "version": "1.0.0",
+        "tag": "v1.0.0",
+        "tagObject": "5e1dc795d53b3b59741744f44f39bd94ea5aaffc",
+        "targetCommit": "bfa2d6bb3b51a872357155097d5b08f47f15c32e",
+        "taggedAt": "2026-09-12T18:09:58Z",
+        "githubReleaseUrl": "https://github.com/Osiris-Balonga/docn-ui/releases/tag/v1.0.0",
+        "publishedAt": "2026-09-12T18:10:06Z"
+      },
+      "releasedAt": "2026-09-12T18:10:06Z",
+      "blocker": null
     }
   ],
   "github": {
