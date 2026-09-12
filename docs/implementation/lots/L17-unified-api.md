@@ -64,11 +64,11 @@ Target responsibilities: `packages/documents/src/core`, `themes`, template contr
 
 ### L17-S04 — `test(api): qualify compatibility adapters and migration boundaries`
 
-- [ ] Prove that legacy `style` and flattened props remain callable during the declared transition.
-- [ ] Record which public fields require a future major removal and which changes are additive.
-- [ ] Prove that protocol V1 and advanced plan/theme exports remain callable and unchanged.
-- [ ] Do not call, type, or test `renderPdf`; that public facade and protocol V2 belong to L18.
-- [ ] Update the L17 QA evidence and status without claiming catalog migration.
+- [x] Prove that legacy `style` and flattened props remain callable during the declared transition.
+- [x] Record which public fields require a future major removal and which changes are additive.
+- [x] Prove that protocol V1 and advanced plan/theme exports remain callable and unchanged.
+- [x] Do not call, type, or test `renderPdf`; that public facade and protocol V2 belong to L18.
+- [x] Update the L17 QA evidence and status without claiming catalog migration.
 
 **Acceptance:** L18 can consume the contract, while current consumers receive no undocumented break.
 
