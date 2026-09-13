@@ -11,6 +11,7 @@ import {
   continuousOverflowRenderable,
 } from "../../packages/documents/src/examples/continuous-renderable-evidence";
 import { violetFounderBusinessCardRenderable } from "../../packages/documents/src/templates/renderable";
+import { createPdfTheme } from "../../packages/documents/src/themes/themes";
 
 const fixture = resolve("tests/fixtures/browser-render-facade");
 const output = resolve(fixture, "dist");
@@ -23,7 +24,7 @@ beforeAll(async () => {
 afterAll(() => rm(output, { force: true, recursive: true }));
 
 describe("browser renderPdf package fixture", () => {
-  it("builds and renders one same-origin PDF in Chromium", async () => {
+  it("qualifies custom-theme parity, V2 lifecycle and local-font failure in Chromium", async () => {
     const server = createServer(async (request, response) => {
       const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
       const target = resolve(
@@ -59,8 +60,27 @@ describe("browser renderPdf package fixture", () => {
     const browser = await chromium.launch({ headless: true });
     const requestedOrigins = new Set<string>();
     try {
-      const page = await browser.newPage();
-      page.on("request", (request) => {
+      const context = await browser.newContext({ serviceWorkers: "block" });
+      const page = await context.newPage();
+      const remoteRequests: string[] = [];
+      let rejectFonts = false;
+      let rejectedFonts = 0;
+      await context.route("**/*", async (route) => {
+        const url = new URL(route.request().url());
+        if (url.origin !== origin) {
+          remoteRequests.push(url.origin);
+          await route.abort();
+        } else if (
+          rejectFonts &&
+          url.pathname.startsWith("/generated/fonts/")
+        ) {
+          rejectedFonts += 1;
+          await route.fulfill({ status: 404, body: "" });
+        } else {
+          await route.continue();
+        }
+      });
+      context.on("request", (request) => {
         if (request.url().startsWith("http")) {
           requestedOrigins.add(new URL(request.url()).origin);
         }
@@ -74,7 +94,14 @@ describe("browser renderPdf package fixture", () => {
       );
       const nodeResult = await renderPdfInNode(
         violetFounderBusinessCardRenderable,
-        { data: {}, revision: 23 },
+        {
+          data: {},
+          revision: 23,
+          theme: createPdfTheme({
+            baseThemeId: "neutral",
+            colors: { accent: "#123456" },
+          }),
+        },
       );
       const nodeContinuous = await renderPdfInNode(
         continuousFeasibilityRenderable,
@@ -122,6 +149,12 @@ describe("browser renderPdf package fixture", () => {
         }),
       ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
       expect([...requestedOrigins]).toEqual([origin]);
+      rejectFonts = true;
+      expect(
+        await page.evaluate(() => window.__docnRenderWithMissingFont?.()),
+      ).toBe("ASSET_REJECTED");
+      expect(rejectedFonts).toBeGreaterThan(0);
+      expect(remoteRequests).toEqual([]);
       expect(
         (await readFile(resolve(output, "index.html"))).byteLength,
       ).toBeGreaterThan(0);

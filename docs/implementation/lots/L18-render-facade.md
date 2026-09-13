@@ -66,10 +66,10 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S05 — `test(render): qualify facade parity limits and cleanup`
 
-- [ ] Cover custom validated theme and `baseThemeId`, format/profile incompatibility, final-byte limit and caller-revision propagation at the lowest applicable layer.
-- [ ] Verify no remote font request and no silent fallback.
-- [ ] Verify image MIME/header, size, pixel and digest rejection in the separate local-image channel.
-- [ ] Record bundle/dependency impact and L18 QA evidence.
+- [x] Cover custom validated theme and `baseThemeId`, format/profile incompatibility, final-byte limit and caller-revision propagation at the lowest applicable layer.
+- [x] Verify no remote font request and no silent fallback.
+- [x] Verify image MIME/header, size, pixel and digest rejection in the separate local-image channel.
+- [x] Record bundle/dependency impact and L18 QA evidence.
 
 **Acceptance:** The simpler facade demonstrably preserves V1 safety and physical-output behavior.
 

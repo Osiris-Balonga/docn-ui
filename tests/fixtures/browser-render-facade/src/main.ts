@@ -9,10 +9,12 @@ import {
 import { registerDocumentFonts } from "@docn-ui/documents/internal-fonts";
 import { assetManifest } from "@docn-ui/documents/internal-manifest";
 import { violetFounderBusinessCardRenderable } from "@docn-ui/documents/templates";
+import { createPdfTheme } from "@docn-ui/documents/themes";
 import { Font } from "@react-pdf/renderer";
 
 declare global {
   interface Window {
+    __docnRenderWithMissingFont?: () => Promise<string>;
     __docnBrowserResult?: {
       firstCopyHeader: string;
       continuous: {
@@ -44,6 +46,21 @@ declare global {
 }
 
 const status = document.querySelector("#status");
+const customTheme = createPdfTheme({
+  baseThemeId: "neutral",
+  colors: { accent: "#123456" },
+});
+
+window.__docnRenderWithMissingFont = async () => {
+  try {
+    await renderPdf(violetFounderBusinessCardRenderable, { data: {} });
+    return "unexpected-success";
+  } catch (error) {
+    return error !== null && typeof error === "object" && "code" in error
+      ? String(error.code)
+      : "unexpected-error";
+  }
+};
 
 function fontSourceCount(): number {
   const families = Font.getRegisteredFonts() as Record<
@@ -83,6 +100,7 @@ try {
   const result = await renderPdf(violetFounderBusinessCardRenderable, {
     data: {},
     revision: 23,
+    theme: customTheme,
   });
   const firstCopy = new Uint8Array(result.pdfBytes);
   const secondCopy = new Uint8Array(result.pdfBytes);

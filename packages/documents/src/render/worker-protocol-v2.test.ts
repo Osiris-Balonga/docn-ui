@@ -133,6 +133,31 @@ describe("render worker protocol V2", () => {
         12,
       ),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+
+    // Valid encoded bytes must not pass with a matching but forged channel digest.
+    const forgedDigest = `sha256:${"0".repeat(64)}` as const;
+    const forged = {
+      ...received,
+      images: received.images.map((image) => ({
+        ...image,
+        sha256: forgedDigest,
+      })),
+    };
+    await expect(
+      receiveRenderWorkerImagesV2(
+        forged,
+        prepared.map(({ descriptor }) => ({
+          ...descriptor,
+          sha256: forgedDigest,
+        })),
+        4,
+        8,
+        12,
+      ),
+    ).rejects.toMatchObject({
+      code: "INVALID_DATA",
+      issues: [expect.objectContaining({ path: ["worker", "images", "0"] })],
+    });
   });
 
   it("reuses canonical JPEG traversal for fill markers and rejects forged encodings", async () => {

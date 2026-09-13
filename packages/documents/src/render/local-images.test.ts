@@ -3,6 +3,7 @@ import { deflateSync } from "node:zlib";
 import { decode as decodeJpeg, encode as encodeJpeg } from "jpeg-js";
 import { describe, expect, it } from "vitest";
 import { parseLocalImageId } from "../template-contract";
+import { DOCUMENT_LIMITS } from "../core/contracts";
 import { createNodeLocalImageRenderScope } from "./local-images.node";
 import { preflightLocalImages } from "./local-images";
 
@@ -333,6 +334,33 @@ describe("local image preflight", () => {
         declaredMimeType: "image/jpeg",
       })),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+  });
+
+  it("rejects image byte and pixel limits before allocating decoded pixels", async () => {
+    const oversized = new Uint8Array(DOCUMENT_LIMITS.imageBytes + 1);
+    oversized.set(png());
+    const excessivePixels = png();
+    const header = excessivePixels.slice(16, 29);
+    const view = new DataView(header.buffer);
+    view.setUint32(0, 4_001);
+    view.setUint32(4, 4_000);
+    excessivePixels.set(pngChunk("IHDR", header), 8);
+
+    for (const bytes of [oversized, excessivePixels]) {
+      await expect(
+        preflightLocalImages([parseLocalImageId("oversized")], async () => ({
+          bytes,
+          declaredMimeType: "image/png",
+        })),
+      ).rejects.toMatchObject({
+        code: "LIMIT_EXCEEDED",
+        issues: [
+          expect.objectContaining({
+            path: ["data", "localImageIds", "oversized"],
+          }),
+        ],
+      });
+    }
   });
 
   it("rejects invalid PNG CRCs and bounded-inflate violations", async () => {

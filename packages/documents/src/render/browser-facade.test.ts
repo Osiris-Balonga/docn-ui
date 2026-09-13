@@ -7,6 +7,7 @@ import { violetFounderBusinessCardRenderable } from "../templates/renderable";
 import { continuousFeasibilityRenderable } from "../examples/continuous-renderable-evidence";
 import type { TemplatePlanContext } from "../renderable-template";
 import { renderPdf } from "./browser-facade";
+import { createPdfTheme } from "../themes/themes";
 
 vi.mock("./verified-assets.browser", async (importOriginal) => {
   const actual =
@@ -26,6 +27,31 @@ vi.mock("./verified-assets.browser", async (importOriginal) => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("browser renderPdf facade boundaries", () => {
+  it("rejects incompatible format, profile and base theme before composition", async () => {
+    vi.stubGlobal("location", { origin: "https://documents.example" });
+    const createPlan = vi.fn(violetFounderBusinessCardRenderable.createPlan);
+    const template = defineTemplateDescriptor({
+      ...violetFounderBusinessCardRenderable,
+      createPlan,
+    });
+    await expect(
+      renderPdf(template, { data: {}, format: "a4" }),
+    ).rejects.toMatchObject({ code: "UNSUPPORTED_FORMAT" });
+    await expect(
+      renderPdf(continuousFeasibilityRenderable, {
+        data: {},
+        printProfile: { kind: "print", bleedMm: 3, cropMarks: false },
+      }),
+    ).rejects.toMatchObject({ code: "UNSUPPORTED_FORMAT" });
+    await expect(
+      renderPdf(template, {
+        data: {},
+        theme: createPdfTheme({ baseThemeId: "editorial" }),
+      }),
+    ).rejects.toMatchObject({ code: "INVALID_DATA" });
+    expect(createPlan).not.toHaveBeenCalled();
+  });
+
   it("rejects unknown options and cross-origin font bases", async () => {
     const browserEntry = await import("@docn-ui/documents/browser");
     expect(browserEntry.renderPdf).toBe(renderPdf);

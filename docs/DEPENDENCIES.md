@@ -162,7 +162,11 @@ isolated codec-entry measurement produced 90,065 bytes minified / 31,617 bytes
 gzip in total: UPNG plus pako measured 70,328 / 23,724 and jpeg-js measured
 20,241 / 8,478. No stable budget or threshold is inferred from this one
 measurement. No website entry imports the new Node facade in S01. Browser
-reachability and application-level bundle measurement remain L18-S02 work.
+reachability and the actual Vite facade/worker outputs are recorded in
+[L18 QA](qa/L18.md), including the S04 snapshot at
+`6237553fe5ea7df197bbd9c0c670028d87eec909`. S05 adds qualification tests only;
+it adds no dependency or production runtime code. These measurements describe
+the isolated package fixture, not the production Next.js site's initial bundle.
 
 PNG inputs and JPEGs requiring orientation are deterministically re-encoded as
 metadata-free PNG. Unrotated JPEGs are fully pixel-decoded for validation, then

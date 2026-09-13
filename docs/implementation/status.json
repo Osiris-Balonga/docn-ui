@@ -514,7 +514,7 @@
     {
       "id": "L18",
       "file": "lots/L18-render-facade.md",
-      "state": "in_progress",
+      "state": "verified_local",
       "dependsOn": ["L17"],
       "branch": "feat/unified-render-facade",
       "baseCommit": "67b8d2577dab3332e4eca51f8c242e4b8bfe6278",
@@ -542,7 +542,8 @@
         "e9e442ab9c6b80b7b0eca841e5eae9962a830c42",
         "f8b81da1750b907484a4cfc323a3a36c46cfd227",
         "7434c0dbaf6ab288c22cd0f11e398c860ba60f97",
-        "993d544e843f7f5eac7bcf1dd7d67c1fcfed6093"
+        "993d544e843f7f5eac7bcf1dd7d67c1fcfed6093",
+        "6237553fe5ea7df197bbd9c0c670028d87eec909"
       ],
       "evidence": "../qa/L18.md",
       "blocker": null

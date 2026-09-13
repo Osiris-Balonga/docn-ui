@@ -25,6 +25,10 @@ export default defineConfig({
         fixtureRoot,
         "../../../packages/documents/src/templates/index.ts",
       ),
+      "@docn-ui/documents/themes": resolve(
+        fixtureRoot,
+        "../../../packages/documents/src/themes/themes.ts",
+      ),
       "@docn-ui/documents/internal-fonts": resolve(
         fixtureRoot,
         "../../../packages/documents/src/render/fonts.ts",
