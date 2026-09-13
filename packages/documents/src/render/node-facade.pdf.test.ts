@@ -12,8 +12,6 @@ import {
 import { violetFounderBusinessCardRenderable } from "../templates/renderable";
 import { createPdfTheme } from "../themes/themes";
 import type { TemplatePlanContext } from "../renderable-template";
-import { createNodeAssetResolver } from "./assets.node";
-import { registerDocumentFonts } from "./fonts";
 
 const temporaryDirectories: string[] = [];
 const flowEvidenceRenderable = defineTemplateDescriptor({
@@ -130,13 +128,5 @@ describe("Node renderPdf facade", () => {
     });
 
     expect(projectedAccent).toBe("#6d28d9");
-  });
-
-  it("rejects a previously registered non-verified font source", async () => {
-    registerDocumentFonts(createNodeAssetResolver());
-
-    await expect(
-      renderPdf(violetFounderBusinessCardRenderable, { data: {} }),
-    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
   });
 });

@@ -606,11 +606,17 @@ by `createNodeAssetResolver`; installed registry source therefore resolves the
 consumer's root `assets/` directory. An explicit `fontAssetDirectory` is
 resolved to an absolute directory and remains subject to manifest containment
 and digest checks. The Node facade snapshots each verified font into an
-immutable data source before plan dispatch, so the renderer cannot reopen a
-changed path after verification. If React PDF's process-global font store
-already contains a conflicting source for the same qualified family, weight,
-and style, the facade rejects the render rather than allowing first-match cache
-semantics to bypass the verified snapshot. The browser default is
+immutable data source before plan dispatch, so the facade-owned registration
+does not reopen its configured path. If React PDF's process-global font store
+already contains exact family, weight, and style registrations, the facade
+asynchronously verifies every source before dispatch. Canonical WOFF data URIs
+and local paths contained by the configured asset directory may coexist only
+when their current size and SHA-256 match the same manifest entry; remote,
+unknown, and mismatched sources are rejected. The facade retains its
+digest-bound registration without clearing unrelated user fonts. An equivalent
+earlier local source may remain React PDF's first match; mutation of that file
+or the process-global registry after the verified read is outside the supported
+process-local render boundary. The browser default is
 `globalThis.location.origin`; an
 explicit `fontAssetBaseUrl` must resolve to that same origin, and manifest
 public paths remain rooted below it. No remote font fallback is permitted.

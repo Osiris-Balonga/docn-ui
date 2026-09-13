@@ -21,8 +21,8 @@ import { createNodeLocalImageRenderScope } from "./local-images.node";
 import { renderContinuousDocumentInNode, renderDocumentInNode } from "./node";
 import { createRenderResult } from "./result";
 import {
-  assertVerifiedNodeFontRegistrationBoundary,
   createVerifiedNodeAssetResolver,
+  verifyVerifiedNodeFontRegistrationBoundary,
 } from "./verified-assets.node";
 
 export type { LocalImageResolver, LocalImageSource } from "./local-images";
@@ -211,7 +211,7 @@ export async function renderPdf<TData extends JsonObject>(
       printProfile: normalized.printProfile,
       resolvedTheme: normalized.theme,
     });
-    assertVerifiedNodeFontRegistrationBoundary(assetResolver);
+    await verifyVerifiedNodeFontRegistrationBoundary(assetResolver);
     const pdfBytes = await renderPlanInNode(
       renderPlan,
       normalized,

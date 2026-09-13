@@ -77,11 +77,15 @@ const result = await renderPdf(template, {
 assets. Every file remains contained below that directory and must match its
 recorded byte length and SHA-256 digest. There is no system-font or network
 fallback. The verified bytes become an immutable data source before rendering;
-React PDF never reopens the caller-controlled filesystem path after validation.
-Because React PDF owns a process-global first-match font store, the facade
-rejects a conflicting source registered earlier for the same qualified family,
-weight, and style. Start facade rendering before legacy manual font
-registration, or isolate those workflows in separate processes.
+the facade-owned React PDF source never reopens the configured filesystem path.
+Because React PDF owns a process-global first-match font store, the facade also
+checks every earlier exact family, weight, and style registration. A canonical
+WOFF data URI or a local path contained by `fontAssetDirectory` may coexist
+when its current bytes match the same manifest size and SHA-256; remote,
+unknown, or mismatched sources are rejected. The facade then retains its own
+digest-bound data URI. An equivalent earlier local registration may remain the
+first match, so callers must not mutate registered font files or the
+process-global font store while a render is in progress.
 
 Template data may carry validated local-image IDs, never paths or URLs. The
 optional `localImageResolver` returns owned PNG/JPEG bytes and a declared MIME
