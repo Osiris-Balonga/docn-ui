@@ -514,7 +514,7 @@
     {
       "id": "L18",
       "file": "lots/L18-render-facade.md",
-      "state": "verified_local",
+      "state": "in_review",
       "dependsOn": ["L17"],
       "branch": "feat/unified-render-facade",
       "baseCommit": "67b8d2577dab3332e4eca51f8c242e4b8bfe6278",
@@ -543,8 +543,13 @@
         "f8b81da1750b907484a4cfc323a3a36c46cfd227",
         "7434c0dbaf6ab288c22cd0f11e398c860ba60f97",
         "993d544e843f7f5eac7bcf1dd7d67c1fcfed6093",
-        "6237553fe5ea7df197bbd9c0c670028d87eec909"
+        "6237553fe5ea7df197bbd9c0c670028d87eec909",
+        "4be9f03dfea0951085945ad9b13447575d79c67b"
       ],
+      "pullRequest": {
+        "number": 86,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/86"
+      },
       "evidence": "../qa/L18.md",
       "blocker": null
     },

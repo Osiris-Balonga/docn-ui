@@ -892,8 +892,14 @@
       "issueState": "OPEN",
       "issueCreatedAt": "2026-09-12T22:21:23Z",
       "itemId": "PVTI_lAHOCZDjCM4BhyZuzg6rbDs",
-      "projectStatus": "In progress",
-      "projectStatusUpdatedAt": "2026-09-12T22:22:15Z",
+      "projectStatus": "In review",
+      "projectStatusUpdatedAt": "2026-09-13T14:49:59Z",
+      "pullRequest": {
+        "number": 86,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/86",
+        "baseBranch": "dev",
+        "headBranch": "feat/unified-render-facade"
+      },
       "priority": "P0",
       "branch": "feat/unified-render-facade",
       "initializedAt": "2026-09-12T22:22:15Z",
