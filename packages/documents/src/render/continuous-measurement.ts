@@ -29,12 +29,8 @@ export function inspectContinuousTextContent(
   if (pageCount !== 1) {
     return { pageCount, usedHeightPt: Number.POSITIVE_INFINITY };
   }
-  if (
-    !items
-      .map(({ str }) => str)
-      .join(" ")
-      .includes(finalMarker)
-  ) {
+  const relevantItems = items.filter(({ str }) => str.trim().length > 0);
+  if (terminalMarkerItems(relevantItems, finalMarker).length === 0) {
     throw new Error("The continuous final marker was not rendered.");
   }
   const lowerEdge = Math.min(
@@ -76,29 +72,8 @@ export function qualifyFinalContinuousPdf(
   }
   const relevantItems = items.filter(({ str }) => str.trim().length > 0);
   const markerItems = terminalMarkerItems(relevantItems, finalMarker);
-  const markerStartIndex = relevantItems.length - markerItems.length;
-  const precedingItem = relevantItems[markerStartIndex - 1];
-  const firstMarkerItem = markerItems[0];
   const terminalItem = markerItems.at(-1);
   if (!terminalItem) return continuousFinalizationFailure();
-  if (precedingItem && firstMarkerItem) {
-    const precedingRight =
-      (precedingItem.transform[4] ?? Number.NaN) + precedingItem.width;
-    const markerLeft = firstMarkerItem.transform[4] ?? Number.NaN;
-    const sameBaseline =
-      Math.abs(
-        (precedingItem.transform[5] ?? Number.NaN) -
-          (firstMarkerItem.transform[5] ?? Number.NaN),
-      ) <= 0.5;
-    if (
-      sameBaseline &&
-      Number.isFinite(precedingRight) &&
-      Number.isFinite(markerLeft) &&
-      markerLeft - precedingRight <= 0.5
-    ) {
-      return continuousFinalizationFailure();
-    }
-  }
   for (const item of markerItems) {
     const x = item.transform[4] ?? Number.NaN;
     const y = item.transform[5] ?? Number.NaN;
@@ -153,10 +128,109 @@ function terminalMarkerItems(
     suffix.unshift(item);
     const spaced = normalizeMarkerText(suffix.map(({ str }) => str).join(" "));
     const joined = normalizeMarkerText(suffix.map(({ str }) => str).join(""));
-    if (spaced === expected || joined === expected) return suffix;
+    if (spaced === expected || joined === expected) {
+      if (!isCoherentMarkerSequence(suffix)) return [];
+      const precedingItem = items[index - 1];
+      const firstMarkerItem = suffix[0];
+      if (
+        precedingItem &&
+        firstMarkerItem &&
+        violatesLeadingBoundary(precedingItem, firstMarkerItem)
+      ) {
+        return [];
+      }
+      return suffix;
+    }
     if (spaced.length > expected.length && joined.length > expected.length) {
       break;
     }
   }
   return [];
+}
+
+function isCoherentMarkerSequence(
+  items: readonly ContinuousTextItem[],
+): boolean {
+  if (items.length === 0 || items.some((item) => !hasFiniteGlyphBox(item))) {
+    return false;
+  }
+  for (let index = 1; index < items.length; index += 1) {
+    const previous = items[index - 1];
+    const current = items[index];
+    if (!previous || !current || !areAdjacentTextItems(previous, current)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function hasFiniteGlyphBox(item: ContinuousTextItem): boolean {
+  const x = item.transform[4] ?? Number.NaN;
+  const y = item.transform[5] ?? Number.NaN;
+  return (
+    Number.isFinite(x) &&
+    Number.isFinite(y) &&
+    Number.isFinite(item.width) &&
+    Number.isFinite(item.height) &&
+    item.width >= 0 &&
+    item.height > 0
+  );
+}
+
+function areAdjacentTextItems(
+  leftItem: ContinuousTextItem,
+  rightItem: ContinuousTextItem,
+): boolean {
+  if (!hasFiniteGlyphBox(leftItem) || !hasFiniteGlyphBox(rightItem)) {
+    return false;
+  }
+  const leftX = leftItem.transform[4] ?? Number.NaN;
+  const rightX = rightItem.transform[4] ?? Number.NaN;
+  const smallerHeight = Math.min(leftItem.height, rightItem.height);
+  const largerHeight = Math.max(leftItem.height, rightItem.height);
+  const maximumGap = Math.max(1, largerHeight * 1.5);
+  const maximumOverlap = Math.max(0.5, smallerHeight * 0.5);
+  const gap = rightX - (leftX + leftItem.width);
+  return (
+    rightX >= leftX &&
+    areTextItemsOnSameLine(leftItem, rightItem) &&
+    gap >= -maximumOverlap &&
+    gap <= maximumGap
+  );
+}
+
+function violatesLeadingBoundary(
+  precedingItem: ContinuousTextItem,
+  firstMarkerItem: ContinuousTextItem,
+): boolean {
+  if (
+    !hasFiniteGlyphBox(precedingItem) ||
+    !hasFiniteGlyphBox(firstMarkerItem)
+  ) {
+    return true;
+  }
+  const precedingX = precedingItem.transform[4] ?? Number.NaN;
+  const markerX = firstMarkerItem.transform[4] ?? Number.NaN;
+  const maximumGap = Math.max(
+    1,
+    Math.max(precedingItem.height, firstMarkerItem.height) * 1.5,
+  );
+  return (
+    precedingX <= markerX &&
+    areTextItemsOnSameLine(precedingItem, firstMarkerItem) &&
+    markerX - (precedingX + precedingItem.width) <= maximumGap
+  );
+}
+
+function areTextItemsOnSameLine(
+  leftItem: ContinuousTextItem,
+  rightItem: ContinuousTextItem,
+): boolean {
+  const leftBaseline = leftItem.transform[5] ?? Number.NaN;
+  const rightBaseline = rightItem.transform[5] ?? Number.NaN;
+  const baselineTolerance = Math.max(
+    0.5,
+    Math.min(leftItem.height, rightItem.height) * 0.25,
+  );
+  return Math.abs(rightBaseline - leftBaseline) <= baselineTolerance;
 }

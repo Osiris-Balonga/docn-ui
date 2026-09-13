@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { resolveFormat } from "../core/formats";
 import {
+  inspectContinuousTextContent,
   qualifyFinalContinuousPdf,
   type ContinuousPdfInspection,
   type ContinuousTextItem,
@@ -69,6 +70,58 @@ describe("continuous final PDF qualification", () => {
       ),
     ).not.toThrow();
   });
+
+  it("uses the same normalized terminal sequence for the probe and final PDF", () => {
+    const items = [
+      textItem("FINAL_", 10, 20, 25),
+      textItem("MARKER", 35, 20, 25),
+    ];
+    expect(inspectContinuousTextContent(1, 100, items, marker)).toEqual({
+      pageCount: 1,
+      usedHeightPt: 86,
+    });
+    expect(() =>
+      qualifyFinalContinuousPdf(inspection(items), format, marker),
+    ).not.toThrow();
+
+    const spacedItems = [
+      textItem(" FINAL", 10, 20, 25),
+      textItem("MARKER ", 35, 20, 25),
+    ];
+    expect(() =>
+      inspectContinuousTextContent(1, 100, spacedItems, "FINAL MARKER"),
+    ).not.toThrow();
+    expect(() =>
+      qualifyFinalContinuousPdf(
+        inspection(spacedItems),
+        format,
+        "FINAL MARKER",
+      ),
+    ).not.toThrow();
+  });
+
+  it.each([
+    [
+      "different lines",
+      [textItem("FINAL_", 10, 30, 25), textItem("MARKER", 35, 20, 25)],
+    ],
+    [
+      "distant fragments",
+      [textItem("FINAL_", 10, 20, 25), textItem("MARKER", 80, 20, 25)],
+    ],
+    [
+      "excessively overlapping fragments",
+      [textItem("FINAL_", 10, 20, 25), textItem("MARKER", 20, 20, 25)],
+    ],
+  ])(
+    "rejects a spatially incoherent terminal sequence: %s",
+    (_label, items) => {
+      expect(() => inspectContinuousTextContent(1, 100, items, marker)).toThrow(
+        "The continuous final marker was not rendered.",
+      );
+      expectFinalQualificationFailure(inspection(items));
+    },
+  );
 
   it.each([
     ["prefix in one item", [textItem(`NOT_${marker}`)]],
