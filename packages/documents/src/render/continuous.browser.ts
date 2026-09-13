@@ -11,14 +11,12 @@ import {
 } from "./continuous-measurement";
 
 function createWorkerFailureSignal(worker: Worker) {
-  let failed = false;
   let rejectFailure!: (error: Error) => void;
   const promise = new Promise<never>((_resolve, reject) => {
     rejectFailure = reject;
   });
   void promise.catch(() => undefined);
   const reject = () => {
-    failed = true;
     rejectFailure(new Error("The PDF measurement worker failed."));
   };
   worker.addEventListener("error", reject);
@@ -27,9 +25,6 @@ function createWorkerFailureSignal(worker: Worker) {
     dispose() {
       worker.removeEventListener("error", reject);
       worker.removeEventListener("messageerror", reject);
-    },
-    get failed() {
-      return failed;
     },
     promise,
   };
@@ -64,6 +59,10 @@ async function inspectContinuousPdfInBrowser(
         pageCount: document.numPages,
         pageHeight: 0,
         pageWidth: 0,
+        pageXMax: 0,
+        pageXMin: 0,
+        pageYMax: 0,
+        pageYMin: 0,
       };
     const page = await raceWorkerFailure(document.getPage(1));
     const content = await raceWorkerFailure(page.getTextContent());
@@ -74,37 +73,37 @@ async function inspectContinuousPdfInBrowser(
         height: number;
         str: string;
         transform: number[];
-      } => "str" in item && "height" in item && "transform" in item,
+        width: number;
+      } =>
+        "str" in item &&
+        "height" in item &&
+        "transform" in item &&
+        "width" in item,
     );
     return {
       items,
       pageCount: document.numPages,
       pageHeight: (page.view[3] ?? 0) - (page.view[1] ?? 0),
       pageWidth: (page.view[2] ?? 0) - (page.view[0] ?? 0),
+      pageXMax: page.view[2] ?? 0,
+      pageXMin: page.view[0] ?? 0,
+      pageYMax: page.view[3] ?? 0,
+      pageYMin: page.view[1] ?? 0,
     };
   } finally {
-    workerFailure.dispose();
-    if (workerFailure.failed) {
+    try {
       try {
         void loadingTask?.destroy().catch(() => undefined);
       } catch {
-        // The original fixed worker failure remains authoritative.
+        // Loading-task cleanup never replaces the render outcome.
       }
       try {
         pdfWorker?.destroy();
       } finally {
         worker.terminate();
       }
-    } else {
-      try {
-        await loadingTask?.destroy();
-      } finally {
-        try {
-          pdfWorker?.destroy();
-        } finally {
-          worker.terminate();
-        }
-      }
+    } finally {
+      workerFailure.dispose();
     }
   }
 }
