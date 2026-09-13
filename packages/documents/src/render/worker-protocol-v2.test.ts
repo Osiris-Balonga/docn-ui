@@ -1,7 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { encode as encodeJpeg } from "jpeg-js";
 import {
   createFontManifestIdentity,
+  fingerprintNormalizedTemplateInput,
   normalizeTemplateInput,
   parseLocalImageId,
 } from "../template-contract";
@@ -17,6 +18,7 @@ import {
   receiveRenderWorkerImagesV2,
   settleRenderWorkerEpochV2,
   type RenderWorkerRequestV2,
+  type RenderWorkerOutboundV2,
   validateRenderWorkerRequestV2,
 } from "./worker-protocol-v2";
 
@@ -234,26 +236,47 @@ describe("render worker protocol V2", () => {
     expect(pending).toBeUndefined();
   });
 
-  it("rejects reused dispatch IDs without replacing or consuming current state", async () => {
+  it("invalidates only the pending identity and ignores unrelated replays", async () => {
     const first = await request();
     const inbox = createRenderWorkerInboxV2();
     const firstAccepted = inbox.accept(first);
-    expect(firstAccepted?.request).toBe(first);
+    expect(firstAccepted).toMatchObject({
+      kind: "accepted",
+      value: { request: first },
+    });
 
-    const duplicate = structuredClone(first);
-    expect(inbox.accept(duplicate)).toBeUndefined();
+    const duplicate = {
+      ...structuredClone(first),
+      themeWasExplicit: !first.themeWasExplicit,
+    };
+    expect(inbox.accept(duplicate)).toMatchObject({
+      kind: "invalidated",
+      request: first,
+    });
     const firstImages = createRenderWorkerImagesV2(
       first.jobId,
       first.request.revision,
       first.dispatchId,
       [],
     ).message;
-    expect(inbox.claim(firstImages)).toBe(firstAccepted);
+    expect(inbox.claim(structuredClone(firstImages))).toBeUndefined();
+    expect(inbox.claim(firstImages)).toBeUndefined();
+    expect(inbox.accept(duplicate)).toEqual({ kind: "ignored" });
 
     const second = { ...first, dispatchId: first.dispatchId + 1 };
     const secondAccepted = inbox.accept(second);
     const older = { ...first, dispatchId: first.dispatchId - 1 };
-    expect(inbox.accept(older)).toBeUndefined();
+    expect(inbox.accept(older)).toEqual({ kind: "ignored" });
+    expect(inbox.accept(first)).toEqual({ kind: "ignored" });
+    expect(inbox.accept({ ...second, jobId: second.jobId + 1 })).toEqual({
+      kind: "ignored",
+    });
+    expect(
+      inbox.accept({
+        ...second,
+        request: { ...second.request, revision: second.request.revision + 1 },
+      }),
+    ).toEqual({ kind: "ignored" });
     expect(inbox.claim(firstImages)).toBeUndefined();
     const secondImages = createRenderWorkerImagesV2(
       second.jobId,
@@ -261,6 +284,112 @@ describe("render worker protocol V2", () => {
       second.dispatchId,
       [],
     ).message;
-    expect(inbox.claim(secondImages)).toBe(secondAccepted);
+    expect(inbox.claim(secondImages)).toBe(
+      secondAccepted.kind === "accepted" ? secondAccepted.value : undefined,
+    );
   });
+});
+
+describe("worker V2 replay handler", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.doUnmock("./browser-normalized-render");
+    vi.doUnmock("./verified-assets.browser");
+    vi.resetModules();
+  });
+
+  it.each(["identical", "conflicting"] as const)(
+    "fails closed on an %s replay and renders the next dispatch",
+    async (kind) => {
+      const render = vi.fn(async (_template, normalized) => ({
+        diagnostics: [],
+        finalDimensions: [],
+        fingerprint: await fingerprintNormalizedTemplateInput(normalized),
+        pageCount: 1,
+        pdfBytes: new TextEncoder().encode("%PDF-fixture").buffer,
+        revision: normalized.revision,
+      }));
+      vi.doMock("./browser-normalized-render", () => ({
+        renderNormalizedPdfInBrowser: render,
+      }));
+      vi.doMock("./verified-assets.browser", () => ({
+        createVerifiedBrowserAssetResolver: async () => ({}),
+      }));
+      const published: RenderWorkerOutboundV2[] = [];
+      vi.stubGlobal("postMessage", (value: RenderWorkerOutboundV2) => {
+        published.push(value);
+      });
+      vi.stubGlobal("location", { origin: "https://documents.example" });
+      vi.stubGlobal("onmessage", null);
+      vi.resetModules();
+      await import("./render.worker.browser");
+      const send = (data: unknown) => {
+        const scope = globalThis as unknown as {
+          onmessage(event: { data: unknown }): void;
+        };
+        scope.onmessage({ data });
+      };
+      const next = await request();
+      const imageId = parseLocalImageId("brand-mark");
+      const prepared = await preflightLocalImages([imageId], async () => ({
+        bytes: new Uint8Array(
+          Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAIAAAABAQMAAADO7O3JAAAABlBMVEX/AAAAAP9sof2OAAAACklEQVR4nGNwAAAAQgBBKTf07wAAAABJRU5ErkJggg==",
+            "base64",
+          ),
+        ),
+        declaredMimeType: "image/png",
+      }));
+      const first = {
+        ...next,
+        request: {
+          ...next.request,
+          localImageDescriptors: prepared.map(({ descriptor }) => descriptor),
+        },
+      };
+      const duplicate = structuredClone(first);
+      if (kind === "conflicting") {
+        duplicate.request.localImageDescriptors[0] = {
+          ...duplicate.request.localImageDescriptors[0]!,
+          sha256: `sha256:${"0".repeat(64)}`,
+        };
+      }
+      const imagesA = createRenderWorkerImagesV2(3, 7, 11, prepared).message;
+      const imagesB = structuredClone(imagesA);
+      if (kind === "conflicting") {
+        new Uint8Array(imagesB.images[0]!.bytes)[0] = 0;
+      }
+
+      send(first);
+      expect(published).toEqual([]);
+      send(duplicate);
+      send(imagesB);
+      send(imagesA);
+      send(duplicate);
+      // Both image halves encounter the real, now-empty worker inbox.
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(render).not.toHaveBeenCalled();
+      expect(published).toEqual([
+        expect.objectContaining({
+          jobId: 3,
+          revision: 7,
+          type: "error",
+          issues: [expect.objectContaining({ code: "INVALID_DATA" })],
+        }),
+      ]);
+
+      send({ ...next, dispatchId: 12 });
+      send(first);
+      send(imagesB);
+      send(imagesA);
+      send(createRenderWorkerImagesV2(3, 7, 12, []).message);
+      await vi.waitFor(() => expect(published).toHaveLength(2));
+      expect(render).toHaveBeenCalledTimes(1);
+      expect(published[1]).toMatchObject({
+        jobId: 3,
+        revision: 7,
+        type: "result",
+      });
+    },
+  );
 });

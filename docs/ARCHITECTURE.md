@@ -147,11 +147,12 @@ module worker. The request and result envelopes use exact keys and bounded JSON.
 Image descriptors and a second, sorted transferable byte channel form a strict
 bijection. A bounded coordinator-generated dispatch ID appears in both inbound
 envelopes. The worker accepts these IDs only in strictly increasing order, so a
-duplicate render cannot replace the pending request and bytes from an older
-replay cannot consume it even when job ID and revision are identical. The worker rechecks
-encoded MIME, dimensions, byte count and SHA-256 before creating plan-facing
-sources. Last-valid/stale presentation state remains coordinator-owned and
-never enters `RenderResult` or protocol V2.
+duplicate matching the pending identity invalidates that request with one
+structured failure, while older unrelated envelopes are ignored. No crossed
+request/image halves can therefore render even when job ID and revision are
+identical. The worker rechecks encoded MIME, dimensions, byte count and SHA-256
+before creating plan-facing sources. Last-valid/stale presentation state
+remains coordinator-owned and never enters `RenderResult` or protocol V2.
 Resolver/image preflight cannot be forcibly aborted. When it is superseded or
 times out, its promise is settled logically but retains the single physical
 preflight slot until the underlying resolver returns. The latest pending job

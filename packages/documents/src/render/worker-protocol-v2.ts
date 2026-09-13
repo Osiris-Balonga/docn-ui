@@ -77,6 +77,11 @@ export interface AcceptedRenderWorkerRequestV2 {
   readonly request: RenderWorkerRequestV2;
 }
 
+export type RenderWorkerInboxAcceptanceV2 =
+  | { readonly kind: "accepted"; readonly value: AcceptedRenderWorkerRequestV2 }
+  | { readonly kind: "ignored" }
+  | { readonly kind: "invalidated"; readonly request: RenderWorkerRequestV2 };
+
 export function createRenderWorkerEpochGateV2() {
   let current: RenderWorkerEpochV2 | undefined;
   let sequence = 0;
@@ -110,16 +115,28 @@ export function createRenderWorkerInboxV2() {
   let highestDispatchId = 0;
   let pending: AcceptedRenderWorkerRequestV2 | undefined;
   return Object.freeze({
-    accept(
-      request: RenderWorkerRequestV2,
-    ): AcceptedRenderWorkerRequestV2 | undefined {
-      if (request.dispatchId <= highestDispatchId) return undefined;
+    accept(request: RenderWorkerRequestV2): RenderWorkerInboxAcceptanceV2 {
+      if (request.dispatchId <= highestDispatchId) {
+        if (
+          pending?.request.dispatchId === request.dispatchId &&
+          pending.request.jobId === request.jobId &&
+          pending.request.request.revision === request.request.revision
+        ) {
+          const invalidated = pending.request;
+          pending = undefined;
+          return Object.freeze({
+            kind: "invalidated" as const,
+            request: invalidated,
+          });
+        }
+        return Object.freeze({ kind: "ignored" as const });
+      }
       highestDispatchId = request.dispatchId;
       pending = Object.freeze({
         epoch: epochGate.begin(request.jobId, request.request.revision),
         request,
       });
-      return pending;
+      return Object.freeze({ kind: "accepted" as const, value: pending });
     },
     claim(
       images: RenderWorkerImagesV2,

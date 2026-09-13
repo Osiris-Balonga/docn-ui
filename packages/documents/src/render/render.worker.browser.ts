@@ -243,7 +243,22 @@ scope.onmessage = (event) => {
   ) {
     try {
       const request = validateRenderWorkerRequestV2(value);
-      inbox.accept(request);
+      const acceptance = inbox.accept(request);
+      if (acceptance.kind === "invalidated") {
+        scope.postMessage(
+          serializeWorkerFailureV2(
+            acceptance.request.jobId,
+            acceptance.request.request.revision,
+            new DocumentValidationError([
+              {
+                code: "INVALID_DATA",
+                message: "The worker dispatch ID was replayed.",
+                path: ["worker", "dispatchId"],
+              },
+            ]),
+          ),
+        );
+      }
     } catch (error) {
       const identity = readIdentity(value);
       scope.postMessage(
