@@ -18,12 +18,14 @@ import {
 import type { AssetResolver } from "./assets";
 import type { LocalImageResolver, PreparedLocalImages } from "./local-images";
 import { createNodeLocalImageRenderScope } from "./local-images.node";
-import { renderContinuousDocumentInNode, renderDocumentInNode } from "./node";
+import { renderContinuousDocumentInNodeFacade } from "./continuous.node-facade";
+import { renderDocumentInNode } from "./node";
 import { createRenderResult } from "./result";
 import {
   createVerifiedNodeAssetResolver,
   withVerifiedNodeFontPriority,
 } from "./verified-assets.node";
+import { throwStructuredRenderFailure } from "./structured-errors";
 
 export type { LocalImageResolver, LocalImageSource } from "./local-images";
 
@@ -135,7 +137,7 @@ async function renderPlanInNode(
         "The continuous template plan does not match the normalized format and profile.",
       );
     }
-    return renderContinuousDocumentInNode(renderPlan.plan, assetResolver);
+    return renderContinuousDocumentInNodeFacade(renderPlan.plan, assetResolver);
   }
   if (
     normalized.format.kind !== "fixed" ||
@@ -221,6 +223,8 @@ export async function renderPdf<TData extends JsonObject>(
       await fingerprintNormalizedTemplateInput(normalized),
       normalized.revision,
     );
+  } catch (error) {
+    throwStructuredRenderFailure(error);
   } finally {
     imageScope.dispose();
   }

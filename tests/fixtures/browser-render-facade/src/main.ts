@@ -1,4 +1,8 @@
 import { renderPdf } from "@docn-ui/documents/browser";
+import {
+  continuousFeasibilityRenderable,
+  flowFeasibilityRenderable,
+} from "@docn-ui/documents/continuous-evidence";
 import { registerDocumentFonts } from "@docn-ui/documents/internal-fonts";
 import { assetManifest } from "@docn-ui/documents/internal-manifest";
 import { violetFounderBusinessCardRenderable } from "@docn-ui/documents/templates";
@@ -8,7 +12,18 @@ declare global {
   interface Window {
     __docnBrowserResult?: {
       firstCopyHeader: string;
+      continuous: {
+        fingerprint: string;
+        heightMm: number;
+        pageCount: number;
+        widthMm: number;
+      };
       fingerprint: string;
+      flow: {
+        heightMm: number;
+        pageCount: number;
+        widthMm: number;
+      };
       fontSourceCounts: readonly number[];
       pageCount: number;
       revision: number;
@@ -75,9 +90,28 @@ try {
     });
     fontSourceCounts.push(fontSourceCount());
   }
+  const continuousResult = await renderPdf(continuousFeasibilityRenderable, {
+    data: {},
+    revision: 24,
+  });
+  const flowResult = await renderPdf(flowFeasibilityRenderable, {
+    data: {},
+    revision: 26,
+  });
   window.__docnBrowserResult = {
+    continuous: {
+      fingerprint: continuousResult.fingerprint,
+      heightMm: continuousResult.finalDimensions[0]?.heightMm ?? 0,
+      pageCount: continuousResult.pageCount,
+      widthMm: continuousResult.finalDimensions[0]?.widthMm ?? 0,
+    },
     firstCopyHeader: new TextDecoder().decode(firstCopy.slice(0, 4)),
     fingerprint: result.fingerprint,
+    flow: {
+      heightMm: flowResult.finalDimensions[0]?.heightMm ?? 0,
+      pageCount: flowResult.pageCount,
+      widthMm: flowResult.finalDimensions[0]?.widthMm ?? 0,
+    },
     fontSourceCounts,
     pageCount: result.pageCount,
     revision: result.revision,

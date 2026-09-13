@@ -6,6 +6,10 @@ import { chromium } from "@playwright/test";
 import { build } from "vite";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { renderPdf as renderPdfInNode } from "../../packages/documents/src/render/node-entry";
+import {
+  continuousFeasibilityRenderable,
+  continuousOverflowRenderable,
+} from "../../packages/documents/src/examples/continuous-renderable-evidence";
 import { violetFounderBusinessCardRenderable } from "../../packages/documents/src/templates/renderable";
 
 const fixture = resolve("tests/fixtures/browser-render-facade");
@@ -72,10 +76,19 @@ describe("browser renderPdf package fixture", () => {
         violetFounderBusinessCardRenderable,
         { data: {}, revision: 23 },
       );
+      const nodeContinuous = await renderPdfInNode(
+        continuousFeasibilityRenderable,
+        { data: {}, revision: 24 },
+      );
 
       expect(browserResult).toMatchObject({
         firstCopyHeader: "%PDF",
+        continuous: {
+          fingerprint: nodeContinuous.fingerprint,
+          pageCount: 1,
+        },
         fingerprint: nodeResult.fingerprint,
+        flow: { pageCount: 1 },
         fontSourceCounts: expect.any(Array),
         pageCount: 2,
         revision: 23,
@@ -88,6 +101,19 @@ describe("browser renderPdf package fixture", () => {
         expect(size.widthMm).toBeCloseTo(85, 2);
         expect(size.heightMm).toBeCloseTo(55, 2);
       }
+      expect(browserResult?.continuous.widthMm).toBeCloseTo(58, 2);
+      expect(browserResult?.continuous.heightMm).toBeCloseTo(
+        nodeContinuous.finalDimensions[0]!.heightMm,
+        2,
+      );
+      expect(browserResult?.flow.widthMm).toBeCloseTo(210, 2);
+      expect(browserResult?.flow.heightMm).toBeCloseTo(297, 2);
+      await expect(
+        renderPdfInNode(continuousOverflowRenderable, {
+          data: {},
+          revision: 25,
+        }),
+      ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
       expect([...requestedOrigins]).toEqual([origin]);
       expect(
         (await readFile(resolve(output, "index.html"))).byteLength,

@@ -2,8 +2,13 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { renderPdf } from "@docn-ui/documents/node";
 import { createComponentDocumentFlowEvidencePlan } from "../examples/renderable-plan-evidence";
+import {
+  continuousFeasibilityRenderable,
+  continuousOverflowRenderable,
+} from "../examples/continuous-renderable-evidence";
 import {
   defineTemplateDescriptor,
   parseLocalImageId,
@@ -69,6 +74,8 @@ describe("Node renderPdf facade", () => {
 
     const flow = await renderPdf(flowEvidenceRenderable, { data: {} });
     expect(flow.pageCount).toBe(1);
+    expect(flow.finalDimensions[0]?.widthMm).toBeCloseTo(210, 2);
+    expect(flow.finalDimensions[0]?.heightMm).toBeCloseTo(297, 2);
     expect(new TextDecoder().decode(flow.pdfBytes.slice(0, 4))).toBe("%PDF");
   });
 
@@ -128,5 +135,48 @@ describe("Node renderPdf facade", () => {
     });
 
     expect(projectedAccent).toBe("#6d28d9");
+  });
+
+  it("returns measured continuous geometry with one 12 pt allowance", async () => {
+    const result = await renderPdf(continuousFeasibilityRenderable, {
+      data: {},
+      revision: 24,
+    });
+
+    expect(result.pageCount).toBe(1);
+    expect(result.finalDimensions[0]?.widthMm).toBeCloseTo(58, 2);
+    expect(result.finalDimensions[0]?.heightMm).toBeGreaterThan(0);
+    expect(result.finalDimensions[0]?.heightMm).toBeLessThan(2_000);
+    const loadingTask = getDocument({
+      data: result.pdfBytes.slice(),
+      useSystemFonts: false,
+    });
+    try {
+      const document = await loadingTask.promise;
+      const page = await document.getPage(1);
+      const content = await page.getTextContent();
+      const items = content.items.filter(
+        (
+          item,
+        ): item is typeof item & {
+          height: number;
+          str: string;
+          transform: number[];
+        } => "str" in item && "height" in item && "transform" in item,
+      );
+      expect(items.map(({ str }) => str).join(" ")).toContain(
+        "DOCN_CONTINUOUS_FINAL_MARKER",
+      );
+      const lowerEdge = Math.min(
+        ...items.map((item) => (item.transform[5] ?? 0) - item.height),
+      );
+      expect(lowerEdge).toBeCloseTo(12, 1);
+    } finally {
+      await loadingTask.destroy();
+    }
+
+    await expect(
+      renderPdf(continuousOverflowRenderable, { data: {}, revision: 25 }),
+    ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
   });
 });

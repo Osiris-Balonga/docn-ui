@@ -4,6 +4,8 @@ import {
   parseLocalImageId,
 } from "../template-contract";
 import { violetFounderBusinessCardRenderable } from "../templates/renderable";
+import { continuousFeasibilityRenderable } from "../examples/continuous-renderable-evidence";
+import type { TemplatePlanContext } from "../renderable-template";
 import { renderPdf } from "./browser-facade";
 
 vi.mock("./verified-assets.browser", async (importOriginal) => {
@@ -72,5 +74,63 @@ describe("browser renderPdf facade boundaries", () => {
       code: "ASSET_REJECTED",
       issues: [{ path: ["runtimeOptions", "localImageResolver"] }],
     });
+  });
+
+  it("maps unexpected plan failures without exposing their contents", async () => {
+    vi.stubGlobal("location", { origin: "https://documents.example" });
+    const privateValue = "PRIVATE CUSTOMER VALUE";
+    const failingTemplate = defineTemplateDescriptor({
+      ...violetFounderBusinessCardRenderable,
+      createPlan() {
+        throw new Error(privateValue);
+      },
+    });
+
+    let failure: unknown;
+    try {
+      await renderPdf(failingTemplate, { data: {} });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toMatchObject({
+      code: "RENDER_FAILED",
+      issues: [
+        {
+          message: "The PDF renderer could not complete the document.",
+          path: ["document"],
+        },
+      ],
+    });
+    expect(String(failure)).not.toContain(privateValue);
+  });
+
+  it("rejects an empty or oversized continuous final marker", async () => {
+    vi.stubGlobal("location", { origin: "https://documents.example" });
+    for (const finalMarker of ["", "x".repeat(257)]) {
+      const invalidMarkerTemplate = defineTemplateDescriptor({
+        ...continuousFeasibilityRenderable,
+        createPlan(context: TemplatePlanContext<Record<string, never>>) {
+          const renderPlan =
+            continuousFeasibilityRenderable.createPlan(context);
+          if (renderPlan.kind !== "continuous")
+            throw new Error("Expected continuous plan.");
+          return {
+            ...renderPlan,
+            plan: { ...renderPlan.plan, finalMarker },
+          };
+        },
+      });
+
+      await expect(
+        renderPdf(invalidMarkerTemplate, { data: {} }),
+      ).rejects.toMatchObject({
+        code: "RENDER_FAILED",
+        issues: [
+          {
+            path: ["template", "createPlan", "plan", "finalMarker"],
+          },
+        ],
+      });
+    }
   });
 });

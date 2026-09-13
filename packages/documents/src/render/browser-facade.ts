@@ -24,6 +24,7 @@ import {
   createVerifiedBrowserAssetResolver,
   withVerifiedBrowserFontPriority,
 } from "./verified-assets.browser";
+import { throwStructuredRenderFailure } from "./structured-errors";
 
 export type { LocalImageResolver, LocalImageSource } from "./local-images";
 
@@ -177,9 +178,18 @@ async function renderPlanInBrowser(
   assetResolver: AssetResolver,
 ): Promise<Uint8Array> {
   if (renderPlan.kind === "continuous") {
-    return planFailure(
-      "Continuous browser rendering is qualified by L18-S03, not this facade path.",
-    );
+    if (
+      normalized.format.kind !== "continuous" ||
+      normalized.printProfile.kind !== "screen" ||
+      !sameValue(renderPlan.plan.format, normalized.format)
+    ) {
+      return planFailure(
+        "The continuous template plan does not match the normalized format and profile.",
+      );
+    }
+    const { renderContinuousDocumentInBrowser } =
+      await import("./continuous.browser");
+    return renderContinuousDocumentInBrowser(renderPlan.plan, assetResolver);
   }
   if (
     normalized.format.kind !== "fixed" ||
@@ -268,6 +278,8 @@ export async function renderPdf<TData extends JsonObject>(
       await fingerprintNormalizedTemplateInput(normalized),
       normalized.revision,
     );
+  } catch (error) {
+    throwStructuredRenderFailure(error);
   } finally {
     imageScope.dispose();
   }

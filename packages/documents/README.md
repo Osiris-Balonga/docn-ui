@@ -15,10 +15,9 @@
 | `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                   | Core, themes, manifest, measurement, and Node adapter         |
 | `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                     | Internal evidence; never a registry dependency                |
 
-## Planned L17 contract layers
+## Unified contract layers
 
-L17-S01 specifies these additive layers; it does not claim they exist before
-their implementation stories:
+L17 implemented these additive layers:
 
 - S02 adds a non-React template-contract layer above `core` and `themes`. It
   owns JSON-constrained `TemplateDescriptor<TData>`, the canonical 18-ID tuple,
@@ -114,6 +113,19 @@ compressed image stream while bounded metadata segments are removed, avoiding
 an unbounded JPEG-to-PNG size increase. L18-S04 remains responsible for worker
 supersession, timeout and termination cleanup because those lifecycle events do
 not exist in the direct one-shot S02 call.
+
+Continuous plans are screen-only and use the plan's qualified non-empty final
+marker, bounded to 256 characters. The facade renders a maximum-height probe,
+measures the complete final glyph bounds, and renders once more at that raw
+extent plus the single 12 pt layout allowance from ADR 0003. Browser measurement
+uses an explicit package-local PDF.js worker and destroys the loading task, PDF
+worker, and underlying browser worker after each measurement; it is not the
+interactive render protocol V2 planned for L18-S04. Final `pageCount` and
+`finalDimensions` are inspected from the actual returned PDF for fixed, flow,
+and continuous plans. Unexpected plan, renderer, measurement, and finalization
+failures become a constant `RENDER_FAILED` validation issue at `document`;
+existing structured validation failures retain their code and path, and raw
+error text or document data is never copied into the public error.
 
 The package currently distributes TypeScript source. Use the `./node` subpath
 through a TypeScript-aware loader or bundler, as the qualified registry consumer

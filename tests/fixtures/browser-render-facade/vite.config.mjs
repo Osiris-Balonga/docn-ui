@@ -33,6 +33,10 @@ export default defineConfig({
         fixtureRoot,
         "../../../packages/documents/src/assets/manifest.ts",
       ),
+      "@docn-ui/documents/continuous-evidence": resolve(
+        fixtureRoot,
+        "../../../packages/documents/src/examples/continuous-renderable-evidence.tsx",
+      ),
     },
   },
   build: { emptyOutDir: true, outDir: outputDirectory },

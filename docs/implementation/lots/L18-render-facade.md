@@ -41,9 +41,9 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S03 — `feat(render): unify continuous and structured result handling`
 
-- [ ] Add browser continuous measurement using the qualified final-marker and height limits.
-- [ ] Inspect actual page count and final dimensions for every plan kind.
-- [ ] Translate renderer/measurement/finalization failures into structured errors without personal data.
+- [x] Add browser continuous measurement using the qualified final-marker and height limits.
+- [x] Inspect actual page count and final dimensions for every plan kind.
+- [x] Translate renderer/measurement/finalization failures into structured errors without personal data.
 
 **Acceptance:** Fixed, flow and continuous plans all return the same result contract in both environments where supported.
 
