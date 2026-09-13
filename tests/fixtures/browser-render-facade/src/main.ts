@@ -1,4 +1,7 @@
-import { renderPdf } from "@docn-ui/documents/browser";
+import {
+  createBrowserRenderCoordinator,
+  renderPdf,
+} from "@docn-ui/documents/browser";
 import {
   continuousFeasibilityRenderable,
   flowFeasibilityRenderable,
@@ -25,6 +28,13 @@ declare global {
         widthMm: number;
       };
       fontSourceCounts: readonly number[];
+      worker: {
+        latestRevision: number;
+        staleDuringReplacement: boolean;
+        superseded: boolean;
+        timedOut: boolean;
+        terminatedOnNavigation: boolean;
+      };
       pageCount: number;
       revision: number;
       secondCopyHeader: string;
@@ -98,6 +108,55 @@ try {
     data: {},
     revision: 26,
   });
+  const coordinator = createBrowserRenderCoordinator({ timeoutMs: 30_000 });
+  const workerInitial = await coordinator.render(
+    violetFounderBusinessCardRenderable,
+    { data: {}, revision: 100 },
+  );
+  const supersededPromise = coordinator.render(
+    violetFounderBusinessCardRenderable,
+    { data: {}, revision: 101 },
+  );
+  const supersededCheck = supersededPromise.then(
+    () => false,
+    () => true,
+  );
+  const latestPromise = coordinator.render(
+    violetFounderBusinessCardRenderable,
+    {
+      data: {},
+      revision: 102,
+    },
+  );
+  const staleDuringReplacement = coordinator.getSnapshot().stale;
+  const workerLatest = await latestPromise;
+  const superseded = await supersededCheck;
+  coordinator.dispose();
+
+  const timeoutCoordinator = createBrowserRenderCoordinator({ timeoutMs: 1 });
+  const timedOut = await timeoutCoordinator
+    .render(violetFounderBusinessCardRenderable, { data: {}, revision: 200 })
+    .then(
+      () => false,
+      () => true,
+    );
+  timeoutCoordinator.dispose();
+
+  const navigationCoordinator = createBrowserRenderCoordinator({
+    timeoutMs: 30_000,
+  });
+  const navigationRender = navigationCoordinator
+    .render(violetFounderBusinessCardRenderable, {
+      data: {},
+      revision: 300,
+    })
+    .then(
+      () => false,
+      () => true,
+    );
+  globalThis.dispatchEvent(new Event("pagehide"));
+  const terminatedOnNavigation = await navigationRender;
+  navigationCoordinator.dispose();
   window.__docnBrowserResult = {
     continuous: {
       fingerprint: continuousResult.fingerprint,
@@ -120,6 +179,14 @@ try {
       heightMm,
       widthMm,
     })),
+    worker: {
+      latestRevision: workerLatest.revision,
+      staleDuringReplacement:
+        workerInitial.revision === 100 && staleDuringReplacement,
+      superseded,
+      timedOut,
+      terminatedOnNavigation,
+    },
   };
   if (status) status.textContent = "ready";
 } catch (error) {

@@ -93,6 +93,13 @@ describe("browser renderPdf package fixture", () => {
         pageCount: 2,
         revision: 23,
         secondCopyHeader: "%PDF",
+        worker: {
+          latestRevision: 102,
+          staleDuringReplacement: true,
+          superseded: true,
+          timedOut: true,
+          terminatedOnNavigation: true,
+        },
       });
       expect(browserResult?.sizes).toHaveLength(2);
       expect(browserResult?.fontSourceCounts).toHaveLength(5);

@@ -535,7 +535,9 @@
         "918017cfabbedb2db389c6387b2b6c3b30ecda14",
         "7c8a4a284566a802e8e29c4b4b3a3a90428bce06",
         "6faff5ae109b625ec22b1f3d1d15a9d856049e1c",
-        "c232c5a7a2f276216f2519927e8b1c2d8f06042a"
+        "c232c5a7a2f276216f2519927e8b1c2d8f06042a",
+        "eb109e49a5d3cdcf735b529c4ba5e761ab093ee2",
+        "ad3cd81db0226c037d24fa4e08ab1c37b6cbd1b6"
       ],
       "evidence": "../qa/L18.md",
       "blocker": null

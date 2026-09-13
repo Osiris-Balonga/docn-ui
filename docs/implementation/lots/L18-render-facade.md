@@ -53,12 +53,12 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S04 — `feat(worker): add interruptible render protocol v2`
 
-- [ ] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
-- [ ] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by canonical image ID and digest; detachment must not mutate the preflight-owned copy.
-- [ ] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
-- [ ] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
-- [ ] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.
-- [ ] Let the worker drop completions whose revision is no longer current and let the UI mark a retained last-valid result stale; do not add `stale` to `RenderResult`.
+- [x] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
+- [x] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by canonical image ID and digest; detachment must not mutate the preflight-owned copy.
+- [x] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
+- [x] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
+- [x] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.
+- [x] Let the worker drop completions whose revision is no longer current and let the UI mark a retained last-valid result stale; do not add `stale` to `RenderResult`.
 
 **Acceptance:** Superseded or timed-out work cannot replace the latest result, retain transferred image data or leave an unbounded worker running.
 

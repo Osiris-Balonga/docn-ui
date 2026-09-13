@@ -136,6 +136,18 @@ Normalization receives exact `FontManifestIdentity` and local-image descriptor v
 
 Protocol V1 remains byte-for-byte and behaviorally unchanged in L17: `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` are not repurposed. L18 owns the new coordinator, protocol V2, and interruptibility. The browser worker resolves templates from a static trusted ID map; `RenderableTemplate`, Zod schemas, plan factories, runtime options, resolvers, `URL` objects, and functions never cross `postMessage`. Only JSON values plus separately transferred image `ArrayBuffer`s cross that boundary.
 
+The optional interactive browser coordinator is separate from the direct
+browser `renderPdf` call. Its ownership epoch advances before asynchronous
+preflight, it admits one active job plus only the latest pending job, and every
+worker response is matched by worker instance, job ID and caller revision.
+Supersession, the bounded 15-second default timeout, navigation and explicit
+disposal terminate the worker; a subsequent accepted revision creates a fresh
+module worker. The request and result envelopes use exact keys and bounded JSON.
+Image descriptors and a second, sorted transferable byte channel form a strict
+bijection, and the worker rechecks encoded MIME, dimensions, byte count and
+SHA-256 before creating plan-facing sources. Last-valid/stale presentation state
+remains coordinator-owned and never enters `RenderResult` or protocol V2.
+
 Registry installation and asset preparation are distinct. A source closure installs TypeScript, the visible installer, manifests and licenses. It does not imply that binary fonts or sample images have been fetched. The documented preparation step verifies and writes those binaries before the first render, after which runtime use is independent of the registry origin.
 
 Tables gain explicit container width, row-height bounds, compact density, banding/emphasis and bounded-cell behavior for fixed and continuous frames in addition to their existing flow-aware pagination mode. Graph gains grouped bars, label/value formatter hooks owned by the trusted composition, and bounded multi-series data up to 6 series × 30 points while preserving current single-series and radial contracts. These capabilities remain individually installable and do not import the render facade.

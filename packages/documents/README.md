@@ -4,16 +4,16 @@
 
 ## Entry points
 
-| Entry point                                           | Responsibility                                                                             | Runtime boundary                                              |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
-| `@docn-ui/documents/core`                             | Serializable render contracts, formats, validation, units, limits, and input fingerprints  | No React, browser, Node filesystem, DOM, or CSS               |
-| `@docn-ui/documents/themes`                           | The three PDF token sets                                                                   | Core only; hex colors and point values, no website tokens     |
-| `@docn-ui/documents/primitives`                       | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers | React and `@react-pdf/renderer`; no site imports              |
-| `@docn-ui/documents/templates/business-card-coral-qr` | One source-owned business-card composition and definition                                  | Core, themes, primitives, and React-pdf only; no site imports |
-| `@docn-ui/documents/browser`                          | Unified browser `renderPdf` facade, advanced fixed adapter, and same-origin asset resolver | React-pdf browser renderer and manifest assets                |
-| `@docn-ui/documents/node`                             | Unified Node `renderPdf` facade, advanced plan adapters, and verified local-asset resolver | React-pdf Node renderer and pdf-lib box finalization          |
-| `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                   | Core, themes, manifest, measurement, and Node adapter         |
-| `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                     | Internal evidence; never a registry dependency                |
+| Entry point                                           | Responsibility                                                                                                        | Runtime boundary                                               |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `@docn-ui/documents/core`                             | Serializable render contracts, formats, validation, units, limits, and input fingerprints                             | No React, browser, Node filesystem, DOM, or CSS                |
+| `@docn-ui/documents/themes`                           | The three PDF token sets                                                                                              | Core only; hex colors and point values, no website tokens      |
+| `@docn-ui/documents/primitives`                       | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers                            | React and `@react-pdf/renderer`; no site imports               |
+| `@docn-ui/documents/templates/business-card-coral-qr` | One source-owned business-card composition and definition                                                             | Core, themes, primitives, and React-pdf only; no site imports  |
+| `@docn-ui/documents/browser`                          | Unified browser `renderPdf`, opt-in interruptible coordinator, advanced fixed adapter, and same-origin asset resolver | React-pdf browser renderer, module worker, and manifest assets |
+| `@docn-ui/documents/node`                             | Unified Node `renderPdf` facade, advanced plan adapters, and verified local-asset resolver                            | React-pdf Node renderer and pdf-lib box finalization           |
+| `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                                              | Core, themes, manifest, measurement, and Node adapter          |
+| `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                                                | Internal evidence; never a registry dependency                 |
 
 ## Unified contract layers
 
@@ -110,9 +110,32 @@ normalizes metadata, fingerprints the final descriptor, and releases the
 plan-facing browser object URLs after success or failure. PNG pixels and rotated
 JPEG pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
 compressed image stream while bounded metadata segments are removed, avoiding
-an unbounded JPEG-to-PNG size increase. L18-S04 remains responsible for worker
-supersession, timeout and termination cleanup because those lifecycle events do
-not exist in the direct one-shot S02 call.
+an unbounded JPEG-to-PNG size increase.
+
+Interactive browser callers may opt into the separate coordinator without
+changing the direct `renderPdf` API:
+
+```ts
+import { createBrowserRenderCoordinator } from "@docn-ui/documents/browser";
+
+const coordinator = createBrowserRenderCoordinator({ timeoutMs: 15_000 });
+const result = await coordinator.render(template, { data, revision: 12 });
+const { lastValid, stale } = coordinator.getSnapshot();
+coordinator.dispose();
+```
+
+The caller owns monotonically increasing revisions. The coordinator keeps one
+active job and only the latest pending job, starts latest-wins ownership before
+asynchronous image/font preparation, and terminates/recreates its module worker
+on supersession, timeout, navigation or disposal. `lastValid` and `stale` are UI
+state and do not change `RenderResult`. The normalized request is exact JSON;
+private image-byte copies use a separate transferable channel. Runtime
+resolvers, template functions, schemas and URLs never cross `postMessage`.
+Workers load installed templates from a static trusted map, recheck protocol and
+image integrity, and publish only bounded, identity-matched results. The
+explicit browser font base remains a caller-side same-origin policy input;
+manifest font URLs are root-relative, so a worker resolves the same qualified
+assets from `self.location.origin` without transferring runtime options.
 
 Continuous plans are screen-only and use an opaque final-marker token matching
 `^[A-Z][A-Z0-9_]{0,31}$`. The source-owned template renders that token in a
