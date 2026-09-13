@@ -85,7 +85,9 @@ source order. Existing advanced registrations, including already cached or
 mismatched sources, cannot be selected by the facade and remain unchanged for
 later advanced renders. Registration is cache-aware, so repeated renders do not
 accumulate duplicate facade sources, and a facade source invalidated by
-`Font.reset()` is repaired in place. `Font.clear()` removes the
+`Font.reset()` is repaired in place. If advanced code populated the registration
+cache with the same canonical data URI first, the facade creates one owned
+source and reuses it thereafter. `Font.clear()` removes the
 engine's standard font setup and is outside the facade contract. Facade renders
 are serialized, but concurrent mixed advanced/facade rendering is unsupported
 because advanced calls share the same global store.

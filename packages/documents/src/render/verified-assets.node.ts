@@ -156,6 +156,15 @@ function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
           candidate.fontWeight === asset.weight &&
           candidate.src === expectedSource,
       );
+      if (!source) {
+        Font.register({
+          family: asset.family,
+          fontStyle: asset.style,
+          fontWeight: asset.weight,
+          src: expectedSource,
+        });
+        source = registeredFonts()[asset.family]?.sources.at(-1);
+      }
       if (!source || source.src !== expectedSource) {
         return assetFailure(
           asset.id,
