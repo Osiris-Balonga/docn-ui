@@ -72,6 +72,11 @@ export interface RenderWorkerEpochV2 {
   readonly revision: number;
 }
 
+export interface AcceptedRenderWorkerRequestV2 {
+  readonly epoch: RenderWorkerEpochV2;
+  readonly request: RenderWorkerRequestV2;
+}
+
 export function createRenderWorkerEpochGateV2() {
   let current: RenderWorkerEpochV2 | undefined;
   let sequence = 0;
@@ -92,12 +97,48 @@ export function createRenderWorkerEpochGateV2() {
 }
 
 export async function settleRenderWorkerEpochV2<T>(
-  gate: ReturnType<typeof createRenderWorkerEpochGateV2>,
+  gate: { isCurrent(epoch: RenderWorkerEpochV2): boolean },
   epoch: RenderWorkerEpochV2,
   pending: Promise<T>,
 ): Promise<{ current: true; value: T } | { current: false }> {
   const value = await pending;
   return gate.isCurrent(epoch) ? { current: true, value } : { current: false };
+}
+
+export function createRenderWorkerInboxV2() {
+  const epochGate = createRenderWorkerEpochGateV2();
+  let highestDispatchId = 0;
+  let pending: AcceptedRenderWorkerRequestV2 | undefined;
+  return Object.freeze({
+    accept(
+      request: RenderWorkerRequestV2,
+    ): AcceptedRenderWorkerRequestV2 | undefined {
+      if (request.dispatchId <= highestDispatchId) return undefined;
+      highestDispatchId = request.dispatchId;
+      pending = Object.freeze({
+        epoch: epochGate.begin(request.jobId, request.request.revision),
+        request,
+      });
+      return pending;
+    },
+    claim(
+      images: RenderWorkerImagesV2,
+    ): AcceptedRenderWorkerRequestV2 | undefined {
+      const candidate = pending;
+      if (
+        !candidate ||
+        !epochGate.isCurrent(candidate.epoch) ||
+        !matchesRenderWorkerDispatchV2(candidate.request, images)
+      ) {
+        return undefined;
+      }
+      pending = undefined;
+      return candidate;
+    },
+    isCurrent(epoch: RenderWorkerEpochV2): boolean {
+      return epochGate.isCurrent(epoch);
+    },
+  });
 }
 
 function protocolFailure(message: string, path: readonly string[]): never {

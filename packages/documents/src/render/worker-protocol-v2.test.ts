@@ -11,6 +11,7 @@ import { preflightLocalImages } from "./local-images";
 import {
   PDF_RENDER_PROTOCOL_VERSION_V2,
   createRenderWorkerEpochGateV2,
+  createRenderWorkerInboxV2,
   createRenderWorkerImagesV2,
   matchesRenderWorkerDispatchV2,
   receiveRenderWorkerImagesV2,
@@ -231,5 +232,35 @@ describe("render worker protocol V2", () => {
     if (pending && matchesRenderWorkerDispatchV2(pending, replayImages))
       pending = undefined;
     expect(pending).toBeUndefined();
+  });
+
+  it("rejects reused dispatch IDs without replacing or consuming current state", async () => {
+    const first = await request();
+    const inbox = createRenderWorkerInboxV2();
+    const firstAccepted = inbox.accept(first);
+    expect(firstAccepted?.request).toBe(first);
+
+    const duplicate = structuredClone(first);
+    expect(inbox.accept(duplicate)).toBeUndefined();
+    const firstImages = createRenderWorkerImagesV2(
+      first.jobId,
+      first.request.revision,
+      first.dispatchId,
+      [],
+    ).message;
+    expect(inbox.claim(firstImages)).toBe(firstAccepted);
+
+    const second = { ...first, dispatchId: first.dispatchId + 1 };
+    const secondAccepted = inbox.accept(second);
+    const older = { ...first, dispatchId: first.dispatchId - 1 };
+    expect(inbox.accept(older)).toBeUndefined();
+    expect(inbox.claim(firstImages)).toBeUndefined();
+    const secondImages = createRenderWorkerImagesV2(
+      second.jobId,
+      second.request.revision,
+      second.dispatchId,
+      [],
+    ).message;
+    expect(inbox.claim(secondImages)).toBe(secondAccepted);
   });
 });

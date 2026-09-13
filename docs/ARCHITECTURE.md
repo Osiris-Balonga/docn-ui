@@ -146,8 +146,9 @@ disposal terminate the worker; a subsequent accepted revision creates a fresh
 module worker. The request and result envelopes use exact keys and bounded JSON.
 Image descriptors and a second, sorted transferable byte channel form a strict
 bijection. A bounded coordinator-generated dispatch ID appears in both inbound
-envelopes, so bytes from an older replay cannot consume the current pending
-request even when job ID and revision are identical. The worker rechecks
+envelopes. The worker accepts these IDs only in strictly increasing order, so a
+duplicate render cannot replace the pending request and bytes from an older
+replay cannot consume it even when job ID and revision are identical. The worker rechecks
 encoded MIME, dimensions, byte count and SHA-256 before creating plan-facing
 sources. Last-valid/stale presentation state remains coordinator-owned and
 never enters `RenderResult` or protocol V2.
