@@ -122,7 +122,9 @@ uses an explicit package-local PDF.js worker and destroys the loading task, PDF
 worker, and underlying browser worker after each measurement; it is not the
 interactive render protocol V2 planned for L18-S04. Final `pageCount` and
 `finalDimensions` are inspected from the actual returned PDF for fixed, flow,
-and continuous plans. Unexpected plan, renderer, measurement, and finalization
+and continuous plans. A continuous final PDF is accepted only when it remains
+one page within its qualified width/height bounds and its marker is the last,
+lowest relevant text. Unexpected plan, renderer, measurement, and finalization
 failures become a constant `RENDER_FAILED` validation issue at `document`;
 existing structured validation failures retain their code and path, and raw
 error text or document data is never copied into the public error.

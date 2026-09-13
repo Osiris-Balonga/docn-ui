@@ -7,6 +7,9 @@ import { renderPdf } from "@docn-ui/documents/node";
 import { createComponentDocumentFlowEvidencePlan } from "../examples/renderable-plan-evidence";
 import {
   continuousFeasibilityRenderable,
+  continuousFinalOverflowRenderable,
+  continuousMissingFinalMarkerRenderable,
+  continuousNonTerminalMarkerRenderable,
   continuousOverflowRenderable,
 } from "../examples/continuous-renderable-evidence";
 import {
@@ -178,5 +181,18 @@ describe("Node renderPdf facade", () => {
     await expect(
       renderPdf(continuousOverflowRenderable, { data: {}, revision: 25 }),
     ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
+  });
+
+  it("rejects a final continuous PDF that diverges after a valid probe", async () => {
+    for (const template of [
+      continuousFinalOverflowRenderable,
+      continuousMissingFinalMarkerRenderable,
+      continuousNonTerminalMarkerRenderable,
+    ]) {
+      await expect(renderPdf(template, { data: {} })).rejects.toMatchObject({
+        code: "RENDER_FAILED",
+        issues: [{ path: ["document"] }],
+      });
+    }
   });
 });
