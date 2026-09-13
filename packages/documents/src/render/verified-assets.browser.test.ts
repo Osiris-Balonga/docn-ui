@@ -72,7 +72,14 @@ describe("verified browser font assets", () => {
 
   it("rejects oversized declared and streamed responses before hashing", async () => {
     const first = assetManifest.assets[0]!;
-    const oversizedHeader = new Response(new Uint8Array([1]), {
+    const headerCancel = vi.fn();
+    const openHeaderStream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new Uint8Array([1]));
+      },
+      cancel: headerCancel,
+    });
+    const oversizedHeader = new Response(openHeaderStream, {
       headers: { "content-length": String(first.bytes + 1) },
       status: 200,
     });
@@ -86,6 +93,7 @@ describe("verified browser font assets", () => {
     await expect(
       createVerifiedBrowserAssetResolver("https://documents.example/"),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+    expect(headerCancel).toHaveBeenCalledOnce();
 
     const cancel = vi.fn();
     const oversizedStream = new ReadableStream<Uint8Array>({

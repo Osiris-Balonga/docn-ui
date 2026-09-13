@@ -45,6 +45,14 @@ async function sha256(bytes: Uint8Array): Promise<string> {
     .join("");
 }
 
+async function cancelResponseBody(response: Response): Promise<void> {
+  try {
+    await response.body?.cancel("Qualified font response rejected.");
+  } catch {
+    // The structured asset rejection remains authoritative.
+  }
+}
+
 async function readQualifiedFontBytes(
   response: Response,
   assetId: string,
@@ -56,6 +64,7 @@ async function readQualifiedFontBytes(
       !/^\d+$/.test(contentLength) ||
       Number(contentLength) !== expectedBytes
     ) {
+      await cancelResponseBody(response);
       assetFailure(
         assetId,
         "A browser font Content-Length does not match the qualified manifest.",
@@ -90,10 +99,18 @@ async function readQualifiedFontBytes(
       chunks.push(ownedChunk);
       total += ownedChunk.byteLength;
     }
+  } catch (error) {
+    try {
+      await reader.cancel("Qualified font stream failed.");
+    } catch {
+      // The original stream error remains authoritative.
+    }
+    throw error;
   } finally {
     reader.releaseLock();
   }
   if (total !== expectedBytes) {
+    await cancelResponseBody(response);
     return assetFailure(
       assetId,
       "A browser font response is shorter than the qualified byte length.",
@@ -115,8 +132,9 @@ export async function createVerifiedBrowserAssetResolver(
   const verifiedSources = new Map<string, string>();
   for (const definition of assetManifest.assets) {
     const source = urlResolver.resolve(definition.id).source;
+    let response: Response | undefined;
     try {
-      const response = await fetch(source, {
+      response = await fetch(source, {
         cache: "no-store",
         credentials: "same-origin",
         redirect: "error",
@@ -125,6 +143,7 @@ export async function createVerifiedBrowserAssetResolver(
         !response.ok ||
         new URL(response.url).origin !== new URL(baseUrl).origin
       ) {
+        await cancelResponseBody(response);
         assetFailure(
           definition.id,
           "A qualified browser font could not be fetched.",
@@ -147,6 +166,7 @@ export async function createVerifiedBrowserAssetResolver(
       verifiedSources.set(definition.id, bytesToDataUrl(bytes));
     } catch (error) {
       if (error instanceof DocumentValidationError) throw error;
+      if (response) await cancelResponseBody(response);
       assetFailure(definition.id, "A qualified browser font is unavailable.");
     }
   }
