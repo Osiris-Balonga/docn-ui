@@ -61,18 +61,18 @@ Init's Google Fonts import and circular `--font-sans` token were replaced by loc
 
 All packages below are development dependencies; none is imported by the production application.
 
-| Dependency                         | Version         | License | Purpose                                                                          |
-| ---------------------------------- | --------------- | ------- | -------------------------------------------------------------------------------- |
-| ESLint                             | 9.39.5          | MIT     | Compatible lint runtime for the current Next plugins; see limitation below       |
-| eslint-config-next                 | 16.3.3          | MIT     | Framework, accessibility, React, and TypeScript lint rules                       |
-| Prettier                           | 3.9.6           | MIT     | Code/config formatting                                                           |
-| Vitest / coverage-v8               | 4.1.11          | MIT     | Exclusive lightweight projects and optional coverage; same version               |
+| Dependency                         | Version         | License | Purpose                                                                                         |
+| ---------------------------------- | --------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| ESLint                             | 9.39.5          | MIT     | Compatible lint runtime for the current Next plugins; see limitation below                      |
+| eslint-config-next                 | 16.3.3          | MIT     | Framework, accessibility, React, and TypeScript lint rules                                      |
+| Prettier                           | 3.9.6           | MIT     | Code/config formatting                                                                          |
+| Vitest / coverage-v8               | 4.1.11          | MIT     | Exclusive lightweight projects and optional coverage; same version                              |
 | Vite (test-only, locked)           | 8.2.2           | MIT     | Direct browser-facade fixture build plus Vitest transformation; not the production Next bundler |
-| jsdom                              | 30.0.1          | MIT     | Component environment only; compatible with Node 24.18                           |
-| Testing Library React / DOM        | 16.3.3 / 10.4.1 | MIT     | Composition semantics and rendering                                              |
-| Testing Library user-event         | 14.6.6          | MIT     | Keyboard interaction in jsdom                                                    |
-| Testing Library jest-dom           | 7.0.1           | MIT     | DOM assertions                                                                   |
-| unrs-resolver (transitive, locked) | 1.12.2          | MIT     | ESLint import resolution; reviewed native-package postinstall explicitly allowed |
+| jsdom                              | 30.0.1          | MIT     | Component environment only; compatible with Node 24.18                                          |
+| Testing Library React / DOM        | 16.3.3 / 10.4.1 | MIT     | Composition semantics and rendering                                                             |
+| Testing Library user-event         | 14.6.6          | MIT     | Keyboard interaction in jsdom                                                                   |
+| Testing Library jest-dom           | 7.0.1           | MIT     | DOM assertions                                                                                  |
+| unrs-resolver (transitive, locked) | 1.12.2          | MIT     | ESLint import resolution; reviewed native-package postinstall explicitly allowed                |
 
 **Compatibility limitation:** ESLint 9.39.5 is deprecated upstream. ESLint 10.9.1 was actually tried and rejected: the Next-resolved import/jsx-a11y/react plugins declare ESLint 9 peer ranges, and `react/display-name` crashes on the removed `context.getFilename` API. Pin the functioning compatible version without suppressing rules or peer checks; reconsider at L13 or when Next's plugin dependencies support ESLint 10. This affects developer tooling, not shipped site code. `pnpm peers check` must remain clean.
 

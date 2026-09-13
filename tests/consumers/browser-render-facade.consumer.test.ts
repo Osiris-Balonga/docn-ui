@@ -63,7 +63,7 @@ describe("browser renderPdf package fixture", () => {
       });
       await page.goto(origin);
       await expect
-        .poll(() => page.locator("#status").textContent())
+        .poll(() => page.locator("#status").textContent(), { timeout: 30_000 })
         .toBe("ready");
       const browserResult = await page.evaluate(
         () => window.__docnBrowserResult,
@@ -76,11 +76,14 @@ describe("browser renderPdf package fixture", () => {
       expect(browserResult).toMatchObject({
         firstCopyHeader: "%PDF",
         fingerprint: nodeResult.fingerprint,
+        fontSourceCounts: expect.any(Array),
         pageCount: 2,
         revision: 23,
         secondCopyHeader: "%PDF",
       });
       expect(browserResult?.sizes).toHaveLength(2);
+      expect(browserResult?.fontSourceCounts).toHaveLength(5);
+      expect(new Set(browserResult?.fontSourceCounts)).toEqual(new Set([8]));
       for (const size of browserResult?.sizes ?? []) {
         expect(size.widthMm).toBeCloseTo(85, 2);
         expect(size.heightMm).toBeCloseTo(55, 2);

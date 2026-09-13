@@ -76,8 +76,10 @@ Browser consumers use the same call shape from
 `globalThis.location.origin`; an explicit string or `URL` must resolve to the
 same HTTP(S) origin and cannot contain credentials. Before rendering, the
 browser facade fetches every manifest font with redirects disabled, verifies
-its byte length and SHA-256 digest, snapshots it as a data URI, and temporarily
-prioritizes only those verified sources in React PDF's global font store.
+the declared `Content-Length` when present, streams no more than the manifest
+byte length, verifies SHA-256, snapshots the result as a data URI, and
+temporarily prioritizes only those verified sources in React PDF's global font
+store. A trusted source invalidated by `Font.reset()` is repaired in place.
 Earlier advanced registrations are restored after the awaited facade render,
 and facade renders are serialized around that temporary ordering.
 
@@ -106,8 +108,8 @@ Template data may carry validated local-image IDs, never paths or URLs. The
 optional `localImageResolver` returns owned PNG/JPEG bytes and a declared MIME
 type at runtime. The facade decodes bounded pixels, applies EXIF orientation,
 normalizes metadata, fingerprints the final descriptor, and releases the
-plan-facing browser object URLs after success or failure. PNG pixels and rotated JPEG
-pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
+plan-facing browser object URLs after success or failure. PNG pixels and rotated
+JPEG pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
 compressed image stream while bounded metadata segments are removed, avoiding
 an unbounded JPEG-to-PNG size increase. L18-S04 remains responsible for worker
 supersession, timeout and termination cleanup because those lifecycle events do

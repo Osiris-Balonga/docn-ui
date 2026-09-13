@@ -13,6 +13,10 @@ export default defineConfig({
   root: fixtureRoot,
   resolve: {
     alias: {
+      "@react-pdf/renderer": resolve(
+        fixtureRoot,
+        "../../../packages/documents/node_modules/@react-pdf/renderer/lib/react-pdf.browser.js",
+      ),
       "@docn-ui/documents/browser": resolve(
         fixtureRoot,
         "../../../packages/documents/src/render/browser-entry.ts",
@@ -20,6 +24,14 @@ export default defineConfig({
       "@docn-ui/documents/templates": resolve(
         fixtureRoot,
         "../../../packages/documents/src/templates/index.ts",
+      ),
+      "@docn-ui/documents/internal-fonts": resolve(
+        fixtureRoot,
+        "../../../packages/documents/src/render/fonts.ts",
+      ),
+      "@docn-ui/documents/internal-manifest": resolve(
+        fixtureRoot,
+        "../../../packages/documents/src/assets/manifest.ts",
       ),
     },
   },

@@ -6,8 +6,10 @@ import { createBrowserAssetResolver } from "./assets.browser";
 import { registerDocumentFonts } from "./fonts";
 
 interface RegisteredFontSource {
+  data: unknown;
   readonly fontStyle: string;
   readonly fontWeight: number;
+  loadResultPromise: Promise<void> | null;
   readonly src: string;
 }
 
@@ -43,6 +45,69 @@ async function sha256(bytes: Uint8Array): Promise<string> {
     .join("");
 }
 
+async function readQualifiedFontBytes(
+  response: Response,
+  assetId: string,
+  expectedBytes: number,
+): Promise<Uint8Array> {
+  const contentLength = response.headers.get("content-length");
+  if (contentLength !== null) {
+    if (
+      !/^\d+$/.test(contentLength) ||
+      Number(contentLength) !== expectedBytes
+    ) {
+      assetFailure(
+        assetId,
+        "A browser font Content-Length does not match the qualified manifest.",
+      );
+    }
+  }
+  if (!response.body) {
+    return assetFailure(
+      assetId,
+      "A browser font response has no readable body.",
+    );
+  }
+  const reader = response.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (total + value.byteLength > expectedBytes) {
+        try {
+          await reader.cancel("Qualified font byte limit exceeded.");
+        } catch {
+          // The bounded rejection remains authoritative if cancellation fails.
+        }
+        return assetFailure(
+          assetId,
+          "A browser font response exceeds the qualified byte length.",
+        );
+      }
+      const ownedChunk = new Uint8Array(value);
+      chunks.push(ownedChunk);
+      total += ownedChunk.byteLength;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  if (total !== expectedBytes) {
+    return assetFailure(
+      assetId,
+      "A browser font response is shorter than the qualified byte length.",
+    );
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes;
+}
+
 export async function createVerifiedBrowserAssetResolver(
   baseUrl: string,
 ): Promise<AssetResolver> {
@@ -65,7 +130,11 @@ export async function createVerifiedBrowserAssetResolver(
           "A qualified browser font could not be fetched.",
         );
       }
-      const bytes = new Uint8Array(await response.arrayBuffer());
+      const bytes = await readQualifiedFontBytes(
+        response,
+        definition.id,
+        definition.bytes,
+      );
       if (
         bytes.byteLength !== definition.bytes ||
         (await sha256(bytes)) !== definition.sha256
@@ -98,6 +167,19 @@ function registeredFonts(): Record<string, RegisteredFontFamily | undefined> {
   >;
 }
 
+function repairTrustedSource(
+  source: RegisteredFontSource,
+  expectedSource: string,
+): boolean {
+  if (source.src !== expectedSource || !trustedFacadeSources.has(source)) {
+    return false;
+  }
+  if (source.data === null && source.loadResultPromise !== null) {
+    source.loadResultPromise = null;
+  }
+  return true;
+}
+
 function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
   const priorByFamily = new Map<string, RegisteredFontSource[]>();
   const promotedByFamily = new Map<string, RegisteredFontSource[]>();
@@ -117,8 +199,7 @@ function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
       (candidate) =>
         candidate.fontStyle === asset.style &&
         candidate.fontWeight === asset.weight &&
-        candidate.src === expectedSource &&
-        trustedFacadeSources.has(candidate),
+        repairTrustedSource(candidate, expectedSource),
     );
     if (!source) {
       const prior = priorByFamily.get(asset.family) ?? [];
