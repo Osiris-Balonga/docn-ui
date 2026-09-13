@@ -613,8 +613,10 @@ adapter ensures a facade-owned canonical source exists for every qualified
 manifest slot, temporarily promotes those exact sources, and restores every
 prior source ordering in `finally`. Cached or mismatched advanced sources can
 therefore coexist without being selected by the facade, and no unrelated font
-family is cleared. Facade renders are serialized around this scope.
-`Font.reset()` is supported because stale facade sources are replaced;
+family is cleared. The existing font-registration cache creates each canonical
+source once; repeated renders keep the source count stable, while `Font.reset()`
+is handled by clearing the stale facade source promise in place. Facade renders
+are serialized around this scope.
 `Font.clear()` destroys the engine's standard font setup and is outside this
 contract. Concurrent mixed advanced/facade renders remain unsupported because
 advanced calls access the same global store outside the facade queue. The

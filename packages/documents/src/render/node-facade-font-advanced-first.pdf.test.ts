@@ -77,6 +77,7 @@ it("temporarily prioritizes verified bytes over a cached mismatched advanced sou
     throw new Error("Expected the advanced source to be registered.");
   }
   expect(cachedMismatchedSource.data).not.toBeNull();
+  const sourceCountBeforeFacade = family.sources.length;
   const priorOrder = family.sources.slice();
   const originalLoad = cachedMismatchedSource.load;
   cachedMismatchedSource.load = async () => {
@@ -91,9 +92,11 @@ it("temporarily prioritizes verified bytes over a cached mismatched advanced sou
   );
   expect(result.pageCount).toBe(2);
 
-  const restored = (
-    Font.getRegisteredFonts()[target.family] as { sources: TestFontSource[] }
-  ).sources;
+  const restoredFamily = Font.getRegisteredFonts()[target.family] as {
+    sources: TestFontSource[];
+  };
+  const restored = restoredFamily.sources;
+  expect(restored).toHaveLength(sourceCountBeforeFacade + 2);
   for (const [index, source] of priorOrder.entries()) {
     expect(restored[index]).toBe(source);
   }
@@ -111,4 +114,11 @@ it("temporarily prioritizes verified bytes over a cached mismatched advanced sou
   expect(new TextDecoder().decode(advancedAfterFacade.slice(0, 4))).toBe(
     "%PDF",
   );
+
+  await renderPdf(
+    violetFounderBusinessCardRenderable,
+    { data: {} },
+    { fontAssetDirectory: assetRoot },
+  );
+  expect(restoredFamily.sources).toHaveLength(sourceCountBeforeFacade + 2);
 });

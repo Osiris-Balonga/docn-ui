@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { assetManifest, getAssetDefinition } from "../assets/manifest";
 import { DocumentValidationError } from "../core/errors";
 import type { AssetResolver } from "./assets";
+import { registerDocumentFonts } from "./fonts";
 
 const packagedAssetRoot = fileURLToPath(
   new URL("../../assets/", import.meta.url),
@@ -111,15 +112,17 @@ function registeredFonts(): Record<string, RegisteredFontFamily | undefined> {
   >;
 }
 
-function reusableTrustedSource(
+function repairTrustedSource(
   source: RegisteredFontSource,
   expectedSource: string,
 ): boolean {
-  return (
-    source.src === expectedSource &&
-    trustedFacadeSources.has(source) &&
-    !(source.data === null && source.loadResultPromise !== null)
-  );
+  if (source.src !== expectedSource || !trustedFacadeSources.has(source)) {
+    return false;
+  }
+  if (source.data === null && source.loadResultPromise !== null) {
+    source.loadResultPromise = null;
+  }
+  return true;
 }
 
 function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
@@ -133,29 +136,30 @@ function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
       registeredFonts()[familyName]?.sources.slice() ?? [],
     );
   }
+  registerDocumentFonts(resolver);
 
   for (const asset of assetManifest.assets) {
     const expectedSource = resolver.resolve(asset.id).source;
-    let family = registeredFonts()[asset.family];
+    const family = registeredFonts()[asset.family];
     let source = family?.sources.find(
       (candidate) =>
         candidate.fontStyle === asset.style &&
         candidate.fontWeight === asset.weight &&
-        reusableTrustedSource(candidate, expectedSource),
+        repairTrustedSource(candidate, expectedSource),
     );
     if (!source) {
-      Font.register({
-        family: asset.family,
-        fontStyle: asset.style,
-        fontWeight: asset.weight,
-        src: expectedSource,
-      });
-      family = registeredFonts()[asset.family];
-      source = family?.sources.at(-1);
+      const prior = priorByFamily.get(asset.family) ?? [];
+      source = family?.sources.find(
+        (candidate) =>
+          !prior.includes(candidate) &&
+          candidate.fontStyle === asset.style &&
+          candidate.fontWeight === asset.weight &&
+          candidate.src === expectedSource,
+      );
       if (!source || source.src !== expectedSource) {
         return assetFailure(
           asset.id,
-          "React PDF did not retain the verified facade font source.",
+          "The cache-aware font registrar did not retain the verified facade source.",
         );
       }
       trustedFacadeSources.add(source);
