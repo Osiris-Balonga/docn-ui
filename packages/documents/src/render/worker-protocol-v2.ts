@@ -13,7 +13,10 @@ import {
   type LocalImageId,
   type NormalizedTemplateInput,
 } from "../template-contract";
-import type { PreparedLocalImages } from "./local-images";
+import {
+  inspectCanonicalLocalImageBytes,
+  type PreparedLocalImages,
+} from "./local-images";
 
 export const PDF_RENDER_PROTOCOL_VERSION_V2 = 2 as const;
 
@@ -492,66 +495,6 @@ async function sha256(bytes: Uint8Array): Promise<`sha256:${string}`> {
   return `sha256:${Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("")}`;
 }
 
-function inspectCanonicalImage(bytes: Uint8Array): {
-  heightPx: number;
-  mimeType: "image/jpeg" | "image/png";
-  widthPx: number;
-} {
-  if (
-    bytes.length >= 24 &&
-    bytes[0] === 0x89 &&
-    bytes[1] === 0x50 &&
-    bytes[2] === 0x4e &&
-    bytes[3] === 0x47 &&
-    bytes[12] === 0x49 &&
-    bytes[13] === 0x48 &&
-    bytes[14] === 0x44 &&
-    bytes[15] === 0x52
-  ) {
-    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-    return {
-      heightPx: view.getUint32(20),
-      mimeType: "image/png",
-      widthPx: view.getUint32(16),
-    };
-  }
-  if (bytes.length >= 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
-    let offset = 2;
-    while (offset + 9 < bytes.length) {
-      if (bytes[offset] !== 0xff)
-        protocolFailure("Invalid canonical JPEG transfer.", [
-          "worker",
-          "images",
-        ]);
-      const marker = bytes[offset + 1]!;
-      offset += 2;
-      if (marker === 0xd9 || marker === 0xda) break;
-      const length = (bytes[offset]! << 8) | bytes[offset + 1]!;
-      if (length < 2 || offset + length > bytes.length)
-        protocolFailure("Invalid canonical JPEG transfer.", [
-          "worker",
-          "images",
-        ]);
-      if (
-        [
-          0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd,
-          0xce, 0xcf,
-        ].includes(marker)
-      )
-        return {
-          heightPx: (bytes[offset + 3]! << 8) | bytes[offset + 4]!,
-          mimeType: "image/jpeg",
-          widthPx: (bytes[offset + 5]! << 8) | bytes[offset + 6]!,
-        };
-      offset += length;
-    }
-  }
-  return protocolFailure(
-    "Worker image payload has an invalid encoded format.",
-    ["worker", "images"],
-  );
-}
-
 export async function receiveRenderWorkerImagesV2(
   value: unknown,
   descriptors: readonly LocalImageDescriptor[],
@@ -593,7 +536,11 @@ export async function receiveRenderWorkerImagesV2(
         String(index),
       ]);
     const bytes = new Uint8Array(image.bytes).slice();
-    const inspected = inspectCanonicalImage(bytes);
+    const inspected = inspectCanonicalLocalImageBytes(bytes, [
+      "worker",
+      "images",
+      String(index),
+    ]);
     if (
       bytes.byteLength !== descriptor.byteLength ||
       inspected.mimeType !== descriptor.mimeType ||

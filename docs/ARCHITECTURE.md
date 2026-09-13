@@ -147,6 +147,11 @@ Image descriptors and a second, sorted transferable byte channel form a strict
 bijection, and the worker rechecks encoded MIME, dimensions, byte count and
 SHA-256 before creating plan-facing sources. Last-valid/stale presentation state
 remains coordinator-owned and never enters `RenderResult` or protocol V2.
+Resolver/image preflight cannot be forcibly aborted. When it is superseded or
+times out, its promise is settled logically but retains the single physical
+preflight slot until the underlying resolver returns; only the latest pending
+revision starts afterward. This prevents rapid input from creating unbounded
+parallel resolvers or retaining multiple prepared byte sets.
 
 Registry installation and asset preparation are distinct. A source closure installs TypeScript, the visible installer, manifests and licenses. It does not imply that binary fonts or sample images have been fetched. The documented preparation step verifies and writes those binaries before the first render, after which runtime use is independent of the registry origin.
 

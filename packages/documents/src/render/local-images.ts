@@ -581,6 +581,54 @@ function sniffMimeType(
   );
 }
 
+export function inspectCanonicalLocalImageBytes(
+  bytes: Uint8Array,
+  path: readonly (number | string)[] = ["worker", "images"],
+): {
+  readonly heightPx: number;
+  readonly mimeType: LocalImageMimeType;
+  readonly widthPx: number;
+} {
+  const ownedBytes = new Uint8Array(bytes).slice();
+  const mimeType = sniffMimeType(ownedBytes, path);
+  if (mimeType === "image/jpeg") {
+    const inspection = inspectAndStripJpeg(ownedBytes, path);
+    if (inspection.orientation !== 1) {
+      fail(
+        "ASSET_REJECTED",
+        "Prepared image orientation is not canonical.",
+        path,
+      );
+    }
+    if (
+      inspection.bytes.byteLength !== ownedBytes.byteLength ||
+      inspection.bytes.some((byte, index) => byte !== ownedBytes[index])
+    ) {
+      fail("ASSET_REJECTED", "Prepared JPEG metadata is not canonical.", path);
+    }
+    assertDimensions(inspection.width, inspection.height, path);
+    return {
+      heightPx: inspection.height,
+      mimeType,
+      widthPx: inspection.width,
+    };
+  }
+  const inspection = inspectPng(ownedBytes, path);
+  if (inspection.orientation !== 1) {
+    fail(
+      "ASSET_REJECTED",
+      "Prepared image orientation is not canonical.",
+      path,
+    );
+  }
+  assertDimensions(inspection.width, inspection.height, path);
+  return {
+    heightPx: inspection.height,
+    mimeType,
+    widthPx: inspection.width,
+  };
+}
+
 function assertDimensions(
   width: number,
   height: number,

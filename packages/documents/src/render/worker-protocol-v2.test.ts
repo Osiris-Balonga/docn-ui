@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { encode as encodeJpeg } from "jpeg-js";
 import {
   createFontManifestIdentity,
   normalizeTemplateInput,
@@ -90,6 +91,80 @@ describe("render worker protocol V2", () => {
         4,
         8,
       ),
-    ).rejects.toMatchObject({ code: "INVALID_DATA" });
+    ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+  });
+
+  it("reuses canonical JPEG traversal for fill markers and rejects forged encodings", async () => {
+    const encoded = new Uint8Array(
+      encodeJpeg(
+        {
+          data: new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255]),
+          height: 1,
+          width: 2,
+        },
+        90,
+      ).data,
+    );
+    const withFill = new Uint8Array(encoded.byteLength + 1);
+    withFill.set(encoded.subarray(0, 2));
+    withFill[2] = 0xff;
+    withFill.set(encoded.subarray(2), 3);
+    const prepared = await preflightLocalImages(
+      [parseLocalImageId("photo")],
+      async () => ({ bytes: withFill, declaredMimeType: "image/jpeg" }),
+    );
+    const transfer = createRenderWorkerImagesV2(5, 9, prepared);
+    const received = structuredClone(transfer.message, {
+      transfer: [...transfer.transfer],
+    });
+    await expect(
+      receiveRenderWorkerImagesV2(
+        received,
+        prepared.map(({ descriptor }) => descriptor),
+        5,
+        9,
+      ),
+    ).resolves.toMatchObject([
+      { descriptor: { heightPx: 1, mimeType: "image/jpeg", widthPx: 2 } },
+    ]);
+
+    const fakePng = new Uint8Array(33);
+    fakePng.set([137, 80, 78, 71, 13, 10, 26, 10]);
+    const fakeJpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xc0, 0, 2, 0xff, 0xd9]);
+    for (const [index, bytes] of [fakePng, fakeJpeg].entries()) {
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      const sha256 = `sha256:${Array.from(new Uint8Array(digest), (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join("")}` as const;
+      await expect(
+        receiveRenderWorkerImagesV2(
+          {
+            images: [
+              {
+                bytes: bytes.buffer,
+                id: parseLocalImageId("forged"),
+                sha256,
+              },
+            ],
+            jobId: 6,
+            protocolVersion: 2,
+            revision: 10,
+            type: "images",
+          },
+          [
+            {
+              byteLength: bytes.byteLength,
+              heightPx: 1,
+              id: parseLocalImageId("forged"),
+              mimeType: index === 0 ? "image/png" : "image/jpeg",
+              sha256,
+              widthPx: 1,
+            },
+          ],
+          6,
+          10,
+        ),
+      ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+    }
   });
 });

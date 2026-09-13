@@ -1,6 +1,10 @@
 import type { RenderResult } from "../core/contracts";
 import { DOCUMENT_LIMITS } from "../core/contracts";
-import { DocumentValidationError, type DocumentIssue } from "../core/errors";
+import {
+  DocumentValidationError,
+  type DocumentErrorCode,
+  type DocumentIssue,
+} from "../core/errors";
 import { getRenderableTemplate } from "../templates/renderable";
 import {
   createFontManifestIdentity,
@@ -12,10 +16,10 @@ import {
 import { normalizeTemplateInputForRender } from "../template-normalization.internal";
 import type { RenderableTemplate } from "../renderable-template";
 import {
-  parseBrowserRenderRuntimeOptions,
-  type BrowserRenderRuntimeOptions,
-} from "./browser-facade";
-import { preflightLocalImages, type PreparedLocalImages } from "./local-images";
+  preflightLocalImages,
+  type LocalImageResolver,
+  type PreparedLocalImages,
+} from "./local-images";
 import {
   createRenderWorkerImagesV2,
   PDF_RENDER_PROTOCOL_VERSION_V2,
@@ -24,8 +28,20 @@ import {
 
 const DEFAULT_WORKER_TIMEOUT_MS = 15_000;
 const MAX_WORKER_TIMEOUT_MS = 60_000;
+const DOCUMENT_ERROR_CODES = new Set<DocumentErrorCode>([
+  "ASSET_REJECTED",
+  "INVALID_DATA",
+  "LAYOUT_OVERFLOW",
+  "LIMIT_EXCEEDED",
+  "QR_TOO_DENSE",
+  "RENDER_FAILED",
+  "RENDER_TIMEOUT",
+  "UNSUPPORTED_FORMAT",
+  "UNSUPPORTED_GLYPH",
+]);
 
-export interface BrowserRenderCoordinatorOptions extends BrowserRenderRuntimeOptions {
+export interface BrowserRenderCoordinatorOptions {
+  localImageResolver?: LocalImageResolver;
   timeoutMs?: number;
 }
 
@@ -48,15 +64,20 @@ export interface BrowserRenderCoordinator {
 }
 
 interface ParsedCoordinatorOptions {
-  readonly runtime: ReturnType<typeof parseBrowserRenderRuntimeOptions>;
+  readonly localImageResolver?: LocalImageResolver;
   readonly timeoutMs: number;
 }
+
+type RenderJobOutcome =
+  | { readonly error: unknown; readonly kind: "failure" }
+  | { readonly kind: "success"; readonly result: RenderResult };
 
 interface RenderJob<TData extends JsonObject = JsonObject> {
   cancelled: boolean;
   expectedFingerprint: string | undefined;
   readonly input: CoordinatedTemplateRenderInput<TData>;
   readonly jobId: number;
+  phase: "preflight" | "queued" | "released" | "worker";
   readonly revision: number;
   reject(error: unknown): void;
   resolve(result: RenderResult): void;
@@ -79,7 +100,6 @@ function parseCoordinatorOptions(
 ): ParsedCoordinatorOptions {
   if (value === undefined) {
     return {
-      runtime: parseBrowserRenderRuntimeOptions(undefined),
       timeoutMs: DEFAULT_WORKER_TIMEOUT_MS,
     };
   }
@@ -100,7 +120,7 @@ function parseCoordinatorOptions(
   for (const key of Reflect.ownKeys(descriptors)) {
     if (
       typeof key !== "string" ||
-      !["fontAssetBaseUrl", "localImageResolver", "timeoutMs"].includes(key) ||
+      !["localImageResolver", "timeoutMs"].includes(key) ||
       descriptors[key]?.get ||
       descriptors[key]?.set
     ) {
@@ -124,23 +144,18 @@ function parseCoordinatorOptions(
       ["coordinatorOptions", "timeoutMs"],
     );
   }
-  const runtimeOptions: BrowserRenderRuntimeOptions = {
-    ...(descriptors.fontAssetBaseUrl?.value !== undefined
-      ? {
-          fontAssetBaseUrl: descriptors.fontAssetBaseUrl.value as string | URL,
-        }
-      : {}),
-    ...(descriptors.localImageResolver?.value !== undefined
-      ? {
-          localImageResolver: descriptors.localImageResolver
-            .value as NonNullable<
-            BrowserRenderRuntimeOptions["localImageResolver"]
-          >,
-        }
-      : {}),
-  };
+  const resolverValue = descriptors.localImageResolver?.value as unknown;
+  if (resolverValue !== undefined && typeof resolverValue !== "function") {
+    throw coordinatorFailure(
+      "INVALID_DATA",
+      "localImageResolver must be a function.",
+      ["coordinatorOptions", "localImageResolver"],
+    );
+  }
   return {
-    runtime: parseBrowserRenderRuntimeOptions(runtimeOptions),
+    ...(resolverValue === undefined
+      ? {}
+      : { localImageResolver: resolverValue as LocalImageResolver }),
     timeoutMs:
       (timeoutValue as number | undefined) ?? DEFAULT_WORKER_TIMEOUT_MS,
   };
@@ -172,6 +187,18 @@ function hasExactKeys(value: Record<string, unknown>, keys: readonly string[]) {
   return (
     actual.length === expected.length &&
     actual.every((key, index) => key === expected[index])
+  );
+}
+
+function isBoundedPath(value: unknown): value is readonly (number | string)[] {
+  return (
+    Array.isArray(value) &&
+    value.length <= 32 &&
+    value.every(
+      (segment) =>
+        (typeof segment === "string" && segment.length <= 120) ||
+        (typeof segment === "number" && Number.isSafeInteger(segment)),
+    )
   );
 }
 
@@ -208,15 +235,10 @@ function parseWorkerResponse(
           !isPlainRecord(item) ||
           !hasExactKeys(item, ["code", "message", "path"]) ||
           typeof item.code !== "string" ||
+          !DOCUMENT_ERROR_CODES.has(item.code as DocumentErrorCode) ||
           typeof item.message !== "string" ||
           item.message.length > DOCUMENT_LIMITS.generalStringCharacters ||
-          !Array.isArray(item.path) ||
-          item.path.length > 32 ||
-          item.path.some(
-            (segment) =>
-              (typeof segment !== "string" && typeof segment !== "number") ||
-              (typeof segment === "string" && segment.length > 120),
-          ),
+          !isBoundedPath(item.path),
       )
     ) {
       return coordinatorFailure(
@@ -224,8 +246,8 @@ function parseWorkerResponse(
         "The render worker returned an invalid error.",
       );
     }
-    const issues: DocumentIssue[] = value.issues.map(() => ({
-      code: "RENDER_FAILED",
+    const issues: DocumentIssue[] = value.issues.map((item) => ({
+      code: (item as { code: DocumentErrorCode }).code,
       message: "The render worker could not complete the document.",
       path: ["worker"],
     }));
@@ -281,8 +303,7 @@ function parseWorkerResponse(
         item.code.length > 120 ||
         typeof item.message !== "string" ||
         item.message.length > DOCUMENT_LIMITS.generalStringCharacters ||
-        (item.path !== undefined &&
-          (!Array.isArray(item.path) || item.path.length > 32)),
+        (item.path !== undefined && !isBoundedPath(item.path)),
     ) ||
     value.result.finalDimensions.some(
       (item) =>
@@ -331,36 +352,45 @@ export function createBrowserRenderCoordinator(
     active = pending;
     pending = undefined;
     const job = active;
+    job.phase = "preflight";
     job.timeout = setTimeout(() => {
-      finish(
+      cancel(
         job,
-        coordinatorFailure(
-          "RENDER_TIMEOUT",
-          "The render worker exceeded its time limit.",
-        ),
+        "The render worker exceeded its time limit.",
+        "RENDER_TIMEOUT",
       );
     }, parsedOptions.timeoutMs);
     void execute(job);
   };
 
-  const finish = (job: RenderJob, outcome: RenderResult | unknown) => {
+  const settle = (job: RenderJob, outcome: RenderJobOutcome) => {
     if (job.settled) return;
     job.settled = true;
     if (job.timeout) clearTimeout(job.timeout);
-    job.worker?.terminate();
-    job.worker = undefined;
-    if (active === job) active = undefined;
-    if (outcome && typeof outcome === "object" && "pdfBytes" in outcome) {
-      const result = outcome as RenderResult;
+    if (outcome.kind === "success") {
+      const { result } = outcome;
       if (currentRevision === result.revision && job.jobId === jobSequence) {
         lastValid = cloneResult(result);
       }
       job.resolve(result);
     } else {
       job.cancelled = true;
-      job.reject(outcome);
+      job.reject(outcome.error);
     }
+  };
+
+  const release = (job: RenderJob) => {
+    if (job.phase === "released") return;
+    job.phase = "released";
+    job.worker?.terminate();
+    job.worker = undefined;
+    if (active === job) active = undefined;
     queueMicrotask(pump);
+  };
+
+  const finish = (job: RenderJob, outcome: RenderJobOutcome) => {
+    settle(job, outcome);
+    release(job);
   };
 
   const execute = async (job: RenderJob) => {
@@ -379,23 +409,17 @@ export function createBrowserRenderCoordinator(
           job.template,
           job.input,
           async ({ imageIds, resolvedTheme }) => {
-            if (
-              imageIds.length > 0 &&
-              !parsedOptions.runtime.localImageResolver
-            ) {
+            if (imageIds.length > 0 && !parsedOptions.localImageResolver) {
               throw coordinatorFailure(
                 "INVALID_DATA",
                 "A local image resolver is required.",
                 ["runtimeOptions", "localImageResolver"],
               );
             }
-            if (
-              imageIds.length > 0 &&
-              parsedOptions.runtime.localImageResolver
-            ) {
+            if (imageIds.length > 0 && parsedOptions.localImageResolver) {
               preparedImages = await preflightLocalImages(
                 imageIds,
-                parsedOptions.runtime.localImageResolver,
+                parsedOptions.localImageResolver,
               );
             }
             return {
@@ -410,12 +434,14 @@ export function createBrowserRenderCoordinator(
         );
       if (job.cancelled || job.jobId !== jobSequence) {
         preparedImages = [];
+        release(job);
         return;
       }
       job.expectedFingerprint =
         await fingerprintNormalizedTemplateInput(normalized);
       if (job.cancelled || job.jobId !== jobSequence) {
         preparedImages = [];
+        release(job);
         return;
       }
       const worker = new Worker(
@@ -423,14 +449,15 @@ export function createBrowserRenderCoordinator(
         { name: `docn-render-${job.jobId}`, type: "module" },
       );
       job.worker = worker;
+      job.phase = "worker";
       const onFailure = () =>
-        finish(
-          job,
-          coordinatorFailure(
+        finish(job, {
+          error: coordinatorFailure(
             "RENDER_FAILED",
             "The render worker terminated unexpectedly.",
           ),
-        );
+          kind: "failure",
+        });
       worker.addEventListener("error", onFailure, { once: true });
       worker.addEventListener("messageerror", onFailure, { once: true });
       worker.addEventListener("message", (event: MessageEvent<unknown>) => {
@@ -442,7 +469,12 @@ export function createBrowserRenderCoordinator(
           return;
         }
         const response = parseWorkerResponse(event.data, job);
-        finish(job, response);
+        finish(
+          job,
+          response instanceof DocumentValidationError
+            ? { error: response, kind: "failure" }
+            : { kind: "success", result: response },
+        );
       });
       const request: RenderWorkerRequestV2 = {
         jobId: job.jobId,
@@ -461,13 +493,22 @@ export function createBrowserRenderCoordinator(
       preparedImages = [];
     } catch (error) {
       preparedImages = [];
-      finish(job, error);
+      finish(job, { error, kind: "failure" });
     }
   };
 
-  const cancel = (job: RenderJob | undefined, reason: string) => {
+  const cancel = (
+    job: RenderJob | undefined,
+    reason: string,
+    code: "RENDER_FAILED" | "RENDER_TIMEOUT" = "RENDER_FAILED",
+  ) => {
     if (!job || job.settled) return;
-    finish(job, coordinatorFailure("RENDER_FAILED", reason));
+    job.cancelled = true;
+    settle(job, {
+      error: coordinatorFailure(code, reason),
+      kind: "failure",
+    });
+    if (job.phase !== "preflight") release(job);
   };
 
   const interruptForNavigation = () => {
@@ -538,6 +579,7 @@ export function createBrowserRenderCoordinator(
           expectedFingerprint: undefined,
           input,
           jobId,
+          phase: "queued",
           reject,
           revision: requestedRevision as number,
           resolve,

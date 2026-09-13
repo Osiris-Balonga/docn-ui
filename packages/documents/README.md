@@ -133,9 +133,14 @@ private image-byte copies use a separate transferable channel. Runtime
 resolvers, template functions, schemas and URLs never cross `postMessage`.
 Workers load installed templates from a static trusted map, recheck protocol and
 image integrity, and publish only bounded, identity-matched results. The
-explicit browser font base remains a caller-side same-origin policy input;
-manifest font URLs are root-relative, so a worker resolves the same qualified
-assets from `self.location.origin` without transferring runtime options.
+coordinator deliberately has no `fontAssetBaseUrl`; that option belongs only to
+direct `renderPdf`. Manifest font URLs are root-relative, so the worker resolves
+its qualified static assets from `self.location.origin` without transferring
+runtime options.
+An in-flight resolver cannot be forcibly aborted: supersession settles its
+public promise immediately but retains the one physical preflight slot until
+that resolver returns, then releases its copies and starts only the latest
+pending revision.
 
 Continuous plans are screen-only and use an opaque final-marker token matching
 `^[A-Z][A-Z0-9_]{0,31}$`. The source-owned template renders that token in a
