@@ -557,6 +557,15 @@ or weakening either advanced API. Flow uses a `FixedDocumentRenderPlan` whose
 document is the existing wrapping `DocumentFrame` composition; it is distinct
 from a non-wrapping fixed composition at the template level.
 
+A continuous plan's `finalMarker` is an opaque ASCII token matching
+`^[A-Z][A-Z0-9_]{0,31}$`. It is validated before document rendering and must be
+rendered by the source-owned template as the final standalone, non-wrapping
+`Text`. It is not arbitrary prose and must not depend on automatic hyphenation
+or line wrapping. PDF.js may still expose one token as multiple adjacent text
+items; probe and final qualification accept only a coherent same-line sequence
+with a strict leading boundary and transformed glyph bounds inside the
+MediaBox.
+
 `resolvedTheme` is the deep-frozen, fingerprinted full theme used by public
 theme-aware components. Because its weights, type scale, and spacing equal the
 base preset, new compositions preserve the qualified geometry. `legacyStyle`

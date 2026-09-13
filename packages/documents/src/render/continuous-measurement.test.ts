@@ -91,21 +91,6 @@ describe("continuous final PDF qualification", () => {
     expect(() =>
       qualifyFinalContinuousPdf(inspection(items), format, marker),
     ).not.toThrow();
-
-    const spacedItems = [
-      textItem(" FINAL", 10, 20, 25),
-      textItem("MARKER ", 35, 20, 25),
-    ];
-    expect(() =>
-      inspectContinuousTextContent(1, 100, spacedItems, "FINAL MARKER"),
-    ).not.toThrow();
-    expect(() =>
-      qualifyFinalContinuousPdf(
-        inspection(spacedItems),
-        format,
-        "FINAL MARKER",
-      ),
-    ).not.toThrow();
   });
 
   it.each([
@@ -130,37 +115,6 @@ describe("continuous final PDF qualification", () => {
       expectFinalQualificationFailure(inspection(items));
     },
   );
-
-  it("accepts a bounded wrapped marker and rejects distant or reordered lines", () => {
-    const wrappedMarker = "FINAL_MARKER_WRAPPED_ACROSS_TWO_TEXT_LINES_1234";
-    const valid = [
-      textItem("FINAL_MARKER_WRAPPED_", 10, 30, 70),
-      textItem("ACROSS_", 80, 30, 25),
-      textItem("TWO_TEXT_LINES_1234", 10, 20, 70),
-    ];
-    expect(wrappedMarker).toHaveLength(47);
-    expect(() =>
-      inspectContinuousTextContent(1, 100, valid, wrappedMarker),
-    ).not.toThrow();
-    expect(() =>
-      qualifyFinalContinuousPdf(inspection(valid), format, wrappedMarker),
-    ).not.toThrow();
-
-    const distant = [valid[0]!, valid[1]!, textItem(valid[2]!.str, 10, 2, 70)];
-    const reordered = [
-      textItem(valid[0]!.str, 10, 20, 70),
-      textItem(valid[1]!.str, 80, 20, 25),
-      textItem(valid[2]!.str, 10, 30, 70),
-    ];
-    for (const invalid of [distant, reordered]) {
-      expect(() =>
-        inspectContinuousTextContent(1, 100, invalid, wrappedMarker),
-      ).toThrow("The continuous final marker was not rendered.");
-      expect(() =>
-        qualifyFinalContinuousPdf(inspection(invalid), format, wrappedMarker),
-      ).toThrow();
-    }
-  });
 
   it.each([
     ["prefix in one item", [textItem(`NOT_${marker}`)]],

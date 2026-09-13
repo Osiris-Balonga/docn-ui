@@ -41,7 +41,9 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S03 — `feat(render): unify continuous and structured result handling`
 
-- [x] Add browser continuous measurement using the qualified final-marker and height limits.
+- [x] Add browser continuous measurement using a 1–32 character opaque ASCII
+      final-marker token rendered as final standalone non-wrapping text, plus
+      the qualified height limits.
 - [x] Inspect actual page count and final dimensions for every plan kind.
 - [x] Translate renderer/measurement/finalization failures into structured errors without personal data.
 

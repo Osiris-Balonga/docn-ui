@@ -153,20 +153,12 @@ function isCoherentMarkerSequence(
   if (items.length === 0 || items.some((item) => !hasFiniteGlyphBox(item))) {
     return false;
   }
-  let lineStart = items[0];
-  if (!lineStart) return false;
   for (let index = 1; index < items.length; index += 1) {
     const previous = items[index - 1];
     const current = items[index];
-    if (!previous || !current) return false;
-    if (areTextItemsOnSameLine(previous, current)) {
-      if (!areAdjacentTextItems(previous, current)) return false;
-      continue;
-    }
-    if (!isPlausibleLineWrap(previous, current, lineStart)) {
+    if (!previous || !current || !areAdjacentTextItems(previous, current)) {
       return false;
     }
-    lineStart = current;
   }
   return true;
 }
@@ -231,38 +223,6 @@ function areTextItemsOnSameLine(
     Math.min(leftItem.height, rightItem.height) * 0.25,
   );
   return Math.abs(rightBaseline - leftBaseline) <= baselineTolerance;
-}
-
-function isPlausibleLineWrap(
-  previous: ContinuousTextItem,
-  current: ContinuousTextItem,
-  previousLineStart: ContinuousTextItem,
-): boolean {
-  if (
-    !hasFiniteGlyphBox(previous) ||
-    !hasFiniteGlyphBox(current) ||
-    !hasFiniteGlyphBox(previousLineStart)
-  ) {
-    return false;
-  }
-  const previousX = previous.transform[4] ?? Number.NaN;
-  const currentX = current.transform[4] ?? Number.NaN;
-  const lineStartX = previousLineStart.transform[4] ?? Number.NaN;
-  const previousBaseline = previous.transform[5] ?? Number.NaN;
-  const currentBaseline = current.transform[5] ?? Number.NaN;
-  const largerHeight = Math.max(previous.height, current.height);
-  const lineTolerance = Math.max(
-    0.5,
-    Math.min(previous.height, current.height) * 0.25,
-  );
-  const verticalDrop = previousBaseline - currentBaseline;
-  const horizontalReturnTolerance = Math.max(2, largerHeight * 2);
-  return (
-    verticalDrop > lineTolerance &&
-    verticalDrop <= Math.max(4, largerHeight * 3) &&
-    currentX <= previousX + largerHeight &&
-    Math.abs(currentX - lineStartX) <= horizontalReturnTolerance
-  );
 }
 
 function glyphBounds(item: ContinuousTextItem): GlyphBounds | null {

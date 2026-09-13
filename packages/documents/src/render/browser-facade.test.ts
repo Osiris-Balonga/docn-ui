@@ -104,9 +104,17 @@ describe("browser renderPdf facade boundaries", () => {
     expect(String(failure)).not.toContain(privateValue);
   });
 
-  it("rejects an empty or oversized continuous final marker", async () => {
+  it("rejects malformed continuous marker tokens before document rendering", async () => {
     vi.stubGlobal("location", { origin: "https://documents.example" });
-    for (const finalMarker of ["", "x".repeat(257)]) {
+    for (const finalMarker of [
+      "",
+      "A".repeat(33),
+      "FINAL MARKER",
+      "FINAL-MARKER",
+      "final_marker",
+      "É_FINAL_MARKER",
+    ]) {
+      const createDocument = vi.fn();
       const invalidMarkerTemplate = defineTemplateDescriptor({
         ...continuousFeasibilityRenderable,
         createPlan(context: TemplatePlanContext<Record<string, never>>) {
@@ -116,7 +124,7 @@ describe("browser renderPdf facade boundaries", () => {
             throw new Error("Expected continuous plan.");
           return {
             ...renderPlan,
-            plan: { ...renderPlan.plan, finalMarker },
+            plan: { ...renderPlan.plan, createDocument, finalMarker },
           };
         },
       });
@@ -131,6 +139,7 @@ describe("browser renderPdf facade boundaries", () => {
           },
         ],
       });
+      expect(createDocument).not.toHaveBeenCalled();
     }
   });
 });

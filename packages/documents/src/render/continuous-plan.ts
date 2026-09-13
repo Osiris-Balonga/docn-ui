@@ -1,15 +1,13 @@
 import { DocumentValidationError } from "../core/errors";
 
-const MAX_CONTINUOUS_FINAL_MARKER_LENGTH = 256;
+const CONTINUOUS_FINAL_MARKER_PATTERN = /^[A-Z][A-Z0-9_]{0,31}$/u;
 
 export function assertQualifiedContinuousFinalMarker(
   finalMarker: unknown,
 ): asserts finalMarker is string {
   if (
     typeof finalMarker === "string" &&
-    finalMarker === finalMarker.trim() &&
-    finalMarker.trim().length > 0 &&
-    finalMarker.length <= MAX_CONTINUOUS_FINAL_MARKER_LENGTH
+    CONTINUOUS_FINAL_MARKER_PATTERN.test(finalMarker)
   ) {
     return;
   }

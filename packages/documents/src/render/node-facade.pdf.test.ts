@@ -8,6 +8,7 @@ import { createComponentDocumentFlowEvidencePlan } from "../examples/renderable-
 import {
   continuousFeasibilityRenderable,
   continuousFinalOverflowRenderable,
+  continuousMaximumMarkerRenderable,
   continuousMissingFinalMarkerRenderable,
   continuousNonTerminalMarkerRenderable,
   continuousOverflowRenderable,
@@ -158,20 +159,39 @@ describe("Node renderPdf facade", () => {
       const document = await loadingTask.promise;
       const page = await document.getPage(1);
       const content = await page.getTextContent();
-      const items = content.items.filter(
-        (
-          item,
-        ): item is typeof item & {
-          height: number;
-          str: string;
-          transform: number[];
-        } => "str" in item && "height" in item && "transform" in item,
-      );
+      const items = content.items
+        .filter(
+          (
+            item,
+          ): item is typeof item & {
+            height: number;
+            str: string;
+            transform: number[];
+            width: number;
+          } =>
+            "str" in item &&
+            "height" in item &&
+            "transform" in item &&
+            "width" in item,
+        )
+        .filter(({ str }) => str.trim().length > 0);
       expect(items.map(({ str }) => str).join(" ")).toContain(
         "DOCN_CONTINUOUS_FINAL_MARKER",
       );
       const lowerEdge = Math.min(
-        ...items.map((item) => (item.transform[5] ?? 0) - item.height),
+        ...items.map((item) => {
+          const [a = 0, b = 0, c = 0, d = 0, , y = 0] = item.transform;
+          const horizontalScale = Math.hypot(a, b);
+          const verticalScale = Math.hypot(c, d);
+          const horizontalY = (b / horizontalScale) * item.width;
+          const verticalY = (d / verticalScale) * item.height;
+          return Math.min(
+            y,
+            y + horizontalY,
+            y - verticalY,
+            y + horizontalY - verticalY,
+          );
+        }),
       );
       expect(lowerEdge).toBeCloseTo(12, 1);
     } finally {
@@ -181,6 +201,29 @@ describe("Node renderPdf facade", () => {
     await expect(
       renderPdf(continuousOverflowRenderable, { data: {}, revision: 25 }),
     ).rejects.toMatchObject({ code: "LAYOUT_OVERFLOW" });
+  });
+
+  it("renders and requalifies the maximum 32-character marker token", async () => {
+    const maximumMarker = "DOCN_CONTINUOUS_FINAL_MARKER_123";
+    expect(maximumMarker).toHaveLength(32);
+    const result = await renderPdf(continuousMaximumMarkerRenderable, {
+      data: {},
+    });
+    const loadingTask = getDocument({
+      data: result.pdfBytes.slice(),
+      useSystemFonts: false,
+    });
+    try {
+      const document = await loadingTask.promise;
+      const page = await document.getPage(1);
+      const content = await page.getTextContent();
+      const items = content.items.filter(
+        (item): item is typeof item & { str: string } => "str" in item,
+      );
+      expect(items.map(({ str }) => str).join("")).toContain(maximumMarker);
+    } finally {
+      await loadingTask.destroy();
+    }
   });
 
   it("rejects a final continuous PDF that diverges after a valid probe", async () => {
