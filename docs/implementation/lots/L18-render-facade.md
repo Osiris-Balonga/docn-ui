@@ -29,11 +29,11 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 
 ### L18-S02 — `feat(render): add the matching browser renderPdf facade`
 
-- [ ] Export the same call shape from the browser entry.
-- [ ] Implement exact `BrowserRenderRuntimeOptions`: default font assets to `globalThis.location.origin`, allow only an explicit same-origin base URL, and keep the local-image resolver runtime-only.
-- [ ] Resolve document images only through the separate validated local-image resolver in `runtimeOptions`; template data contains IDs, never URLs.
-- [ ] Create the runtime-owned `ResolvedLocalImage` lookup consumed by plan factories and dispose every resolved source centrally on success, failure, cancellation, supersession, timeout, or worker termination.
-- [ ] Keep bytes suitable for caller-owned preview and download copies.
+- [x] Export the same call shape from the browser entry.
+- [x] Implement exact `BrowserRenderRuntimeOptions`: default font assets to `globalThis.location.origin`, allow only an explicit same-origin base URL, and keep the local-image resolver runtime-only.
+- [x] Resolve document images only through the separate validated local-image resolver in `runtimeOptions`; template data contains IDs, never URLs.
+- [x] Create the runtime-owned `ResolvedLocalImage` lookup consumed by plan factories and dispose every resolved source centrally on success and failure; S04 owns cancellation, supersession, timeout, and worker-termination lifecycle hooks because S02 has no worker protocol.
+- [x] Keep bytes suitable for caller-owned preview and download copies.
 
 **Acceptance:** Source-compatible input produces the same normalized fingerprint and expected document geometry in Node and browser.
 

@@ -7,7 +7,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./browser": "./src/render/browser.ts",
+    "./browser": "./src/render/browser-entry.ts",
     "./catalog": "./src/catalog/index.ts",
     "./catalog/components": "./src/catalog/components.ts",
     "./core": "./src/core/index.ts",

@@ -10,7 +10,7 @@
 | `@docn-ui/documents/themes`                           | The three PDF token sets                                                                   | Core only; hex colors and point values, no website tokens     |
 | `@docn-ui/documents/primitives`                       | Fixed/flow PDF frames, shared theme access, composition primitives and measurement helpers | React and `@react-pdf/renderer`; no site imports              |
 | `@docn-ui/documents/templates/business-card-coral-qr` | One source-owned business-card composition and definition                                  | Core, themes, primitives, and React-pdf only; no site imports |
-| `@docn-ui/documents/browser`                          | Browser fixed-document adapter and same-origin asset resolver                              | React-pdf browser renderer and manifest assets                |
+| `@docn-ui/documents/browser`                          | Unified browser `renderPdf` facade, advanced fixed adapter, and same-origin asset resolver | React-pdf browser renderer and manifest assets                |
 | `@docn-ui/documents/node`                             | Unified Node `renderPdf` facade, advanced plan adapters, and verified local-asset resolver | React-pdf Node renderer and pdf-lib box finalization          |
 | `@docn-ui/documents`                                  | Node-oriented convenience surface for repository tooling                                   | Core, themes, manifest, measurement, and Node adapter         |
 | `@docn-ui/documents/feasibility/browser`              | Hidden L02/L04 qualification page only                                                     | Internal evidence; never a registry dependency                |
@@ -55,7 +55,7 @@ Templates depend on core, themes, primitives, and an explicit renderer entry. Th
 
 Registry work in L07 must derive item files and binary declarations from the same source tree and manifest. Feasibility fixtures, QA artifacts, website components, and generated output are excluded.
 
-## Unified Node rendering
+## Unified Node and browser rendering
 
 The Node entry now owns the normal orchestration path without requiring a
 consumer to import React, React PDF, format resolution, font registration, or
@@ -70,6 +70,16 @@ const result = await renderPdf(template, {
   revision: 4,
 });
 ```
+
+Browser consumers use the same call shape from
+`@docn-ui/documents/browser`. Its optional `fontAssetBaseUrl` defaults to
+`globalThis.location.origin`; an explicit string or `URL` must resolve to the
+same HTTP(S) origin and cannot contain credentials. Before rendering, the
+browser facade fetches every manifest font with redirects disabled, verifies
+its byte length and SHA-256 digest, snapshots it as a data URI, and temporarily
+prioritizes only those verified sources in React PDF's global font store.
+Earlier advanced registrations are restored after the awaited facade render,
+and facade renders are serialized around that temporary ordering.
 
 `result` retains the released `RenderResult` fields. An omitted revision is
 `1`; a supplied positive revision is copied unchanged. The optional
@@ -96,11 +106,12 @@ Template data may carry validated local-image IDs, never paths or URLs. The
 optional `localImageResolver` returns owned PNG/JPEG bytes and a declared MIME
 type at runtime. The facade decodes bounded pixels, applies EXIF orientation,
 normalizes metadata, fingerprints the final descriptor, and releases the
-plan-facing sources after every render outcome. PNG pixels and rotated JPEG
+plan-facing browser object URLs after success or failure. PNG pixels and rotated JPEG
 pixels become deterministic metadata-free PNGs. An unrotated JPEG keeps its
 compressed image stream while bounded metadata segments are removed, avoiding
-an unbounded JPEG-to-PNG size increase. The browser facade and worker
-coordinator remain L18 follow-up work.
+an unbounded JPEG-to-PNG size increase. L18-S04 remains responsible for worker
+supersession, timeout and termination cleanup because those lifecycle events do
+not exist in the direct one-shot S02 call.
 
 The package currently distributes TypeScript source. Use the `./node` subpath
 through a TypeScript-aware loader or bundler, as the qualified registry consumer

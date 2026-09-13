@@ -67,7 +67,7 @@ All packages below are development dependencies; none is imported by the product
 | eslint-config-next                 | 16.3.3          | MIT     | Framework, accessibility, React, and TypeScript lint rules                       |
 | Prettier                           | 3.9.6           | MIT     | Code/config formatting                                                           |
 | Vitest / coverage-v8               | 4.1.11          | MIT     | Exclusive lightweight projects and optional coverage; same version               |
-| Vite (transitive, locked)          | 8.2.2           | MIT     | Vitest transformation; not the production Next bundler                           |
+| Vite (test-only, locked)           | 8.2.2           | MIT     | Direct browser-facade fixture build plus Vitest transformation; not the production Next bundler |
 | jsdom                              | 30.0.1          | MIT     | Component environment only; compatible with Node 24.18                           |
 | Testing Library React / DOM        | 16.3.3 / 10.4.1 | MIT     | Composition semantics and rendering                                              |
 | Testing Library user-event         | 14.6.6          | MIT     | Keyboard interaction in jsdom                                                    |
