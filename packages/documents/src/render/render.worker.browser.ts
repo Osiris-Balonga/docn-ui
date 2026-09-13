@@ -14,7 +14,9 @@ import {
   PDF_RENDER_PROTOCOL_VERSION_V2,
   createRenderWorkerEpochGateV2,
   fingerprintWorkerRequestV2,
+  matchesRenderWorkerDispatchV2,
   receiveRenderWorkerImagesV2,
+  settleRenderWorkerEpochV2,
   serializeWorkerFailureV2,
   validateRenderWorkerRequestV2,
   type RenderWorkerImagesV2,
@@ -138,8 +140,7 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
   const requestMessage = pendingRequest;
   if (
     !requestMessage ||
-    requestMessage.request.jobId !== message.jobId ||
-    requestMessage.request.request.revision !== message.revision ||
+    !matchesRenderWorkerDispatchV2(requestMessage.request, message) ||
     !epochGate.isCurrent(requestMessage.epoch)
   ) {
     return;
@@ -151,11 +152,13 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
       request,
       requestMessage.request.themeWasExplicit,
     );
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     const images = await receiveRenderWorkerImagesV2(
       message,
       request.localImageDescriptors,
       message.jobId,
       message.revision,
+      message.dispatchId,
     );
     if (!epochGate.isCurrent(requestMessage.epoch)) return;
     const assetResolver = await createVerifiedBrowserAssetResolver(
@@ -179,10 +182,13 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
         "result",
       ]);
     }
-    if (
-      result.fingerprint !==
-      (await fingerprintWorkerRequestV2(requestMessage.request))
-    ) {
+    const fingerprint = await settleRenderWorkerEpochV2(
+      epochGate,
+      requestMessage.epoch,
+      fingerprintWorkerRequestV2(requestMessage.request),
+    );
+    if (!fingerprint.current) return;
+    if (result.fingerprint !== fingerprint.value) {
       return workerFailure("The worker result fingerprint is invalid.", [
         "worker",
         "result",
@@ -204,6 +210,7 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
       revision: message.revision,
       type: "result",
     };
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     scope.postMessage(response, [pdfBytes]);
   } catch (error) {
     if (!epochGate.isCurrent(requestMessage.epoch)) return;

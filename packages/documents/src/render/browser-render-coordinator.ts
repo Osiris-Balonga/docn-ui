@@ -349,6 +349,7 @@ export function createBrowserRenderCoordinator(
   let debounceTimer: ReturnType<typeof setTimeout> | undefined;
   let disposed = false;
   let jobSequence = 0;
+  let dispatchSequence = 0;
   let lastValid: RenderResult | null = null;
   let preflightBlocked = false;
 
@@ -486,6 +487,7 @@ export function createBrowserRenderCoordinator(
         );
       });
       const request: RenderWorkerRequestV2 = {
+        dispatchId: (dispatchSequence += 1),
         jobId: job.jobId,
         protocolVersion: PDF_RENDER_PROTOCOL_VERSION_V2,
         request: normalized as NormalizedTemplateInput<JsonObject>,
@@ -495,6 +497,7 @@ export function createBrowserRenderCoordinator(
       const imageTransfer = createRenderWorkerImagesV2(
         job.jobId,
         normalized.revision,
+        request.dispatchId,
         preparedImages,
       );
       worker.postMessage(request);

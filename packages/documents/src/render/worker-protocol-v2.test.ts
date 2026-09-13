@@ -12,7 +12,10 @@ import {
   PDF_RENDER_PROTOCOL_VERSION_V2,
   createRenderWorkerEpochGateV2,
   createRenderWorkerImagesV2,
+  matchesRenderWorkerDispatchV2,
   receiveRenderWorkerImagesV2,
+  settleRenderWorkerEpochV2,
+  type RenderWorkerRequestV2,
   validateRenderWorkerRequestV2,
 } from "./worker-protocol-v2";
 
@@ -28,6 +31,7 @@ async function request() {
     },
   );
   return {
+    dispatchId: 11,
     jobId: 3,
     protocolVersion: PDF_RENDER_PROTOCOL_VERSION_V2,
     request: normalized,
@@ -45,11 +49,34 @@ describe("render worker protocol V2", () => {
     expect(gate.isCurrent(replay)).toBe(true);
   });
 
+  it("drops a prior epoch when a replay arrives during fingerprinting", async () => {
+    const gate = createRenderWorkerEpochGateV2();
+    const first = gate.begin(3, 7);
+    const published: string[] = [];
+    let resolveFingerprint: ((value: string) => void) | undefined;
+    const fingerprint = new Promise<string>((resolve) => {
+      resolveFingerprint = resolve;
+    });
+    const publish = async () => {
+      const settled = await settleRenderWorkerEpochV2(gate, first, fingerprint);
+      if (settled.current) published.push(settled.value);
+    };
+    const completion = publish();
+
+    const replay = gate.begin(3, 7);
+    resolveFingerprint?.("sha256:old");
+
+    await completion;
+    expect(published).toEqual([]);
+    expect(gate.isCurrent(replay)).toBe(true);
+  });
+
   it("accepts only the exact bounded normalized JSON envelope", async () => {
     const value = await request();
     expect(validateRenderWorkerRequestV2(structuredClone(value))).toMatchObject(
       {
         jobId: 3,
+        dispatchId: 11,
         request: { revision: 7 },
         themeWasExplicit: false,
       },
@@ -76,7 +103,7 @@ describe("render worker protocol V2", () => {
       [parseLocalImageId("brand-mark")],
       async () => ({ bytes: original, declaredMimeType: "image/png" }),
     );
-    const transfer = createRenderWorkerImagesV2(4, 8, prepared);
+    const transfer = createRenderWorkerImagesV2(4, 8, 12, prepared);
     const received = structuredClone(transfer.message, {
       transfer: [...transfer.transfer],
     });
@@ -87,6 +114,7 @@ describe("render worker protocol V2", () => {
       prepared.map(({ descriptor }) => descriptor),
       4,
       8,
+      12,
     );
     expect(verified[0]?.descriptor).toEqual(prepared[0]?.descriptor);
     expect(verified[0]?.bytes).not.toBe(prepared[0]?.bytes);
@@ -99,6 +127,7 @@ describe("render worker protocol V2", () => {
         prepared.map(({ descriptor }) => descriptor),
         4,
         8,
+        12,
       ),
     ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
   });
@@ -122,7 +151,7 @@ describe("render worker protocol V2", () => {
       [parseLocalImageId("photo")],
       async () => ({ bytes: withFill, declaredMimeType: "image/jpeg" }),
     );
-    const transfer = createRenderWorkerImagesV2(5, 9, prepared);
+    const transfer = createRenderWorkerImagesV2(5, 9, 13, prepared);
     const received = structuredClone(transfer.message, {
       transfer: [...transfer.transfer],
     });
@@ -132,6 +161,7 @@ describe("render worker protocol V2", () => {
         prepared.map(({ descriptor }) => descriptor),
         5,
         9,
+        13,
       ),
     ).resolves.toMatchObject([
       { descriptor: { heightPx: 1, mimeType: "image/jpeg", widthPx: 2 } },
@@ -155,6 +185,7 @@ describe("render worker protocol V2", () => {
                 sha256,
               },
             ],
+            dispatchId: 14,
             jobId: 6,
             protocolVersion: 2,
             revision: 10,
@@ -172,8 +203,33 @@ describe("render worker protocol V2", () => {
           ],
           6,
           10,
+          14,
         ),
       ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
     }
+  });
+
+  it("keeps a replay pending when images belong to the prior dispatch", async () => {
+    const first = await request();
+    const replay = { ...first, dispatchId: first.dispatchId + 1 };
+    const oldImages = createRenderWorkerImagesV2(
+      first.jobId,
+      first.request.revision,
+      first.dispatchId,
+      [],
+    ).message;
+    const replayImages = createRenderWorkerImagesV2(
+      replay.jobId,
+      replay.request.revision,
+      replay.dispatchId,
+      [],
+    ).message;
+    let pending: RenderWorkerRequestV2 | undefined = replay;
+
+    if (matchesRenderWorkerDispatchV2(pending, oldImages)) pending = undefined;
+    expect(pending).toBe(replay);
+    if (pending && matchesRenderWorkerDispatchV2(pending, replayImages))
+      pending = undefined;
+    expect(pending).toBeUndefined();
   });
 });

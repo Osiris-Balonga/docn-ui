@@ -39,8 +39,10 @@ L17 implemented these additive layers:
 - Browser workers resolve a template from a static trusted ID map. A
   `RenderableTemplate`, Zod schema, plan factory, runtime option, or local-image
   resolver never crosses `postMessage`; V2 carries JSON and separate
-  private-copy `ArrayBuffer` transfers only. The runtime owns resolved-image
-  lookup creation and cleanup.
+  private-copy `ArrayBuffer` transfers only. A coordinator-generated dispatch
+  ID binds each byte transfer to its exact request even when a job ID and
+  revision are replayed. The runtime owns resolved-image lookup creation and
+  cleanup.
 
 Templates depend on core, themes, primitives, and an explicit renderer entry. They never import Next.js, shadcn/ui, Tailwind, site CSS, or a user-provided module path. `pdfjs-dist` remains in the feasibility/inspection path; it is not required by the reusable fixed-document Node adapter.
 

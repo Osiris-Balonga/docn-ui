@@ -54,7 +54,7 @@ Target responsibilities: render runtime, platform adapters, result inspection, c
 ### L18-S04 — `feat(worker): add interruptible render protocol v2`
 
 - [x] Serialize the flat normalized request, complete resolved theme, caller revision and validated image descriptors under protocol V2.
-- [x] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by canonical image ID and digest; detachment must not mutate the preflight-owned copy.
+- [x] Transfer private copies of validated local PNG/JPEG bytes in a separate bounded message channel keyed by coordinator dispatch ID, canonical image ID and digest; detachment must not mutate the preflight-owned copy or let bytes from an older replay consume the current request.
 - [x] Resolve templates inside the worker through a static trusted ID-to-loader map; never transfer `RenderableTemplate`, Zod schemas, `createPlan`, `runtimeOptions`, or resolvers through `postMessage`.
 - [x] Keep protocol V2 JSON-only apart from separately transferred `ArrayBuffer`s; no function, `URL`, schema, template object, or platform runtime object is a protocol field.
 - [x] Permit one active render and one latest pending request; interrupt and recreate the worker on supersession, timeout or navigation.

@@ -21,6 +21,7 @@ import {
 export const PDF_RENDER_PROTOCOL_VERSION_V2 = 2 as const;
 
 export interface RenderWorkerRequestV2 {
+  readonly dispatchId: number;
   readonly jobId: number;
   readonly protocolVersion: typeof PDF_RENDER_PROTOCOL_VERSION_V2;
   readonly request: NormalizedTemplateInput<JsonObject>;
@@ -35,6 +36,7 @@ export interface RenderWorkerImageV2 {
 }
 
 export interface RenderWorkerImagesV2 {
+  readonly dispatchId: number;
   readonly images: readonly RenderWorkerImageV2[];
   readonly jobId: number;
   readonly protocolVersion: typeof PDF_RENDER_PROTOCOL_VERSION_V2;
@@ -87,6 +89,15 @@ export function createRenderWorkerEpochGateV2() {
       );
     },
   });
+}
+
+export async function settleRenderWorkerEpochV2<T>(
+  gate: ReturnType<typeof createRenderWorkerEpochGateV2>,
+  epoch: RenderWorkerEpochV2,
+  pending: Promise<T>,
+): Promise<{ current: true; value: T } | { current: false }> {
+  const value = await pending;
+  return gate.isCurrent(epoch) ? { current: true, value } : { current: false };
 }
 
 function protocolFailure(message: string, path: readonly string[]): never {
@@ -400,6 +411,7 @@ export function validateRenderWorkerRequestV2(
   if (
     !isPlainRecord(value) ||
     !hasExactKeys(value, [
+      "dispatchId",
       "jobId",
       "protocolVersion",
       "request",
@@ -414,6 +426,14 @@ export function validateRenderWorkerRequestV2(
     protocolFailure("Invalid render worker request.", ["worker"]);
   if (!Number.isSafeInteger(value.jobId) || (value.jobId as number) < 1)
     protocolFailure("Invalid render worker job ID.", ["worker", "jobId"]);
+  if (
+    !Number.isSafeInteger(value.dispatchId) ||
+    (value.dispatchId as number) < 1
+  )
+    protocolFailure("Invalid render worker dispatch ID.", [
+      "worker",
+      "dispatchId",
+    ]);
   const request = value.request;
   if (
     !hasExactKeys(request, [
@@ -490,6 +510,7 @@ export function validateRenderWorkerRequestV2(
 export function createRenderWorkerImagesV2(
   jobId: number,
   revision: number,
+  dispatchId: number,
   images: PreparedLocalImages,
 ): { message: RenderWorkerImagesV2; transfer: readonly ArrayBuffer[] } {
   const transfer: ArrayBuffer[] = [];
@@ -504,6 +525,7 @@ export function createRenderWorkerImagesV2(
   });
   return {
     message: Object.freeze({
+      dispatchId,
       images: Object.freeze(payload),
       jobId,
       protocolVersion: PDF_RENDER_PROTOCOL_VERSION_V2,
@@ -525,10 +547,12 @@ export async function receiveRenderWorkerImagesV2(
   descriptors: readonly LocalImageDescriptor[],
   expectedJobId: number,
   expectedRevision: number,
+  expectedDispatchId: number,
 ): Promise<PreparedLocalImages> {
   if (
     !isPlainRecord(value) ||
     !hasExactKeys(value, [
+      "dispatchId",
       "images",
       "jobId",
       "protocolVersion",
@@ -539,6 +563,7 @@ export async function receiveRenderWorkerImagesV2(
     value.type !== "images" ||
     value.jobId !== expectedJobId ||
     value.revision !== expectedRevision ||
+    value.dispatchId !== expectedDispatchId ||
     !Array.isArray(value.images) ||
     value.images.length !== descriptors.length
   )
@@ -581,6 +606,17 @@ export async function receiveRenderWorkerImagesV2(
     prepared.push(Object.freeze({ bytes, descriptor }));
   }
   return Object.freeze(prepared);
+}
+
+export function matchesRenderWorkerDispatchV2(
+  request: RenderWorkerRequestV2,
+  images: RenderWorkerImagesV2,
+): boolean {
+  return (
+    request.jobId === images.jobId &&
+    request.request.revision === images.revision &&
+    request.dispatchId === images.dispatchId
+  );
 }
 
 export function fingerprintWorkerRequestV2(
