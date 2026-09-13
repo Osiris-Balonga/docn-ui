@@ -10,6 +10,7 @@ import { getPdfTheme } from "../themes/themes";
 import { preflightLocalImages } from "./local-images";
 import {
   PDF_RENDER_PROTOCOL_VERSION_V2,
+  createRenderWorkerEpochGateV2,
   createRenderWorkerImagesV2,
   receiveRenderWorkerImagesV2,
   validateRenderWorkerRequestV2,
@@ -36,6 +37,14 @@ async function request() {
 }
 
 describe("render worker protocol V2", () => {
+  it("invalidates a concurrent replay with the same job and revision", () => {
+    const gate = createRenderWorkerEpochGateV2();
+    const first = gate.begin(3, 7);
+    const replay = gate.begin(3, 7);
+    expect(gate.isCurrent(first)).toBe(false);
+    expect(gate.isCurrent(replay)).toBe(true);
+  });
+
   it("accepts only the exact bounded normalized JSON envelope", async () => {
     const value = await request();
     expect(validateRenderWorkerRequestV2(structuredClone(value))).toMatchObject(

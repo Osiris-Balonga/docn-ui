@@ -124,9 +124,10 @@ const { lastValid, stale } = coordinator.getSnapshot();
 coordinator.dispose();
 ```
 
-The caller owns monotonically increasing revisions. The coordinator keeps one
-active job and only the latest pending job, starts latest-wins ownership before
-asynchronous image/font preparation, and terminates/recreates its module worker
+The caller owns monotonically increasing revisions. The coordinator applies a
+250 ms latest-only debounce before preflight, keeps one active job and only the
+latest pending job, starts latest-wins ownership before asynchronous image/font
+preparation, and terminates/recreates its module worker
 on supersession, timeout, navigation or disposal. `lastValid` and `stale` are UI
 state and do not change `RenderResult`. The normalized request is exact JSON;
 private image-byte copies use a separate transferable channel. Runtime
@@ -139,8 +140,11 @@ its qualified static assets from `self.location.origin` without transferring
 runtime options.
 An in-flight resolver cannot be forcibly aborted: supersession settles its
 public promise immediately but retains the one physical preflight slot until
-that resolver returns, then releases its copies and starts only the latest
-pending revision.
+that resolver returns. `getSnapshot().preflightBlocked` exposes this temporary
+state. The one retained pending request still expires at its own enqueue
+deadline, and additional submissions fail immediately with `RENDER_TIMEOUT`
+until the old resolver settles. Recovery is automatic after that late settle;
+the caller may submit a fresh increasing revision.
 
 Continuous plans are screen-only and use an opaque final-marker token matching
 `^[A-Z][A-Z0-9_]{0,31}$`. The source-owned template renders that token in a

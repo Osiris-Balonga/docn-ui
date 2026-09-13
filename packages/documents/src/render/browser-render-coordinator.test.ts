@@ -162,7 +162,34 @@ describe("browser render coordinator", () => {
     expect(value.getSnapshot()).toMatchObject({ stale: false });
   });
 
-  it("does not overlap non-interruptible preflight during a revision burst", async () => {
+  it("debounces a burst before starting only the latest preflight", async () => {
+    vi.useFakeTimers();
+    const normalize = vi
+      .spyOn(normalizationInternal, "normalizeTemplateInputForRender")
+      .mockRejectedValue(new Error("fixture preflight stop"));
+    const value = coordinator({ timeoutMs: 5_000 });
+    const first = value
+      .render(violetFounderBusinessCardRenderable, { data: {}, revision: 4 })
+      .catch((error: unknown) => error);
+    const intermediate = value
+      .render(violetFounderBusinessCardRenderable, { data: {}, revision: 5 })
+      .catch((error: unknown) => error);
+    const latest = value
+      .render(violetFounderBusinessCardRenderable, { data: {}, revision: 6 })
+      .catch((error: unknown) => error);
+    await vi.advanceTimersByTimeAsync(249);
+    expect(normalize).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    await latest;
+    expect(normalize).toHaveBeenCalledTimes(1);
+    expect(normalize.mock.calls[0]?.[1]).toMatchObject({ revision: 6 });
+    expect(await first).toMatchObject({ code: "RENDER_FAILED" });
+    expect(await intermediate).toMatchObject({ code: "RENDER_FAILED" });
+    expect(FixtureWorker.instances).toHaveLength(0);
+    vi.useRealTimers();
+  });
+
+  it("bounds pending work while a superseded preflight remains physical", async () => {
     const actualNormalize =
       normalizationInternal.normalizeTemplateInputForRender;
     let rejectPhysicalPreflight: ((error: unknown) => void) | undefined;
@@ -175,10 +202,10 @@ describe("browser render coordinator", () => {
           }),
       )
       .mockImplementation(actualNormalize);
-    const value = coordinator({ timeoutMs: 5_000 });
+    const value = coordinator({ timeoutMs: 600 });
     const first = value.render(violetFounderBusinessCardRenderable, {
       data: {},
-      revision: 4,
+      revision: 14,
     });
     const firstExpectation = expect(first).rejects.toMatchObject({
       code: "RENDER_FAILED",
@@ -187,26 +214,36 @@ describe("browser render coordinator", () => {
 
     const intermediate = value.render(violetFounderBusinessCardRenderable, {
       data: {},
-      revision: 5,
+      revision: 15,
     });
     const intermediateExpectation = expect(intermediate).rejects.toMatchObject({
-      code: "RENDER_FAILED",
+      code: "RENDER_TIMEOUT",
     });
-    const latest = value.render(violetFounderBusinessCardRenderable, {
+    const blocked = value.render(violetFounderBusinessCardRenderable, {
       data: {},
-      revision: 6,
+      revision: 16,
     });
     expect(normalize).toHaveBeenCalledTimes(1);
     expect(FixtureWorker.instances).toHaveLength(0);
     await firstExpectation;
+    await expect(blocked).rejects.toMatchObject({ code: "RENDER_TIMEOUT" });
+    expect(value.getSnapshot().preflightBlocked).toBe(true);
     await intermediateExpectation;
+    expect(normalize).toHaveBeenCalledTimes(1);
 
     rejectPhysicalPreflight?.(new Error("late preflight failure"));
+    await vi.waitFor(() =>
+      expect(value.getSnapshot().preflightBlocked).toBe(false),
+    );
+    const latest = value.render(violetFounderBusinessCardRenderable, {
+      data: {},
+      revision: 16,
+    });
     const worker = await latestWorker(0);
     expect(normalize).toHaveBeenCalledTimes(2);
-    expect(worker.request().request.revision).toBe(6);
+    expect(worker.request().request.revision).toBe(16);
     await worker.succeed();
-    await expect(latest).resolves.toMatchObject({ revision: 6 });
+    await expect(latest).resolves.toMatchObject({ revision: 16 });
   });
 
   it("terminates an active worker on supersession and ignores its late result", async () => {
@@ -264,7 +301,7 @@ describe("browser render coordinator", () => {
   });
 
   it("terminates on timeout and recreates after navigation", async () => {
-    const timed = coordinator({ timeoutMs: 100 });
+    const timed = coordinator({ timeoutMs: 500 });
     const timedRender = timed.render(violetFounderBusinessCardRenderable, {
       data: {},
       revision: 11,

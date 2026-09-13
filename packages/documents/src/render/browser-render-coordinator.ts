@@ -28,6 +28,7 @@ import {
 
 const DEFAULT_WORKER_TIMEOUT_MS = 15_000;
 const MAX_WORKER_TIMEOUT_MS = 60_000;
+const RENDER_DEBOUNCE_MS = 250;
 const DOCUMENT_ERROR_CODES = new Set<DocumentErrorCode>([
   "ASSET_REJECTED",
   "INVALID_DATA",
@@ -51,6 +52,7 @@ export type CoordinatedTemplateRenderInput<TData extends JsonObject> =
 export interface BrowserRenderCoordinatorSnapshot {
   readonly currentRevision: number | null;
   readonly lastValid: RenderResult | null;
+  readonly preflightBlocked: boolean;
   readonly stale: boolean;
 }
 
@@ -77,6 +79,7 @@ interface RenderJob<TData extends JsonObject = JsonObject> {
   expectedFingerprint: string | undefined;
   readonly input: CoordinatedTemplateRenderInput<TData>;
   readonly jobId: number;
+  readonly notBefore: number;
   phase: "preflight" | "queued" | "released" | "worker";
   readonly revision: number;
   reject(error: unknown): void;
@@ -343,23 +346,27 @@ export function createBrowserRenderCoordinator(
   let active: RenderJob | undefined;
   let pending: RenderJob | undefined;
   let currentRevision: number | null = null;
+  let debounceTimer: ReturnType<typeof setTimeout> | undefined;
   let disposed = false;
   let jobSequence = 0;
   let lastValid: RenderResult | null = null;
+  let preflightBlocked = false;
 
   const pump = () => {
     if (active || !pending || disposed) return;
+    const remainingDebounce = pending.notBefore - Date.now();
+    if (remainingDebounce > 0) {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        debounceTimer = undefined;
+        pump();
+      }, remainingDebounce);
+      return;
+    }
     active = pending;
     pending = undefined;
     const job = active;
     job.phase = "preflight";
-    job.timeout = setTimeout(() => {
-      cancel(
-        job,
-        "The render worker exceeded its time limit.",
-        "RENDER_TIMEOUT",
-      );
-    }, parsedOptions.timeoutMs);
     void execute(job);
   };
 
@@ -381,10 +388,12 @@ export function createBrowserRenderCoordinator(
 
   const release = (job: RenderJob) => {
     if (job.phase === "released") return;
+    const releasedPreflight = job.phase === "preflight";
     job.phase = "released";
     job.worker?.terminate();
     job.worker = undefined;
     if (active === job) active = undefined;
+    if (releasedPreflight) preflightBlocked = false;
     queueMicrotask(pump);
   };
 
@@ -508,7 +517,20 @@ export function createBrowserRenderCoordinator(
       error: coordinatorFailure(code, reason),
       kind: "failure",
     });
-    if (job.phase !== "preflight") release(job);
+    if (job.phase === "preflight") {
+      preflightBlocked = true;
+    } else {
+      release(job);
+    }
+  };
+
+  const expire = (job: RenderJob) => {
+    if (pending === job) pending = undefined;
+    cancel(
+      job,
+      "The render request exceeded its enqueue deadline.",
+      "RENDER_TIMEOUT",
+    );
   };
 
   const interruptForNavigation = () => {
@@ -524,6 +546,7 @@ export function createBrowserRenderCoordinator(
       if (disposed) return;
       disposed = true;
       globalThis.removeEventListener("pagehide", interruptForNavigation);
+      if (debounceTimer) clearTimeout(debounceTimer);
       jobSequence += 1;
       cancel(active, "The render coordinator was disposed.");
       cancel(pending, "The pending render was disposed.");
@@ -533,6 +556,7 @@ export function createBrowserRenderCoordinator(
       return Object.freeze({
         currentRevision,
         lastValid: lastValid ? cloneResult(lastValid) : null,
+        preflightBlocked,
         stale: lastValid !== null && lastValid.revision !== currentRevision,
       });
     },
@@ -545,6 +569,15 @@ export function createBrowserRenderCoordinator(
           coordinatorFailure(
             "RENDER_FAILED",
             "The render coordinator is disposed.",
+          ),
+        );
+      }
+      if (preflightBlocked) {
+        return Promise.reject(
+          coordinatorFailure(
+            "RENDER_TIMEOUT",
+            "The render coordinator is waiting for a timed-out preflight to settle.",
+            ["coordinator", "preflight"],
           ),
         );
       }
@@ -579,6 +612,7 @@ export function createBrowserRenderCoordinator(
           expectedFingerprint: undefined,
           input,
           jobId,
+          notBefore: Date.now() + RENDER_DEBOUNCE_MS,
           phase: "queued",
           reject,
           revision: requestedRevision as number,
@@ -587,12 +621,20 @@ export function createBrowserRenderCoordinator(
           template,
           worker: undefined,
         };
+        job.timeout = setTimeout(
+          () => expire(job as unknown as RenderJob),
+          parsedOptions.timeoutMs,
+        );
         if (pending) {
           cancel(pending, "The pending render was superseded.");
         }
         pending = job as unknown as RenderJob;
         if (active) {
           cancel(active, "The active render was superseded.");
+        }
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
+          debounceTimer = undefined;
         }
         pump();
       });

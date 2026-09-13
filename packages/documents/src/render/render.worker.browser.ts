@@ -12,11 +12,13 @@ import { renderNormalizedPdfInBrowser } from "./browser-normalized-render";
 import { createVerifiedBrowserAssetResolver } from "./verified-assets.browser";
 import {
   PDF_RENDER_PROTOCOL_VERSION_V2,
+  createRenderWorkerEpochGateV2,
   fingerprintWorkerRequestV2,
   receiveRenderWorkerImagesV2,
   serializeWorkerFailureV2,
   validateRenderWorkerRequestV2,
   type RenderWorkerImagesV2,
+  type RenderWorkerEpochV2,
   type RenderWorkerOutboundV2,
   type RenderWorkerRequestV2,
 } from "./worker-protocol-v2";
@@ -28,20 +30,15 @@ interface WorkerScope {
 }
 
 const scope = globalThis as unknown as WorkerScope;
-let latestIdentity: { jobId: number; revision: number } | undefined;
-let pendingRequest: RenderWorkerRequestV2 | undefined;
+const epochGate = createRenderWorkerEpochGateV2();
+let pendingRequest:
+  { epoch: RenderWorkerEpochV2; request: RenderWorkerRequestV2 } | undefined;
 
 const trustedTemplateLoaders = {
   "business-card-violet-founder": async () =>
     (await import("../templates/renderable/violet-founder-business-card"))
       .violetFounderBusinessCardRenderable,
 } as const;
-
-function isCurrent(jobId: number, revision: number): boolean {
-  return (
-    latestIdentity?.jobId === jobId && latestIdentity.revision === revision
-  );
-}
 
 function workerFailure(message: string, path: readonly string[]): never {
   throw new DocumentValidationError([{ code: "INVALID_DATA", message, path }]);
@@ -141,18 +138,18 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
   const requestMessage = pendingRequest;
   if (
     !requestMessage ||
-    requestMessage.jobId !== message.jobId ||
-    requestMessage.request.revision !== message.revision ||
-    !isCurrent(message.jobId, message.revision)
+    requestMessage.request.jobId !== message.jobId ||
+    requestMessage.request.request.revision !== message.revision ||
+    !epochGate.isCurrent(requestMessage.epoch)
   ) {
     return;
   }
   pendingRequest = undefined;
-  const { request } = requestMessage;
+  const { request } = requestMessage.request;
   try {
     const template = await validateTemplateForRequest(
       request,
-      requestMessage.themeWasExplicit,
+      requestMessage.request.themeWasExplicit,
     );
     const images = await receiveRenderWorkerImagesV2(
       message,
@@ -160,19 +157,19 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
       message.jobId,
       message.revision,
     );
-    if (!isCurrent(message.jobId, message.revision)) return;
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     const assetResolver = await createVerifiedBrowserAssetResolver(
       scope.location.origin,
     );
-    if (!isCurrent(message.jobId, message.revision)) return;
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     const result = await renderNormalizedPdfInBrowser(
       template,
       request,
       images,
       assetResolver,
-      requestMessage.themeWasExplicit,
+      requestMessage.request.themeWasExplicit,
     );
-    if (!isCurrent(message.jobId, message.revision)) return;
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     if (
       result.pdfBytes.byteLength > DOCUMENT_LIMITS.finalPdfBytes ||
       result.pageCount > DOCUMENT_LIMITS.pages
@@ -183,7 +180,8 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
       ]);
     }
     if (
-      result.fingerprint !== (await fingerprintWorkerRequestV2(requestMessage))
+      result.fingerprint !==
+      (await fingerprintWorkerRequestV2(requestMessage.request))
     ) {
       return workerFailure("The worker result fingerprint is invalid.", [
         "worker",
@@ -208,7 +206,7 @@ async function handleImages(message: RenderWorkerImagesV2): Promise<void> {
     };
     scope.postMessage(response, [pdfBytes]);
   } catch (error) {
-    if (!isCurrent(message.jobId, message.revision)) return;
+    if (!epochGate.isCurrent(requestMessage.epoch)) return;
     scope.postMessage(
       serializeWorkerFailureV2(message.jobId, message.revision, error),
     );
@@ -250,11 +248,10 @@ scope.onmessage = (event) => {
   ) {
     try {
       const request = validateRenderWorkerRequestV2(value);
-      latestIdentity = {
-        jobId: request.jobId,
-        revision: request.request.revision,
+      pendingRequest = {
+        epoch: epochGate.begin(request.jobId, request.request.revision),
+        request,
       };
-      pendingRequest = request;
     } catch (error) {
       pendingRequest = undefined;
       const identity = readIdentity(value);

@@ -64,6 +64,31 @@ export type RenderWorkerInboundV2 =
 export type RenderWorkerOutboundV2 =
   RenderWorkerFailureV2 | RenderWorkerSuccessV2;
 
+export interface RenderWorkerEpochV2 {
+  readonly epoch: number;
+  readonly jobId: number;
+  readonly revision: number;
+}
+
+export function createRenderWorkerEpochGateV2() {
+  let current: RenderWorkerEpochV2 | undefined;
+  let sequence = 0;
+  return Object.freeze({
+    begin(jobId: number, revision: number): RenderWorkerEpochV2 {
+      sequence += 1;
+      current = Object.freeze({ epoch: sequence, jobId, revision });
+      return current;
+    },
+    isCurrent(candidate: RenderWorkerEpochV2): boolean {
+      return (
+        current?.epoch === candidate.epoch &&
+        current.jobId === candidate.jobId &&
+        current.revision === candidate.revision
+      );
+    },
+  });
+}
+
 function protocolFailure(message: string, path: readonly string[]): never {
   throw new DocumentValidationError([{ code: "INVALID_DATA", message, path }]);
 }

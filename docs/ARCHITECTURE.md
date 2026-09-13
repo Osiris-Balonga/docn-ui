@@ -137,8 +137,9 @@ Normalization receives exact `FontManifestIdentity` and local-image descriptor v
 Protocol V1 remains byte-for-byte and behaviorally unchanged in L17: `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` are not repurposed. L18 owns the new coordinator, protocol V2, and interruptibility. The browser worker resolves templates from a static trusted ID map; `RenderableTemplate`, Zod schemas, plan factories, runtime options, resolvers, `URL` objects, and functions never cross `postMessage`. Only JSON values plus separately transferred image `ArrayBuffer`s cross that boundary.
 
 The optional interactive browser coordinator is separate from the direct
-browser `renderPdf` call. Its ownership epoch advances before asynchronous
-preflight, it admits one active job plus only the latest pending job, and every
+browser `renderPdf` call. A 250 ms latest-only debounce runs before preflight;
+its ownership epoch advances when input is submitted, it admits one active job
+plus only the latest pending job, and every
 worker response is matched by worker instance, job ID and caller revision.
 Supersession, the bounded 15-second default timeout, navigation and explicit
 disposal terminate the worker; a subsequent accepted revision creates a fresh
@@ -149,9 +150,13 @@ SHA-256 before creating plan-facing sources. Last-valid/stale presentation state
 remains coordinator-owned and never enters `RenderResult` or protocol V2.
 Resolver/image preflight cannot be forcibly aborted. When it is superseded or
 times out, its promise is settled logically but retains the single physical
-preflight slot until the underlying resolver returns; only the latest pending
-revision starts afterward. This prevents rapid input from creating unbounded
-parallel resolvers or retaining multiple prepared byte sets.
+preflight slot until the underlying resolver returns. The latest pending job
+keeps its enqueue-time deadline and cannot wait forever; additional submissions
+fail with a structured timeout while the coordinator reports
+`preflightBlocked`. After the late resolver settles, its copies are released and
+the coordinator accepts new increasing revisions. This prevents rapid input
+from creating unbounded parallel resolvers or retaining multiple prepared byte
+sets.
 
 Registry installation and asset preparation are distinct. A source closure installs TypeScript, the visible installer, manifests and licenses. It does not imply that binary fonts or sample images have been fetched. The documented preparation step verifies and writes those binaries before the first render, after which runtime use is independent of the registry origin.
 
