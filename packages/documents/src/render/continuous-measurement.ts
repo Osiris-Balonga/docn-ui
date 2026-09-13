@@ -20,6 +20,13 @@ export interface ContinuousPdfInspection {
   readonly pageYMin: number;
 }
 
+interface GlyphBounds {
+  readonly bottom: number;
+  readonly left: number;
+  readonly right: number;
+  readonly top: number;
+}
+
 export function inspectContinuousTextContent(
   pageCount: number,
   pageHeight: number,
@@ -33,8 +40,12 @@ export function inspectContinuousTextContent(
   if (terminalMarkerItems(relevantItems, finalMarker).length === 0) {
     throw new Error("The continuous final marker was not rendered.");
   }
+  const bounds = relevantItems.map(glyphBounds);
+  if (bounds.some((value) => value === null)) {
+    throw new Error("The continuous text geometry was invalid.");
+  }
   const lowerEdge = Math.min(
-    ...items.map((item) => (item.transform[5] ?? 0) - item.height),
+    ...bounds.map((value) => value?.bottom ?? Number.NaN),
   );
   return { pageCount, usedHeightPt: pageHeight - lowerEdge };
 }
@@ -75,33 +86,21 @@ export function qualifyFinalContinuousPdf(
   const terminalItem = markerItems.at(-1);
   if (!terminalItem) return continuousFinalizationFailure();
   for (const item of markerItems) {
-    const x = item.transform[4] ?? Number.NaN;
-    const y = item.transform[5] ?? Number.NaN;
-    const left = Math.min(x, x + item.width);
-    const right = Math.max(x, x + item.width);
-    const bottom = y - item.height;
-    const top = y + item.height;
+    const bounds = glyphBounds(item);
     if (
-      !Number.isFinite(left) ||
-      !Number.isFinite(right) ||
-      !Number.isFinite(bottom) ||
-      !Number.isFinite(top) ||
-      item.width < 0 ||
-      item.height <= 0 ||
-      left < pageXMin - 0.01 ||
-      right > pageXMax + 0.01 ||
-      bottom < pageYMin - 0.01 ||
-      top > pageYMax + 0.01
+      !bounds ||
+      bounds.left < pageXMin - 0.01 ||
+      bounds.right > pageXMax + 0.01 ||
+      bounds.bottom < pageYMin - 0.01 ||
+      bounds.top > pageYMax + 0.01
     ) {
       return continuousFinalizationFailure();
     }
   }
-  const terminalLowerEdge =
-    (terminalItem.transform[5] ?? Number.NaN) - terminalItem.height;
+  const terminalLowerEdge = glyphBounds(terminalItem)?.bottom ?? Number.NaN;
+  const relevantBounds = relevantItems.map(glyphBounds);
   const lowestEdge = Math.min(
-    ...relevantItems.map(
-      (item) => (item.transform[5] ?? Number.NaN) - item.height,
-    ),
+    ...relevantBounds.map((bounds) => bounds?.bottom ?? Number.NaN),
   );
   if (
     !Number.isFinite(terminalLowerEdge) ||
@@ -154,27 +153,26 @@ function isCoherentMarkerSequence(
   if (items.length === 0 || items.some((item) => !hasFiniteGlyphBox(item))) {
     return false;
   }
+  let lineStart = items[0];
+  if (!lineStart) return false;
   for (let index = 1; index < items.length; index += 1) {
     const previous = items[index - 1];
     const current = items[index];
-    if (!previous || !current || !areAdjacentTextItems(previous, current)) {
+    if (!previous || !current) return false;
+    if (areTextItemsOnSameLine(previous, current)) {
+      if (!areAdjacentTextItems(previous, current)) return false;
+      continue;
+    }
+    if (!isPlausibleLineWrap(previous, current, lineStart)) {
       return false;
     }
+    lineStart = current;
   }
   return true;
 }
 
 function hasFiniteGlyphBox(item: ContinuousTextItem): boolean {
-  const x = item.transform[4] ?? Number.NaN;
-  const y = item.transform[5] ?? Number.NaN;
-  return (
-    Number.isFinite(x) &&
-    Number.isFinite(y) &&
-    Number.isFinite(item.width) &&
-    Number.isFinite(item.height) &&
-    item.width >= 0 &&
-    item.height > 0
-  );
+  return glyphBounds(item) !== null;
 }
 
 function areAdjacentTextItems(
@@ -233,4 +231,85 @@ function areTextItemsOnSameLine(
     Math.min(leftItem.height, rightItem.height) * 0.25,
   );
   return Math.abs(rightBaseline - leftBaseline) <= baselineTolerance;
+}
+
+function isPlausibleLineWrap(
+  previous: ContinuousTextItem,
+  current: ContinuousTextItem,
+  previousLineStart: ContinuousTextItem,
+): boolean {
+  if (
+    !hasFiniteGlyphBox(previous) ||
+    !hasFiniteGlyphBox(current) ||
+    !hasFiniteGlyphBox(previousLineStart)
+  ) {
+    return false;
+  }
+  const previousX = previous.transform[4] ?? Number.NaN;
+  const currentX = current.transform[4] ?? Number.NaN;
+  const lineStartX = previousLineStart.transform[4] ?? Number.NaN;
+  const previousBaseline = previous.transform[5] ?? Number.NaN;
+  const currentBaseline = current.transform[5] ?? Number.NaN;
+  const largerHeight = Math.max(previous.height, current.height);
+  const lineTolerance = Math.max(
+    0.5,
+    Math.min(previous.height, current.height) * 0.25,
+  );
+  const verticalDrop = previousBaseline - currentBaseline;
+  const horizontalReturnTolerance = Math.max(2, largerHeight * 2);
+  return (
+    verticalDrop > lineTolerance &&
+    verticalDrop <= Math.max(4, largerHeight * 3) &&
+    currentX <= previousX + largerHeight &&
+    Math.abs(currentX - lineStartX) <= horizontalReturnTolerance
+  );
+}
+
+function glyphBounds(item: ContinuousTextItem): GlyphBounds | null {
+  if (
+    item.transform.length < 6 ||
+    !Number.isFinite(item.width) ||
+    !Number.isFinite(item.height) ||
+    item.width <= 0 ||
+    item.height <= 0
+  ) {
+    return null;
+  }
+  const [a, b, c, d, x, y] = item.transform;
+  if (
+    !Number.isFinite(a) ||
+    !Number.isFinite(b) ||
+    !Number.isFinite(c) ||
+    !Number.isFinite(d) ||
+    !Number.isFinite(x) ||
+    !Number.isFinite(y)
+  ) {
+    return null;
+  }
+  const horizontalScale = Math.hypot(a ?? 0, b ?? 0);
+  const verticalScale = Math.hypot(c ?? 0, d ?? 0);
+  const determinant = (a ?? 0) * (d ?? 0) - (b ?? 0) * (c ?? 0);
+  if (
+    horizontalScale <= Number.EPSILON ||
+    verticalScale <= Number.EPSILON ||
+    Math.abs(determinant) <= horizontalScale * verticalScale * 1e-6
+  ) {
+    return null;
+  }
+  const horizontalX = ((a ?? 0) / horizontalScale) * item.width;
+  const horizontalY = ((b ?? 0) / horizontalScale) * item.width;
+  const verticalX = ((c ?? 0) / verticalScale) * item.height;
+  const verticalY = ((d ?? 0) / verticalScale) * item.height;
+  const points = [
+    [x ?? 0, y ?? 0],
+    [(x ?? 0) + horizontalX, (y ?? 0) + horizontalY],
+    [(x ?? 0) - verticalX, (y ?? 0) - verticalY],
+    [(x ?? 0) + horizontalX - verticalX, (y ?? 0) + horizontalY - verticalY],
+  ] as const;
+  return {
+    bottom: Math.min(...points.map((point) => point[1])),
+    left: Math.min(...points.map((point) => point[0])),
+    right: Math.max(...points.map((point) => point[0])),
+    top: Math.max(...points.map((point) => point[1])),
+  };
 }

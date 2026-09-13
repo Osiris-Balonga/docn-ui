@@ -25,6 +25,14 @@ function textItem(
   return { height, str, transform: [1, 0, 0, 1, x, y], width };
 }
 
+function transformedTextItem(
+  transform: readonly number[],
+  width = 50,
+  height = 6,
+): ContinuousTextItem {
+  return { height, str: marker, transform, width };
+}
+
 function inspection(
   items: readonly ContinuousTextItem[],
 ): ContinuousPdfInspection {
@@ -123,6 +131,37 @@ describe("continuous final PDF qualification", () => {
     },
   );
 
+  it("accepts a bounded wrapped marker and rejects distant or reordered lines", () => {
+    const wrappedMarker = "FINAL_MARKER_WRAPPED_ACROSS_TWO_TEXT_LINES_1234";
+    const valid = [
+      textItem("FINAL_MARKER_WRAPPED_", 10, 30, 70),
+      textItem("ACROSS_", 80, 30, 25),
+      textItem("TWO_TEXT_LINES_1234", 10, 20, 70),
+    ];
+    expect(wrappedMarker).toHaveLength(47);
+    expect(() =>
+      inspectContinuousTextContent(1, 100, valid, wrappedMarker),
+    ).not.toThrow();
+    expect(() =>
+      qualifyFinalContinuousPdf(inspection(valid), format, wrappedMarker),
+    ).not.toThrow();
+
+    const distant = [valid[0]!, valid[1]!, textItem(valid[2]!.str, 10, 2, 70)];
+    const reordered = [
+      textItem(valid[0]!.str, 10, 20, 70),
+      textItem(valid[1]!.str, 80, 20, 25),
+      textItem(valid[2]!.str, 10, 30, 70),
+    ];
+    for (const invalid of [distant, reordered]) {
+      expect(() =>
+        inspectContinuousTextContent(1, 100, invalid, wrappedMarker),
+      ).toThrow("The continuous final marker was not rendered.");
+      expect(() =>
+        qualifyFinalContinuousPdf(inspection(invalid), format, wrappedMarker),
+      ).toThrow();
+    }
+  });
+
   it.each([
     ["prefix in one item", [textItem(`NOT_${marker}`)]],
     ["suffix in one item", [textItem(`${marker}_NOT`)]],
@@ -135,10 +174,14 @@ describe("continuous final PDF qualification", () => {
   });
 
   it.each([
-    ["below", textItem(marker, 10, 5, 50, 6)],
-    ["above", textItem(marker, 10, 98, 50, 6)],
-    ["left", textItem(marker, -1, 20, 50, 6)],
-    ["right", textItem(marker, format.widthPt - 20, 20, 30, 6)],
+    ["rotated below", transformedTextItem([1, -0.2, 0, 1, 10, 2])],
+    ["rotated above", transformedTextItem([0, 1, -1, 0, 10, 98])],
+    ["skewed left", transformedTextItem([1, 0, 1, 1, 2, 20])],
+    [
+      "skewed right",
+      transformedTextItem([1, 0, -1, 1, format.widthPt - 2, 20]),
+    ],
+    ["zero width", transformedTextItem([1, 0, 0, 1, 10, 20], 0)],
   ])("rejects a marker glyph box outside the MediaBox: %s", (_label, item) => {
     expectFinalQualificationFailure(inspection([item]));
   });
