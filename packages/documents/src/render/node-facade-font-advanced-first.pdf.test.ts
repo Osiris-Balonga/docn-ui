@@ -1,4 +1,4 @@
-import { copyFile, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { Font } from "@react-pdf/renderer";
@@ -12,9 +12,17 @@ import type { TemplateSampleAssets } from "../templates/types";
 import { createNodeAssetResolver } from "./assets.node";
 import { renderDocumentInNode } from "./node";
 
+interface TestFontSource {
+  data: unknown;
+  fontStyle: string;
+  fontWeight: number;
+  load(): Promise<void>;
+  src: string;
+}
+
 const packagedAssetRoot = new URL("../../assets/", import.meta.url);
-let assetRoot: string;
 const unusedSampleAssets = {} as TemplateSampleAssets;
+let assetRoot: string;
 
 beforeAll(async () => {
   Font.reset();
@@ -31,9 +39,21 @@ afterAll(async () => {
   await rm(assetRoot, { force: true, recursive: true });
 });
 
-it("accepts equivalent advanced registrations and rejects mismatched content", async () => {
+it("temporarily prioritizes verified bytes over a cached mismatched advanced source", async () => {
+  const target = assetManifest.assets.find(
+    (asset) => asset.family === "Noto Sans" && asset.weight === 400,
+  );
+  const substitute = assetManifest.assets.find(
+    (asset) => asset.family === "Noto Serif" && asset.weight === 400,
+  );
+  if (!target || !substitute)
+    throw new Error("Expected qualified font fixtures.");
+  const targetPath = join(assetRoot, target.file);
+  await copyFile(new URL(substitute.file, packagedAssetRoot), targetPath);
+
   const format = resolveFormat("card-85x55");
   if (format.kind !== "fixed") throw new Error("Expected a fixed card format.");
+  const legacyResolver = createNodeAssetResolver(assetRoot);
   const advancedBytes = await renderDocumentInNode(
     {
       document:
@@ -41,9 +61,28 @@ it("accepts equivalent advanced registrations and rejects mismatched content", a
       format,
       printProfile: { kind: "screen" },
     },
-    createNodeAssetResolver(assetRoot),
+    legacyResolver,
   );
   expect(new TextDecoder().decode(advancedBytes.slice(0, 4))).toBe("%PDF");
+
+  const family = Font.getRegisteredFonts()[target.family] as
+    { sources: TestFontSource[] } | undefined;
+  const cachedMismatchedSource = family?.sources.find(
+    (source) =>
+      source.fontStyle === target.style &&
+      source.fontWeight === target.weight &&
+      source.src === targetPath,
+  );
+  if (!family || !cachedMismatchedSource) {
+    throw new Error("Expected the advanced source to be registered.");
+  }
+  expect(cachedMismatchedSource.data).not.toBeNull();
+  const priorOrder = family.sources.slice();
+  const originalLoad = cachedMismatchedSource.load;
+  cachedMismatchedSource.load = async () => {
+    throw new Error("Cached mismatched source was selected.");
+  };
+  await copyFile(new URL(target.file, packagedAssetRoot), targetPath);
 
   const result = await renderPdf(
     violetFounderBusinessCardRenderable,
@@ -52,21 +91,24 @@ it("accepts equivalent advanced registrations and rejects mismatched content", a
   );
   expect(result.pageCount).toBe(2);
 
-  const asset = assetManifest.assets[0]!;
-  const mismatchedSource = join(assetRoot, "fonts", "mismatched.woff");
-  await writeFile(mismatchedSource, "not the qualified font");
-  Font.register({
-    family: asset.family,
-    fontStyle: asset.style,
-    fontWeight: asset.weight,
-    src: mismatchedSource,
-  });
+  const restored = (
+    Font.getRegisteredFonts()[target.family] as { sources: TestFontSource[] }
+  ).sources;
+  for (const [index, source] of priorOrder.entries()) {
+    expect(restored[index]).toBe(source);
+  }
+  cachedMismatchedSource.load = originalLoad;
 
-  await expect(
-    renderPdf(
-      violetFounderBusinessCardRenderable,
-      { data: {} },
-      { fontAssetDirectory: assetRoot },
-    ),
-  ).rejects.toMatchObject({ code: "ASSET_REJECTED" });
+  const advancedAfterFacade = await renderDocumentInNode(
+    {
+      document:
+        violetFounderBusinessCardDefinition.renderSample(unusedSampleAssets),
+      format,
+      printProfile: { kind: "screen" },
+    },
+    legacyResolver,
+  );
+  expect(new TextDecoder().decode(advancedAfterFacade.slice(0, 4))).toBe(
+    "%PDF",
+  );
 });

@@ -607,16 +607,18 @@ consumer's root `assets/` directory. An explicit `fontAssetDirectory` is
 resolved to an absolute directory and remains subject to manifest containment
 and digest checks. The Node facade snapshots each verified font into an
 immutable data source before plan dispatch, so the facade-owned registration
-does not reopen its configured path. If React PDF's process-global font store
-already contains exact family, weight, and style registrations, the facade
-asynchronously verifies every source before dispatch. Canonical WOFF data URIs
-and local paths contained by the configured asset directory may coexist only
-when their current size and SHA-256 match the same manifest entry; remote,
-unknown, and mismatched sources are rejected. The facade retains its
-digest-bound registration without clearing unrelated user fonts. An equivalent
-earlier local source may remain React PDF's first match; mutation of that file
-or the process-global registry after the verified read is outside the supported
-process-local render boundary. The browser default is
+does not reopen its configured path. The pinned React PDF engine exposes a
+process-global, first-match font store. During each facade render, the Node
+adapter ensures a facade-owned canonical source exists for every qualified
+manifest slot, temporarily promotes those exact sources, and restores every
+prior source ordering in `finally`. Cached or mismatched advanced sources can
+therefore coexist without being selected by the facade, and no unrelated font
+family is cleared. Facade renders are serialized around this scope.
+`Font.reset()` is supported because stale facade sources are replaced;
+`Font.clear()` destroys the engine's standard font setup and is outside this
+contract. Concurrent mixed advanced/facade renders remain unsupported because
+advanced calls access the same global store outside the facade queue. The
+browser default is
 `globalThis.location.origin`; an
 explicit `fontAssetBaseUrl` must resolve to that same origin, and manifest
 public paths remain rooted below it. No remote font fallback is permitted.

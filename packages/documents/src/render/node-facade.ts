@@ -22,7 +22,7 @@ import { renderContinuousDocumentInNode, renderDocumentInNode } from "./node";
 import { createRenderResult } from "./result";
 import {
   createVerifiedNodeAssetResolver,
-  verifyVerifiedNodeFontRegistrationBoundary,
+  withVerifiedNodeFontPriority,
 } from "./verified-assets.node";
 
 export type { LocalImageResolver, LocalImageSource } from "./local-images";
@@ -195,6 +195,7 @@ export async function renderPdf<TData extends JsonObject>(
   if (!assetResolver) {
     throw new Error("Node font assets were not prepared.");
   }
+  const verifiedAssetResolver = assetResolver;
   const imageScope = createNodeLocalImageRenderScope(preparedImages);
   try {
     const legacyStyle = createLegacyTemplateStyleProjection(
@@ -211,11 +212,9 @@ export async function renderPdf<TData extends JsonObject>(
       printProfile: normalized.printProfile,
       resolvedTheme: normalized.theme,
     });
-    await verifyVerifiedNodeFontRegistrationBoundary(assetResolver);
-    const pdfBytes = await renderPlanInNode(
-      renderPlan,
-      normalized,
-      assetResolver,
+    const pdfBytes = await withVerifiedNodeFontPriority(
+      verifiedAssetResolver,
+      () => renderPlanInNode(renderPlan, normalized, verifiedAssetResolver),
     );
     return createRenderResult(
       pdfBytes,

@@ -35,4 +35,10 @@ it("keeps facade rendering compatible with later equivalent advanced registratio
     data: {},
   });
   expect(second.pageCount).toBe(2);
+
+  Font.reset();
+  const afterReset = await renderPdf(violetFounderBusinessCardRenderable, {
+    data: {},
+  });
+  expect(afterReset.pageCount).toBe(2);
 });

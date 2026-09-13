@@ -11,12 +11,19 @@ import type { AssetResolver } from "./assets";
 const packagedAssetRoot = fileURLToPath(
   new URL("../../assets/", import.meta.url),
 );
-const verifiedAssetRoots = new WeakMap<AssetResolver, string>();
+const trustedFacadeSources = new WeakSet<object>();
+let facadeRenderTail = Promise.resolve();
 
 interface RegisteredFontSource {
-  readonly fontStyle: unknown;
-  readonly fontWeight: unknown;
-  readonly src: unknown;
+  data: unknown;
+  readonly fontStyle: string;
+  readonly fontWeight: number;
+  loadResultPromise: Promise<void> | null;
+  readonly src: string;
+}
+
+interface RegisteredFontFamily {
+  sources: RegisteredFontSource[];
 }
 
 function assetFailure(assetId: string, message: string): never {
@@ -87,7 +94,7 @@ export async function createVerifiedNodeAssetResolver(
     }
   }
 
-  const resolver: AssetResolver = {
+  return {
     resolve(assetId, path = ["assetId"]) {
       const definition = getAssetDefinition(assetId, path);
       const source = verifiedSources.get(assetId);
@@ -95,147 +102,111 @@ export async function createVerifiedNodeAssetResolver(
       return { definition, source };
     },
   };
-  verifiedAssetRoots.set(resolver, assetRoot);
-  return resolver;
 }
 
-function registeredSourcesFor(
-  familyName: string,
-  style: string,
-  weight: number,
-): RegisteredFontSource[] {
-  const registered = Font.getRegisteredFonts() as Record<
+function registeredFonts(): Record<string, RegisteredFontFamily | undefined> {
+  return Font.getRegisteredFonts() as Record<
     string,
-    { readonly sources?: readonly RegisteredFontSource[] } | undefined
+    RegisteredFontFamily | undefined
   >;
+}
+
+function reusableTrustedSource(
+  source: RegisteredFontSource,
+  expectedSource: string,
+): boolean {
   return (
-    registered[familyName]?.sources?.filter(
-      (source) => source.fontStyle === style && source.fontWeight === weight,
-    ) ?? []
-  ).slice();
+    source.src === expectedSource &&
+    trustedFacadeSources.has(source) &&
+    !(source.data === null && source.loadResultPromise !== null)
+  );
 }
 
-function decodeCanonicalFontDataUri(
-  source: string,
-  assetId: string,
-  expectedBytes: number,
-): Uint8Array {
-  const match = /^data:font\/woff;base64,([A-Za-z0-9+/]*={0,2})$/.exec(source);
-  const payload = match?.[1];
-  if (
-    payload === undefined ||
-    payload.length % 4 !== 0 ||
-    payload.length > Math.ceil(expectedBytes / 3) * 4
-  ) {
-    return assetFailure(
-      assetId,
-      "A registered font data source is not a bounded canonical WOFF data URI.",
+function activateVerifiedFontPriority(resolver: AssetResolver): () => void {
+  const priorByFamily = new Map<string, RegisteredFontSource[]>();
+  const promotedByFamily = new Map<string, RegisteredFontSource[]>();
+  for (const familyName of new Set(
+    assetManifest.assets.map((asset) => asset.family),
+  )) {
+    priorByFamily.set(
+      familyName,
+      registeredFonts()[familyName]?.sources.slice() ?? [],
     );
   }
-  const bytes = Buffer.from(payload, "base64");
-  if (bytes.toString("base64") !== payload) {
-    return assetFailure(
-      assetId,
-      "A registered font data source is not canonical base64.",
-    );
-  }
-  return new Uint8Array(bytes);
-}
 
-async function readEquivalentRegisteredSource(
-  source: unknown,
-  assetRoot: string,
-  assetId: string,
-  expectedBytes: number,
-): Promise<Uint8Array> {
-  if (typeof source !== "string" || source.length === 0) {
-    return assetFailure(
-      assetId,
-      "A registered font source is not a supported local path or data URI.",
-    );
-  }
-  if (source.startsWith("data:")) {
-    return decodeCanonicalFontDataUri(source, assetId, expectedBytes);
-  }
-  if (!isAbsolute(source) && /^[A-Za-z][A-Za-z0-9+.-]*:/.test(source)) {
-    return assetFailure(
-      assetId,
-      "A registered font source is not a supported local path.",
-    );
-  }
-  try {
-    const localSource = await realpath(resolve(source));
-    const fromRoot = relative(assetRoot, localSource);
-    if (fromRoot.startsWith("..") || isAbsolute(fromRoot)) {
-      return assetFailure(
-        assetId,
-        "A registered font path resolves outside the configured asset directory.",
-      );
-    }
-    const sourceStat = await stat(localSource);
-    if (!sourceStat.isFile() || sourceStat.size !== expectedBytes) {
-      return assetFailure(
-        assetId,
-        "A registered local font does not match the manifest byte length.",
-      );
-    }
-    return new Uint8Array(await readFile(localSource));
-  } catch (error) {
-    if (error instanceof DocumentValidationError) throw error;
-    return assetFailure(assetId, "A registered local font could not be read.");
-  }
-}
-
-export async function verifyVerifiedNodeFontRegistrationBoundary(
-  resolver: AssetResolver,
-): Promise<void> {
-  const assetRoot = verifiedAssetRoots.get(resolver);
-  if (!assetRoot) {
-    return assetFailure(
-      "resolver",
-      "The font registration boundary requires a verified Node asset resolver.",
-    );
-  }
   for (const asset of assetManifest.assets) {
-    const sources = registeredSourcesFor(
-      asset.family,
-      asset.style,
-      asset.weight,
+    const expectedSource = resolver.resolve(asset.id).source;
+    let family = registeredFonts()[asset.family];
+    let source = family?.sources.find(
+      (candidate) =>
+        candidate.fontStyle === asset.style &&
+        candidate.fontWeight === asset.weight &&
+        reusableTrustedSource(candidate, expectedSource),
     );
-    const snapshots = sources.map((source) => ({ source, src: source.src }));
-    const bytes = await Promise.all(
-      snapshots.map(({ src }) =>
-        readEquivalentRegisteredSource(src, assetRoot, asset.id, asset.bytes),
-      ),
-    );
-    for (const candidate of bytes) {
-      if (
-        candidate.byteLength !== asset.bytes ||
-        createHash("sha256").update(candidate).digest("hex") !== asset.sha256
-      ) {
-        assetFailure(
+    if (!source) {
+      Font.register({
+        family: asset.family,
+        fontStyle: asset.style,
+        fontWeight: asset.weight,
+        src: expectedSource,
+      });
+      family = registeredFonts()[asset.family];
+      source = family?.sources.at(-1);
+      if (!source || source.src !== expectedSource) {
+        return assetFailure(
           asset.id,
-          "A registered font source does not match the qualified manifest.",
+          "React PDF did not retain the verified facade font source.",
         );
       }
+      trustedFacadeSources.add(source);
     }
-    const current = registeredSourcesFor(
-      asset.family,
-      asset.style,
-      asset.weight,
-    );
-    if (
-      current.length !== snapshots.length ||
-      current.some(
-        (source, index) =>
-          source !== snapshots[index]?.source ||
-          source.src !== snapshots[index]?.src,
-      )
-    ) {
-      assetFailure(
-        asset.id,
-        "The font registry changed during facade preflight.",
+    const promoted = promotedByFamily.get(asset.family) ?? [];
+    promoted.push(source);
+    promotedByFamily.set(asset.family, promoted);
+  }
+
+  for (const [familyName, promoted] of promotedByFamily) {
+    const family = registeredFonts()[familyName];
+    if (!family) {
+      return assetFailure(
+        familyName,
+        "React PDF discarded a verified facade font family.",
       );
     }
+    const remaining = family.sources.filter(
+      (source) => !promoted.includes(source),
+    );
+    family.sources.splice(0, family.sources.length, ...promoted, ...remaining);
+  }
+
+  return () => {
+    for (const [familyName, prior] of priorByFamily) {
+      const family = registeredFonts()[familyName];
+      if (!family) continue;
+      const additions = family.sources.filter(
+        (source) => !prior.includes(source),
+      );
+      family.sources.splice(0, family.sources.length, ...prior, ...additions);
+    }
+  };
+}
+
+export async function withVerifiedNodeFontPriority<T>(
+  resolver: AssetResolver,
+  render: () => Promise<T>,
+): Promise<T> {
+  let release!: () => void;
+  const previous = facadeRenderTail;
+  facadeRenderTail = new Promise<void>((resolveQueue) => {
+    release = resolveQueue;
+  });
+  await previous;
+  let restore: (() => void) | undefined;
+  try {
+    restore = activateVerifiedFontPriority(resolver);
+    return await render();
+  } finally {
+    restore?.();
+    release();
   }
 }
