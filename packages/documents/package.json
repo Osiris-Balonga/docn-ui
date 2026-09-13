@@ -7,13 +7,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./browser": "./src/render/browser.ts",
+    "./browser": "./src/render/browser-entry.ts",
     "./catalog": "./src/catalog/index.ts",
     "./catalog/components": "./src/catalog/components.ts",
     "./core": "./src/core/index.ts",
     "./examples/consumer-usage": "./src/examples/consumer-usage.ts",
     "./feasibility/browser": "./src/render/feasibility.browser.ts",
-    "./node": "./src/render/node.ts",
+    "./node": "./src/render/node-entry.ts",
     "./primitives": "./src/primitives/index.tsx",
     "./primitives/barcode": "./src/primitives/barcode.tsx",
     "./themes": "./src/themes/themes.ts",
@@ -72,8 +72,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@pdf-lib/upng": "1.0.1",
     "@react-pdf/renderer": "4.9.0",
+    "jpeg-js": "0.4.4",
     "jsbarcode": "3.12.3",
+    "pako": "1.0.11",
     "pdf-lib": "1.17.1",
     "pdfjs-dist": "6.2.108",
     "qrcode": "1.5.4",

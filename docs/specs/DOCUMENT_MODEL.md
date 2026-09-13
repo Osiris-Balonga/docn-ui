@@ -400,6 +400,20 @@ logically immutable prepared bytes plus a pure JSON descriptor. The descriptor
 set must match the canonical extracted IDs exactly; missing and extra
 descriptors are errors.
 
+PNG structural validation covers every chunk CRC and aborts zlib inflation as
+soon as output exceeds the exact non-interlaced or Adam7 raster budget declared
+by IHDR. Resolver results are strict plain data objects snapshotted once under a
+structured error boundary; accessors and abnormal proxies are rejected.
+
+PNG inputs and JPEG inputs with a non-identity EXIF orientation are emitted as
+deterministic metadata-free PNGs. An identity-oriented JPEG is fully decoded
+for pixel validation, then retains its compressed scan while EXIF, ancillary
+APP metadata, and comments are stripped; APP0 and APP14 decoder-control
+segments are retained. The scan-aware parser removes metadata between scans,
+requires a terminal EOI, and rejects trailing bytes. The final normalized
+representation, not just the resolver input, must remain within the five-MiB
+limit.
+
 `PreparedLocalImages` is sorted by descriptor ID and contains one logically
 immutable entry per canonical ID. Immutability means no external alias to its
 owned bytes is exposed or reused; `readonly` alone is not treated as protection
@@ -543,6 +557,15 @@ or weakening either advanced API. Flow uses a `FixedDocumentRenderPlan` whose
 document is the existing wrapping `DocumentFrame` composition; it is distinct
 from a non-wrapping fixed composition at the template level.
 
+A continuous plan's `finalMarker` is an opaque ASCII token matching
+`^[A-Z][A-Z0-9_]{0,31}$`. It is validated before document rendering and must be
+rendered by the source-owned template as the final standalone, non-wrapping
+`Text`. It is not arbitrary prose and must not depend on automatic hyphenation
+or line wrapping. PDF.js may still expose one token as multiple adjacent text
+items; probe and final qualification accept only a coherent same-line sequence
+with a strict leading boundary and transformed glyph bounds inside the
+MediaBox.
+
 `resolvedTheme` is the deep-frozen, fingerprinted full theme used by public
 theme-aware components. Because its weights, type scale, and spacing equal the
 base preset, new compositions preserve the qualified geometry. `legacyStyle`
@@ -591,7 +614,25 @@ The Node default is the module-relative `../../assets/` directory already used
 by `createNodeAssetResolver`; installed registry source therefore resolves the
 consumer's root `assets/` directory. An explicit `fontAssetDirectory` is
 resolved to an absolute directory and remains subject to manifest containment
-and digest checks. The browser default is `globalThis.location.origin`; an
+and digest checks. The Node facade snapshots each verified font into an
+immutable data source before plan dispatch, so the facade-owned registration
+does not reopen its configured path. The pinned React PDF engine exposes a
+process-global, first-match font store. During each facade render, the Node
+adapter ensures a facade-owned canonical source exists for every qualified
+manifest slot, temporarily promotes those exact sources, and restores every
+prior source ordering in `finally`. Cached or mismatched advanced sources can
+therefore coexist without being selected by the facade, and no unrelated font
+family is cleared. The existing font-registration cache creates each canonical
+source once; repeated renders keep the source count stable, while `Font.reset()`
+is handled by clearing the stale facade source promise in place. If advanced
+code registered the canonical data URI through the same cache first, the
+adapter adds one separately tracked facade-owned source and reuses it. Facade
+renders are serialized around this scope.
+`Font.clear()` destroys the engine's standard font setup and is outside this
+contract. Concurrent mixed advanced/facade renders remain unsupported because
+advanced calls access the same global store outside the facade queue. The
+browser default is
+`globalThis.location.origin`; an
 explicit `fontAssetBaseUrl` must resolve to that same origin, and manifest
 public paths remain rooted below it. No remote font fallback is permitted.
 

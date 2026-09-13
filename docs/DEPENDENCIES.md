@@ -61,18 +61,18 @@ Init's Google Fonts import and circular `--font-sans` token were replaced by loc
 
 All packages below are development dependencies; none is imported by the production application.
 
-| Dependency                         | Version         | License | Purpose                                                                          |
-| ---------------------------------- | --------------- | ------- | -------------------------------------------------------------------------------- |
-| ESLint                             | 9.39.5          | MIT     | Compatible lint runtime for the current Next plugins; see limitation below       |
-| eslint-config-next                 | 16.3.3          | MIT     | Framework, accessibility, React, and TypeScript lint rules                       |
-| Prettier                           | 3.9.6           | MIT     | Code/config formatting                                                           |
-| Vitest / coverage-v8               | 4.1.11          | MIT     | Exclusive lightweight projects and optional coverage; same version               |
-| Vite (transitive, locked)          | 8.2.2           | MIT     | Vitest transformation; not the production Next bundler                           |
-| jsdom                              | 30.0.1          | MIT     | Component environment only; compatible with Node 24.18                           |
-| Testing Library React / DOM        | 16.3.3 / 10.4.1 | MIT     | Composition semantics and rendering                                              |
-| Testing Library user-event         | 14.6.6          | MIT     | Keyboard interaction in jsdom                                                    |
-| Testing Library jest-dom           | 7.0.1           | MIT     | DOM assertions                                                                   |
-| unrs-resolver (transitive, locked) | 1.12.2          | MIT     | ESLint import resolution; reviewed native-package postinstall explicitly allowed |
+| Dependency                         | Version         | License | Purpose                                                                                         |
+| ---------------------------------- | --------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| ESLint                             | 9.39.5          | MIT     | Compatible lint runtime for the current Next plugins; see limitation below                      |
+| eslint-config-next                 | 16.3.3          | MIT     | Framework, accessibility, React, and TypeScript lint rules                                      |
+| Prettier                           | 3.9.6           | MIT     | Code/config formatting                                                                          |
+| Vitest / coverage-v8               | 4.1.11          | MIT     | Exclusive lightweight projects and optional coverage; same version                              |
+| Vite (test-only, locked)           | 8.2.2           | MIT     | Direct browser-facade fixture build plus Vitest transformation; not the production Next bundler |
+| jsdom                              | 30.0.1          | MIT     | Component environment only; compatible with Node 24.18                                          |
+| Testing Library React / DOM        | 16.3.3 / 10.4.1 | MIT     | Composition semantics and rendering                                                             |
+| Testing Library user-event         | 14.6.6          | MIT     | Keyboard interaction in jsdom                                                                   |
+| Testing Library jest-dom           | 7.0.1           | MIT     | DOM assertions                                                                                  |
+| unrs-resolver (transitive, locked) | 1.12.2          | MIT     | ESLint import resolution; reviewed native-package postinstall explicitly allowed                |
 
 **Compatibility limitation:** ESLint 9.39.5 is deprecated upstream. ESLint 10.9.1 was actually tried and rejected: the Next-resolved import/jsx-a11y/react plugins declare ESLint 9 peer ranges, and `react/display-name` crashes on the removed `context.getFilename` API. Pin the functioning compatible version without suppressing rules or peer checks; reconsider at L13 or when Next's plugin dependencies support ESLint 10. This affects developer tooling, not shipped site code. `pnpm peers check` must remain clean.
 
@@ -146,3 +146,32 @@ Exact tarball license texts and manifests were inspected; ZXing ships its Apache
 Barcode has a dedicated import/registry entry, not an export from the legacy primitive barrel. The shared theme-context registry item is extracted early from S02g so Barcode can use PDF tokens without depending on the aggregate primitives. Existing template installations retain the same source closure and do not acquire JsBarcode. Component-sized installation of all other primitives remains S02g. No new installer, configuration replacement, server rendering, or package publication is introduced.
 
 Sources: [JsBarcode object output](https://github.com/lindell/JsBarcode#retrieve-the-barcode-values-so-you-can-render-it-any-way-youd-like), [JsBarcode MIT license](https://github.com/lindell/JsBarcode/blob/master/MIT-LICENSE.txt), [ZXing package](https://www.npmjs.com/package/@zxing/library), [ZXing 0.23.0 license](https://github.com/zxing-js/library/blob/v0.23.0/LICENSE). Final component isolation and actual-PDF decoding evidence is recorded in L12 QA after execution.
+
+## Local document-image preflight (L18-S01)
+
+| Dependency    | Version | License      | Reason and runtime impact                                                                                                                               |
+| ------------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| @pdf-lib/upng | 1.0.1   | MIT          | Isomorphic PNG pixel decode and deterministic metadata-free PNG re-encode; already locked transitively through pdf-lib, now a direct runtime dependency |
+| jpeg-js       | 0.4.4   | BSD-3-Clause | Isomorphic JPEG pixel decode with explicit resolution and memory bounds; a new direct runtime dependency with no runtime dependencies                   |
+| pako          | 1.0.11  | MIT AND Zlib | Exact direct dependency used to abort PNG inflate beyond the declared raster budget; it remains the version already locked through @pdf-lib/upng        |
+
+The exact installed manifests and license files were inspected. The published
+unpacked sizes reported by npm are 707,597 bytes for `@pdf-lib/upng` and 76,029
+bytes for `jpeg-js`; those figures are package inventory, not bundle sizes. An
+isolated codec-entry measurement produced 90,065 bytes minified / 31,617 bytes
+gzip in total: UPNG plus pako measured 70,328 / 23,724 and jpeg-js measured
+20,241 / 8,478. No stable budget or threshold is inferred from this one
+measurement. No website entry imports the new Node facade in S01. Browser
+reachability and the actual Vite facade/worker outputs are recorded in
+[L18 QA](qa/L18.md), including the S04 snapshot at
+`6237553fe5ea7df197bbd9c0c670028d87eec909`. S05 adds qualification tests only;
+it adds no dependency or production runtime code. These measurements describe
+the isolated package fixture, not the production Next.js site's initial bundle.
+
+PNG inputs and JPEGs requiring orientation are deterministically re-encoded as
+metadata-free PNG. Unrotated JPEGs are fully pixel-decoded for validation, then
+retain their compressed scan while bounded APP metadata and comments are
+removed. This avoids turning a valid sub-5-MiB photograph into an oversized PNG
+without relying on jpeg-js's Node-only encoder return path. No codec source is
+copied or patched. Redistribution must preserve the MIT, BSD-3-Clause, and pako
+MIT/Zlib notices.

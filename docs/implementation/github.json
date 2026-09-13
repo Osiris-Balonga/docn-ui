@@ -884,6 +884,26 @@
         "verifiedAt": "2026-09-12T22:11:19Z"
       },
       "initialized": true
+    },
+    "L18": {
+      "issueNumber": 85,
+      "issueId": "I_kwDOUHjPN88AAAABRAjQOg",
+      "issueUrl": "https://github.com/Osiris-Balonga/docn-ui/issues/85",
+      "issueState": "OPEN",
+      "issueCreatedAt": "2026-09-12T22:21:23Z",
+      "itemId": "PVTI_lAHOCZDjCM4BhyZuzg6rbDs",
+      "projectStatus": "In review",
+      "projectStatusUpdatedAt": "2026-09-13T14:49:59Z",
+      "pullRequest": {
+        "number": 86,
+        "url": "https://github.com/Osiris-Balonga/docn-ui/pull/86",
+        "baseBranch": "dev",
+        "headBranch": "feat/unified-render-facade"
+      },
+      "priority": "P0",
+      "branch": "feat/unified-render-facade",
+      "initializedAt": "2026-09-12T22:22:15Z",
+      "initialized": true
     }
   },
   "pullRequests": {
@@ -898,7 +918,7 @@
       "merged": false
     }
   },
-  "lastVerifiedAt": "2026-09-12T22:11:37Z",
+  "lastVerifiedAt": "2026-09-12T22:22:15Z",
   "verification": {
     "directPushDev": "rejected GH013",
     "directPushMain": "rejected GH013",

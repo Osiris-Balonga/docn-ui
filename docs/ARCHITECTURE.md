@@ -130,9 +130,38 @@ Fonts and document images use separate channels. Font assets remain fixed manife
 
 `core` remains independent of assets and themes. The non-React template-contract layer introduced by S02 orchestrates validation and normalization above those modules. S03 extends the descriptor with a discriminated `fixed | flow | continuous` plan union that wraps the existing `FixedDocumentRenderPlan` and `ContinuousDocumentRenderPlan` types without renaming them.
 
+Continuous plan measurement uses a source-owned terminal sentinel, not document prose. `finalMarker` must match `^[A-Z][A-Z0-9_]{0,31}$` and render as a final standalone, non-wrapping `Text`. The facade validates the token before invoking the plan's document renderer. Probe and final inspection share exact terminal matching; adjacent PDF.js fragments remain permitted only on one coherent baseline, and final transformed glyph bounds must remain inside the MediaBox.
+
 Normalization receives exact `FontManifestIdentity` and local-image descriptor values, never resolvers. The frozen resolved theme supplies the preset identity, colors, base-preserving weights/type scale/spacing, and only template-qualified family choices. `TemplatePlanContext` also carries an optional differential legacy-style projection. Omitted theme input produces no projection and therefore no source-owned composition/palette change; explicit input contributes only differing requested colors and template-qualified family changes. Legacy adapters never map weights, type scale, spacing, or geometry. A descriptor declares supported print-profile kinds and a compatible default; the L17 continuous feasibility descriptor is `screen`-only and rejects `print` before plan creation.
 
 Protocol V1 remains byte-for-byte and behaviorally unchanged in L17: `RenderRequest`, `validateRenderRequest`, and `fingerprintRenderRequest` are not repurposed. L18 owns the new coordinator, protocol V2, and interruptibility. The browser worker resolves templates from a static trusted ID map; `RenderableTemplate`, Zod schemas, plan factories, runtime options, resolvers, `URL` objects, and functions never cross `postMessage`. Only JSON values plus separately transferred image `ArrayBuffer`s cross that boundary.
+
+The optional interactive browser coordinator is separate from the direct
+browser `renderPdf` call. A 250 ms latest-only debounce runs before preflight;
+its ownership epoch advances when input is submitted, it admits one active job
+plus only the latest pending job, and every
+worker response is matched by worker instance, job ID and caller revision.
+Supersession, the bounded 15-second default timeout, navigation and explicit
+disposal terminate the worker; a subsequent accepted revision creates a fresh
+module worker. The request and result envelopes use exact keys and bounded JSON.
+Image descriptors and a second, sorted transferable byte channel form a strict
+bijection. A bounded coordinator-generated dispatch ID appears in both inbound
+envelopes. The worker accepts these IDs only in strictly increasing order, so a
+duplicate matching the pending identity invalidates that request with one
+structured failure, while older unrelated envelopes are ignored. No crossed
+request/image halves can therefore render even when job ID and revision are
+identical. The worker rechecks encoded MIME, dimensions, byte count and SHA-256
+before creating plan-facing sources. Last-valid/stale presentation state
+remains coordinator-owned and never enters `RenderResult` or protocol V2.
+Resolver/image preflight cannot be forcibly aborted. When it is superseded or
+times out, its promise is settled logically but retains the single physical
+preflight slot until the underlying resolver returns. The latest pending job
+keeps its enqueue-time deadline and cannot wait forever; additional submissions
+fail with a structured timeout while the coordinator reports
+`preflightBlocked`. After the late resolver settles, its copies are released and
+the coordinator accepts new increasing revisions. This prevents rapid input
+from creating unbounded parallel resolvers or retaining multiple prepared byte
+sets.
 
 Registry installation and asset preparation are distinct. A source closure installs TypeScript, the visible installer, manifests and licenses. It does not imply that binary fonts or sample images have been fetched. The documented preparation step verifies and writes those binaries before the first render, after which runtime use is independent of the registry origin.
 
